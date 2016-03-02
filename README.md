@@ -1,4 +1,4 @@
-[![Codeship Status for RichardKnop/ping](https://codeship.com/projects/da8878c0-b517-0133-2c38-1af10c27659b/status?branch=master)](https://codeship.com/projects/134045)
+[![Codeship Status for RichardKnop/ping](https://codeship.com/projects/fb4fa9f0-c2bb-0133-461d-4e6bd7c806c7/status?branch=master)](https://codeship.com/projects/137882)
 
 # Ping List
 
