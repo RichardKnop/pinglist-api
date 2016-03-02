@@ -1,0 +1,40 @@
+---
+
+- table: 'alarm_incidents'
+  pk:
+    id: 1
+  fields:
+    alarm_id: 1
+    type: 'timeout'
+    resolved_at: 'ON_INSERT_NOW()'
+    created_at: 'ON_INSERT_NOW()'
+    updated_at: 'ON_UPDATE_NOW()'
+
+- table: 'alarm_incidents'
+  pk:
+    id: 2
+  fields:
+    alarm_id: 1
+    type: 'timeout'
+    created_at: 'ON_INSERT_NOW()'
+    updated_at: 'ON_UPDATE_NOW()'
+
+- table: 'alarm_incidents'
+  pk:
+    id: 3
+  fields:
+    alarm_id: 1
+    type: 'bad_code'
+    http_code: 500
+    response: 'Internal Server Error'
+    created_at: 'ON_INSERT_NOW()'
+    updated_at: 'ON_UPDATE_NOW()'
+
+- table: 'alarm_incidents'
+  pk:
+    id: 4
+  fields:
+    alarm_id: 1
+    type: 'other'
+    created_at: 'ON_INSERT_NOW()'
+    updated_at: 'ON_UPDATE_NOW()'

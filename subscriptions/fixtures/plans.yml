@@ -1,0 +1,37 @@
+---
+
+- table: 'subscription_plans'
+  pk:
+    id: 1
+  fields:
+    plan_id: 'personal'
+    currency: 'GBP'
+    amount: 250
+    trial_period: 30
+    interval: 30
+    created_at: 'ON_INSERT_NOW()'
+    updated_at: 'ON_UPDATE_NOW()'
+
+- table: 'subscription_plans'
+  pk:
+    id: 2
+  fields:
+    plan_id: 'small_business'
+    currency: 'GBP'
+    amount: 2000
+    trial_period: 30
+    interval: 30
+    created_at: 'ON_INSERT_NOW()'
+    updated_at: 'ON_UPDATE_NOW()'
+
+- table: 'subscription_plans'
+  pk:
+    id: 3
+  fields:
+    plan_id: 'enterprise'
+    currency: 'GBP'
+    amount: 50000
+    trial_period: 30
+    interval: 30
+    created_at: 'ON_INSERT_NOW()'
+    updated_at: 'ON_UPDATE_NOW()'

@@ -1,0 +1,53 @@
+---
+
+- table: 'alarm_alarms'
+  pk:
+    id: 1
+  fields:
+    user_id: 2
+    endpoint_url: 'http://endpoint-1'
+    expected_http_code: 200
+    interval: 60
+    active: false
+    state: ok
+    created_at: 'ON_INSERT_NOW()'
+    updated_at: 'ON_UPDATE_NOW()'
+
+- table: 'alarm_alarms'
+  pk:
+    id: 2
+  fields:
+    user_id: 2
+    endpoint_url: 'http://endpoint-2'
+    expected_http_code: 200
+    interval: 60
+    active: false
+    state: ok
+    created_at: 'ON_INSERT_NOW()'
+    updated_at: 'ON_UPDATE_NOW()'
+
+- table: 'alarm_alarms'
+  pk:
+    id: 3
+  fields:
+    user_id: 2
+    endpoint_url: 'http://endpoint-3'
+    expected_http_code: 200
+    interval: 60
+    active: false
+    state: ok
+    created_at: 'ON_INSERT_NOW()'
+    updated_at: 'ON_UPDATE_NOW()'
+
+- table: 'alarm_alarms'
+  pk:
+    id: 4
+  fields:
+    user_id: 2
+    endpoint_url: 'http://endpoint-4'
+    expected_http_code: 200
+    interval: 60
+    active: false
+    state: ok
+    created_at: 'ON_INSERT_NOW()'
+    updated_at: 'ON_UPDATE_NOW()'

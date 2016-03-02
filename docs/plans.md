@@ -1,0 +1,73 @@
+# Plans
+
+* [List Plans](#list-plans)
+
+## List Plans
+
+Example request:
+
+```
+curl --compressed -v "localhost:8080/v1/plans" \
+	-H "Authorization: Bearer 00ccd40e-72ca-4e79-a4b6-67c95e2e3f1c"
+```
+
+Example response:
+
+```json
+{
+	"_links": {
+		"self": {
+			"href": "/v1/plans"
+		}
+	},
+	"_embedded": {
+		"plans": [
+			{
+				"_links": {
+					"self": {
+						"href": "/v1/plans/1"
+					}
+				},
+				"id": 1,
+				"plan_id": "personal",
+				"currency": "GBP",
+				"amount": 250,
+				"trial_period": 30,
+				"interval": 30,
+				"created_at": "2016-01-14T13:52:24Z",
+				"updated_at": "2016-01-14T13:52:24Z"
+			},
+			{
+				"_links": {
+					"self": {
+						"href": "/v1/plans/2"
+					}
+				},
+				"id": 2,
+				"plan_id": "small_business",
+				"currency": "GBP",
+				"amount": 2000,
+				"trial_period": 30,
+				"interval": 30,
+				"created_at": "2016-01-14T13:52:24Z",
+				"updated_at": "2016-01-14T13:52:24Z"
+			},
+			{
+				"_links": {
+					"self": {
+						"href": "/v1/plans/3"
+					}
+				},
+				"id": 3,
+				"plan_id": "enterprise",
+				"currency": "GBP",
+				"amount": 50000,
+				"trial_period": 30,
+				"interval": 30,
+				"created_at": "2016-01-14T13:52:24Z",
+				"updated_at": "2016-01-14T13:52:24Z"
+			}
+		]
+	}
+}
+```
