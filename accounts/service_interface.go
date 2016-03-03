@@ -20,6 +20,8 @@ type ServiceInterface interface {
 	FindUserByFacebookID(facebookID string) (*User, error)
 	CreateUser(account *Account, userRequest *UserRequest) (*User, error)
 	UpdateUser(user *User, userRequest *UserRequest) error
+	ConfirmUser(user *User) error
+	SetMaxAlarms(user *User, maxAlarms uint) error
 	CreateFacebookUser(account *Account, facebookID string, userRequest *UserRequest) (*User, error)
 	CreateSuperuser(account *Account, email, password string) (*User, error)
 	GetAccountFromQueryString(r *http.Request) (*Account, error)

@@ -132,6 +132,18 @@ func (s *Service) UpdateUser(user *User, userRequest *UserRequest) error {
 	return nil
 }
 
+// ConfirmUser sets User.Confirmed to true
+func (s *Service) ConfirmUser(user *User) error {
+	// Update max alarms
+	return s.db.Model(user).UpdateColumns(User{Confirmed: true}).Error
+}
+
+// SetMaxAlarms sets User.MaxAlarms
+func (s *Service) SetMaxAlarms(user *User, maxAlarms uint) error {
+	// Update max alarms
+	return s.db.Model(user).UpdateColumns(User{MaxAlarms: maxAlarms}).Error
+}
+
 // CreateFacebookUser creates a new user with facebook ID
 func (s *Service) CreateFacebookUser(account *Account, facebookID string, userRequest *UserRequest) (*User, error) {
 	// Fetch the user role from the database
