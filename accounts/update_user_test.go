@@ -72,6 +72,8 @@ func (suite *AccountsTestSuite) TestUpdateUser() {
 	assert.Equal(suite.T(), "John", user.FirstName.String)
 	assert.Equal(suite.T(), "Reese", user.LastName.String)
 	assert.Equal(suite.T(), roles.User, user.Role.Name)
+	assert.True(suite.T(), user.Confirmed)
+	assert.Equal(suite.T(), uint(1), user.MaxAlarms)
 
 	// Check the response body
 	expected := &UserResponse{
