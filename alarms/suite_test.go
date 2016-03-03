@@ -44,17 +44,16 @@ var testMigrations = []func(*gorm.DB) error{
 // AlarmsTestSuite needs to be exported so the tests run
 type AlarmsTestSuite struct {
 	suite.Suite
-	cnf                      *config.Config
-	db                       *gorm.DB
-	oauthServiceMock         *oauth.ServiceMock
-	accountsServiceMock      *accounts.ServiceMock
-	subscriptionsServiceMock *subscriptions.ServiceMock
-	service                  *Service
-	accounts                 []*accounts.Account
-	users                    []*accounts.User
-	alarms                   []*Alarm
-	incidents                []*Incident
-	router                   *mux.Router
+	cnf                 *config.Config
+	db                  *gorm.DB
+	oauthServiceMock    *oauth.ServiceMock
+	accountsServiceMock *accounts.ServiceMock
+	service             *Service
+	accounts            []*accounts.Account
+	users               []*accounts.User
+	alarms              []*Alarm
+	incidents           []*Incident
+	router              *mux.Router
 }
 
 // The SetupSuite method will be run by testify once, at the very
@@ -109,14 +108,12 @@ func (suite *AlarmsTestSuite) SetupSuite() {
 	// Initialise mocks
 	suite.oauthServiceMock = new(oauth.ServiceMock)
 	suite.accountsServiceMock = new(accounts.ServiceMock)
-	suite.subscriptionsServiceMock = new(subscriptions.ServiceMock)
 
 	// Initialise the service
 	suite.service = NewService(
 		suite.cnf,
 		suite.db,
 		suite.accountsServiceMock,
-		suite.subscriptionsServiceMock,
 		nil, // HTTP client
 	)
 
@@ -154,8 +151,6 @@ func (suite *AlarmsTestSuite) SetupTest() {
 	suite.oauthServiceMock.Calls = make([]mock.Call, 0)
 	suite.accountsServiceMock.ExpectedCalls = make([]*mock.Call, 0)
 	suite.accountsServiceMock.Calls = make([]mock.Call, 0)
-	suite.subscriptionsServiceMock.ExpectedCalls = make([]*mock.Call, 0)
-	suite.subscriptionsServiceMock.Calls = make([]mock.Call, 0)
 }
 
 // The TearDownTest method will be run after every test in the suite.

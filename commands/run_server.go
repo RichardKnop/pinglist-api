@@ -31,17 +31,16 @@ func RunServer() error {
 	// Initialise the accounts service
 	accountsService := accounts.NewService(cnf, db, oauthService)
 
-	// Initialise the subscriptions service
-	subscriptionsService := subscriptions.NewService(cnf, db, accountsService)
-
 	// Initialise the alarms service
 	alarmsService := alarms.NewService(
 		cnf,
 		db,
 		accountsService,
-		subscriptionsService,
 		nil, // HTTP client
 	)
+
+	// Initialise the subscriptions service
+	subscriptionsService := subscriptions.NewService(cnf, db, accountsService)
 
 	// Initialise the web service
 	webService := web.NewService(cnf, accountsService)
