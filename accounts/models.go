@@ -45,6 +45,7 @@ type User struct {
 	Role        *Role
 	FirstName   sql.NullString `sql:"type:varchar(100)"`
 	LastName    sql.NullString `sql:"type:varchar(100)"`
+	MaxAlarms   uint           `sql:"default:1"`
 	Confirmed   bool           `sql:"index;not null"`
 }
 

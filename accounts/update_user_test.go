@@ -87,6 +87,7 @@ func (suite *AccountsTestSuite) TestUpdateUser() {
 		FirstName: "John",
 		LastName:  "Reese",
 		Role:      roles.User,
+		MaxAlarms: 1,
 		Confirmed: true,
 		CreatedAt: user.CreatedAt.UTC().Format(time.RFC3339),
 		UpdatedAt: user.UpdatedAt.UTC().Format(time.RFC3339),
