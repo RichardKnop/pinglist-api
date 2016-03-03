@@ -28,9 +28,10 @@ func (p *Plan) TableName() string {
 // Customer ...
 type Customer struct {
 	gorm.Model
-	UserID     sql.NullInt64 `sql:"index;not null"`
-	User       *accounts.User
-	CustomerID string `sql:"type:varchar(60);unique;not null"`
+	UserID        sql.NullInt64 `sql:"index;not null"`
+	User          *accounts.User
+	CustomerID    string `sql:"type:varchar(60);unique;not null"`
+	Subscriptions []*Subscription
 }
 
 // TableName specifies table name
