@@ -2,7 +2,6 @@ package alarms
 
 import (
 	"errors"
-	"log"
 	"net/http"
 
 	"github.com/RichardKnop/pinglist-api/accounts"
@@ -76,7 +75,7 @@ func (s *Service) listAlarmsHandler(w http.ResponseWriter, r *http.Request) {
 		user,
 	)
 	if err != nil {
-		log.Printf("Find paginated alarms error: %s", err)
+		logger.Errorf("Find paginated alarms error: %s", err)
 		response.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

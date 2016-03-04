@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 
 	"github.com/RichardKnop/pinglist-api/accounts"
@@ -36,7 +35,7 @@ func (s *Service) createAlarmHandler(w http.ResponseWriter, r *http.Request) {
 	// Unmarshal the request body into the request prototype
 	alarmRequest := new(AlarmRequest)
 	if err := json.Unmarshal(payload, alarmRequest); err != nil {
-		log.Printf("Failed to unmarshal alarm request: %s", payload)
+		logger.Errorf("Failed to unmarshal alarm request: %s", payload)
 		response.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -44,7 +43,7 @@ func (s *Service) createAlarmHandler(w http.ResponseWriter, r *http.Request) {
 	// Create a new alarm
 	alarm, err := s.createAlarm(authenticatedUser, alarmRequest)
 	if err != nil {
-		log.Printf("Create alarm error: %s", err)
+		logger.Errorf("Create alarm error: %s", err)
 		response.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

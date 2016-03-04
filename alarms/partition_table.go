@@ -2,7 +2,6 @@ package alarms
 
 import (
 	"fmt"
-	"log"
 	"time"
 )
 
@@ -34,7 +33,7 @@ func (s *Service) PartitionTable(parentTableName string, now time.Time) error {
 		if err != nil {
 			return err
 		}
-		log.Printf("Created new result sub table: %s", resultSubTable.Name)
+		logger.Infof("Created new result sub table: %s", resultSubTable.Name)
 	}
 
 	// If we are not nearing tomorrow yet, just return
@@ -58,7 +57,7 @@ func (s *Service) PartitionTable(parentTableName string, now time.Time) error {
 		if err != nil {
 			return err
 		}
-		log.Printf("Created new result sub table: %s", resultSubTable.Name)
+		logger.Infof("Created new result sub table: %s", resultSubTable.Name)
 	}
 
 	return nil
@@ -90,7 +89,7 @@ func (s *Service) RotateSubTables() error {
 			tx.Rollback() // rollback the transaction
 			return err
 		}
-		log.Printf("Deleted result sub table: %s", resultSubTable.Name)
+		logger.Infof("Deleted result sub table: %s", resultSubTable.Name)
 	}
 
 	// Delete old sub table records

@@ -3,7 +3,6 @@ package subscriptions
 import (
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"net/http"
 
 	"github.com/RichardKnop/pinglist-api/response"
@@ -29,7 +28,7 @@ func (s *Service) stripeWebhookHandler(w http.ResponseWriter, r *http.Request) {
 	// Unmarshal the request body into the request prototype
 	stripeEventRequest := new(stripe.Event)
 	if err := json.Unmarshal(payload, stripeEventRequest); err != nil {
-		log.Printf("Failed to unmarshal stripe event: %s", payload)
+		logger.Errorf("Failed to unmarshal stripe event: %s", payload)
 		response.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -63,7 +62,7 @@ func (s *Service) stripeWebhookHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err != nil {
-		log.Printf("Failed to process stripe event: %v", stripeEvent)
+		logger.Errorf("Failed to process stripe event: %v", stripeEvent)
 		response.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

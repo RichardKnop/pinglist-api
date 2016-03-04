@@ -23,8 +23,11 @@ func CreateTestDatabase(dbPath string, migrationFunctions []func(*gorm.DB) error
 	}
 
 	// Run all migrations
-	migrations.MigrateAll(inMemoryDB, migrationFunctions)
+	if err := migrations.MigrateAll(inMemoryDB, migrationFunctions); err != nil {
+		return nil, err
+	}
 
+	// Load data from data
 	if err = fixtures.LoadFiles(fixtureFiles, inMemoryDB.DB(), "sqlite"); err != nil {
 		return nil, err
 	}
@@ -44,8 +47,11 @@ func CreateTestDatabasePostgres(dbUser, dbName string, migrationFunctions []func
 	}
 
 	// Run all migrations
-	migrations.MigrateAll(db, migrationFunctions)
+	if err := migrations.MigrateAll(db, migrationFunctions); err != nil {
+		return nil, err
+	}
 
+	// Load data from data
 	if err = fixtures.LoadFiles(fixtureFiles, db.DB(), "postgres"); err != nil {
 		return nil, err
 	}

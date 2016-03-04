@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 
 	"github.com/RichardKnop/pinglist-api/accounts"
@@ -36,7 +35,7 @@ func (s *Service) subscribeUserHandler(w http.ResponseWriter, r *http.Request) {
 	// Unmarshal the request body into the request prototype
 	subscriptionRequest := new(SubscriptionRequest)
 	if err := json.Unmarshal(payload, subscriptionRequest); err != nil {
-		log.Printf("Failed to unmarshal subscription request: %s", payload)
+		logger.Errorf("Failed to unmarshal subscription request: %s", payload)
 		response.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}

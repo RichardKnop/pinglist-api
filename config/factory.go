@@ -3,7 +3,6 @@ package config
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"os"
 	"time"
 
@@ -68,7 +67,7 @@ func NewConfig(mustLoadOnce bool, keepReloading bool) *Config {
 
 	// Construct the ETCD endpoint
 	etcdEndpoint := getEtcdEndpoint()
-	log.Printf("ETCD Endpoint: %s", etcdEndpoint)
+	logger.Infof("ETCD Endpoint: %s", etcdEndpoint)
 
 	// ETCD config
 	etcdClientConfig := client.Config{
@@ -81,7 +80,8 @@ func NewConfig(mustLoadOnce bool, keepReloading bool) *Config {
 	// ETCD client
 	etcdClient, err := client.New(etcdClientConfig)
 	if err != nil {
-		log.Fatal(err)
+		logger.Fatal(err)
+		os.Exit(1)
 	}
 
 	// ETCD keys API
@@ -91,12 +91,13 @@ func NewConfig(mustLoadOnce bool, keepReloading bool) *Config {
 	if mustLoadOnce {
 		// Read from remote config the first time
 		if err := loadConfig(kapi); err != nil {
-			log.Fatal(err)
+			logger.Fatal(err)
+			os.Exit(1)
 		}
 
 		// Set configLoaded to true
 		configLoaded = true
-		log.Print("Successfully loaded config for the first time")
+		logger.Info("Successfully loaded config for the first time")
 	}
 
 	if keepReloading {
@@ -108,13 +109,13 @@ func NewConfig(mustLoadOnce bool, keepReloading bool) *Config {
 
 				// Attempt to reload the config
 				if err := loadConfig(kapi); err != nil {
-					log.Print(err)
+					logger.Error(err)
 					continue
 				}
 
 				// Set configLoaded to true
 				configLoaded = true
-				log.Print("Successfully reloaded config")
+				logger.Info("Successfully reloaded config")
 			}
 		}()
 	}
