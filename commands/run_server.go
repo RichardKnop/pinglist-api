@@ -5,6 +5,7 @@ import (
 
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/RichardKnop/pinglist-api/alarms"
+	"github.com/RichardKnop/pinglist-api/facebook"
 	"github.com/RichardKnop/pinglist-api/health"
 	"github.com/RichardKnop/pinglist-api/oauth"
 	"github.com/RichardKnop/pinglist-api/subscriptions"
@@ -30,6 +31,14 @@ func RunServer() error {
 
 	// Initialise the accounts service
 	accountsService := accounts.NewService(cnf, db, oauthService)
+
+	// Initialise the facebook service
+	facebookService := facebook.NewService(
+		cnf,
+		db,
+		accountsService,
+		nil, // facebook.Adapter
+	)
 
 	// Initialise the alarms service
 	alarmsService := alarms.NewService(
@@ -63,6 +72,9 @@ func RunServer() error {
 
 	// Register routes for the accounts service
 	accounts.RegisterRoutes(router, accountsService)
+
+	// Register routes for the facebook service
+	facebook.RegisterRoutes(router, facebookService)
 
 	// Register routes for the alarms service
 	alarms.RegisterRoutes(router, alarmsService)
