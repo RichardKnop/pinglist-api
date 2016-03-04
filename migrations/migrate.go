@@ -6,28 +6,15 @@ import (
 
 // MigrateAll runs bootstrap, then all migration functions listed against
 // the specified database and logs any errors
-func MigrateAll(db *gorm.DB, migrationFunctions []func(*gorm.DB) error) error {
+func MigrateAll(db *gorm.DB, migrationFunctions []func(*gorm.DB) error) {
 
-	// Begin a transaction
-	tx := db.Begin()
-
-	if err := Bootstrap(tx); err != nil {
-		tx.Rollback() // rollback the transaction
-		return err
+	if err := Bootstrap(db); err != nil {
+		logger.Error(err)
 	}
 
 	for _, m := range migrationFunctions {
-		if err := m(tx); err != nil {
-			tx.Rollback() // rollback the transaction
-			return err
+		if err := m(db); err != nil {
+			logger.Error(err)
 		}
 	}
-
-	// Commit the transaction
-	if err := tx.Commit().Error; err != nil {
-		tx.Rollback() // rollback the transaction
-		return err
-	}
-
-	return nil
 }
