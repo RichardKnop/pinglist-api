@@ -16,7 +16,7 @@ Please confirm your email: %s.
 
 Kind Regards,
 
-pingli.st Team
+%s Team
 `
 
 // EmailFactory facilitates construction of email.Email objects
@@ -54,6 +54,7 @@ func (f *EmailFactory) NewConfirmationEmail(confirmation *Confirmation) *email.E
 		name,
 		f.cnf.Web.Host,
 		link,
+		f.cnf.Web.Host,
 	)
 
 	return &email.Email{
