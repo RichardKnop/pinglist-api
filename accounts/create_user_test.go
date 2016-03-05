@@ -38,6 +38,9 @@ func (suite *AccountsTestSuite) TestCreateUser() {
 		),
 	)
 
+	// Mock confirmation email
+	suite.mockConfirmationEmail()
+
 	// Check the routing
 	match := new(mux.RouteMatch)
 	suite.router.Match(r, match)
@@ -75,7 +78,7 @@ func (suite *AccountsTestSuite) TestCreateUser() {
 		confirmationsCountAfter int
 	)
 	suite.db.Model(new(User)).Count(&countAfter)
-	suite.db.Model(new(Confirmation)).Count(&confirmationsCountBefore)
+	suite.db.Model(new(Confirmation)).Count(&confirmationsCountAfter)
 	assert.Equal(suite.T(), countBefore+1, countAfter)
 	assert.Equal(suite.T(), confirmationsCountBefore+1, confirmationsCountAfter)
 
@@ -87,7 +90,7 @@ func (suite *AccountsTestSuite) TestCreateUser() {
 
 	// Fetch the created confirmation
 	confirmation := new(Confirmation)
-	assert.False(suite.T(), suite.db.Preload("User").
+	assert.False(suite.T(), suite.db.Preload("User.OauthUser").
 		First(confirmation).RecordNotFound())
 
 	// And correct data was saved
