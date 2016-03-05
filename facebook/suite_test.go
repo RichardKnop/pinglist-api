@@ -7,6 +7,7 @@ import (
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/RichardKnop/pinglist-api/config"
 	"github.com/RichardKnop/pinglist-api/database"
+	"github.com/RichardKnop/pinglist-api/email"
 	"github.com/RichardKnop/pinglist-api/oauth"
 	"github.com/gorilla/mux"
 	fb "github.com/huandu/facebook"
@@ -83,6 +84,8 @@ func (suite *FacebookTestSuite) SetupSuite() {
 			suite.cnf,
 			suite.db,
 			oauth.NewService(suite.cnf, suite.db),
+			new(email.ServiceMock),
+			new(accounts.EmailFactoryMock),
 		),
 		suite.adapterMock,
 	)

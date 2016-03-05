@@ -5,6 +5,7 @@ import (
 
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/RichardKnop/pinglist-api/alarms"
+	"github.com/RichardKnop/pinglist-api/email"
 	"github.com/RichardKnop/pinglist-api/facebook"
 	"github.com/RichardKnop/pinglist-api/health"
 	"github.com/RichardKnop/pinglist-api/oauth"
@@ -29,8 +30,17 @@ func RunServer() error {
 	// Initialise the oauth service
 	oauthService := oauth.NewService(cnf, db)
 
+	// Initialise the email service
+	emailService := email.NewService(cnf)
+
 	// Initialise the accounts service
-	accountsService := accounts.NewService(cnf, db, oauthService)
+	accountsService := accounts.NewService(
+		cnf,
+		db,
+		oauthService,
+		emailService,
+		nil, // accounts.EmailFactory
+	)
 
 	// Initialise the facebook service
 	facebookService := facebook.NewService(

@@ -6,6 +6,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/RichardKnop/pinglist-api/email"
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/RichardKnop/pinglist-api/oauth"
 )
@@ -18,8 +19,20 @@ func CreateSuperuser() error {
 	}
 	defer db.Close()
 
+	// Initialise the oauth service
+	oauthService := oauth.NewService(cnf, db)
+
+	// Initialise the email service
+	emailService := email.NewService(cnf)
+
 	// Initialise the accounts service
-	accountsService := accounts.NewService(cnf, db, oauth.NewService(cnf, db))
+	accountsService := accounts.NewService(
+		cnf,
+		db,
+		oauthService,
+		emailService,
+		nil, // accounts.EmailFactory
+	)
 
 	// Fetch the account (assume all superusers belong to the first account)
 	account, err := accountsService.FindAccountByID(uint(1))

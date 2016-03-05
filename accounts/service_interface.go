@@ -5,6 +5,7 @@ import (
 
 	"github.com/RichardKnop/pinglist-api/config"
 	"github.com/RichardKnop/pinglist-api/oauth"
+	"github.com/jinzhu/gorm"
 )
 
 // ServiceInterface defines exported methods
@@ -19,7 +20,9 @@ type ServiceInterface interface {
 	FindUserByID(userID uint) (*User, error)
 	FindUserByFacebookID(facebookID string) (*User, error)
 	CreateUser(account *Account, userRequest *UserRequest) (*User, error)
+	CreateUserTx(tx *gorm.DB, account *Account, userRequest *UserRequest) (*User, error)
 	UpdateUser(user *User, userRequest *UserRequest) error
+	FindConfirmationByReference(reference string) (*Confirmation, error)
 	ConfirmUser(user *User) error
 	SetMaxAlarms(user *User, maxAlarms uint) error
 	CreateFacebookUser(account *Account, facebookID string, userRequest *UserRequest) (*User, error)

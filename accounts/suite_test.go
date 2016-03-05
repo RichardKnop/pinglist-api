@@ -6,9 +6,11 @@ import (
 
 	"github.com/RichardKnop/pinglist-api/config"
 	"github.com/RichardKnop/pinglist-api/database"
+	"github.com/RichardKnop/pinglist-api/email"
 	"github.com/RichardKnop/pinglist-api/oauth"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
+	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
 	// sqlite driver
 	_ "github.com/mattn/go-sqlite3"
@@ -34,12 +36,14 @@ var testMigrations = []func(*gorm.DB) error{
 // AccountsTestSuite needs to be exported so the tests run
 type AccountsTestSuite struct {
 	suite.Suite
-	cnf      *config.Config
-	db       *gorm.DB
-	service  *Service
-	accounts []*Account
-	users    []*User
-	router   *mux.Router
+	cnf              *config.Config
+	db               *gorm.DB
+	emailServiceMock *email.ServiceMock
+	emailFactoryMock *EmailFactoryMock
+	service          *Service
+	accounts         []*Account
+	users            []*User
+	router           *mux.Router
 }
 
 // The SetupSuite method will be run by testify once, at the very
@@ -70,11 +74,17 @@ func (suite *AccountsTestSuite) SetupSuite() {
 		log.Fatal(err)
 	}
 
+	// Initialise mocks
+	suite.emailServiceMock = new(email.ServiceMock)
+	suite.emailFactoryMock = new(EmailFactoryMock)
+
 	// Initialise the service
 	suite.service = NewService(
 		suite.cnf,
 		suite.db,
 		oauth.NewService(suite.cnf, suite.db),
+		suite.emailServiceMock,
+		suite.emailFactoryMock,
 	)
 
 	// Register routes
@@ -90,6 +100,7 @@ func (suite *AccountsTestSuite) TearDownSuite() {
 
 // The SetupTest method will be run before every test in the suite.
 func (suite *AccountsTestSuite) SetupTest() {
+	suite.db.Unscoped().Delete(new(Confirmation))
 	suite.db.Unscoped().Not("id", []int64{1, 2}).Delete(new(User))
 
 	// Service.CreateUser also creates a new oauth.User instance
@@ -97,6 +108,12 @@ func (suite *AccountsTestSuite) SetupTest() {
 
 	// Service.CreateAccount also creates a new oauth.Client instance
 	suite.db.Unscoped().Not("id", []int64{1, 2}).Delete(new(oauth.Client))
+
+	// Reset mocks
+	suite.emailServiceMock.ExpectedCalls = suite.emailServiceMock.ExpectedCalls[:0]
+	suite.emailServiceMock.Calls = suite.emailServiceMock.Calls[:0]
+	suite.emailFactoryMock.ExpectedCalls = suite.emailFactoryMock.ExpectedCalls[:0]
+	suite.emailFactoryMock.Calls = suite.emailFactoryMock.Calls[:0]
 }
 
 // The TearDownTest method will be run after every test in the suite.
@@ -109,4 +126,14 @@ func (suite *AccountsTestSuite) TearDownTest() {
 // a normal test function and pass our suite to suite.Run
 func TestAccountsTestSuite(t *testing.T) {
 	suite.Run(t, new(AccountsTestSuite))
+}
+
+// Mock sending confirmation email
+func (suite *AccountsTestSuite) mockConfirmationEmail() {
+	emailMock := new(email.Email)
+	suite.emailFactoryMock.On(
+		"NewConfirmationEmail",
+		mock.AnythingOfType("*accounts.Confirmation"),
+	).Return(emailMock)
+	suite.emailServiceMock.On("Send", emailMock).Return(nil)
 }

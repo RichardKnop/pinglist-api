@@ -5,6 +5,7 @@ import (
 
 	"github.com/RichardKnop/pinglist-api/config"
 	"github.com/RichardKnop/pinglist-api/oauth"
+	"github.com/jinzhu/gorm"
 	"github.com/stretchr/testify/mock"
 )
 
@@ -204,6 +205,29 @@ func (_m *ServiceMock) CreateUser(account *Account, userRequest *UserRequest) (*
 	return r0, r1
 }
 
+// CreateUserTx ...
+func (_m *ServiceMock) CreateUserTx(tx *gorm.DB, account *Account, userRequest *UserRequest) (*User, error) {
+	ret := _m.Called(tx, account, userRequest)
+
+	var r0 *User
+	if rf, ok := ret.Get(0).(func(*gorm.DB, *Account, *UserRequest) *User); ok {
+		r0 = rf(tx, account, userRequest)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*User)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(*gorm.DB, *Account, *UserRequest) error); ok {
+		r1 = rf(tx, account, userRequest)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // UpdateUser ...
 func (_m *ServiceMock) UpdateUser(user *User, userRequest *UserRequest) error {
 	ret := _m.Called(user, userRequest)
@@ -216,6 +240,29 @@ func (_m *ServiceMock) UpdateUser(user *User, userRequest *UserRequest) error {
 	}
 
 	return r0
+}
+
+// FindConfirmationByReference ...
+func (_m *ServiceMock) FindConfirmationByReference(reference string) (*Confirmation, error) {
+	ret := _m.Called(reference)
+
+	var r0 *Confirmation
+	if rf, ok := ret.Get(0).(func(string) *Confirmation); ok {
+		r0 = rf(reference)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*Confirmation)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(reference)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // ConfirmUser ...
