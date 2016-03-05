@@ -6,6 +6,8 @@ import (
 	"github.com/RichardKnop/pinglist-api/oauth"
 	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/jinzhu/gorm"
+	"github.com/lib/pq"
+	"github.com/pborman/uuid"
 )
 
 // Account ...
@@ -54,6 +56,21 @@ func (u *User) TableName() string {
 	return "account_users"
 }
 
+// Confirmation ...
+type Confirmation struct {
+	gorm.Model
+	UserID      sql.NullInt64 `sql:"index;not null"`
+	User        *User
+	Reference   string `sql:"type:varchar(40);unique;not null"`
+	EmailSent   bool   `sql:"index;not null"`
+	EmailSentAt pq.NullTime
+}
+
+// TableName specifies table name
+func (c *Confirmation) TableName() string {
+	return "account_confirmations"
+}
+
 // newAccount creates new Account instance
 func newAccount(oauthClient *oauth.Client, name, description string) *Account {
 	oauthClientID := util.PositiveIntOrNull(int64(oauthClient.ID))
@@ -92,4 +109,18 @@ func newUser(account *Account, oauthUser *oauth.User, role *Role, facebookID, fi
 		user.Role = role
 	}
 	return user
+}
+
+// newConfirmation creates new Confirmation instance
+func newConfirmation(user *User) *Confirmation {
+	userID := util.PositiveIntOrNull(int64(user.ID))
+	confirmation := &Confirmation{
+		UserID:      userID,
+		Reference:   uuid.New(),
+		EmailSentAt: util.TimeOrNull(nil),
+	}
+	if userID.Valid {
+		confirmation.User = user
+	}
+	return confirmation
 }
