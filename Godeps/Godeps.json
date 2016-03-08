@@ -147,8 +147,8 @@
 		},
 		{
 			"ImportPath": "github.com/stripe/stripe-go",
-			"Comment": "v11.5.0",
-			"Rev": "c2fbda89970b2285e8079835759f68c09a2a2b32"
+			"Comment": "v12.1.0-1-gd5e0907",
+			"Rev": "d5e0907ca2d2e5718c021035e4d4b74a8d93e99d"
 		},
 		{
 			"ImportPath": "github.com/unrolled/secure",

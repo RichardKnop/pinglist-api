@@ -16,13 +16,13 @@ type Client struct {
 
 // Get returns the details of an event
 // For more details see https://stripe.com/docs/api#retrieve_event.
-func Get(id string) (*stripe.Event, error) {
-	return getC().Get(id)
+func Get(id string, params *stripe.Params) (*stripe.Event, error) {
+	return getC().Get(id, params)
 }
 
-func (c Client) Get(id string) (*stripe.Event, error) {
+func (c Client) Get(id string, params *stripe.Params) (*stripe.Event, error) {
 	event := &stripe.Event{}
-	err := c.B.Call("GET", "/events/"+id, c.Key, nil, nil, event)
+	err := c.B.Call("GET", "/events/"+id, c.Key, nil, params, event)
 
 	return event, err
 }
@@ -41,6 +41,7 @@ func (c Client) List(params *stripe.EventListParams) *Iter {
 
 	var body *url.Values
 	var lp *stripe.ListParams
+	var p *stripe.Params
 
 	if params != nil {
 		body = &url.Values{}
@@ -55,11 +56,12 @@ func (c Client) List(params *stripe.EventListParams) *Iter {
 
 		params.AppendTo(body)
 		lp = &params.ListParams
+		p = params.ToParams()
 	}
 
 	return &Iter{stripe.GetIter(lp, body, func(b url.Values) ([]interface{}, stripe.ListMeta, error) {
 		list := &eventList{}
-		err := c.B.Call("GET", "/events", c.Key, &b, nil, list)
+		err := c.B.Call("GET", "/events", c.Key, &b, p, list)
 
 		ret := make([]interface{}, len(list.Values))
 		for i, v := range list.Values {
