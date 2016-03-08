@@ -66,7 +66,7 @@ func rebuildDatabase(dbPath string) (*gorm.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &inMemoryDB, nil
+	return inMemoryDB, nil
 }
 
 // rebuildDatabase attempts to delete an existing Postgres
@@ -95,5 +95,5 @@ func rebuildDatabasePostgres(dbUser, dbName string) (*gorm.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &db, nil
+	return db, nil
 }
