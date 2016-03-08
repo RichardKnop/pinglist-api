@@ -12,7 +12,8 @@ import (
 )
 
 var (
-	errSubscriptionNotFound = errors.New("Subscription not found")
+	// ErrSubscriptionNotFound ...
+	ErrSubscriptionNotFound = errors.New("Subscription not found")
 )
 
 // FindSubscriptionByID looks up a subscription by an ID and returns it
@@ -24,7 +25,7 @@ func (s *Service) FindSubscriptionByID(subscriptionID uint) (*Subscription, erro
 
 	// Not found
 	if notFound {
-		return nil, errSubscriptionNotFound
+		return nil, ErrSubscriptionNotFound
 	}
 
 	return subscription, nil

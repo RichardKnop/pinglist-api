@@ -12,7 +12,8 @@ import (
 )
 
 var (
-	errCheckAlreadyTriggered = errors.New("Alarm check has already been trigerred")
+	// ErrCheckAlreadyTriggered ...
+	ErrCheckAlreadyTriggered = errors.New("Alarm check has already been trigerred")
 )
 
 // GetAlarmsToCheck returns alarms that should be checked
@@ -33,12 +34,12 @@ func (s *Service) CheckAlarm(alarmID uint, watermark time.Time) error {
 	// Fetch the alarm
 	alarm := new(Alarm)
 	if s.db.First(alarm, alarmID).RecordNotFound() {
-		return errAlarmNotFound
+		return ErrAlarmNotFound
 	}
 
 	// Idempotency check
 	if alarm.Watermark.Time.After(watermark) {
-		return errCheckAlreadyTriggered
+		return ErrCheckAlreadyTriggered
 	}
 
 	// Prepare a request

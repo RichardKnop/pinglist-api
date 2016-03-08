@@ -18,7 +18,7 @@ func (suite *SubscriptionsTestSuite) TestFindSubscriptionByID() {
 
 	// Correct error should be returned
 	if assert.NotNil(suite.T(), err) {
-		assert.Equal(suite.T(), errSubscriptionNotFound, err)
+		assert.Equal(suite.T(), ErrSubscriptionNotFound, err)
 	}
 
 	// When we try to find a plan with a valid ID

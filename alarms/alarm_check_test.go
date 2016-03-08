@@ -304,7 +304,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheckIdempotency() {
 	// 3 alarm checks should have been stopped by the idempotency check
 	assert.Equal(suite.T(), 3, len(errs))
 	for _, err := range errs {
-		assert.Equal(suite.T(), errCheckAlreadyTriggered, err)
+		assert.Equal(suite.T(), ErrCheckAlreadyTriggered, err)
 	}
 
 	// Fetch the updated alarm

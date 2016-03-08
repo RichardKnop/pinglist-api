@@ -48,7 +48,7 @@ func (suite *AlarmsTestSuite) TestFindAlarmById() {
 
 	// Correct error should be returned
 	if assert.NotNil(suite.T(), err) {
-		assert.Equal(suite.T(), errAlarmNotFound, err)
+		assert.Equal(suite.T(), ErrAlarmNotFound, err)
 	}
 
 	// When we try to find an alarm with a valid ID

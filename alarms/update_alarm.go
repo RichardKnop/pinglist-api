@@ -15,7 +15,8 @@ import (
 )
 
 var (
-	errUpdateAlarmPermission = errors.New("Need permission to update alarm")
+	// ErrUpdateAlarmPermission ...
+	ErrUpdateAlarmPermission = errors.New("Need permission to update alarm")
 )
 
 // Handles calls to update an alarm (PUT /v1/alarms/{id:[0-9]+})
@@ -98,5 +99,5 @@ func checkUpdateAlarmPermissions(authenticatedUser *accounts.User, alarm *Alarm)
 	}
 
 	// The user doesn't have the permission
-	return errUpdateAlarmPermission
+	return ErrUpdateAlarmPermission
 }

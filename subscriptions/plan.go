@@ -1,11 +1,12 @@
 package subscriptions
 
 import (
-  "errors"
+	"errors"
 )
 
 var (
-	errPlanNotFound = errors.New("Plan not found")
+  // ErrPlanNotFound ...
+	ErrPlanNotFound = errors.New("Plan not found")
 )
 
 // FindPlanByID looks up a plan by an ID and returns it
@@ -15,7 +16,7 @@ func (s *Service) FindPlanByID(planID uint) (*Plan, error) {
 
 	// Not found
 	if s.db.First(plan, planID).RecordNotFound() {
-		return nil, errPlanNotFound
+		return nil, ErrPlanNotFound
 	}
 
 	return plan, nil

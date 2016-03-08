@@ -10,8 +10,10 @@ import (
 )
 
 var (
-	errSuperuserOnlyManually = errors.New("Superusers can only be created manually")
-	errUserNotFound          = errors.New("User not found")
+	// ErrSuperuserOnlyManually ...
+	ErrSuperuserOnlyManually = errors.New("Superusers can only be created manually")
+	// ErrUserNotFound ...
+	ErrUserNotFound = errors.New("User not found")
 )
 
 // GetName returns user's full name
@@ -33,7 +35,7 @@ func (s *Service) FindUserByOauthUserID(oauthUserID uint) (*User, error) {
 
 	// Not found
 	if notFound {
-		return nil, errUserNotFound
+		return nil, ErrUserNotFound
 	}
 
 	return user, nil
@@ -48,7 +50,7 @@ func (s *Service) FindUserByID(userID uint) (*User, error) {
 
 	// Not found
 	if notFound {
-		return nil, errUserNotFound
+		return nil, ErrUserNotFound
 	}
 
 	return user, nil
@@ -64,7 +66,7 @@ func (s *Service) FindUserByFacebookID(facebookID string) (*User, error) {
 
 	// Not found
 	if notFound {
-		return nil, errUserNotFound
+		return nil, ErrUserNotFound
 	}
 
 	return user, nil
@@ -74,7 +76,7 @@ func (s *Service) FindUserByFacebookID(facebookID string) (*User, error) {
 func (s *Service) CreateUser(account *Account, userRequest *UserRequest) (*User, error) {
 	// Superusers can only be created manually
 	if userRequest.Role == roles.Superuser {
-		return nil, errSuperuserOnlyManually
+		return nil, ErrSuperuserOnlyManually
 	}
 
 	// Begin a transaction
@@ -105,7 +107,7 @@ func (s *Service) CreateUser(account *Account, userRequest *UserRequest) (*User,
 func (s *Service) CreateUserTx(tx *gorm.DB, account *Account, userRequest *UserRequest) (*User, error) {
 	// Superusers can only be created manually
 	if userRequest.Role == roles.Superuser {
-		return nil, errSuperuserOnlyManually
+		return nil, ErrSuperuserOnlyManually
 	}
 
 	return s.createUserCommon(tx, account, userRequest, "", false)
@@ -134,7 +136,7 @@ func (s *Service) SetMaxAlarms(user *User, maxAlarms uint) error {
 func (s *Service) CreateFacebookUser(account *Account, facebookID string, userRequest *UserRequest) (*User, error) {
 	// Superusers can only be created manually
 	if userRequest.Role == roles.Superuser {
-		return nil, errSuperuserOnlyManually
+		return nil, ErrSuperuserOnlyManually
 	}
 
 	// Begin a transaction

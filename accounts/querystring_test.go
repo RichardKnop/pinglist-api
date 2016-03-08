@@ -30,7 +30,7 @@ func (suite *AccountsTestSuite) TestGetAccountFromQueryString() {
 
 	// Correct error should be returned
 	if assert.NotNil(suite.T(), err) {
-		assert.Equal(suite.T(), errUserAuthenticationRequired, err)
+		assert.Equal(suite.T(), ErrUserAuthenticationRequired, err)
 	}
 
 	// Now, let's set an authenticated user and try again
@@ -68,7 +68,7 @@ func (suite *AccountsTestSuite) TestGetUserFromQueryString() {
 
 	// Correct error should be returned
 	if assert.NotNil(suite.T(), err) {
-		assert.Equal(suite.T(), errUserAuthenticationRequired, err)
+		assert.Equal(suite.T(), ErrUserAuthenticationRequired, err)
 	}
 
 	// Now, let's set an authenticated user and try again

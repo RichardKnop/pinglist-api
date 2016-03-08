@@ -14,7 +14,8 @@ import (
 )
 
 var (
-	errListAlarmResultsPermission = errors.New("Need permission to list alarm results")
+	// ErrListAlarmResultsPermission ...
+	ErrListAlarmResultsPermission = errors.New("Need permission to list alarm results")
 )
 
 // Handles calls to list alarm results (GET /v1/alarms/{id:[0-9]+}/results)
@@ -112,5 +113,5 @@ func checkListAlarmResultsPermissions(authenticatedUser *accounts.User, alarm *A
 	}
 
 	// The user doesn't have the permission
-	return errListAlarmResultsPermission
+	return ErrListAlarmResultsPermission
 }

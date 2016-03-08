@@ -12,7 +12,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-var testDbPath = "/tmp/pinglist_oauth_testdb.sqlite"
+var testDbPath = "/tmp/oauth_testdb.sqlite"
 
 var testFixtures = []string{
 	"fixtures/scopes.yml",

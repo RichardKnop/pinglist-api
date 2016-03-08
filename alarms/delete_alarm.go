@@ -12,7 +12,8 @@ import (
 )
 
 var (
-	errDeleteAlarmPermission = errors.New("Need permission to delete alarm")
+	// ErrDeleteAlarmPermission ...
+	ErrDeleteAlarmPermission = errors.New("Need permission to delete alarm")
 )
 
 // Handles calls to delete an alarm (DELETE /v1/alarms/{id:[0-9]+})
@@ -67,5 +68,5 @@ func checkDeleteAlarmPermissions(authenticatedUser *accounts.User, alarm *Alarm)
 	}
 
 	// The user doesn't have the permission
-	return errDeleteAlarmPermission
+	return ErrDeleteAlarmPermission
 }

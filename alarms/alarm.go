@@ -10,7 +10,8 @@ import (
 )
 
 var (
-	errAlarmNotFound = errors.New("Alarm not found")
+	// ErrAlarmNotFound ...
+	ErrAlarmNotFound = errors.New("Alarm not found")
 )
 
 // HasOpenIncident returns true if the alarm already has such open incident
@@ -41,7 +42,7 @@ func (s *Service) FindAlarmByID(alarmID uint) (*Alarm, error) {
 
 	// Not found
 	if notFound {
-		return nil, errAlarmNotFound
+		return nil, ErrAlarmNotFound
 	}
 
 	return alarm, nil

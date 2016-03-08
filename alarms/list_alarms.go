@@ -12,7 +12,8 @@ import (
 )
 
 var (
-	errListAlarmsPermission = errors.New("Need permission to list alarms")
+	// ErrListAlarmsPermission ...
+	ErrListAlarmsPermission = errors.New("Need permission to list alarms")
 )
 
 // Handles calls to list alarms (GET /v1/alarms)
@@ -107,5 +108,5 @@ func checkListAlarmsPermissions(authenticatedUser *accounts.User, user *accounts
 	}
 
 	// The user doesn't have the permission
-	return errListAlarmsPermission
+	return ErrListAlarmsPermission
 }
