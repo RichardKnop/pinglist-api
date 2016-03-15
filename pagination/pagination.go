@@ -67,6 +67,9 @@ func GetPaginationLinks(urlObject *url.URL, count, page, limit int) (string, str
 
 	// Number of pages
 	nuPages := int(math.Ceil(float64(count) / float64(limit)))
+	if nuPages < 1 {
+		nuPages = 1
+	}
 
 	// Page too big
 	if page > nuPages {

@@ -81,6 +81,20 @@ func TestGetPaginationLinks(t *testing.T) {
 			log.Fatal(err)
 		}
 
+		// Test with zero results
+		first, last, previous, next, err = GetPaginationLinks(
+			urlObject,
+			0, // count
+			1, // page
+			2, // limit
+		)
+		if assert.Nil(t, err) {
+			assert.Equal(t, "/foobar?hello=world&page=1", first)
+			assert.Equal(t, "/foobar?hello=world&page=1", last)
+			assert.Equal(t, "", previous)
+			assert.Equal(t, "", next)
+		}
+
 		// Test first page
 		first, last, previous, next, err = GetPaginationLinks(
 			urlObject,
