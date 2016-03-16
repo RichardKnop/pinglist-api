@@ -44,16 +44,17 @@ var testMigrations = []func(*gorm.DB) error{
 // AlarmsTestSuite needs to be exported so the tests run
 type AlarmsTestSuite struct {
 	suite.Suite
-	cnf                 *config.Config
-	db                  *gorm.DB
-	oauthServiceMock    *oauth.ServiceMock
-	accountsServiceMock *accounts.ServiceMock
-	service             *Service
-	accounts            []*accounts.Account
-	users               []*accounts.User
-	alarms              []*Alarm
-	incidents           []*Incident
-	router              *mux.Router
+	cnf                      *config.Config
+	db                       *gorm.DB
+	oauthServiceMock         *oauth.ServiceMock
+	accountsServiceMock      *accounts.ServiceMock
+	subscriptionsServiceMock *subscriptions.ServiceMock
+	service                  *Service
+	accounts                 []*accounts.Account
+	users                    []*accounts.User
+	alarms                   []*Alarm
+	incidents                []*Incident
+	router                   *mux.Router
 }
 
 // The SetupSuite method will be run by testify once, at the very
@@ -86,14 +87,15 @@ func (suite *AlarmsTestSuite) SetupSuite() {
 	// Fetch test users
 	suite.users = make([]*accounts.User, 0)
 	err = suite.db.Preload("Account").Preload("OauthUser").Preload("Role").
-		Find(&suite.users).Error
+		Order("id").Find(&suite.users).Error
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Fetch test alarms
 	suite.alarms = make([]*Alarm, 0)
-	err = suite.db.Preload("User").Preload("Incidents").Find(&suite.alarms).Error
+	err = suite.db.Preload("User").Preload("Incidents").
+		Order("id").Find(&suite.alarms).Error
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -108,12 +110,14 @@ func (suite *AlarmsTestSuite) SetupSuite() {
 	// Initialise mocks
 	suite.oauthServiceMock = new(oauth.ServiceMock)
 	suite.accountsServiceMock = new(accounts.ServiceMock)
+	suite.subscriptionsServiceMock = new(subscriptions.ServiceMock)
 
 	// Initialise the service
 	suite.service = NewService(
 		suite.cnf,
 		suite.db,
 		suite.accountsServiceMock,
+		suite.subscriptionsServiceMock,
 		nil, // HTTP client
 	)
 
@@ -151,6 +155,8 @@ func (suite *AlarmsTestSuite) SetupTest() {
 	suite.oauthServiceMock.Calls = make([]mock.Call, 0)
 	suite.accountsServiceMock.ExpectedCalls = make([]*mock.Call, 0)
 	suite.accountsServiceMock.Calls = make([]mock.Call, 0)
+	suite.subscriptionsServiceMock.ExpectedCalls = make([]*mock.Call, 0)
+	suite.subscriptionsServiceMock.Calls = make([]mock.Call, 0)
 }
 
 // The TearDownTest method will be run after every test in the suite.
@@ -181,6 +187,14 @@ func (suite *AlarmsTestSuite) mockAuthentication(user *accounts.User) {
 	// Mock FindUserByOauthUserID to return the wanted user
 	suite.accountsServiceMock.On("FindUserByOauthUserID", user.OauthUser.ID).
 		Return(user, nil)
+}
+
+// Mock find active subscription
+func (suite *AlarmsTestSuite) mockFindActiveSubscription(userID uint, subscription *subscriptions.Subscription, err error) {
+	suite.subscriptionsServiceMock.On(
+		"FindActiveUserSubscription",
+		userID,
+	).Return(subscription, err)
 }
 
 // Mock user querystring filtering

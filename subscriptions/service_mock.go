@@ -72,6 +72,29 @@ func (_m *ServiceMock) FindSubscriptionByID(subscriptionID uint) (*Subscription,
 	return r0, r1
 }
 
+// FindActiveUserSubscription ...
+func (_m *ServiceMock) FindActiveUserSubscription(userID uint) (*Subscription, error) {
+	ret := _m.Called(userID)
+
+	var r0 *Subscription
+	if rf, ok := ret.Get(0).(func(uint) *Subscription); ok {
+		r0 = rf(userID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*Subscription)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(uint) error); ok {
+		r1 = rf(userID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 func (_m *ServiceMock) listPlansHandler(w http.ResponseWriter, r *http.Request) {
 	_m.Called(w, r)
 }

@@ -12,6 +12,7 @@ type ServiceInterface interface {
 	GetAccountsService() accounts.ServiceInterface
 	FindPlanByID(planID uint) (*Plan, error)
 	FindSubscriptionByID(subscriptionID uint) (*Subscription, error)
+	FindActiveUserSubscription(userID uint) (*Subscription, error)
 
 	// Needed for the newRoutes to be able to register handlers
 	listPlansHandler(w http.ResponseWriter, r *http.Request)

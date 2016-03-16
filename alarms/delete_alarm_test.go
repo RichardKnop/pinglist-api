@@ -13,13 +13,13 @@ import (
 
 func (suite *AlarmsTestSuite) TestDeleteAlarm() {
 	// Insert a test alarm
-	alarm, err := suite.service.createAlarm(suite.users[1], &AlarmRequest{
+	alarm := newAlarm(suite.users[1], &AlarmRequest{
 		EndpointURL:      "http://endpoint-5",
 		ExpectedHTTPCode: 200,
 		Interval:         60,
 		Active:           false,
 	})
-	assert.NoError(suite.T(), err, "Inserting test data failed")
+	assert.NoError(suite.T(), suite.db.Create(alarm).Error, "Inserting test data failed")
 
 	r, err := http.NewRequest(
 		"DELETE",
@@ -50,6 +50,7 @@ func (suite *AlarmsTestSuite) TestDeleteAlarm() {
 	// Check that the mock object expectations were met
 	suite.oauthServiceMock.AssertExpectations(suite.T())
 	suite.accountsServiceMock.AssertExpectations(suite.T())
+	suite.subscriptionsServiceMock.AssertExpectations(suite.T())
 
 	// Check the status code
 	if !assert.Equal(suite.T(), 204, w.Code) {

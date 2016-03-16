@@ -126,12 +126,6 @@ func (s *Service) UpdateUser(user *User, userRequest *UserRequest) error {
 	return nil
 }
 
-// SetMaxAlarms sets User.MaxAlarms
-func (s *Service) SetMaxAlarms(user *User, maxAlarms uint) error {
-	// Update max alarms
-	return s.db.Model(user).UpdateColumns(User{MaxAlarms: maxAlarms}).Error
-}
-
 // CreateFacebookUser creates a new user with facebook ID
 func (s *Service) CreateFacebookUser(account *Account, facebookID string, userRequest *UserRequest) (*User, error) {
 	// Superusers can only be created manually

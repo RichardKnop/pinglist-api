@@ -50,16 +50,17 @@ func RunServer() error {
 		nil, // facebook.Adapter
 	)
 
+	// Initialise the subscriptions service
+	subscriptionsService := subscriptions.NewService(cnf, db, accountsService)
+
 	// Initialise the alarms service
 	alarmsService := alarms.NewService(
 		cnf,
 		db,
 		accountsService,
+		subscriptionsService,
 		nil, // HTTP client
 	)
-
-	// Initialise the subscriptions service
-	subscriptionsService := subscriptions.NewService(cnf, db, accountsService)
 
 	// Initialise the web service
 	webService := web.NewService(cnf, accountsService)

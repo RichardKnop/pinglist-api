@@ -26,6 +26,7 @@ type PlanResponse struct {
 	Amount      uint   `json:"amount"`
 	TrialPeriod uint   `json:"trial_period"`
 	Interval    uint   `json:"interval"`
+	MaxAlarms   uint   `json:"max_alarms"`
 	CreatedAt   string `json:"created_at"`
 	UpdatedAt   string `json:"updated_at"`
 }
@@ -80,6 +81,7 @@ func NewPlanResponse(plan *Plan) (*PlanResponse, error) {
 		Amount:      plan.Amount,
 		TrialPeriod: plan.TrialPeriod,
 		Interval:    plan.Interval,
+		MaxAlarms:   plan.MaxAlarms,
 		CreatedAt:   plan.CreatedAt.UTC().Format(time.RFC3339),
 		UpdatedAt:   plan.UpdatedAt.UTC().Format(time.RFC3339),
 	}

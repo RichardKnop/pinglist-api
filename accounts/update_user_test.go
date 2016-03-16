@@ -73,7 +73,6 @@ func (suite *AccountsTestSuite) TestUpdateUser() {
 	assert.Equal(suite.T(), "Reese", user.LastName.String)
 	assert.Equal(suite.T(), roles.User, user.Role.Name)
 	assert.True(suite.T(), user.Confirmed)
-	assert.Equal(suite.T(), uint(1), user.MaxAlarms)
 
 	// Check the response body
 	expected := &UserResponse{
@@ -89,7 +88,6 @@ func (suite *AccountsTestSuite) TestUpdateUser() {
 		FirstName: "John",
 		LastName:  "Reese",
 		Role:      roles.User,
-		MaxAlarms: 1,
 		Confirmed: true,
 		CreatedAt: user.CreatedAt.UTC().Format(time.RFC3339),
 		UpdatedAt: user.UpdatedAt.UTC().Format(time.RFC3339),

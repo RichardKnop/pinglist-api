@@ -24,7 +24,6 @@ type ServiceInterface interface {
 	UpdateUser(user *User, userRequest *UserRequest) error
 	FindConfirmationByReference(reference string) (*Confirmation, error)
 	ConfirmUser(user *User) error
-	SetMaxAlarms(user *User, maxAlarms uint) error
 	CreateFacebookUser(account *Account, facebookID string, userRequest *UserRequest) (*User, error)
 	CreateSuperuser(account *Account, email, password string) (*User, error)
 	GetAccountFromQueryString(r *http.Request) (*Account, error)

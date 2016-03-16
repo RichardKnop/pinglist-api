@@ -14,7 +14,16 @@ import (
 var (
 	// ErrSubscriptionNotFound ...
 	ErrSubscriptionNotFound = errors.New("Subscription not found")
+	// ErrUserHasNoActiveSubscription ...
+	ErrUserHasNoActiveSubscription = errors.New("User has no active subscription")
+	// ErrUserCanOnlyHaveOneActiveSubscription ...
+	ErrUserCanOnlyHaveOneActiveSubscription = errors.New("User can only have one active subscriptions")
 )
+
+// IsActive returns true if the subscription has not ended yet
+func (s *Subscription) IsActive() bool {
+	return !s.EndedAt.Valid || s.EndedAt.Time.After(time.Now())
+}
 
 // FindSubscriptionByID looks up a subscription by an ID and returns it
 func (s *Service) FindSubscriptionByID(subscriptionID uint) (*Subscription, error) {
@@ -31,26 +40,51 @@ func (s *Service) FindSubscriptionByID(subscriptionID uint) (*Subscription, erro
 	return subscription, nil
 }
 
+// FindActiveUserSubscription returns the currently active user subscription
+func (s *Service) FindActiveUserSubscription(userID uint) (*Subscription, error) {
+	// Fetch all active user subscriptions
+	activeUserSubscriptions, err := s.findActiveUserSubscriptions(userID)
+	if err != nil {
+		return nil, err
+	}
+
+	// User has no active subscription
+	if len(activeUserSubscriptions) == 0 {
+		return nil, ErrUserHasNoActiveSubscription
+	}
+
+	return activeUserSubscriptions[0], nil
+}
+
 // createSubscription creates a new Stripe user and subscribes him/her to a plan
 func (s *Service) createSubscription(user *accounts.User, plan *Plan, stripeToken, stripeEmail string) (*Subscription, error) {
-	// Begin a transaction
-	tx := s.db.Begin()
+	// Fetch all active user subscriptions
+	activeUserSubscriptions, err := s.findActiveUserSubscriptions(user.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	// User should only have one active subscription at any time
+	if len(activeUserSubscriptions) > 0 {
+		return nil, ErrUserCanOnlyHaveOneActiveSubscription
+	}
 
 	// Create a new Stripe customer and subscribe him/her to a plan
 	params := &stripe.CustomerParams{
 		Plan:  plan.PlanID,
 		Email: stripeEmail,
-		// TrialEnd: time.Now().Add(30 * 24 * time.Hour).Unix(),
 	}
 	params.SetSource(stripeToken)
 	cus, err := stripeCustomer.New(params)
 	if err != nil {
-		tx.Rollback() // rollback the transaction
 		return nil, err
 	}
 
 	// Create a new incident object
 	customer := newCustomer(user, cus.ID)
+
+	// Begin a transaction
+	tx := s.db.Begin()
 
 	// Save the customer to the database
 	if err := tx.Create(customer).Error; err != nil {
@@ -146,4 +180,31 @@ func (s *Service) cancelSubscription(subscription *Subscription) error {
 	}
 
 	return nil
+}
+
+// findActiveUserSubscriptions returns only active subscriptions belonging to a user
+func (s *Service) findActiveUserSubscriptions(userID uint) ([]*Subscription, error) {
+	var activeUserSubscriptions []*Subscription
+
+	// Fetch all user subscriptions first
+	userSubscriptions, err := s.findUserSubscriptions(userID)
+	if err != nil {
+		return activeUserSubscriptions, err
+	}
+
+	// Filter out active subscriptions only
+	for _, userSubscription := range userSubscriptions {
+		if userSubscription.IsActive() {
+			activeUserSubscriptions = append(activeUserSubscriptions, userSubscription)
+		}
+	}
+
+	return activeUserSubscriptions, err
+}
+
+// findUserSubscriptions returns subscriptions belonging to a user
+func (s *Service) findUserSubscriptions(userID uint) ([]*Subscription, error) {
+	var userSubscriptions []*Subscription
+	return userSubscriptions, s.db.Preload("Customer").Preload("Plan").
+		Where("user_id = ?", userID).Find(&userSubscriptions).Error
 }
