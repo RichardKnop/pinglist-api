@@ -189,7 +189,7 @@ func (suite *AlarmsTestSuite) TestCreateSubTable() {
 	}
 
 	// The tomorrow's sub table record should have been created
-	err = suite.db.Find(&resultSubTables).Error
+	err = suite.db.Order("id").Find(&resultSubTables).Error
 	assert.NoError(suite.T(), err, "Fetching data failed")
 	assert.Equal(suite.T(), 2, len(resultSubTables))
 	assert.Equal(suite.T(), tomorrowSubTableName, resultSubTables[1].Name)

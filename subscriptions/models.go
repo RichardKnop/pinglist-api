@@ -18,6 +18,7 @@ type Plan struct {
 	Amount      uint
 	TrialPeriod uint // days
 	Interval    uint // days
+	MaxAlarms   uint
 }
 
 // TableName specifies table name

@@ -34,7 +34,8 @@ func (s *Service) stripeWebhookHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Verify the event by fetching it from Stripe
-	stripeEvent, err := event.Get(stripeEventRequest.ID)
+	params := &stripe.Params{}
+	stripeEvent, err := event.Get(stripeEventRequest.ID, params)
 	if err != nil {
 		response.Error(w, err.Error(), http.StatusNotFound)
 		return

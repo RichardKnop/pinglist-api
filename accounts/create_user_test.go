@@ -102,7 +102,6 @@ func (suite *AccountsTestSuite) TestCreateUser() {
 	assert.Equal(suite.T(), "", user.LastName.String)
 	assert.Equal(suite.T(), roles.User, user.Role.Name)
 	assert.False(suite.T(), user.Confirmed)
-	assert.Equal(suite.T(), uint(1), user.MaxAlarms)
 
 	// Check the Location header
 	assert.Equal(
@@ -123,7 +122,6 @@ func (suite *AccountsTestSuite) TestCreateUser() {
 		ID:        user.ID,
 		Email:     "test@user2",
 		Role:      roles.User,
-		MaxAlarms: 1,
 		Confirmed: false,
 		CreatedAt: user.CreatedAt.UTC().Format(time.RFC3339),
 		UpdatedAt: user.CreatedAt.UTC().Format(time.RFC3339),

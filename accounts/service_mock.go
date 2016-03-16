@@ -279,20 +279,6 @@ func (_m *ServiceMock) ConfirmUser(user *User) error {
 	return r0
 }
 
-// SetMaxAlarms ...
-func (_m *ServiceMock) SetMaxAlarms(user *User, maxAlarms uint) error {
-	ret := _m.Called(user, maxAlarms)
-
-	var r0 error
-	if rf, ok := ret.Get(0).(func(*User, uint) error); ok {
-		r0 = rf(user, maxAlarms)
-	} else {
-		r0 = ret.Error(0)
-	}
-
-	return r0
-}
-
 // CreateFacebookUser ...
 func (_m *ServiceMock) CreateFacebookUser(account *Account, facebookID string, userRequest *UserRequest) (*User, error) {
 	ret := _m.Called(account, facebookID, userRequest)

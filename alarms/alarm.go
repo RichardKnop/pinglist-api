@@ -3,8 +3,10 @@ package alarms
 import (
 	"errors"
 	"net/http"
+	"time"
 
 	"github.com/RichardKnop/pinglist-api/accounts"
+	"github.com/RichardKnop/pinglist-api/subscriptions"
 	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/jinzhu/gorm"
 )
@@ -12,6 +14,8 @@ import (
 var (
 	// ErrAlarmNotFound ...
 	ErrAlarmNotFound = errors.New("Alarm not found")
+	// ErrMaxAlarmsLimitReached ...
+	ErrMaxAlarmsLimitReached = errors.New("Max alarms limit reached")
 )
 
 // HasOpenIncident returns true if the alarm already has such open incident
@@ -50,6 +54,31 @@ func (s *Service) FindAlarmByID(alarmID uint) (*Alarm, error) {
 
 // createAlarm creates a new alarm
 func (s *Service) createAlarm(user *accounts.User, alarmRequest *AlarmRequest) (*Alarm, error) {
+	// Let's start with zero allowed alarms
+	var maxAlarms = 0
+
+	// Fetch active user subscription
+	subscription, err := s.subscriptionsService.FindActiveUserSubscription(user.ID)
+
+	// If not subscribed, allow 1 alarm for free for first 30 days after registration
+	if err == subscriptions.ErrUserHasNoActiveSubscription && time.Now().Before(user.CreatedAt.Add(30*24*time.Hour)) {
+		maxAlarms = 1
+	}
+
+	// If subscribed, take max allowed alarms from the subscription plan
+	if err == nil && subscription != nil {
+		maxAlarms = int(subscription.Plan.MaxAlarms)
+	}
+
+	// Count how many alarms user already has
+	var countAlarms int
+	s.db.Model(new(Alarm)).Where("user_id = ?", user.ID).Count(&countAlarms)
+
+	// Limit alarms to max number defined above
+	if countAlarms+1 > maxAlarms {
+		return nil, ErrMaxAlarmsLimitReached
+	}
+
 	// Create a new alarm object
 	alarm := newAlarm(user, alarmRequest)
 

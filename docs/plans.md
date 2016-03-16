@@ -34,6 +34,7 @@ Example response:
 				"amount": 250,
 				"trial_period": 30,
 				"interval": 30,
+				"max_alarms": 1,
 				"created_at": "2016-01-14T13:52:24Z",
 				"updated_at": "2016-01-14T13:52:24Z"
 			},
@@ -49,6 +50,7 @@ Example response:
 				"amount": 2000,
 				"trial_period": 30,
 				"interval": 30,
+				"max_alarms": 10,
 				"created_at": "2016-01-14T13:52:24Z",
 				"updated_at": "2016-01-14T13:52:24Z"
 			},
@@ -64,6 +66,7 @@ Example response:
 				"amount": 50000,
 				"trial_period": 30,
 				"interval": 30,
+				"max_alarms": 100,
 				"created_at": "2016-01-14T13:52:24Z",
 				"updated_at": "2016-01-14T13:52:24Z"
 			}
