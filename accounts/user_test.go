@@ -2,9 +2,11 @@ package accounts
 
 import (
 	"testing"
+	"time"
 
 	"github.com/RichardKnop/pinglist-api/accounts/roles"
 	"github.com/RichardKnop/pinglist-api/util"
+	"github.com/jinzhu/gorm"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -15,6 +17,14 @@ func TestUserGetName(t *testing.T) {
 	user.FirstName = util.StringOrNull("John")
 	user.LastName = util.StringOrNull("Reese")
 	assert.Equal(t, "John Reese", user.GetName())
+}
+
+func TestUserIsInFreeTrial(t *testing.T) {
+	user := &User{Model: gorm.Model{CreatedAt: time.Now()}}
+	assert.True(t, user.IsInFreeTrial())
+
+	user.CreatedAt = time.Now().Add(-31 * 24 * time.Hour)
+	assert.False(t, user.IsInFreeTrial())
 }
 
 func (suite *AccountsTestSuite) TestFindUserByOauthUserID() {

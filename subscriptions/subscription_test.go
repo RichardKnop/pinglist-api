@@ -7,7 +7,7 @@ import (
 func (suite *SubscriptionsTestSuite) TestFindSubscriptionByID() {
 	var (
 		subscription *Subscription
-		err  error
+		err          error
 	)
 
 	// When we try to find a subscription with a bogus ID
@@ -30,7 +30,7 @@ func (suite *SubscriptionsTestSuite) TestFindSubscriptionByID() {
 	// Correct subscription object should be returned
 	if assert.NotNil(suite.T(), subscription) {
 		assert.Equal(suite.T(), suite.subscriptions[0].ID, subscription.ID)
-    assert.Equal(suite.T(), suite.customers[0].ID, subscription.Customer.ID)
-    assert.Equal(suite.T(), suite.plans[0].ID, subscription.Plan.ID)
+		assert.Equal(suite.T(), suite.customers[0].ID, subscription.Customer.ID)
+		assert.Equal(suite.T(), suite.plans[0].ID, subscription.Plan.ID)
 	}
 }

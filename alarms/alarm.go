@@ -3,10 +3,8 @@ package alarms
 import (
 	"errors"
 	"net/http"
-	"time"
 
 	"github.com/RichardKnop/pinglist-api/accounts"
-	"github.com/RichardKnop/pinglist-api/subscriptions"
 	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/jinzhu/gorm"
 )
@@ -54,16 +52,15 @@ func (s *Service) FindAlarmByID(alarmID uint) (*Alarm, error) {
 
 // createAlarm creates a new alarm
 func (s *Service) createAlarm(user *accounts.User, alarmRequest *AlarmRequest) (*Alarm, error) {
-	// Let's start with zero allowed alarms
-	var maxAlarms = 0
+	var maxAlarms int
+
+	// If user is in a free trial, allow one alarm
+	if user.IsInFreeTrial() {
+		maxAlarms = 1
+	}
 
 	// Fetch active user subscription
 	subscription, err := s.subscriptionsService.FindActiveUserSubscription(user.ID)
-
-	// If not subscribed, allow 1 alarm for free for first 30 days after registration
-	if err == subscriptions.ErrUserHasNoActiveSubscription && time.Now().Before(user.CreatedAt.Add(30*24*time.Hour)) {
-		maxAlarms = 1
-	}
 
 	// If subscribed, take max allowed alarms from the subscription plan
 	if err == nil && subscription != nil {

@@ -3,6 +3,7 @@ package accounts
 import (
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/RichardKnop/pinglist-api/accounts/roles"
 	"github.com/RichardKnop/pinglist-api/util"
@@ -22,6 +23,11 @@ func (u *User) GetName() string {
 		return fmt.Sprintf("%s %s", u.FirstName.String, u.LastName.String)
 	}
 	return ""
+}
+
+// IsInFreeTrial returns true if user has registered less than 30 days ago
+func (u *User) IsInFreeTrial() bool {
+	return time.Now().Before(u.CreatedAt.Add(30 * 24 * time.Hour))
 }
 
 // FindUserByOauthUserID looks up a user by oauth user ID and returns it
