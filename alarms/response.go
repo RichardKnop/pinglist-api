@@ -17,8 +17,6 @@ type RegionResponse struct {
 // ListRegionsResponse ...
 type ListRegionsResponse struct {
 	jsonhal.Hal
-	Count uint `json:"count"`
-	Page  uint `json:"page"`
 }
 
 // NewRegionResponse creates new ResultResponse instance
