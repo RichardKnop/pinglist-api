@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"net/http/httputil"
 
 	"github.com/RichardKnop/pinglist-api/response"
 	stripe "github.com/stripe/stripe-go"
@@ -41,8 +42,31 @@ func (s *Service) stripeWebhookHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Once we have veriefied the event was sent by Stripe, log the request
+	requestDump, err := httputil.DumpRequest(
+		r,
+		true, // include body
+	)
+	if err != nil {
+		logger.Error("Failed to dump the request")
+		response.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	stripeEventLog := newStripeEventLog(
+		stripeEventRequest.ID,
+		stripeEventRequest.Type,
+		string(requestDump),
+	)
+	if err := s.db.Create(stripeEventLog).Error; err != nil {
+		logger.Error("Failed to log the request")
+		response.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Start with a nil error
 	err = nil
 
+	// Process event types we are interested in
 	switch stripeEvent.Type {
 	case "customer.created":
 		err = s.stripeEventCustomerCreated(stripeEvent)
@@ -62,6 +86,7 @@ func (s *Service) stripeWebhookHandler(w http.ResponseWriter, r *http.Request) {
 		err = s.stripeEventCustomerSubscriptionDeleted(stripeEvent)
 	}
 
+	// An error occured while processing an event sent by Stripe
 	if err != nil {
 		logger.Errorf("Failed to process stripe event: %v", stripeEvent)
 		response.Error(w, err.Error(), http.StatusInternalServerError)

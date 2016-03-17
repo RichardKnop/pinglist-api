@@ -32,6 +32,11 @@ func migrate0001(db *gorm.DB) error {
 
 	var err error
 
+	// Create subscription_stripe_event_logs
+	if err := db.CreateTable(new(StripeEventLog)).Error; err != nil {
+		return fmt.Errorf("Error creating subscription_stripe_event_logs table: %s", err)
+	}
+
 	// Create subscription_plans table
 	if err := db.CreateTable(new(Plan)).Error; err != nil {
 		return fmt.Errorf("Error creating subscription_plans table: %s", err)

@@ -10,6 +10,19 @@ import (
 	"github.com/lib/pq"
 )
 
+// StripeEventLog ...
+type StripeEventLog struct {
+	gorm.Model
+	EventID     string `sql:"type:varchar(60);unique;not null"`
+	EventType   string `sql:"type:varchar(60);index;not null"`
+	RequestDump string `sql:"type:text"`
+}
+
+// TableName specifies table name
+func (l *StripeEventLog) TableName() string {
+	return "subscription_stripe_event_logs"
+}
+
 // Plan ...
 type Plan struct {
 	gorm.Model
@@ -60,6 +73,15 @@ type Subscription struct {
 // TableName specifies table name
 func (s *Subscription) TableName() string {
 	return "subscription_subscriptions"
+}
+
+// newStripeEventLog creates new StripeEventLog instance
+func newStripeEventLog(eventID, eventType, requestDump string) *StripeEventLog {
+	return &StripeEventLog{
+		EventID:     eventID,
+		EventType:   eventType,
+		RequestDump: requestDump,
+	}
 }
 
 // newCustomer creates new Customer instance
