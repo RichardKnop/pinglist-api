@@ -48,7 +48,8 @@ func (suite *SubscriptionsTestSuite) TestListSubscriptions() {
 
 	// Check the response body
 	var subscriptions []*Subscription
-	err = suite.db.Preload("Customer").Preload("Plan").Find(&subscriptions).Error
+	err = suite.db.Preload("Customer").Preload("Plan").
+		Order("id").Find(&subscriptions).Error
 	assert.NoError(suite.T(), err, "Fetching data failed")
 
 	subscriptionResponses := make([]*SubscriptionResponse, len(subscriptions))

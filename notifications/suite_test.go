@@ -107,7 +107,7 @@ func (suite *NotificationsTestSuite) SetupTest() {
 
 	// Fetch test endpoints
 	suite.endpoints = make([]*Endpoint, 0)
-	err := suite.db.Preload("User").Find(&suite.endpoints).Error
+	err := suite.db.Preload("User").Order("id").Find(&suite.endpoints).Error
 	if err != nil {
 		log.Fatal(err)
 	}
