@@ -2,6 +2,7 @@
 
 * [Checkout Button](#checkout-button)
 * [Subscribe User](#subscribe-user)
+* [List Subscriptions](#list-subscriptions)
 
 ## Checkout Button
 
@@ -94,5 +95,144 @@ Example response:
 	"trial_end": "",
 	"created_at": "2016-01-14T13:52:24Z",
 	"updated_at": "2016-01-14T13:52:24Z"
+}
+```
+
+## List Subscriptions
+
+Example request:
+
+```
+curl --compressed -v "localhost:8080/v1/subscriptions?page=1" \
+	-H "Authorization: Bearer 00ccd40e-72ca-4e79-a4b6-67c95e2e3f1c"
+```
+
+Use `offset` and `limit` query string parameters to paginate and `order_by` to order the results.
+
+Optionally filter results with `user_id` query string parameter.
+
+Notice the ampersand is escaped as `\u0026` in the `_links` section.
+
+Example response:
+
+```json
+{
+	"_links": {
+		"first": {
+			"href": "/v1/subscriptions?page=1"
+		},
+		"last": {
+			"href": "/v1/subscriptions?page=2"
+		},
+		"next": {
+			"href": "/v1/subscriptions?page=2"
+		},
+		"prev": {
+			"href": ""
+		},
+		"self": {
+			"href": "/v1/subscriptions?page=1"
+		}
+	},
+	"_embedded": {
+		"alarms": [
+			{
+				"_links": {
+					"self": {
+						"href": "/v1/subscriptions/1"
+					}
+				},
+				"_embedded": {
+					"customer": {
+						"_links": {
+							"self": {
+								"href": "/v1/customers/1"
+							}
+						},
+						"id": 1,
+						"user_id": 1,
+						"customer_id": "cus_7z94mLsfxLva84",
+						"created_at": "2016-01-14T13:52:24Z",
+						"updated_at": "2016-01-14T13:52:24Z"
+					},
+					"plan": {
+						"_links": {
+							"self": {
+								"href": "/v1/plans/1"
+							}
+						},
+						"id": 1,
+						"plan_id": "personal",
+						"currency": "GBP",
+						"amount": 250,
+						"trial_period": 30,
+						"interval": 30,
+						"created_at": "2016-01-14T13:52:24Z",
+						"updated_at": "2016-01-14T13:52:24Z"
+					}
+				},
+				"id": 1,
+				"subscription_id": "sub_7z94rezxDE9frw",
+				"started_at": "2016-01-14T13:52:24Z",
+				"cancelled_at": "",
+				"ended_at": "",
+				"period_start": "2016-01-14T13:52:24Z",
+				"period_end": "2016-02-14T13:52:24Z",
+				"trial_start": "",
+				"trial_end": "",
+				"created_at": "2016-01-14T13:52:24Z",
+				"updated_at": "2016-01-14T13:52:24Z"
+			},
+			{
+				"_links": {
+					"self": {
+						"href": "/v1/subscriptions/2"
+					}
+				},
+				"_embedded": {
+					"customer": {
+						"_links": {
+							"self": {
+								"href": "/v1/customers/2"
+							}
+						},
+						"id": 1,
+						"user_id": 1,
+						"customer_id": "cus_9Hir123hxAP0a",
+						"created_at": "2016-01-14T13:52:24Z",
+						"updated_at": "2016-01-14T13:52:24Z"
+					},
+					"plan": {
+						"_links": {
+							"self": {
+								"href": "/v1/plans/1"
+							}
+						},
+						"id": 1,
+						"plan_id": "personal",
+						"currency": "GBP",
+						"amount": 250,
+						"trial_period": 30,
+						"interval": 30,
+						"created_at": "2016-01-14T13:52:24Z",
+						"updated_at": "2016-01-14T13:52:24Z"
+					}
+				},
+				"id": 2,
+				"subscription_id": "sub_87HIdrte99poeq",
+				"started_at": "2016-01-14T13:52:24Z",
+				"cancelled_at": "",
+				"ended_at": "",
+				"period_start": "2016-01-14T13:52:24Z",
+				"period_end": "2016-02-14T13:52:24Z",
+				"trial_start": "",
+				"trial_end": "",
+				"created_at": "2016-01-14T13:52:24Z",
+				"updated_at": "2016-01-14T13:52:24Z"
+			}
+		]
+	},
+	"count": 4,
+	"page": 1
 }
 ```
