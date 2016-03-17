@@ -142,7 +142,7 @@ func (suite *AlarmsTestSuite) TestCreateSubTable() {
 	assert.False(suite.T(), suite.service.db.HasTable(tomorrowSubTableName))
 
 	// No sub table records should exists
-	err = suite.db.Find(&resultSubTables).Error
+	err = suite.db.Order("id").Find(&resultSubTables).Error
 	assert.NoError(suite.T(), err, "Fetching data failed")
 	assert.Equal(suite.T(), 0, len(resultSubTables))
 
@@ -165,7 +165,7 @@ func (suite *AlarmsTestSuite) TestCreateSubTable() {
 	}
 
 	// The today's sub table record should have been created
-	err = suite.db.Find(&resultSubTables).Error
+	err = suite.db.Order("id").Find(&resultSubTables).Error
 	assert.NoError(suite.T(), err, "Fetching data failed")
 	assert.Equal(suite.T(), 1, len(resultSubTables))
 	assert.Equal(suite.T(), todaySubTableName, resultSubTables[0].Name)
@@ -216,7 +216,7 @@ func (suite *AlarmsTestSuite) TestCreateSubTable() {
 
 	// Check data is being aggregated from all sub tables
 	results = make([]*Result, 0)
-	err = suite.db.Preload("Alarm").Find(&results).Error
+	err = suite.db.Preload("Alarm").Order("id").Find(&results).Error
 	assert.NoError(suite.T(), err, "Fetching data failed")
 	assert.Equal(suite.T(), 4, len(results))
 	assert.Equal(suite.T(), int64(123), results[0].RequestTime)
@@ -226,7 +226,7 @@ func (suite *AlarmsTestSuite) TestCreateSubTable() {
 
 	// Check data is correctly distributed to the today's table
 	results = make([]*Result, 0)
-	err = suite.service.db.Table(todaySubTableName).Find(&results).Error
+	err = suite.service.db.Table(todaySubTableName).Order("id").Find(&results).Error
 	assert.NoError(suite.T(), err, "Fetching data failed")
 	assert.Equal(suite.T(), 2, len(results))
 	assert.Equal(suite.T(), int64(123), results[0].RequestTime)
@@ -234,7 +234,7 @@ func (suite *AlarmsTestSuite) TestCreateSubTable() {
 
 	// Check data is correctly distributed to the tomorrow's sub table
 	results = make([]*Result, 0)
-	err = suite.service.db.Table(tomorrowSubTableName).Find(&results).Error
+	err = suite.service.db.Table(tomorrowSubTableName).Order("id").Find(&results).Error
 	assert.NoError(suite.T(), err, "Fetching data failed")
 	assert.Equal(suite.T(), 2, len(results))
 	assert.Equal(suite.T(), int64(321), results[0].RequestTime)

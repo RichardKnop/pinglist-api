@@ -18,7 +18,7 @@ func (s *Service) listPlansHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Fetch the plans
 	var plans []*Plan
-	if err := s.db.Find(&plans).Error; err != nil {
+	if err := s.db.Order("id").Find(&plans).Error; err != nil {
 		response.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

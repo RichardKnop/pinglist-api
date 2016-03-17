@@ -28,7 +28,8 @@ func (s *Service) findPaginatedResults(offset, limit int, orderBy string, alarm 
 	}
 
 	// Retrieve paginated results from the database
-	err := resultsQuery.Offset(offset).Limit(limit).Order(orderBy).Find(&results).Error
+	err := resultsQuery.Offset(offset).Limit(limit).Order(orderBy).
+		Find(&results).Error
 	if err != nil {
 		return results, err
 	}

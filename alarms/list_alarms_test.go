@@ -50,7 +50,7 @@ func (suite *AlarmsTestSuite) TestListAlarms() {
 	// Check the response body
 	var alarms []*Alarm
 	err = suite.db.Preload("User").Preload("Incidents").
-		Order("id").Find(&alarms).Error
+		Find(&alarms).Error
 	assert.NoError(suite.T(), err, "Fetching data failed")
 
 	alarmResponses := make([]*AlarmResponse, len(alarms))

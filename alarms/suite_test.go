@@ -80,14 +80,15 @@ func (suite *AlarmsTestSuite) SetupSuite() {
 
 	// Fetch test accounts
 	suite.accounts = make([]*accounts.Account, 0)
-	if suite.db.Preload("OauthClient").Find(&suite.accounts).Error != nil {
+	err = suite.db.Preload("OauthClient").Order("id").Find(&suite.accounts).Error
+	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Fetch test users
 	suite.users = make([]*accounts.User, 0)
 	err = suite.db.Preload("Account").Preload("OauthUser").Preload("Role").
-		Order("id").Find(&suite.users).Error
+		Find(&suite.users).Error
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -95,14 +96,14 @@ func (suite *AlarmsTestSuite) SetupSuite() {
 	// Fetch test alarms
 	suite.alarms = make([]*Alarm, 0)
 	err = suite.db.Preload("User").Preload("Incidents").
-		Order("id").Find(&suite.alarms).Error
+		Find(&suite.alarms).Error
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Fetch test incidents
 	suite.incidents = make([]*Incident, 0)
-	err = suite.db.Preload("Alarm").Find(&suite.incidents).Error
+	err = suite.db.Preload("Alarm").Order("id").Find(&suite.incidents).Error
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -140,7 +141,7 @@ func (suite *AlarmsTestSuite) SetupTest() {
 
 	// Delete result sub tables
 	var resultSubTables []*ResultSubTable
-	if err := suite.db.Find(&resultSubTables).Error; err != nil {
+	if err := suite.db.Order("id").Find(&resultSubTables).Error; err != nil {
 		log.Fatal(err)
 	}
 	for _, resultSubTable := range resultSubTables {

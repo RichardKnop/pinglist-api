@@ -206,5 +206,5 @@ func (s *Service) findActiveUserSubscriptions(userID uint) ([]*Subscription, err
 func (s *Service) findUserSubscriptions(userID uint) ([]*Subscription, error) {
 	var userSubscriptions []*Subscription
 	return userSubscriptions, s.db.Preload("Customer").Preload("Plan").
-		Where("user_id = ?", userID).Find(&userSubscriptions).Error
+		Where("user_id = ?", userID).Order("id").Find(&userSubscriptions).Error
 }
