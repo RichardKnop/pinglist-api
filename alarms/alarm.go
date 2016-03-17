@@ -77,6 +77,12 @@ func (s *Service) createAlarm(user *accounts.User, alarmRequest *AlarmRequest) (
 		return nil, ErrMaxAlarmsLimitReached
 	}
 
+	// Fetch the region from the database
+	region, err := s.findRegionByID(alarmRequest.Region)
+	if err != nil {
+		return nil, err
+	}
+
 	// Fetch the initial alarm state from the database
 	alarmState, err := s.findAlarmStateByID(alarmstates.InsufficientData)
 	if err != nil {
@@ -84,7 +90,7 @@ func (s *Service) createAlarm(user *accounts.User, alarmRequest *AlarmRequest) (
 	}
 
 	// Create a new alarm object
-	alarm := newAlarm(user, alarmState, alarmRequest)
+	alarm := newAlarm(user, region, alarmState, alarmRequest)
 
 	// Save the alarm to the database
 	if err := s.db.Create(alarm).Error; err != nil {
@@ -96,8 +102,15 @@ func (s *Service) createAlarm(user *accounts.User, alarmRequest *AlarmRequest) (
 
 // updateAlarm updates an existing alarm
 func (s *Service) updateAlarm(alarm *Alarm, alarmRequest *AlarmRequest) error {
+	// Fetch the region from the database
+	region, err := s.findRegionByID(alarmRequest.Region)
+	if err != nil {
+		return err
+	}
+
 	// Update the alarm
 	if err := s.db.Model(alarm).UpdateColumns(Alarm{
+		RegionID:         util.StringOrNull(region.ID),
 		EndpointURL:      alarmRequest.EndpointURL,
 		ExpectedHTTPCode: alarmRequest.ExpectedHTTPCode,
 		Interval:         alarmRequest.Interval,
@@ -105,6 +118,9 @@ func (s *Service) updateAlarm(alarm *Alarm, alarmRequest *AlarmRequest) error {
 	}).Error; err != nil {
 		return err
 	}
+
+	// Make sure the alarm region is up-to-date
+	alarm.Region = region
 
 	return nil
 }

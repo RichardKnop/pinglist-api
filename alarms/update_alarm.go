@@ -73,7 +73,12 @@ func (s *Service) updateAlarmHandler(w http.ResponseWriter, r *http.Request) {
 	// Update an alarm
 	if err := s.updateAlarm(alarm, alarmRequest); err != nil {
 		log.Printf("Update alarm error: %s", err)
-		response.Error(w, err.Error(), http.StatusInternalServerError)
+		switch err {
+		case ErrRegionNotFound:
+			response.Error(w, err.Error(), http.StatusBadRequest)
+		default:
+			response.Error(w, err.Error(), http.StatusInternalServerError)
+		}
 		return
 	}
 

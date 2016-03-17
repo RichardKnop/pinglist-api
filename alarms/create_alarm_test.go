@@ -12,6 +12,7 @@ import (
 
 	"github.com/RichardKnop/jsonhal"
 	"github.com/RichardKnop/pinglist-api/alarms/alarmstates"
+	"github.com/RichardKnop/pinglist-api/alarms/regions"
 	"github.com/RichardKnop/pinglist-api/subscriptions"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
@@ -20,6 +21,7 @@ import (
 func (suite *AlarmsTestSuite) TestCreateAlarm() {
 	// Prepare a request
 	payload, err := json.Marshal(&AlarmRequest{
+		Region:           "SGP",
 		EndpointURL:      "http://endpoint-5",
 		ExpectedHTTPCode: 200,
 		Interval:         60,
@@ -111,6 +113,7 @@ func (suite *AlarmsTestSuite) TestCreateAlarm() {
 		},
 		ID:               alarm.ID,
 		UserID:           suite.users[1].ID,
+		Region:           regions.Singapore,
 		EndpointURL:      "http://endpoint-5",
 		ExpectedHTTPCode: uint(200),
 		Interval:         uint(60),

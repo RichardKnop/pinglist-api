@@ -1,0 +1,13 @@
+---
+
+#---------#
+# Regions #
+#---------#
+
+- table: 'alarm_regions'
+  pk:
+    id: 'SGP'
+  fields:
+    name: 'Singapore'
+    created_at: 'ON_INSERT_NOW()'
+    updated_at: 'ON_UPDATE_NOW()'

@@ -14,6 +14,7 @@ curl --compressed -v localhost:8080/v1/alarms \
 	-H "Content-Type: application/json" \
 	-H "Authorization: Bearer 00ccd40e-72ca-4e79-a4b6-67c95e2e3f1c" \
 	-d '{
+		"region": "SGP",
 		"endpoint_url": "http://endpoint-1",
 		"expected_http_code": 200,
 		"interval": 60,
@@ -32,6 +33,7 @@ Example response:
 	},
 	"id": 1,
 	"user_id": 1,
+	"region": "SGP",
 	"endpoint_url": "http://endpoint-1",
 	"expected_http_code": 200,
 	"interval": 60,
@@ -51,6 +53,7 @@ curl -XPUT --compressed -v localhost:8080/v1/alarms/1 \
 	-H "Content-Type: application/json" \
 	-H "Authorization: Bearer 00ccd40e-72ca-4e79-a4b6-67c95e2e3f1c" \
 	-d '{
+		"region": "SGP",
 		"endpoint_url": "http://endpoint-1-updated",
 		"expected_http_code": 201,
 		"interval": 90,
@@ -69,6 +72,7 @@ Example response:
 	},
 	"id": 1,
 	"user_id": 1,
+	"region": "SGP",
 	"endpoint_url": "http://endpoint-1-updated",
 	"expected_http_code": 201,
 	"interval": 90,
@@ -136,6 +140,7 @@ Example response:
 				},
 				"id": 1,
 				"user_id": 1,
+				"region": "SGP",
 				"endpoint_url": "http://endpoint-1",
 				"expected_http_code": 200,
 				"interval": 60,
@@ -152,6 +157,7 @@ Example response:
 				},
 				"id": 2,
 				"user_id": 1,
+				"region": "SGP",
 				"endpoint_url": "http://endpoint-2",
 				"expected_http_code": 200,
 				"interval": 60,

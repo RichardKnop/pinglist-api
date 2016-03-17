@@ -73,7 +73,7 @@ curl -L http://localhost:2379/v2/keys/config/pinglist.json -XPUT -d value='{
 		"HTTPOnly": true
 	},
 	"AWS": {
-		"Region": "eu-west-1",
+		"Region": "ap-southeast-1",
 		"APNSPlatformApplicationARN": "apns_platform_application_arn",
 		"GCMPlatformApplicationARN":  "gcm_platform_application_arn"
 	},
@@ -125,6 +125,7 @@ go run main.go loaddata \
 	subscriptions/fixtures/plans.yml \
 	subscriptions/fixtures/test_customers.yml \
 	subscriptions/fixtures/test_subscriptions.yml \
+	alarms/fixtures/regions.yml \
 	alarms/fixtures/alarm_states.yml \
 	alarms/fixtures/incident_types.yml \
 	alarms/fixtures/test_alarms.yml \
@@ -157,6 +158,7 @@ You can load fixtures with `docker exec` command:
 docker exec <container_id> /go/bin/pinglist-api loaddata \
 	oauth/fixtures/scopes.yml \
 	subscriptions/fixtures/plans.yml \
+	alarms/fixtures/regions.yml \
 	alarms/fixtures/alarm_states.yml \
 	alarms/fixtures/incident_types.yml \
 	oauth/fixtures/test_clients.yml

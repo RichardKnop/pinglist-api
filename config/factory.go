@@ -41,7 +41,7 @@ var cnf = &Config{
 		HTTPOnly: true,
 	},
 	AWS: AWSConfig{
-		Region: "eu-west-1",
+		Region: "ap-southeast-1", // Singapore
 		APNSPlatformApplicationARN: "apns_platform_application_arn",
 		GCMPlatformApplicationARN:  "gcm_platform_application_arn",
 	},

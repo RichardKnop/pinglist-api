@@ -47,6 +47,8 @@ func (s *Service) createAlarmHandler(w http.ResponseWriter, r *http.Request) {
 		switch err {
 		case ErrMaxAlarmsLimitReached:
 			response.Error(w, err.Error(), http.StatusBadRequest)
+		case ErrRegionNotFound:
+			response.Error(w, err.Error(), http.StatusBadRequest)
 		case ErrAlarmStateNotFound:
 			response.Error(w, err.Error(), http.StatusBadRequest)
 		default:

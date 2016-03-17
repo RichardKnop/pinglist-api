@@ -29,6 +29,7 @@ var testFixtures = []string{
 	"../subscriptions/fixtures/plans.yml",
 	"../subscriptions/fixtures/test_customers.yml",
 	"../subscriptions/fixtures/test_subscriptions.yml",
+	"fixtures/regions.yml",
 	"fixtures/alarm_states.yml",
 	"fixtures/incident_types.yml",
 	"fixtures/test_alarms.yml",

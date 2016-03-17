@@ -12,6 +12,7 @@ type AlarmResponse struct {
 	jsonhal.Hal
 	ID               uint   `json:"id"`
 	UserID           uint   `json:"user_id"`
+	Region           string `json:"region"`
 	EndpointURL      string `json:"endpoint_url"`
 	ExpectedHTTPCode uint   `json:"expected_http_code"`
 	Interval         uint   `json:"interval"`
@@ -67,6 +68,7 @@ func NewAlarmResponse(alarm *Alarm) (*AlarmResponse, error) {
 	response := &AlarmResponse{
 		ID:               alarm.ID,
 		UserID:           uint(alarm.UserID.Int64),
+		Region:           alarm.RegionID.String,
 		EndpointURL:      alarm.EndpointURL,
 		ExpectedHTTPCode: alarm.ExpectedHTTPCode,
 		Interval:         alarm.Interval,

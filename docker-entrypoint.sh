@@ -7,6 +7,7 @@
 /go/bin/pinglist-api loaddata \
   oauth/fixtures/scopes.yml \
   subscriptions/fixtures/plans.yml \
+  alarms/fixtures/regions.yml \
   alarms/fixtures/alarm_states.yml \
   alarms/fixtures/incident_types.yml
 

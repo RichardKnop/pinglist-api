@@ -32,6 +32,11 @@ func migrate0001(db *gorm.DB) error {
 
 	var err error
 
+	// Create alarm_regions table
+	if err := db.CreateTable(new(Region)).Error; err != nil {
+		return fmt.Errorf("Error creating alarm_regions table: %s", err)
+	}
+
 	// Create alarm_states table
 	if err := db.CreateTable(new(AlarmState)).Error; err != nil {
 		return fmt.Errorf("Error creating alarm_states table: %s", err)
@@ -72,6 +77,18 @@ func migrate0001(db *gorm.DB) error {
 	if err != nil {
 		return fmt.Errorf("Error creating foreign key on "+
 			"alarm_alarms.user_id for account_users(id): %s", err)
+	}
+
+	// Add foreign key on alarm_alarms.region_id
+	err = db.Model(new(Alarm)).AddForeignKey(
+		"region_id",
+		"alarm_regions(id)",
+		"RESTRICT",
+		"RESTRICT",
+	).Error
+	if err != nil {
+		return fmt.Errorf("Error creating foreign key on "+
+			"alarm_alarms.region_id for alarm_regions(id): %s", err)
 	}
 
 	// Add foreign key on alarm_alarms.alarm_state_id

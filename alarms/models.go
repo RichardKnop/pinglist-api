@@ -16,6 +16,18 @@ import (
 // ResultParentTableName defines parent results table name
 const ResultParentTableName = "alarm_results"
 
+// Region is a region from where alarm checks will be run
+type Region struct {
+	database.TimestampModel
+	ID   string `gorm:"primary_key"`
+	Name string `sql:"type:varchar(50);unique;not null"`
+}
+
+// TableName specifies table name
+func (r *Region) TableName() string {
+	return "alarm_regions"
+}
+
 // AlarmState is a state that an alarm can be in
 type AlarmState struct {
 	database.TimestampModel
@@ -33,6 +45,8 @@ type Alarm struct {
 	gorm.Model
 	UserID           sql.NullInt64 `sql:"index;not null"`
 	User             *accounts.User
+	RegionID         sql.NullString `sql:"index;not null"`
+	Region           *Region
 	AlarmStateID     sql.NullString `sql:"index;not null"`
 	AlarmState       *AlarmState
 	Incidents        []*Incident
@@ -108,11 +122,13 @@ func (r *Result) TableName() string {
 }
 
 // newAlarm creates new Alarm instance
-func newAlarm(user *accounts.User, alarmState *AlarmState, alarmRequest *AlarmRequest) *Alarm {
+func newAlarm(user *accounts.User, region *Region, alarmState *AlarmState, alarmRequest *AlarmRequest) *Alarm {
 	userID := util.PositiveIntOrNull(int64(user.ID))
+	regionID := util.StringOrNull(region.ID)
 	alarmStateID := util.StringOrNull(alarmState.ID)
 	alarm := &Alarm{
 		UserID:           userID,
+		RegionID:         regionID,
 		AlarmStateID:     alarmStateID,
 		EndpointURL:      alarmRequest.EndpointURL,
 		ExpectedHTTPCode: alarmRequest.ExpectedHTTPCode,
@@ -121,6 +137,9 @@ func newAlarm(user *accounts.User, alarmState *AlarmState, alarmRequest *AlarmRe
 	}
 	if userID.Valid {
 		alarm.User = user
+	}
+	if regionID.Valid {
+		alarm.Region = region
 	}
 	if alarmStateID.Valid {
 		alarm.AlarmState = alarmState

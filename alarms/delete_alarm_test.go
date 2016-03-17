@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/RichardKnop/pinglist-api/alarms/alarmstates"
+	"github.com/RichardKnop/pinglist-api/alarms/regions"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
 )
@@ -16,6 +17,7 @@ func (suite *AlarmsTestSuite) TestDeleteAlarm() {
 	// Insert a test alarm
 	alarm := &Alarm{
 		User:             suite.users[1],
+		Region:           &Region{ID: regions.Singapore},
 		AlarmState:       &AlarmState{ID: alarmstates.InsufficientData},
 		EndpointURL:      "http://endpoint-5",
 		ExpectedHTTPCode: 200,

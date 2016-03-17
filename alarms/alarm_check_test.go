@@ -7,6 +7,7 @@ import (
 
 	"github.com/RichardKnop/pinglist-api/alarms/alarmstates"
 	"github.com/RichardKnop/pinglist-api/alarms/incidenttypes"
+	"github.com/RichardKnop/pinglist-api/alarms/regions"
 	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/jinzhu/gorm"
 	"github.com/stretchr/testify/assert"
@@ -37,6 +38,7 @@ func (suite *AlarmsTestSuite) TestGetAlarmsToCheck() {
 	watermark = time.Now().Add(-time.Duration(interval+1) * time.Second)
 	err = suite.db.Create(&Alarm{
 		User:             suite.users[1],
+		Region:           &Region{ID: regions.Singapore},
 		AlarmState:       &AlarmState{ID: alarmstates.InsufficientData},
 		EndpointURL:      "http://foo",
 		Watermark:        util.TimeOrNull(&watermark),
@@ -59,6 +61,7 @@ func (suite *AlarmsTestSuite) TestGetAlarmsToCheck() {
 	watermark = time.Now().Add(-time.Duration(interval-1) * time.Second)
 	err = suite.db.Create(&Alarm{
 		User:             suite.users[1],
+		Region: &Region{ID: regions.Singapore},
 		AlarmState:       &AlarmState{ID: alarmstates.InsufficientData},
 		EndpointURL:      "http://bar",
 		Watermark:        util.TimeOrNull(&watermark),
