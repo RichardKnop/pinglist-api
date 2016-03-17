@@ -49,6 +49,29 @@ func (_m *ServiceMock) FindPlanByID(planID uint) (*Plan, error) {
 	return r0, r1
 }
 
+// FindPlanByPlanID ...
+func (_m *ServiceMock) FindPlanByPlanID(planID string) (*Plan, error) {
+	ret := _m.Called(planID)
+
+	var r0 *Plan
+	if rf, ok := ret.Get(0).(func(string) *Plan); ok {
+		r0 = rf(planID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*Plan)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(planID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // FindCustomerByID ...
 func (_m *ServiceMock) FindCustomerByID(customerID uint) (*Customer, error) {
 	ret := _m.Called(customerID)

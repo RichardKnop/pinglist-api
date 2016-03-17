@@ -67,21 +67,30 @@ func (s *Service) stripeEventCustomerSubscriptionUpdated(e *stripe.Event) error 
 		return err
 	}
 
+	// Fetch the plan
+	plan, err := s.FindPlanByPlanID(stripeSubscription.Plan.ID)
+	if err != nil {
+		return err
+	}
+
 	// Parse subscription times
 	startedAt, cancelledAt, endedAt, periodStart, periodEnd, trialStart, trialEnd := getStripeSubscriptionTimes(stripeSubscription)
 
+	if plan.ID != subscription.Plan.ID {
+		// Plan changed (upgraded or downgraded)
+	}
+
 	if cancelledAt != nil && !subscription.CancelledAt.Valid {
-		// cancelled
+		// Subscription cancelled
 	}
 
 	if endedAt != nil && !subscription.EndedAt.Valid {
-		// cancelled
+		// Subscription ended
 	}
-
-	// TODO update plan if it changed
 
 	// Update the subscription
 	if err := s.db.Model(subscription).UpdateColumn(Subscription{
+		PlanID:      util.PositiveIntOrNull(int64(plan.ID)),
 		StartedAt:   util.TimeOrNull(startedAt),
 		CancelledAt: util.TimeOrNull(cancelledAt),
 		EndedAt:     util.TimeOrNull(endedAt),

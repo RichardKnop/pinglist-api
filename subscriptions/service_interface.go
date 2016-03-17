@@ -11,6 +11,7 @@ type ServiceInterface interface {
 	// Exported methods
 	GetAccountsService() accounts.ServiceInterface
 	FindPlanByID(planID uint) (*Plan, error)
+	FindPlanByPlanID(planID string) (*Plan, error)
 	FindCustomerByID(customerID uint) (*Customer, error)
 	FindCustomerByCustomerID(customerID string) (*Customer, error)
 	FindSubscriptionByID(subscriptionID uint) (*Subscription, error)
