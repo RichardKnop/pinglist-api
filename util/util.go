@@ -109,14 +109,3 @@ func GetCurrentURL(r *http.Request) string {
 	}
 	return url
 }
-
-// CombineErrors combines multiple errors into one
-func CombineErrors(errs []error) error {
-	errStrings := make([]string, len(errs))
-	errInterfaces := make([]interface{}, len(errs))
-	for i, err := range errs {
-		errStrings[i] = err.Error()
-		errInterfaces[i] = err
-	}
-	return fmt.Errorf(strings.Join(errStrings, ", "), errInterfaces...)
-}

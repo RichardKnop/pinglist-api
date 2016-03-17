@@ -4,7 +4,6 @@ import (
 	"log"
 	"testing"
 
-	"github.com/AreaHQ/area-api/util"
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/RichardKnop/pinglist-api/config"
 	"github.com/RichardKnop/pinglist-api/database"
@@ -16,8 +15,6 @@ import (
 	"github.com/stripe/stripe-go"
 	stripeCustomer "github.com/stripe/stripe-go/customer"
 	stripeUtils "github.com/stripe/stripe-go/utils"
-	// sqlite driver
-	_ "github.com/mattn/go-sqlite3"
 )
 
 var testDbPath = "/tmp/subscriptions_testdb.sqlite"
@@ -144,7 +141,7 @@ func (suite *SubscriptionsTestSuite) TearDownSuite() {
 			_, err := stripeCustomer.Del(i.Customer().ID)
 			errChan <- err
 		}()
-		count += 1
+		count++
 	}
 
 	// Capture errors if anything went wrong
@@ -157,7 +154,10 @@ func (suite *SubscriptionsTestSuite) TearDownSuite() {
 		}
 	}
 	if len(errs) > 0 {
-		log.Fatal(util.CombineErrors(errs))
+		for _, err := range errs {
+			log.Print(err)
+		}
+		log.Fatal("Something went wrong while deleting Stripe customers")
 	}
 }
 
