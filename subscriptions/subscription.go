@@ -206,8 +206,10 @@ func (s *Service) findActiveUserSubscriptions(userID uint) ([]*Subscription, err
 // findUserSubscriptions returns subscriptions belonging to a user
 func (s *Service) findUserSubscriptions(userID uint) ([]*Subscription, error) {
 	var userSubscriptions []*Subscription
-	return userSubscriptions, s.db.Preload("Customer").Preload("Plan").
-		Where("user_id = ?", userID).Order("id").Find(&userSubscriptions).Error
+	userObj := &accounts.User{Model: gorm.Model{ID: userID}}
+	return userSubscriptions, s.paginatedSubscriptionsQuery(userObj).
+		Preload("Customer").Preload("Plan").
+		Order("id").Find(&userSubscriptions).Error
 }
 
 // paginatedSubscriptionsCount returns a total count of subscriptions

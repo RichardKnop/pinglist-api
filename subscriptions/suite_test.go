@@ -4,6 +4,7 @@ import (
 	"log"
 	"testing"
 
+	"github.com/AreaHQ/area-api/util"
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/RichardKnop/pinglist-api/config"
 	"github.com/RichardKnop/pinglist-api/database"
@@ -127,20 +128,43 @@ func (suite *SubscriptionsTestSuite) SetupSuite() {
 // The TearDownSuite method will be run by testify once, at the very
 // end of the testing suite, after all tests have been run.
 func (suite *SubscriptionsTestSuite) TearDownSuite() {
-	// Delete Stripe customers
+	// Get all Stripe customers
 	i := stripeCustomer.List(new(stripe.CustomerListParams))
+
+	// Prepare for asynchronous deleting of all customers
+	errChan := make(chan error)
+	var (
+		errs  []error
+		count int
+	)
+
+	// Iterate over customers and fire off deleting goroutines
 	for i.Next() {
-		_, err := stripeCustomer.Del(i.Customer().ID)
-		if err != nil {
-			log.Fatal(err)
+		go func() {
+			_, err := stripeCustomer.Del(i.Customer().ID)
+			errChan <- err
+		}()
+		count += 1
+	}
+
+	// Capture errors if anything went wrong
+	for i := 0; i < count; i++ {
+		select {
+		case err := <-errChan:
+			if err != nil {
+				errs = append(errs, err)
+			}
 		}
+	}
+	if len(errs) > 0 {
+		log.Fatal(util.CombineErrors(errs))
 	}
 }
 
 // The SetupTest method will be run before every test in the suite.
 func (suite *SubscriptionsTestSuite) SetupTest() {
-	suite.db.Unscoped().Not("id", []int64{1, 2}).Delete(new(Subscription))
-	suite.db.Unscoped().Not("id", []int64{1, 2}).Delete(new(Customer))
+	suite.db.Unscoped().Not("id", []int64{1, 2, 3, 4}).Delete(new(Subscription))
+	suite.db.Unscoped().Not("id", []int64{1}).Delete(new(Customer))
 	suite.db.Unscoped().Not("id", []int64{1, 2, 3}).Delete(new(Plan))
 
 	// Reset mocks
