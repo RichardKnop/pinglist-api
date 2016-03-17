@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/RichardKnop/pinglist-api/accounts"
-	"github.com/RichardKnop/pinglist-api/alarms/alarmstates"
+	"github.com/RichardKnop/pinglist-api/database"
 	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/jinzhu/gorm"
 	"github.com/lib/pq"
@@ -16,11 +16,25 @@ import (
 // ResultParentTableName defines parent results table name
 const ResultParentTableName = "alarm_results"
 
+// AlarmState is a state that an alarm can be in
+type AlarmState struct {
+	database.TimestampModel
+	ID   string `gorm:"primary_key"`
+	Name string `sql:"type:varchar(50);unique;not null"`
+}
+
+// TableName specifies table name
+func (s *AlarmState) TableName() string {
+	return "alarm_states"
+}
+
 // Alarm ...
 type Alarm struct {
 	gorm.Model
 	UserID           sql.NullInt64 `sql:"index;not null"`
 	User             *accounts.User
+	AlarmStateID     sql.NullString `sql:"index;not null"`
+	AlarmState       *AlarmState
 	Incidents        []*Incident
 	Results          []*Result
 	Watermark        pq.NullTime `sql:"index"`
@@ -28,7 +42,6 @@ type Alarm struct {
 	ExpectedHTTPCode uint        `sql:"default:200;not null"`
 	Interval         uint        `sql:"default:60;not null"` // seconds
 	Active           bool        `sql:"index;not null"`
-	State            string      `sql:"type:varchar(20);index;not null"`
 }
 
 // TableName specifies table name
@@ -36,15 +49,28 @@ func (a *Alarm) TableName() string {
 	return "alarm_alarms"
 }
 
+// IncidentType ...
+type IncidentType struct {
+	database.TimestampModel
+	ID   string `gorm:"primary_key"`
+	Name string `sql:"type:varchar(50);unique;not null"`
+}
+
+// TableName specifies table name
+func (t *IncidentType) TableName() string {
+	return "alarm_incident_types"
+}
+
 // Incident ...
 type Incident struct {
 	gorm.Model
-	AlarmID    sql.NullInt64 `sql:"index;not null"`
-	Alarm      *Alarm
-	Type       string `sql:"type:varchar(20);index;not null"`
-	HTTPCode   sql.NullInt64
-	Response   sql.NullString `sql:"type:text"`
-	ResolvedAt pq.NullTime    `sql:"index"`
+	AlarmID        sql.NullInt64  `sql:"index;not null"`
+	IncidentTypeID sql.NullString `sql:"index;not null"`
+	Alarm          *Alarm
+	IncidentType   *IncidentType
+	HTTPCode       sql.NullInt64
+	Response       sql.NullString `sql:"type:text"`
+	ResolvedAt     pq.NullTime    `sql:"index"`
 }
 
 // TableName specifies table name
@@ -82,31 +108,39 @@ func (r *Result) TableName() string {
 }
 
 // newAlarm creates new Alarm instance
-func newAlarm(user *accounts.User, alarmRequest *AlarmRequest) *Alarm {
+func newAlarm(user *accounts.User, alarmState *AlarmState, alarmRequest *AlarmRequest) *Alarm {
 	userID := util.PositiveIntOrNull(int64(user.ID))
+	alarmStateID := util.StringOrNull(alarmState.ID)
 	alarm := &Alarm{
 		UserID:           userID,
+		AlarmStateID:     alarmStateID,
 		EndpointURL:      alarmRequest.EndpointURL,
 		ExpectedHTTPCode: alarmRequest.ExpectedHTTPCode,
 		Interval:         alarmRequest.Interval,
 		Active:           alarmRequest.Active,
-		State:            alarmstates.InsufficientData,
 	}
 	if userID.Valid {
 		alarm.User = user
+	}
+	if alarmStateID.Valid {
+		alarm.AlarmState = alarmState
 	}
 	return alarm
 }
 
 // newIncident creates new Incident instance
-func newIncident(alarm *Alarm, theType string, resp *http.Response) *Incident {
+func newIncident(alarm *Alarm, incidentType *IncidentType, resp *http.Response) *Incident {
 	alarmID := util.PositiveIntOrNull(int64(alarm.ID))
+	incidentTypeID := util.StringOrNull(incidentType.ID)
 	incident := &Incident{
-		AlarmID: alarmID,
-		Type:    theType,
+		AlarmID:        alarmID,
+		IncidentTypeID: incidentTypeID,
 	}
 	if alarmID.Valid {
 		incident.Alarm = alarm
+	}
+	if incidentTypeID.Valid {
+		incident.IncidentType = incidentType
 	}
 
 	// If the response is not nil

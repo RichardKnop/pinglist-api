@@ -37,6 +37,7 @@ func (suite *AlarmsTestSuite) TestGetAlarmsToCheck() {
 	watermark = time.Now().Add(-time.Duration(interval+1) * time.Second)
 	err = suite.db.Create(&Alarm{
 		User:             suite.users[1],
+		AlarmState:       &AlarmState{ID: alarmstates.InsufficientData},
 		EndpointURL:      "http://foo",
 		Watermark:        util.TimeOrNull(&watermark),
 		ExpectedHTTPCode: 200,
@@ -58,6 +59,7 @@ func (suite *AlarmsTestSuite) TestGetAlarmsToCheck() {
 	watermark = time.Now().Add(-time.Duration(interval-1) * time.Second)
 	err = suite.db.Create(&Alarm{
 		User:             suite.users[1],
+		AlarmState:       &AlarmState{ID: alarmstates.InsufficientData},
 		EndpointURL:      "http://bar",
 		Watermark:        util.TimeOrNull(&watermark),
 		ExpectedHTTPCode: 200,
@@ -116,7 +118,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	)
 
 	// Status OK
-	assert.Equal(suite.T(), alarmstates.OK, alarm.State)
+	assert.Equal(suite.T(), alarmstates.OK, alarm.AlarmStateID.String)
 
 	// 0 incidents, 1 result
 	assert.Equal(suite.T(), 0, len(alarm.Incidents))
@@ -157,7 +159,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	)
 
 	// Status changed to Alarm
-	assert.Equal(suite.T(), alarmstates.Alarm, alarm.State)
+	assert.Equal(suite.T(), alarmstates.Alarm, alarm.AlarmStateID.String)
 
 	// 1 incident, 1 result
 	assert.Equal(suite.T(), 1, len(alarm.Incidents))
@@ -165,7 +167,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 
 	// New incident
 	assert.Equal(suite.T(), suite.alarms[2].ID, uint(alarm.Incidents[0].AlarmID.Int64))
-	assert.Equal(suite.T(), incidenttypes.Timeout, alarm.Incidents[0].Type)
+	assert.Equal(suite.T(), incidenttypes.Timeout, alarm.Incidents[0].IncidentTypeID.String)
 	assert.False(suite.T(), alarm.Incidents[0].HTTPCode.Valid)
 	assert.False(suite.T(), alarm.Incidents[0].Response.Valid)
 	assert.False(suite.T(), alarm.Incidents[0].ResolvedAt.Valid)
@@ -196,7 +198,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	)
 
 	// Status still Alarm
-	assert.Equal(suite.T(), alarmstates.Alarm, alarm.State)
+	assert.Equal(suite.T(), alarmstates.Alarm, alarm.AlarmStateID.String)
 
 	// 2 incidents, 1 result
 	assert.Equal(suite.T(), 2, len(alarm.Incidents))
@@ -204,7 +206,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 
 	// New incident
 	assert.Equal(suite.T(), suite.alarms[2].ID, uint(alarm.Incidents[1].AlarmID.Int64))
-	assert.Equal(suite.T(), incidenttypes.BadCode, alarm.Incidents[1].Type)
+	assert.Equal(suite.T(), incidenttypes.BadCode, alarm.Incidents[1].IncidentTypeID.String)
 	assert.Equal(suite.T(), int64(500), alarm.Incidents[1].HTTPCode.Int64)
 	assert.Equal(suite.T(), "", alarm.Incidents[1].Response.String)
 	assert.False(suite.T(), alarm.Incidents[1].ResolvedAt.Valid)
@@ -235,7 +237,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	)
 
 	// Status back to OK
-	assert.Equal(suite.T(), alarmstates.OK, alarm.State)
+	assert.Equal(suite.T(), alarmstates.OK, alarm.AlarmStateID.String)
 
 	// 2 incidents, 2 results
 	assert.Equal(suite.T(), 2, len(alarm.Incidents))
@@ -320,7 +322,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheckIdempotency() {
 	)
 
 	// Status OK
-	assert.Equal(suite.T(), alarmstates.OK, alarm.State)
+	assert.Equal(suite.T(), alarmstates.OK, alarm.AlarmStateID.String)
 
 	// 0 incidents, 1 result
 	assert.Equal(suite.T(), 0, len(alarm.Incidents))

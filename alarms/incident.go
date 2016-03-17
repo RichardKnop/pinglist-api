@@ -10,13 +10,13 @@ import (
 )
 
 // openIncident opens a new alarm incident
-func (s *Service) openIncident(alarm *Alarm, theType string, resp *http.Response) error {
+func (s *Service) openIncident(alarm *Alarm, incidentTypeID string, resp *http.Response) error {
 	// Begin a transaction
 	tx := s.db.Begin()
 
 	// Change the alarm state to alarmstates.Alarm if it isn't already
-	if alarm.State != alarmstates.Alarm {
-		err := tx.Model(alarm).UpdateColumn("state", alarmstates.Alarm).Error
+	if alarm.AlarmStateID.String != alarmstates.Alarm {
+		err := tx.Model(alarm).UpdateColumn("alarm_state_id", alarmstates.Alarm).Error
 		if err != nil {
 			tx.Rollback() // rollback the transaction
 			return err
@@ -26,11 +26,18 @@ func (s *Service) openIncident(alarm *Alarm, theType string, resp *http.Response
 	var incident *Incident
 
 	// If the alarm does not have an open incident of such type yet
-	if !alarm.HasOpenIncident(theType, resp) {
+	if !alarm.HasOpenIncident(incidentTypeID, resp) {
+		// Fetch the incident type from the database
+		incidentType, err := s.findIncidentTypeByID(incidentTypeID)
+		if err != nil {
+			tx.Rollback() // rollback the transaction
+			return err
+		}
+
 		// Create a new incident object
 		incident = newIncident(
 			alarm,
-			theType,
+			incidentType,
 			resp,
 		)
 
@@ -61,7 +68,7 @@ func (s *Service) resolveIncidentsTx(db *gorm.DB, alarm *Alarm) error {
 	var err error
 
 	// Change alarm state to alarmstates.OK
-	err = db.Model(alarm).UpdateColumn("state", alarmstates.OK).Error
+	err = db.Model(alarm).UpdateColumn("alarm_state_id", alarmstates.OK).Error
 	if err != nil {
 		return err
 	}

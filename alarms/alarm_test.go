@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/RichardKnop/pinglist-api/alarms/incidenttypes"
+	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -13,11 +14,11 @@ func TestHasOpenIncident(t *testing.T) {
 	alarm := &Alarm{
 		Incidents: []*Incident{
 			&Incident{
-				Type: incidenttypes.Timeout,
+				IncidentTypeID: util.StringOrNull(incidenttypes.Timeout),
 			},
 			&Incident{
-				Type:     incidenttypes.BadCode,
-				HTTPCode: sql.NullInt64{Valid: true, Int64: 500},
+				IncidentTypeID: util.StringOrNull(incidenttypes.BadCode),
+				HTTPCode:       sql.NullInt64{Valid: true, Int64: 500},
 			},
 		},
 	}
@@ -66,17 +67,17 @@ func (suite *AlarmsTestSuite) TestFindAlarmById() {
 		assert.Equal(suite.T(), 3, len(alarm.Incidents))
 
 		// Timeout incident
-		assert.Equal(suite.T(), incidenttypes.Timeout, alarm.Incidents[0].Type)
+		assert.Equal(suite.T(), incidenttypes.Timeout, alarm.Incidents[0].IncidentTypeID.String)
 		assert.False(suite.T(), alarm.Incidents[0].HTTPCode.Valid)
 		assert.False(suite.T(), alarm.Incidents[0].Response.Valid)
 
 		// Bad code incident
-		assert.Equal(suite.T(), incidenttypes.BadCode, alarm.Incidents[1].Type)
+		assert.Equal(suite.T(), incidenttypes.BadCode, alarm.Incidents[1].IncidentTypeID.String)
 		assert.Equal(suite.T(), int64(500), alarm.Incidents[1].HTTPCode.Int64)
 		assert.Equal(suite.T(), "Internal Server Error", alarm.Incidents[1].Response.String)
 
 		// Other incident
-		assert.Equal(suite.T(), incidenttypes.Other, alarm.Incidents[2].Type)
+		assert.Equal(suite.T(), incidenttypes.Other, alarm.Incidents[2].IncidentTypeID.String)
 		assert.False(suite.T(), alarm.Incidents[2].HTTPCode.Valid)
 		assert.False(suite.T(), alarm.Incidents[2].Response.Valid)
 

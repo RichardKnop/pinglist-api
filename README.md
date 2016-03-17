@@ -125,6 +125,8 @@ go run main.go loaddata \
 	subscriptions/fixtures/plans.yml \
 	subscriptions/fixtures/test_customers.yml \
 	subscriptions/fixtures/test_subscriptions.yml \
+	alarms/fixtures/alarm_states.yml \
+	alarms/fixtures/incident_types.yml \
 	alarms/fixtures/test_alarms.yml \
 	alarms/fixtures/test_incidents.yml \
 	notifications/fixtures/test_endpoints.yml \
@@ -155,6 +157,8 @@ You can load fixtures with `docker exec` command:
 docker exec <container_id> /go/bin/pinglist-api loaddata \
 	oauth/fixtures/scopes.yml \
 	subscriptions/fixtures/plans.yml \
+	alarms/fixtures/alarm_states.yml \
+	alarms/fixtures/incident_types.yml \
 	oauth/fixtures/test_clients.yml
 ```
 

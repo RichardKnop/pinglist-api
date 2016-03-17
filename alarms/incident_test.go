@@ -29,7 +29,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	// Error should be nil, the alarm state changed, a new incident created
 	if assert.Nil(suite.T(), err) {
 		// Status changed to Alarm
-		assert.Equal(suite.T(), alarmstates.Alarm, alarm.State)
+		assert.Equal(suite.T(), alarmstates.Alarm, alarm.AlarmStateID.String)
 
 		// 1 incident, 0 results
 		assert.Equal(suite.T(), 1, len(alarm.Incidents))
@@ -37,7 +37,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 
 		// New incident
 		assert.Equal(suite.T(), suite.alarms[1].ID, uint(alarm.Incidents[0].AlarmID.Int64))
-		assert.Equal(suite.T(), incidenttypes.Timeout, alarm.Incidents[0].Type)
+		assert.Equal(suite.T(), incidenttypes.Timeout, alarm.Incidents[0].IncidentTypeID.String)
 		assert.False(suite.T(), alarm.Incidents[0].HTTPCode.Valid)
 		assert.False(suite.T(), alarm.Incidents[0].Response.Valid)
 		assert.False(suite.T(), alarm.Incidents[0].ResolvedAt.Valid)
@@ -49,7 +49,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		Preload("Results").First(alarm, suite.alarms[1].ID).RecordNotFound())
 
 	// Status changed to Alarm
-	assert.Equal(suite.T(), alarmstates.Alarm, alarm.State)
+	assert.Equal(suite.T(), alarmstates.Alarm, alarm.AlarmStateID.String)
 
 	// 1 incident, 0 results
 	assert.Equal(suite.T(), 1, len(alarm.Incidents))
@@ -57,7 +57,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 
 	// New incident
 	assert.Equal(suite.T(), suite.alarms[1].ID, uint(alarm.Incidents[0].AlarmID.Int64))
-	assert.Equal(suite.T(), incidenttypes.Timeout, alarm.Incidents[0].Type)
+	assert.Equal(suite.T(), incidenttypes.Timeout, alarm.Incidents[0].IncidentTypeID.String)
 	assert.False(suite.T(), alarm.Incidents[0].HTTPCode.Valid)
 	assert.False(suite.T(), alarm.Incidents[0].Response.Valid)
 	assert.False(suite.T(), alarm.Incidents[0].ResolvedAt.Valid)
@@ -73,7 +73,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	// Error should be nil, the alarm state unchanged, no new incidents created
 	if assert.Nil(suite.T(), err) {
 		// Status still Alarm
-		assert.Equal(suite.T(), alarmstates.Alarm, alarm.State)
+		assert.Equal(suite.T(), alarmstates.Alarm, alarm.AlarmStateID.String)
 
 		// 1 incident, 0 results
 		assert.Equal(suite.T(), 1, len(alarm.Incidents))
@@ -86,7 +86,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		Preload("Results").First(alarm, suite.alarms[1].ID).RecordNotFound())
 
 	// Status still Alarm
-	assert.Equal(suite.T(), alarmstates.Alarm, alarm.State)
+	assert.Equal(suite.T(), alarmstates.Alarm, alarm.AlarmStateID.String)
 
 	// 1 incident, 0 results
 	assert.Equal(suite.T(), 1, len(alarm.Incidents))
@@ -102,7 +102,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	// Error should be nil, the alarm state unchanged, a new incident created
 	if assert.Nil(suite.T(), err) {
 		// Status still Alarm
-		assert.Equal(suite.T(), alarmstates.Alarm, alarm.State)
+		assert.Equal(suite.T(), alarmstates.Alarm, alarm.AlarmStateID.String)
 
 		// 2 incidents, 0 results
 		assert.Equal(suite.T(), 2, len(alarm.Incidents))
@@ -110,7 +110,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 
 		// New incident
 		assert.Equal(suite.T(), suite.alarms[1].ID, uint(alarm.Incidents[1].AlarmID.Int64))
-		assert.Equal(suite.T(), incidenttypes.BadCode, alarm.Incidents[1].Type)
+		assert.Equal(suite.T(), incidenttypes.BadCode, alarm.Incidents[1].IncidentTypeID.String)
 		assert.Equal(suite.T(), int64(500), alarm.Incidents[1].HTTPCode.Int64)
 		assert.Equal(suite.T(), "", alarm.Incidents[1].Response.String)
 		assert.False(suite.T(), alarm.Incidents[1].ResolvedAt.Valid)
@@ -122,7 +122,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		Preload("Results").First(alarm, suite.alarms[1].ID).RecordNotFound())
 
 	// Status still Alarm
-	assert.Equal(suite.T(), alarmstates.Alarm, alarm.State)
+	assert.Equal(suite.T(), alarmstates.Alarm, alarm.AlarmStateID.String)
 
 	// 2 incidents, 0 results
 	assert.Equal(suite.T(), 2, len(alarm.Incidents))
@@ -130,7 +130,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 
 	// New incident
 	assert.Equal(suite.T(), suite.alarms[1].ID, uint(alarm.Incidents[1].AlarmID.Int64))
-	assert.Equal(suite.T(), incidenttypes.BadCode, alarm.Incidents[1].Type)
+	assert.Equal(suite.T(), incidenttypes.BadCode, alarm.Incidents[1].IncidentTypeID.String)
 	assert.Equal(suite.T(), int64(500), alarm.Incidents[1].HTTPCode.Int64)
 	assert.Equal(suite.T(), "", alarm.Incidents[1].Response.String)
 	assert.False(suite.T(), alarm.Incidents[1].ResolvedAt.Valid)
@@ -146,7 +146,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	// Error should be nil, the alarm state unchanged, no new incidents created
 	if assert.Nil(suite.T(), err) {
 		// Status still Alarm
-		assert.Equal(suite.T(), alarmstates.Alarm, alarm.State)
+		assert.Equal(suite.T(), alarmstates.Alarm, alarm.AlarmStateID.String)
 
 		// 2 incidents, 0 results
 		assert.Equal(suite.T(), 2, len(alarm.Incidents))
@@ -159,7 +159,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		Preload("Results").First(alarm, suite.alarms[1].ID).RecordNotFound())
 
 	// Status still Alarm
-	assert.Equal(suite.T(), alarmstates.Alarm, alarm.State)
+	assert.Equal(suite.T(), alarmstates.Alarm, alarm.AlarmStateID.String)
 
 	// 2 incidents, 0 results
 	assert.Equal(suite.T(), 2, len(alarm.Incidents))
@@ -175,7 +175,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	// Error should be nil, the alarm state unchanged, a new incident created
 	if assert.Nil(suite.T(), err) {
 		// Status still Alarm
-		assert.Equal(suite.T(), alarmstates.Alarm, alarm.State)
+		assert.Equal(suite.T(), alarmstates.Alarm, alarm.AlarmStateID.String)
 
 		// 3 incidents, 0 results
 		assert.Equal(suite.T(), 3, len(alarm.Incidents))
@@ -183,7 +183,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 
 		// New incident
 		assert.Equal(suite.T(), suite.alarms[1].ID, uint(alarm.Incidents[2].AlarmID.Int64))
-		assert.Equal(suite.T(), incidenttypes.BadCode, alarm.Incidents[2].Type)
+		assert.Equal(suite.T(), incidenttypes.BadCode, alarm.Incidents[2].IncidentTypeID.String)
 		assert.Equal(suite.T(), int64(404), alarm.Incidents[2].HTTPCode.Int64)
 		assert.Equal(suite.T(), "", alarm.Incidents[2].Response.String)
 		assert.False(suite.T(), alarm.Incidents[2].ResolvedAt.Valid)
@@ -195,7 +195,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		Preload("Results").First(alarm, suite.alarms[1].ID).RecordNotFound())
 
 	// Status still Alarm
-	assert.Equal(suite.T(), alarmstates.Alarm, alarm.State)
+	assert.Equal(suite.T(), alarmstates.Alarm, alarm.AlarmStateID.String)
 
 	// 3 incidents, 0 results
 	assert.Equal(suite.T(), 3, len(alarm.Incidents))
@@ -203,7 +203,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 
 	// New incident
 	assert.Equal(suite.T(), suite.alarms[1].ID, uint(alarm.Incidents[2].AlarmID.Int64))
-	assert.Equal(suite.T(), incidenttypes.BadCode, alarm.Incidents[2].Type)
+	assert.Equal(suite.T(), incidenttypes.BadCode, alarm.Incidents[2].IncidentTypeID.String)
 	assert.Equal(suite.T(), int64(404), alarm.Incidents[2].HTTPCode.Int64)
 	assert.Equal(suite.T(), "", alarm.Incidents[2].Response.String)
 	assert.False(suite.T(), alarm.Incidents[2].ResolvedAt.Valid)
@@ -214,7 +214,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	// Error should be nil, the alarm state changed, all incidents resolved
 	if assert.Nil(suite.T(), err) {
 		// Status back to OK
-		assert.Equal(suite.T(), alarmstates.OK, alarm.State)
+		assert.Equal(suite.T(), alarmstates.OK, alarm.AlarmStateID.String)
 
 		// 3 incidents, 0 results
 		assert.Equal(suite.T(), 3, len(alarm.Incidents))
@@ -232,7 +232,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		Preload("Results").First(alarm, suite.alarms[1].ID).RecordNotFound())
 
 	// Status back to OK
-	assert.Equal(suite.T(), alarmstates.OK, alarm.State)
+	assert.Equal(suite.T(), alarmstates.OK, alarm.AlarmStateID.String)
 
 	// 3 incidents, 0 results
 	assert.Equal(suite.T(), 3, len(alarm.Incidents))

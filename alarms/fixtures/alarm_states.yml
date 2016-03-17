@@ -1,0 +1,29 @@
+---
+
+#--------------#
+# Alarm States #
+#--------------#
+
+- table: 'alarm_states'
+  pk:
+    id: 'ok'
+  fields:
+    name: 'OK'
+    created_at: 'ON_INSERT_NOW()'
+    updated_at: 'ON_UPDATE_NOW()'
+
+- table: 'alarm_states'
+  pk:
+    id: 'alarm'
+  fields:
+    name: 'Alarm'
+    created_at: 'ON_INSERT_NOW()'
+    updated_at: 'ON_UPDATE_NOW()'
+
+- table: 'alarm_states'
+  pk:
+    id: 'insufficient_data'
+  fields:
+    name: 'Insufficient Data'
+    created_at: 'ON_INSERT_NOW()'
+    updated_at: 'ON_UPDATE_NOW()'

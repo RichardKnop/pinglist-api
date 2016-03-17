@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/RichardKnop/pinglist-api/accounts"
+	"github.com/RichardKnop/pinglist-api/alarms/alarmstates"
 	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/jinzhu/gorm"
 )
@@ -19,7 +20,7 @@ var (
 // HasOpenIncident returns true if the alarm already has such open incident
 func (a *Alarm) HasOpenIncident(theType string, resp *http.Response) bool {
 	for _, incident := range a.Incidents {
-		if incident.ResolvedAt.Valid || incident.Type != theType {
+		if incident.ResolvedAt.Valid || incident.IncidentTypeID.String != theType {
 			continue
 		}
 
@@ -76,8 +77,14 @@ func (s *Service) createAlarm(user *accounts.User, alarmRequest *AlarmRequest) (
 		return nil, ErrMaxAlarmsLimitReached
 	}
 
+	// Fetch the initial alarm state from the database
+	alarmState, err := s.findAlarmStateByID(alarmstates.InsufficientData)
+	if err != nil {
+		return nil, err
+	}
+
 	// Create a new alarm object
-	alarm := newAlarm(user, alarmRequest)
+	alarm := newAlarm(user, alarmState, alarmRequest)
 
 	// Save the alarm to the database
 	if err := s.db.Create(alarm).Error; err != nil {

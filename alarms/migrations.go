@@ -32,9 +32,19 @@ func migrate0001(db *gorm.DB) error {
 
 	var err error
 
+	// Create alarm_states table
+	if err := db.CreateTable(new(AlarmState)).Error; err != nil {
+		return fmt.Errorf("Error creating alarm_states table: %s", err)
+	}
+
 	// Create alarm_alarms table
 	if err := db.CreateTable(new(Alarm)).Error; err != nil {
 		return fmt.Errorf("Error creating alarm_alarms table: %s", err)
+	}
+
+	// Create alarm_incident_types table
+	if err := db.CreateTable(new(IncidentType)).Error; err != nil {
+		return fmt.Errorf("Error creating alarm_incident_types table: %s", err)
 	}
 
 	// Create alarm_incidents table
@@ -64,6 +74,18 @@ func migrate0001(db *gorm.DB) error {
 			"alarm_alarms.user_id for account_users(id): %s", err)
 	}
 
+	// Add foreign key on alarm_alarms.alarm_state_id
+	err = db.Model(new(Alarm)).AddForeignKey(
+		"alarm_state_id",
+		"alarm_states(id)",
+		"RESTRICT",
+		"RESTRICT",
+	).Error
+	if err != nil {
+		return fmt.Errorf("Error creating foreign key on "+
+			"alarm_alarms.alarm_state_id for alarm_states(id): %s", err)
+	}
+
 	// Add foreign key on alarm_incidents.alarm_id
 	err = db.Model(new(Incident)).AddForeignKey(
 		"alarm_id",
@@ -74,6 +96,18 @@ func migrate0001(db *gorm.DB) error {
 	if err != nil {
 		return fmt.Errorf("Error creating foreign key on "+
 			"alarm_incidents.alarm_id for alarm_alarms(id): %s", err)
+	}
+
+	// Add foreign key on alarm_incidents.incident_type_id
+	err = db.Model(new(Incident)).AddForeignKey(
+		"incident_type_id",
+		"alarm_incident_types(id)",
+		"RESTRICT",
+		"RESTRICT",
+	).Error
+	if err != nil {
+		return fmt.Errorf("Error creating foreign key on "+
+			"alarm_incidents.incident_type_id for alarm_incident_types(id): %s", err)
 	}
 
 	// Save a record to migrations table,

@@ -5,7 +5,7 @@
     id: 1
   fields:
     alarm_id: 1
-    type: 'timeout'
+    incident_type_id: 'timeout'
     resolved_at: 'ON_INSERT_NOW()'
     created_at: 'ON_INSERT_NOW()'
     updated_at: 'ON_UPDATE_NOW()'
@@ -15,7 +15,7 @@
     id: 2
   fields:
     alarm_id: 1
-    type: 'timeout'
+    incident_type_id: 'timeout'
     created_at: 'ON_INSERT_NOW()'
     updated_at: 'ON_UPDATE_NOW()'
 
@@ -24,7 +24,7 @@
     id: 3
   fields:
     alarm_id: 1
-    type: 'bad_code'
+    incident_type_id: 'bad_code'
     http_code: 500
     response: 'Internal Server Error'
     created_at: 'ON_INSERT_NOW()'
@@ -35,6 +35,6 @@
     id: 4
   fields:
     alarm_id: 1
-    type: 'other'
+    incident_type_id: 'other'
     created_at: 'ON_INSERT_NOW()'
     updated_at: 'ON_UPDATE_NOW()'

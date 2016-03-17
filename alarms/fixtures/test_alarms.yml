@@ -9,7 +9,7 @@
     expected_http_code: 200
     interval: 60
     active: false
-    state: ok
+    alarm_state_id: 'ok'
     created_at: 'ON_INSERT_NOW()'
     updated_at: 'ON_UPDATE_NOW()'
 
@@ -22,7 +22,7 @@
     expected_http_code: 200
     interval: 60
     active: false
-    state: ok
+    alarm_state_id: 'ok'
     created_at: 'ON_INSERT_NOW()'
     updated_at: 'ON_UPDATE_NOW()'
 
@@ -35,7 +35,7 @@
     expected_http_code: 200
     interval: 60
     active: false
-    state: ok
+    alarm_state_id: 'ok'
     created_at: 'ON_INSERT_NOW()'
     updated_at: 'ON_UPDATE_NOW()'
 
@@ -48,6 +48,6 @@
     expected_http_code: 200
     interval: 60
     active: false
-    state: ok
+    alarm_state_id: 'ok'
     created_at: 'ON_INSERT_NOW()'
     updated_at: 'ON_UPDATE_NOW()'

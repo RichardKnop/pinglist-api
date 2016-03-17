@@ -7,18 +7,21 @@ import (
 	"net/http/httptest"
 	"strings"
 
+	"github.com/RichardKnop/pinglist-api/alarms/alarmstates"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
 )
 
 func (suite *AlarmsTestSuite) TestDeleteAlarm() {
 	// Insert a test alarm
-	alarm := newAlarm(suite.users[1], &AlarmRequest{
+	alarm := &Alarm{
+		User:             suite.users[1],
+		AlarmState:       &AlarmState{ID: alarmstates.InsufficientData},
 		EndpointURL:      "http://endpoint-5",
 		ExpectedHTTPCode: 200,
 		Interval:         60,
 		Active:           false,
-	})
+	}
 	assert.NoError(suite.T(), suite.db.Create(alarm).Error, "Inserting test data failed")
 
 	r, err := http.NewRequest(

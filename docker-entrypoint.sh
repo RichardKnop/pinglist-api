@@ -5,8 +5,10 @@
 
 # 2. Load fixtures
 /go/bin/pinglist-api loaddata \
-  oauth/fixtures/scopes.yml
-  subscriptions/fixtures/plans.yml
+  oauth/fixtures/scopes.yml \
+  subscriptions/fixtures/plans.yml \
+  alarms/fixtures/alarm_states.yml \
+  alarms/fixtures/incident_types.yml
 
 # Finally, run the server
 /go/bin/pinglist-api runserver

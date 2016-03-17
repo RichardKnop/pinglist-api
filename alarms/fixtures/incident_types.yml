@@ -1,0 +1,29 @@
+---
+
+#----------------#
+# Incident Types #
+#----------------#
+
+- table: 'alarm_incident_types'
+  pk:
+    id: 'timeout'
+  fields:
+    name: 'Timeout'
+    created_at: 'ON_INSERT_NOW()'
+    updated_at: 'ON_UPDATE_NOW()'
+
+- table: 'alarm_incident_types'
+  pk:
+    id: 'bad_code'
+  fields:
+    name: 'Bad Code'
+    created_at: 'ON_INSERT_NOW()'
+    updated_at: 'ON_UPDATE_NOW()'
+
+- table: 'alarm_incident_types'
+  pk:
+    id: 'other'
+  fields:
+    name: 'Other'
+    created_at: 'ON_INSERT_NOW()'
+    updated_at: 'ON_UPDATE_NOW()'

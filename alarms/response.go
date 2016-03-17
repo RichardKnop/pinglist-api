@@ -71,7 +71,7 @@ func NewAlarmResponse(alarm *Alarm) (*AlarmResponse, error) {
 		ExpectedHTTPCode: alarm.ExpectedHTTPCode,
 		Interval:         alarm.Interval,
 		Active:           alarm.Active,
-		State:            alarm.State,
+		State:            alarm.AlarmStateID.String,
 		CreatedAt:        alarm.CreatedAt.UTC().Format(time.RFC3339),
 		UpdatedAt:        alarm.UpdatedAt.UTC().Format(time.RFC3339),
 	}
@@ -132,7 +132,7 @@ func NewIncidentResponse(incident *Incident) (*IncidentResponse, error) {
 	response := &IncidentResponse{
 		ID:        incident.ID,
 		AlarmID:   uint(incident.AlarmID.Int64),
-		Type:      incident.Type,
+		Type:      incident.IncidentTypeID.String,
 		CreatedAt: incident.CreatedAt.UTC().Format(time.RFC3339),
 		UpdatedAt: incident.UpdatedAt.UTC().Format(time.RFC3339),
 	}
