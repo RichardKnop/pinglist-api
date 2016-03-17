@@ -25,11 +25,14 @@ test-accounts:
 test-facebook:
 	bash -c 'go test -timeout=60s github.com/RichardKnop/pinglist-api/facebook'
 
+test-subscriptions:
+	bash -c 'go test -timeout=60s github.com/RichardKnop/pinglist-api/subscriptions'
+
 test-alarms:
 	bash -c 'go test -timeout=30s github.com/RichardKnop/pinglist-api/alarms'
 
-test-subscriptions:
-	bash -c 'go test -timeout=60s github.com/RichardKnop/pinglist-api/subscriptions'
+test-notifications:
+	bash -c 'go test -timeout=60s github.com/RichardKnop/pinglist-api/notifications'
 
 test:
 	bash -c 'go list ./... | grep -v vendor | xargs -n1 go test -timeout=60s'

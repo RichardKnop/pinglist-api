@@ -33,6 +33,13 @@ type SessionConfig struct {
 	HTTPOnly bool
 }
 
+// AWSConfig stores AWS related configuration
+type AWSConfig struct {
+	Region                     string
+	APNSPlatformApplicationARN string
+	GCMPlatformApplicationARN  string
+}
+
 // FacebookConfig stores Facebook app config
 type FacebookConfig struct {
 	AppID     string
@@ -61,6 +68,7 @@ type Config struct {
 	Database      DatabaseConfig
 	Oauth         OauthConfig
 	Session       SessionConfig
+	AWS           AWSConfig
 	Facebook      FacebookConfig
 	Sendgrid      SendgridConfig
 	Stripe        StripeConfig

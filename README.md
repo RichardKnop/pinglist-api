@@ -72,6 +72,11 @@ curl -L http://localhost:2379/v2/keys/config/pinglist.json -XPUT -d value='{
 		"MaxAge": 604800,
 		"HTTPOnly": true
 	},
+	"AWS": {
+		"Region": "eu-west-1",
+		"APNSPlatformApplicationARN": "apns_platform_application_arn",
+		"GCMPlatformApplicationARN":  "gcm_platform_application_arn"
+	},
 	"Facebook": {
 		"AppID": "facebook_app_id",
 		"AppSecret": "facebook_app_secret"
@@ -81,7 +86,7 @@ curl -L http://localhost:2379/v2/keys/config/pinglist.json -XPUT -d value='{
 		"PublishableKey": "stripe_publishable_key"
 	},
 	"Sendgrid": {
-		"APIKey": "sendgrid_api_key"
+		"APIKey": "SG.qq6U90eETr-j47cFblecdA.ESb8Qm98jRlvayJps1eSqSaeFpw74tS-qp-7Ju684cU"
 	},
 	"Web": {
 		"Scheme": "http",
@@ -117,11 +122,12 @@ go run main.go loaddata \
 	accounts/fixtures/roles.yml \
 	accounts/fixtures/test_accounts.yml \
 	accounts/fixtures/test_users.yml \
-	alarms/fixtures/test_alarms.yml \
-	alarms/fixtures/test_incidents.yml \
 	subscriptions/fixtures/plans.yml \
 	subscriptions/fixtures/test_customers.yml \
-	subscriptions/fixtures/test_subscriptions.yml
+	subscriptions/fixtures/test_subscriptions.yml \
+	alarms/fixtures/test_alarms.yml \
+	alarms/fixtures/test_incidents.yml \
+	notifications/fixtures/test_endpoints.yml \
 ```
 
 # Testing
