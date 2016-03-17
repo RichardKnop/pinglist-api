@@ -203,3 +203,11 @@ func (suite *SubscriptionsTestSuite) mockAuthentication(user *accounts.User) {
 	suite.accountsServiceMock.On("FindUserByOauthUserID", user.OauthUser.ID).
 		Return(user, nil)
 }
+
+// Mock user querystring filtering
+func (suite *SubscriptionsTestSuite) mockUserFiltering(user *accounts.User) {
+	suite.accountsServiceMock.On(
+		"GetUserFromQueryString",
+		mock.AnythingOfType("*http.Request"),
+	).Return(user, nil)
+}
