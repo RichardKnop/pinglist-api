@@ -55,6 +55,7 @@ type AlarmsTestSuite struct {
 	service                  *Service
 	accounts                 []*accounts.Account
 	users                    []*accounts.User
+	regions                  []*Region
 	alarms                   []*Alarm
 	incidents                []*Incident
 	router                   *mux.Router
@@ -93,6 +94,12 @@ func (suite *AlarmsTestSuite) SetupSuite() {
 	err = suite.db.Preload("Account").Preload("OauthUser").Preload("Role").
 		Order("id").Find(&suite.users).Error
 	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Fetch test regions
+	suite.regions = make([]*Region, 0)
+	if suite.db.Order("id").Find(&suite.regions).Error != nil {
 		log.Fatal(err)
 	}
 

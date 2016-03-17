@@ -7,6 +7,63 @@ import (
 	"github.com/RichardKnop/jsonhal"
 )
 
+// RegionResponse ...
+type RegionResponse struct {
+	jsonhal.Hal
+	ID   string `json:"id"`
+	Name string `json:"name"`
+}
+
+// ListRegionsResponse ...
+type ListRegionsResponse struct {
+	jsonhal.Hal
+	Count uint `json:"count"`
+	Page  uint `json:"page"`
+}
+
+// NewRegionResponse creates new ResultResponse instance
+func NewRegionResponse(region *Region) (*RegionResponse, error) {
+	response := &RegionResponse{
+		ID:   region.ID,
+		Name: region.Name,
+	}
+
+	// Set the self link
+	response.SetLink(
+		"self", // name
+		fmt.Sprintf("/v1/alarms/regions/%s", region.ID), // href
+		"", // title
+	)
+
+	return response, nil
+}
+
+// NewListRegionsResponse creates new ListRegionsResponse instance
+func NewListRegionsResponse(regions []*Region) (*ListRegionsResponse, error) {
+	response := new(ListRegionsResponse)
+
+	// Set the self link
+	response.SetLink("self", "/v1/alarms/regions", "")
+
+	// Create slice of region responses
+	regionResponses := make([]*RegionResponse, len(regions))
+	for i, region := range regions {
+		regionResponse, err := NewRegionResponse(region)
+		if err != nil {
+			return nil, err
+		}
+		regionResponses[i] = regionResponse
+	}
+
+	// Set embedded regions
+	response.SetEmbedded(
+		"regions",
+		jsonhal.Embedded(regionResponses),
+	)
+
+	return response, nil
+}
+
 // AlarmResponse ...
 type AlarmResponse struct {
 	jsonhal.Hal

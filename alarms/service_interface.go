@@ -18,6 +18,7 @@ type ServiceInterface interface {
 	RotateSubTables() error
 
 	// Needed for the newRoutes to be able to register handlers
+	listRegionsHandler(w http.ResponseWriter, r *http.Request)
 	createAlarmHandler(w http.ResponseWriter, r *http.Request)
 	updateAlarmHandler(w http.ResponseWriter, r *http.Request)
 	deleteAlarmHandler(w http.ResponseWriter, r *http.Request)

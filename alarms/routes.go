@@ -17,6 +17,15 @@ func RegisterRoutes(router *mux.Router, service ServiceInterface) {
 func newRoutes(service ServiceInterface) []routes.Route {
 	return []routes.Route{
 		routes.Route{
+			Name:        "list_regions",
+			Method:      "GET",
+			Pattern:     "/alarms/regions",
+			HandlerFunc: service.listRegionsHandler,
+			Middlewares: []negroni.Handler{
+				accounts.NewUserAuthMiddleware(service.GetAccountsService()),
+			},
+		},
+		routes.Route{
 			Name:        "create_alarm",
 			Method:      "POST",
 			Pattern:     "/alarms",
