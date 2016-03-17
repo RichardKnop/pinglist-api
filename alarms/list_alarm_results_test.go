@@ -72,7 +72,7 @@ func (suite *AlarmsTestSuite) TestListAlarmResults() {
 
 	// Check the response body
 	var results []*Result
-	err = suite.db.Order("id").Find(&results).Error
+	err = suite.db.Order("timestamp").Find(&results).Error
 	assert.NoError(suite.T(), err, "Fetching data failed")
 
 	resultResponses := make([]*ResultResponse, len(results))

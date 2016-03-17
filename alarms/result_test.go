@@ -78,34 +78,34 @@ func (suite *AlarmsTestSuite) TestFindPaginatedResults() {
 	results, err = suite.service.findPaginatedResults(0, 25, "", nil)
 	if assert.Nil(suite.T(), err) {
 		assert.Equal(suite.T(), 4, len(results))
-		assert.Equal(suite.T(), testResults[0].ID, results[0].ID)
-		assert.Equal(suite.T(), testResults[1].ID, results[1].ID)
-		assert.Equal(suite.T(), testResults[2].ID, results[2].ID)
-		assert.Equal(suite.T(), testResults[3].ID, results[3].ID)
+		assert.Equal(suite.T(), testResults[0].Timestamp.Unix(), results[0].Timestamp.Unix())
+		assert.Equal(suite.T(), testResults[1].Timestamp.Unix(), results[1].Timestamp.Unix())
+		assert.Equal(suite.T(), testResults[2].Timestamp.Unix(), results[2].Timestamp.Unix())
+		assert.Equal(suite.T(), testResults[3].Timestamp.Unix(), results[3].Timestamp.Unix())
 	}
 
-	// This should return all results ordered by ID desc
-	results, err = suite.service.findPaginatedResults(0, 25, "id desc", nil)
+	// This should return all results ordered by timestamp desc
+	results, err = suite.service.findPaginatedResults(0, 25, "timestamp desc", nil)
 	if assert.Nil(suite.T(), err) {
 		assert.Equal(suite.T(), 4, len(results))
-		assert.Equal(suite.T(), testResults[3].ID, results[0].ID)
-		assert.Equal(suite.T(), testResults[2].ID, results[1].ID)
-		assert.Equal(suite.T(), testResults[1].ID, results[2].ID)
-		assert.Equal(suite.T(), testResults[0].ID, results[3].ID)
+		assert.Equal(suite.T(), testResults[3].Timestamp.Unix(), results[0].Timestamp.Unix())
+		assert.Equal(suite.T(), testResults[2].Timestamp.Unix(), results[1].Timestamp.Unix())
+		assert.Equal(suite.T(), testResults[1].Timestamp.Unix(), results[2].Timestamp.Unix())
+		assert.Equal(suite.T(), testResults[0].Timestamp.Unix(), results[3].Timestamp.Unix())
 	}
 
 	// Test offset
 	results, err = suite.service.findPaginatedResults(2, 25, "", nil)
 	if assert.Nil(suite.T(), err) {
 		assert.Equal(suite.T(), 2, len(results))
-		assert.Equal(suite.T(), testResults[2].ID, results[0].ID)
-		assert.Equal(suite.T(), testResults[3].ID, results[1].ID)
+		assert.Equal(suite.T(), testResults[2].Timestamp.Unix(), results[0].Timestamp.Unix())
+		assert.Equal(suite.T(), testResults[3].Timestamp.Unix(), results[1].Timestamp.Unix())
 	}
 
 	// Test limit
 	results, err = suite.service.findPaginatedResults(2, 1, "", nil)
 	if assert.Nil(suite.T(), err) {
 		assert.Equal(suite.T(), 1, len(results))
-		assert.Equal(suite.T(), testResults[2].ID, results[0].ID)
+		assert.Equal(suite.T(), testResults[2].Timestamp.Unix(), results[0].Timestamp.Unix())
 	}
 }

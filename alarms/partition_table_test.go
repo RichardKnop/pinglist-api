@@ -216,7 +216,7 @@ func (suite *AlarmsTestSuite) TestCreateSubTable() {
 
 	// Check data is being aggregated from all sub tables
 	results = make([]*Result, 0)
-	err = suite.db.Preload("Alarm").Order("id").Find(&results).Error
+	err = suite.db.Preload("Alarm").Order("timestamp").Find(&results).Error
 	assert.NoError(suite.T(), err, "Fetching data failed")
 	assert.Equal(suite.T(), 4, len(results))
 	assert.Equal(suite.T(), int64(123), results[0].RequestTime)
@@ -226,7 +226,8 @@ func (suite *AlarmsTestSuite) TestCreateSubTable() {
 
 	// Check data is correctly distributed to the today's table
 	results = make([]*Result, 0)
-	err = suite.service.db.Table(todaySubTableName).Order("id").Find(&results).Error
+	err = suite.service.db.Table(todaySubTableName).
+		Order("timestamp").Find(&results).Error
 	assert.NoError(suite.T(), err, "Fetching data failed")
 	assert.Equal(suite.T(), 2, len(results))
 	assert.Equal(suite.T(), int64(123), results[0].RequestTime)
@@ -234,7 +235,8 @@ func (suite *AlarmsTestSuite) TestCreateSubTable() {
 
 	// Check data is correctly distributed to the tomorrow's sub table
 	results = make([]*Result, 0)
-	err = suite.service.db.Table(tomorrowSubTableName).Order("id").Find(&results).Error
+	err = suite.service.db.Table(tomorrowSubTableName).
+		Order("timestamp").Find(&results).Error
 	assert.NoError(suite.T(), err, "Fetching data failed")
 	assert.Equal(suite.T(), 2, len(results))
 	assert.Equal(suite.T(), int64(321), results[0].RequestTime)

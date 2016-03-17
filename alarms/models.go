@@ -66,7 +66,6 @@ func (t *ResultSubTable) TableName() string {
 // Result represents a parent table used to vertically partition results,
 // sub tables will inherit from this table and split data by day
 type Result struct {
-	ID          uint          `gorm:"primary_key"`
 	AlarmID     sql.NullInt64 `sql:"index;not null"`
 	Alarm       *Alarm
 	Timestamp   time.Time `sql:"index;not null"`

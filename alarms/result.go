@@ -24,7 +24,7 @@ func (s *Service) findPaginatedResults(offset, limit int, orderBy string, alarm 
 
 	// Default ordering
 	if orderBy == "" {
-		orderBy = "id"
+		orderBy = "timestamp"
 	}
 
 	// Retrieve paginated results from the database
