@@ -123,19 +123,19 @@ func (s *Service) createSubscription(user *accounts.User, plan *Plan, stripeToke
 		startedAt = &t
 	}
 	if sub.PeriodStart > 0 {
-		t := time.Unix(sub.Start, 0)
+		t := time.Unix(sub.PeriodStart, 0)
 		periodStart = &t
 	}
 	if sub.PeriodEnd > 0 {
-		t := time.Unix(sub.Start, 0)
+		t := time.Unix(sub.PeriodEnd, 0)
 		periodEnd = &t
 	}
 	if sub.TrialStart > 0 {
-		t := time.Unix(sub.Start, 0)
+		t := time.Unix(sub.TrialStart, 0)
 		trialStart = &t
 	}
 	if sub.TrialEnd > 0 {
-		t := time.Unix(sub.Start, 0)
+		t := time.Unix(sub.TrialEnd, 0)
 		trialEnd = &t
 	}
 
