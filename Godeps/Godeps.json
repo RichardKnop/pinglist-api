@@ -79,7 +79,7 @@
 		},
 		{
 			"ImportPath": "github.com/jinzhu/gorm",
-			"Rev": "8de97c28836925e720b44ca58ba7cc610899186e"
+			"Rev": "83002c4d5f060f4819bfd2115b76a0e1429a7f32"
 		},
 		{
 			"ImportPath": "github.com/jinzhu/inflection",
@@ -147,8 +147,8 @@
 		},
 		{
 			"ImportPath": "github.com/stripe/stripe-go",
-			"Comment": "v12.1.0-1-gd5e0907",
-			"Rev": "d5e0907ca2d2e5718c021035e4d4b74a8d93e99d"
+			"Comment": "v13.1.0",
+			"Rev": "1eb8a605efcd46c4f486d20fb67487cafa473b9c"
 		},
 		{
 			"ImportPath": "github.com/unrolled/secure",
