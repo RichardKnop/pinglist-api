@@ -35,19 +35,19 @@ func newRoutes(service ServiceInterface) []routes.Route {
 			},
 		},
 		routes.Route{
-			Name:        "list_subscriptions",
-			Method:      "GET",
-			Pattern:     "/subscriptions",
-			HandlerFunc: service.listSubscriptionsHandler,
+			Name:        "cancel_subscription",
+			Method:      "DELETE",
+			Pattern:     "/subscriptions/{id:[0-9]+}",
+			HandlerFunc: service.cancelSubscriptionHandler,
 			Middlewares: []negroni.Handler{
 				accounts.NewUserAuthMiddleware(service.GetAccountsService()),
 			},
 		},
 		routes.Route{
-			Name:        "cancel_subscription",
-			Method:      "DELETE",
-			Pattern:     "/subscriptions/{id:[0-9]+}",
-			HandlerFunc: service.cancelSubscriptionHandler,
+			Name:        "list_subscriptions",
+			Method:      "GET",
+			Pattern:     "/subscriptions",
+			HandlerFunc: service.listSubscriptionsHandler,
 			Middlewares: []negroni.Handler{
 				accounts.NewUserAuthMiddleware(service.GetAccountsService()),
 			},
