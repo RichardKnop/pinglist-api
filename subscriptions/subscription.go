@@ -97,7 +97,7 @@ func (s *Service) createSubscription(user *accounts.User, plan *Plan, stripeToke
 		return nil, err
 	}
 
-	// Create a new incident object
+	// Create a new customer object
 	customer := newCustomer(user, cus.ID)
 
 	// Begin a transaction
