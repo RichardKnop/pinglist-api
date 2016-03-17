@@ -35,6 +35,15 @@ func newRoutes(service ServiceInterface) []routes.Route {
 			},
 		},
 		routes.Route{
+			Name:        "list_subscriptions",
+			Method:      "GET",
+			Pattern:     "/subscriptions",
+			HandlerFunc: service.listSubscriptionsHandler,
+			Middlewares: []negroni.Handler{
+				accounts.NewUserAuthMiddleware(service.GetAccountsService()),
+			},
+		},
+		routes.Route{
 			Name:        "stripe_webhook",
 			Method:      "POST",
 			Pattern:     "/stripe-webhook",

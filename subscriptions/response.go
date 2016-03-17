@@ -52,6 +52,13 @@ type SubscriptionResponse struct {
 	UpdatedAt      string `json:"updated_at"`
 }
 
+// ListSubscriptionsResponse ...
+type ListSubscriptionsResponse struct {
+	jsonhal.Hal
+	Count uint `json:"count"`
+	Page  uint `json:"page"`
+}
+
 // NewCustomerResponse creates new CustomerResponse instance
 func NewCustomerResponse(customer *Customer) (*CustomerResponse, error) {
 	response := &CustomerResponse{
@@ -175,6 +182,47 @@ func NewSubscriptionResponse(subscription *Subscription) (*SubscriptionResponse,
 	response.SetEmbedded(
 		"plan",
 		jsonhal.Embedded(planResponse),
+	)
+
+	return response, nil
+}
+
+// NewListSubscriptionsResponse creates new ListSubscriptionsResponse instance
+func NewListSubscriptionsResponse(count, page int, self, first, last, previous, next string, subscriptions []*Subscription) (*ListSubscriptionsResponse, error) {
+	response := &ListSubscriptionsResponse{
+		Count: uint(count),
+		Page:  uint(page),
+	}
+
+	// Set the self link
+	response.SetLink("self", self, "")
+
+	// Set the first link
+	response.SetLink("first", first, "")
+
+	// Set the last link
+	response.SetLink("last", last, "")
+
+	// Set the previous link
+	response.SetLink("prev", previous, "")
+
+	// Set the next link
+	response.SetLink("next", next, "")
+
+	// Create slice of subscription responses
+	subscriptionResponses := make([]*SubscriptionResponse, len(subscriptions))
+	for i, subscription := range subscriptions {
+		subscriptionResponse, err := NewSubscriptionResponse(subscription)
+		if err != nil {
+			return nil, err
+		}
+		subscriptionResponses[i] = subscriptionResponse
+	}
+
+	// Set embedded subscriptions
+	response.SetEmbedded(
+		"subscriptions",
+		jsonhal.Embedded(subscriptionResponses),
 	)
 
 	return response, nil

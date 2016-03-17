@@ -17,5 +17,6 @@ type ServiceInterface interface {
 	// Needed for the newRoutes to be able to register handlers
 	listPlansHandler(w http.ResponseWriter, r *http.Request)
 	subscribeUserHandler(w http.ResponseWriter, r *http.Request)
+	listSubscriptionsHandler(w http.ResponseWriter, r *http.Request)
 	stripeWebhookHandler(w http.ResponseWriter, r *http.Request)
 }
