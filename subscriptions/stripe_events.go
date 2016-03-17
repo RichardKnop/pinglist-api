@@ -5,7 +5,6 @@ import (
 
 	"github.com/RichardKnop/pinglist-api/util"
 	stripe "github.com/stripe/stripe-go"
-	"github.com/stripe/stripe-go/sub"
 )
 
 // customer.created
@@ -62,7 +61,7 @@ func (s *Service) stripeEventCustomerSubscriptionUpdated(e *stripe.Event) error 
 	}
 
 	// Verify the subscription by fetching it from Stripe
-	stripeSubscription, err := sub.Get(subscriptionID, &stripe.SubParams{})
+	stripeSubscription, err := s.stripeAdapter.GetSubscription(subscriptionID)
 	if err != nil {
 		return err
 	}
@@ -116,7 +115,7 @@ func (s *Service) stripeEventCustomerSubscriptionDeleted(e *stripe.Event) error 
 	}
 
 	// Verify the subscription by fetching it from Stripe
-	stripeSubscription, err := sub.Get(subscriptionID, &stripe.SubParams{})
+	stripeSubscription, err := s.stripeAdapter.GetSubscription(subscriptionID)
 	if err != nil {
 		return err
 	}

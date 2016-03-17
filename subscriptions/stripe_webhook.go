@@ -8,7 +8,6 @@ import (
 
 	"github.com/RichardKnop/pinglist-api/response"
 	stripe "github.com/stripe/stripe-go"
-	"github.com/stripe/stripe-go/event"
 )
 
 // Handles calls to Stripe webhook (POST /v1/stripe-webhook)
@@ -35,7 +34,7 @@ func (s *Service) stripeWebhookHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Verify the event by fetching it from Stripe
-	stripeEvent, err := event.Get(stripeEventRequest.ID, &stripe.Params{})
+	stripeEvent, err := s.stripeAdapter.GetEvent(stripeEventRequest.ID)
 	if err != nil {
 		response.Error(w, err.Error(), http.StatusNotFound)
 		return

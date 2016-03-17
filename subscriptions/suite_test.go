@@ -115,6 +115,7 @@ func (suite *SubscriptionsTestSuite) SetupSuite() {
 		suite.cnf,
 		suite.db,
 		suite.accountsServiceMock,
+		nil, // Stripe adapter... TODO replace with mock
 	)
 
 	// Register routes

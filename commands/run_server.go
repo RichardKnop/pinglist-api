@@ -51,7 +51,12 @@ func RunServer() error {
 	)
 
 	// Initialise the subscriptions service
-	subscriptionsService := subscriptions.NewService(cnf, db, accountsService)
+	subscriptionsService := subscriptions.NewService(
+		cnf,
+		db,
+		accountsService,
+		nil, // subscriptions.StripeAdapter
+	)
 
 	// Initialise the alarms service
 	alarmsService := alarms.NewService(

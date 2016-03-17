@@ -8,8 +8,6 @@ import (
 	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/jinzhu/gorm"
 	stripe "github.com/stripe/stripe-go"
-	stripeCustomer "github.com/stripe/stripe-go/customer"
-	stripeSubscription "github.com/stripe/stripe-go/sub"
 )
 
 var (
@@ -87,18 +85,17 @@ func (s *Service) createSubscription(user *accounts.User, plan *Plan, stripeToke
 	}
 
 	// Create a new Stripe customer and subscribe him/her to a plan
-	params := &stripe.CustomerParams{
-		Plan:  plan.PlanID,
-		Email: stripeEmail,
-	}
-	params.SetSource(stripeToken)
-	cus, err := stripeCustomer.New(params)
+	stripeCustomer, err := s.stripeAdapter.CreateSubscription(
+		plan.PlanID,
+		stripeEmail,
+		stripeToken,
+	)
 	if err != nil {
 		return nil, err
 	}
 
 	// Create a new customer object
-	customer := newCustomer(user, cus.ID)
+	customer := newCustomer(user, stripeCustomer.ID)
 
 	// Begin a transaction
 	tx := s.db.Begin()
@@ -110,7 +107,7 @@ func (s *Service) createSubscription(user *accounts.User, plan *Plan, stripeToke
 	}
 
 	// Assign Stripe subscription to a less confusing variable
-	stripeSubscription := cus.Subs.Values[0]
+	stripeSubscription := stripeCustomer.Subs.Values[0]
 
 	// Parse subscription times
 	startedAt, cancelledAt, endedAt, periodStart, periodEnd, trialStart, trialEnd := getStripeSubscriptionTimes(stripeSubscription)
@@ -179,10 +176,10 @@ func getStripeSubscriptionTimes(stripeSubscription *stripe.Sub) (startedAt, canc
 
 // cancelSubscription cancells a subscription immediatelly
 func (s *Service) cancelSubscription(subscription *Subscription) error {
-	// Cancel the Stripe subscription
-	stripeSubscription, err := stripeSubscription.Cancel(
+	// Cancel the subscription
+	stripeSubscription, err := s.stripeAdapter.CancelSubscription(
 		subscription.SubscriptionID,
-		&stripe.SubParams{Customer: subscription.Customer.CustomerID},
+		subscription.Customer.CustomerID,
 	)
 	if err != nil {
 		return err
