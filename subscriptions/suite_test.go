@@ -79,7 +79,7 @@ func (suite *SubscriptionsTestSuite) SetupSuite() {
 	// Fetch test users
 	suite.users = make([]*accounts.User, 0)
 	err = suite.db.Preload("Account").Preload("OauthUser").Preload("Role").
-		Find(&suite.users).Error
+		Order("id").Find(&suite.users).Error
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -93,7 +93,7 @@ func (suite *SubscriptionsTestSuite) SetupSuite() {
 	// Fetch test customers
 	suite.customers = make([]*Customer, 0)
 	err = suite.db.Preload("User.OauthUser").Preload("User.Role").
-		Find(&suite.customers).Error
+		Order("id").Find(&suite.customers).Error
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -101,7 +101,7 @@ func (suite *SubscriptionsTestSuite) SetupSuite() {
 	// Fetch test subscriptions
 	suite.subscriptions = make([]*Subscription, 0)
 	err = suite.db.Preload("Customer").Preload("Plan").
-		Find(&suite.subscriptions).Error
+		Order("id").Find(&suite.subscriptions).Error
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -169,10 +169,10 @@ func (suite *SubscriptionsTestSuite) SetupTest() {
 	suite.db.Unscoped().Not("id", []int64{1, 2, 3}).Delete(new(Plan))
 
 	// Reset mocks
-	suite.oauthServiceMock.ExpectedCalls = make([]*mock.Call, 0)
-	suite.oauthServiceMock.Calls = make([]mock.Call, 0)
-	suite.accountsServiceMock.ExpectedCalls = make([]*mock.Call, 0)
-	suite.accountsServiceMock.Calls = make([]mock.Call, 0)
+	suite.oauthServiceMock.ExpectedCalls = suite.oauthServiceMock.ExpectedCalls[:0]
+	suite.oauthServiceMock.Calls = suite.oauthServiceMock.Calls[:0]
+	suite.accountsServiceMock.ExpectedCalls = suite.accountsServiceMock.ExpectedCalls[:0]
+	suite.accountsServiceMock.Calls = suite.accountsServiceMock.Calls[:0]
 }
 
 // The TearDownTest method will be run after every test in the suite.

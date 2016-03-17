@@ -8,6 +8,7 @@ import (
 	"github.com/RichardKnop/pinglist-api/email"
 	"github.com/RichardKnop/pinglist-api/facebook"
 	"github.com/RichardKnop/pinglist-api/health"
+	"github.com/RichardKnop/pinglist-api/notifications"
 	"github.com/RichardKnop/pinglist-api/oauth"
 	"github.com/RichardKnop/pinglist-api/subscriptions"
 	"github.com/RichardKnop/pinglist-api/web"
@@ -67,6 +68,14 @@ func RunServer() error {
 		nil, // HTTP client
 	)
 
+	// Initialise the notifications service
+	notificationsService := notifications.NewService(
+		cnf,
+		db,
+		accountsService,
+		nil, // notifications.SNSAdapter
+	)
+
 	// Initialise the web service
 	webService := web.NewService(cnf, accountsService)
 
@@ -97,6 +106,9 @@ func RunServer() error {
 
 	// Register routes for the subscriptions service
 	subscriptions.RegisterRoutes(router, subscriptionsService)
+
+	// Register routes for the notifications service
+	notifications.RegisterRoutes(router, notificationsService)
 
 	// Register routes for the web service
 	web.RegisterRoutes(router, webService)

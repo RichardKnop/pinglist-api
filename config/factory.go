@@ -40,6 +40,11 @@ var cnf = &Config{
 		MaxAge:   86400 * 7, // 7 days
 		HTTPOnly: true,
 	},
+	AWS: AWSConfig{
+		Region: "eu-west-1",
+		APNSPlatformApplicationARN: "apns_platform_application_arn",
+		GCMPlatformApplicationARN:  "gcm_platform_application_arn",
+	},
 	Facebook: FacebookConfig{
 		AppID:     "facebook_app_id",
 		AppSecret: "facebook_app_secret",
