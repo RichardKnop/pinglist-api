@@ -9,6 +9,8 @@ import (
 	"github.com/RichardKnop/go-fixtures"
 	"github.com/RichardKnop/pinglist-api/migrations"
 	"github.com/jinzhu/gorm"
+	// sqlite driver
+	_ "github.com/mattn/go-sqlite3"
 )
 
 // CreateTestDatabase recreates the test database and

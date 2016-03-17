@@ -15,8 +15,6 @@ import (
 	"github.com/stripe/stripe-go"
 	stripeCustomer "github.com/stripe/stripe-go/customer"
 	stripeUtils "github.com/stripe/stripe-go/utils"
-	// sqlite driver
-	_ "github.com/mattn/go-sqlite3"
 )
 
 var testDbPath = "/tmp/subscriptions_testdb.sqlite"
@@ -127,20 +125,46 @@ func (suite *SubscriptionsTestSuite) SetupSuite() {
 // The TearDownSuite method will be run by testify once, at the very
 // end of the testing suite, after all tests have been run.
 func (suite *SubscriptionsTestSuite) TearDownSuite() {
-	// Delete Stripe customers
+	// Get all Stripe customers
 	i := stripeCustomer.List(new(stripe.CustomerListParams))
+
+	// Prepare for asynchronous deleting of all customers
+	errChan := make(chan error)
+	var (
+		errs  []error
+		count int
+	)
+
+	// Iterate over customers and fire off deleting goroutines
 	for i.Next() {
-		_, err := stripeCustomer.Del(i.Customer().ID)
-		if err != nil {
-			log.Fatal(err)
+		go func() {
+			_, err := stripeCustomer.Del(i.Customer().ID)
+			errChan <- err
+		}()
+		count++
+	}
+
+	// Capture errors if anything went wrong
+	for i := 0; i < count; i++ {
+		select {
+		case err := <-errChan:
+			if err != nil {
+				errs = append(errs, err)
+			}
 		}
+	}
+	if len(errs) > 0 {
+		for _, err := range errs {
+			log.Print(err)
+		}
+		log.Fatal("Something went wrong while deleting Stripe customers")
 	}
 }
 
 // The SetupTest method will be run before every test in the suite.
 func (suite *SubscriptionsTestSuite) SetupTest() {
-	suite.db.Unscoped().Not("id", []int64{1, 2}).Delete(new(Subscription))
-	suite.db.Unscoped().Not("id", []int64{1, 2}).Delete(new(Customer))
+	suite.db.Unscoped().Not("id", []int64{1, 2, 3, 4}).Delete(new(Subscription))
+	suite.db.Unscoped().Not("id", []int64{1}).Delete(new(Customer))
 	suite.db.Unscoped().Not("id", []int64{1, 2, 3}).Delete(new(Plan))
 
 	// Reset mocks
@@ -178,4 +202,12 @@ func (suite *SubscriptionsTestSuite) mockAuthentication(user *accounts.User) {
 	// Mock FindUserByOauthUserID to return the wanted user
 	suite.accountsServiceMock.On("FindUserByOauthUserID", user.OauthUser.ID).
 		Return(user, nil)
+}
+
+// Mock user querystring filtering
+func (suite *SubscriptionsTestSuite) mockUserFiltering(user *accounts.User) {
+	suite.accountsServiceMock.On(
+		"GetUserFromQueryString",
+		mock.AnythingOfType("*http.Request"),
+	).Return(user, nil)
 }

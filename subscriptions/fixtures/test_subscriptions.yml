@@ -17,11 +17,43 @@
   pk:
     id: 2
   fields:
-    customer_id: 2
-    plan_id: 2
+    customer_id: 1
+    plan_id: 1
     subscription_id: 'sub_2'
-    started_at: '2016-02-27T22:29:12Z'
-    period_start: '2016-02-27T22:29:12Z'
-    period_end: '2016-03-27T22:29:12Z'
-    created_at: '2016-02-27T22:29:12Z'
-    updated_at: '2016-02-27T22:29:12Z'
+    started_at: '2016-01-27T22:29:12Z'
+    cancelled_at: '2016-02-27T22:29:12Z'
+    ended_at: '2016-02-27T22:29:12Z'
+    period_start: '2016-01-27T22:29:12Z'
+    period_end: '2016-02-27T22:29:12Z'
+    created_at: '2016-01-27T22:29:12Z'
+    updated_at: '2016-01-27T22:29:12Z'
+
+- table: 'subscription_subscriptions'
+  pk:
+    id: 3
+  fields:
+    customer_id: 1
+    plan_id: 1
+    subscription_id: 'sub_3'
+    started_at: '2016-01-27T22:29:12Z'
+    cancelled_at: '2016-02-27T22:29:12Z'
+    ended_at: '2016-02-27T22:29:12Z'
+    period_start: '2016-01-27T22:29:12Z'
+    period_end: '2016-02-27T22:29:12Z'
+    created_at: '2016-01-27T22:29:12Z'
+    updated_at: '2016-01-27T22:29:12Z'
+
+- table: 'subscription_subscriptions'
+  pk:
+    id: 4
+  fields:
+    customer_id: 1
+    plan_id: 1
+    subscription_id: 'sub_4'
+    started_at: '2016-01-27T22:29:12Z'
+    cancelled_at: '2016-02-27T22:29:12Z'
+    ended_at: '2016-02-27T22:29:12Z'
+    period_start: '2016-01-27T22:29:12Z'
+    period_end: '2016-02-27T22:29:12Z'
+    created_at: '2016-01-27T22:29:12Z'
+    updated_at: '2016-01-27T22:29:12Z'

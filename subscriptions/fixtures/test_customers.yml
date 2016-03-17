@@ -8,12 +8,3 @@
     customer_id: "cus_1"
     created_at: 'ON_INSERT_NOW()'
     updated_at: 'ON_UPDATE_NOW()'
-
-- table: 'subscription_customers'
-  pk:
-    id: 2
-  fields:
-    user_id: 2
-    customer_id: "cus_2"
-    created_at: 'ON_INSERT_NOW()'
-    updated_at: 'ON_UPDATE_NOW()'

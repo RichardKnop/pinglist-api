@@ -6,6 +6,7 @@ import (
 
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/RichardKnop/pinglist-api/util"
+	"github.com/jinzhu/gorm"
 	stripe "github.com/stripe/stripe-go"
 	stripeCustomer "github.com/stripe/stripe-go/customer"
 	stripeSubscription "github.com/stripe/stripe-go/sub"
@@ -205,6 +206,57 @@ func (s *Service) findActiveUserSubscriptions(userID uint) ([]*Subscription, err
 // findUserSubscriptions returns subscriptions belonging to a user
 func (s *Service) findUserSubscriptions(userID uint) ([]*Subscription, error) {
 	var userSubscriptions []*Subscription
-	return userSubscriptions, s.db.Preload("Customer").Preload("Plan").
-		Where("user_id = ?", userID).Order("id").Find(&userSubscriptions).Error
+	userObj := &accounts.User{Model: gorm.Model{ID: userID}}
+	return userSubscriptions, s.paginatedSubscriptionsQuery(userObj).
+		Preload("Customer").Preload("Plan").
+		Order("id").Find(&userSubscriptions).Error
+}
+
+// paginatedSubscriptionsCount returns a total count of subscriptions
+// Can be optionally filtered by user
+func (s *Service) paginatedSubscriptionsCount(user *accounts.User) (int, error) {
+	var count int
+	if err := s.paginatedSubscriptionsQuery(user).Count(&count).Error; err != nil {
+		return 0, err
+	}
+	return count, nil
+}
+
+// findPaginatedSubscriptions returns paginated subscription records
+// Results can optionally be filtered by user
+func (s *Service) findPaginatedSubscriptions(offset, limit int, orderBy string, user *accounts.User) ([]*Subscription, error) {
+	var subscriptions []*Subscription
+
+	// Get the pagination query
+	subscriptionsQuery := s.paginatedSubscriptionsQuery(user)
+
+	// Default ordering
+	if orderBy == "" {
+		orderBy = "id"
+	}
+
+	// Retrieve paginated results from the database
+	err := subscriptionsQuery.Offset(offset).Limit(limit).Order(orderBy).
+		Preload("Customer").Preload("Plan").Find(&subscriptions).Error
+	if err != nil {
+		return subscriptions, err
+	}
+
+	return subscriptions, nil
+}
+
+// paginatedSubscriptionsQuery returns a db query for paginated subscriptions
+func (s *Service) paginatedSubscriptionsQuery(user *accounts.User) *gorm.DB {
+	// Basic query
+	subscriptionsQuery := s.db.Model(new(Subscription))
+
+	// Optionally filter by user
+	if user != nil {
+		subscriptionsQuery = subscriptionsQuery.
+			Joins("inner join subscription_customers on subscription_customers.id = subscription_subscriptions.customer_id").
+			Joins("inner join account_users on account_users.id = subscription_customers.user_id").
+			Where("subscription_customers.user_id = ?", user.ID)
+	}
+
+	return subscriptionsQuery
 }
