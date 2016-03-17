@@ -63,7 +63,7 @@ func (s *Service) PartitionTable(parentTableName string, now time.Time) error {
 	return nil
 }
 
-// RotateSubTables deletes sub tables older than rotateAfterDays days
+// RotateSubTables deletes sub tables older than rotateAfterHours hours
 func (s *Service) RotateSubTables() error {
 	var (
 		err             error
