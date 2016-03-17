@@ -11,7 +11,10 @@ type ServiceInterface interface {
 	// Exported methods
 	GetAccountsService() accounts.ServiceInterface
 	FindPlanByID(planID uint) (*Plan, error)
+	FindCustomerByID(customerID uint) (*Customer, error)
+	FindCustomerByCustomerID(customerID string) (*Customer, error)
 	FindSubscriptionByID(subscriptionID uint) (*Subscription, error)
+	FindSubscriptionBySubscriptionID(subscriptionID string) (*Subscription, error)
 	FindActiveUserSubscription(userID uint) (*Subscription, error)
 
 	// Needed for the newRoutes to be able to register handlers

@@ -41,6 +41,22 @@ func (s *Service) FindSubscriptionByID(subscriptionID uint) (*Subscription, erro
 	return subscription, nil
 }
 
+// FindSubscriptionBySubscriptionID looks up a subscription by a subscription ID and returns it
+func (s *Service) FindSubscriptionBySubscriptionID(subscriptionID string) (*Subscription, error) {
+	// Fetch the subscription from the database
+	subscription := new(Subscription)
+	notFound := s.db.Preload("Customer").Preload("Plan").
+		Where("subscription_id = ?", subscriptionID).
+		First(subscription).RecordNotFound()
+
+	// Not found
+	if notFound {
+		return nil, ErrSubscriptionNotFound
+	}
+
+	return subscription, nil
+}
+
 // FindActiveUserSubscription returns the currently active user subscription
 func (s *Service) FindActiveUserSubscription(userID uint) (*Subscription, error) {
 	// Fetch all active user subscriptions
