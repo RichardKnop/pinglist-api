@@ -109,42 +109,20 @@ func (s *Service) createSubscription(user *accounts.User, plan *Plan, stripeToke
 		return nil, err
 	}
 
-	// Prepare subscription data
-	sub := cus.Subs.Values[0]
-	var (
-		startedAt   *time.Time
-		periodStart *time.Time
-		periodEnd   *time.Time
-		trialStart  *time.Time
-		trialEnd    *time.Time
-	)
-	if sub.Start > 0 {
-		t := time.Unix(sub.Start, 0)
-		startedAt = &t
-	}
-	if sub.PeriodStart > 0 {
-		t := time.Unix(sub.PeriodStart, 0)
-		periodStart = &t
-	}
-	if sub.PeriodEnd > 0 {
-		t := time.Unix(sub.PeriodEnd, 0)
-		periodEnd = &t
-	}
-	if sub.TrialStart > 0 {
-		t := time.Unix(sub.TrialStart, 0)
-		trialStart = &t
-	}
-	if sub.TrialEnd > 0 {
-		t := time.Unix(sub.TrialEnd, 0)
-		trialEnd = &t
-	}
+	// Assign Stripe subscription to a less confusing variable
+	stripeSubscription := cus.Subs.Values[0]
+
+	// Parse subscription times
+	startedAt, cancelledAt, endedAt, periodStart, periodEnd, trialStart, trialEnd := getStripeSubscriptionTimes(stripeSubscription)
 
 	// Create a new subscription object
 	subscription := newSubscription(
 		customer,
 		plan,
-		sub.ID,
+		stripeSubscription.ID,
 		startedAt,
+		cancelledAt,
+		endedAt,
 		periodStart,
 		periodEnd,
 		trialStart,
@@ -166,33 +144,55 @@ func (s *Service) createSubscription(user *accounts.User, plan *Plan, stripeToke
 	return subscription, nil
 }
 
+// getStripeSubscriptionTimes parses UNIX timestamps from a subscription
+func getStripeSubscriptionTimes(stripeSubscription *stripe.Sub) (startedAt, cancelledAt, endedAt, periodStart, periodEnd, trialStart, trialEnd *time.Time) {
+	if stripeSubscription.Start > 0 {
+		t := time.Unix(stripeSubscription.Start, 0)
+		startedAt = &t
+	}
+	if stripeSubscription.Canceled > 0 {
+		t := time.Unix(stripeSubscription.Canceled, 0)
+		cancelledAt = &t
+	}
+	if stripeSubscription.Ended > 0 {
+		t := time.Unix(stripeSubscription.Ended, 0)
+		endedAt = &t
+	}
+	if stripeSubscription.PeriodStart > 0 {
+		t := time.Unix(stripeSubscription.PeriodStart, 0)
+		periodStart = &t
+	}
+	if stripeSubscription.PeriodEnd > 0 {
+		t := time.Unix(stripeSubscription.PeriodEnd, 0)
+		periodEnd = &t
+	}
+	if stripeSubscription.TrialStart > 0 {
+		t := time.Unix(stripeSubscription.TrialStart, 0)
+		trialStart = &t
+	}
+	if stripeSubscription.TrialEnd > 0 {
+		t := time.Unix(stripeSubscription.TrialEnd, 0)
+		trialEnd = &t
+	}
+	return
+}
+
 // cancelSubscription cancells a subscription immediatelly
 func (s *Service) cancelSubscription(subscription *Subscription) error {
-	// Begin a transaction
-	tx := s.db.Begin()
-
 	// Cancel the Stripe subscription
-	sub, err := stripeSubscription.Cancel(
+	stripeSubscription, err := stripeSubscription.Cancel(
 		subscription.SubscriptionID,
 		&stripe.SubParams{Customer: subscription.Customer.CustomerID},
 	)
 	if err != nil {
-		tx.Rollback() // rollback the transaction
 		return err
 	}
 
 	// Update the subscription's cancelled_at field
-	cancelledAt := time.Unix(sub.Canceled, 0)
-	if err := tx.Model(subscription).UpdateColumn(Subscription{
+	cancelledAt := time.Unix(stripeSubscription.Canceled, 0)
+	if err := s.db.Model(subscription).UpdateColumn(Subscription{
 		CancelledAt: util.TimeOrNull(&cancelledAt),
 	}).Error; err != nil {
-		tx.Rollback() // rollback the transaction
-		return err
-	}
-
-	// Commit the transaction
-	if err := tx.Commit().Error; err != nil {
-		tx.Rollback() // rollback the transaction
 		return err
 	}
 

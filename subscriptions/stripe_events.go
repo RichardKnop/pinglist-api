@@ -1,34 +1,26 @@
 package subscriptions
 
 import (
+	"time"
+
+	"github.com/RichardKnop/pinglist-api/util"
 	stripe "github.com/stripe/stripe-go"
+	"github.com/stripe/stripe-go/sub"
 )
 
 // customer.created
 func (s *Service) stripeEventCustomerCreated(e *stripe.Event) error {
-	// access event data via e.GetObjValue("resource_name_based_on_type", "resource_property_name")
-	// alternatively you can access values via e.Data.Obj["resource_name_based_on_type"].(map[string]interface{})["resource_property_name"]
-
-	// access previous attributes via e.GetPrevValue("resource_name_based_on_type", "resource_property_name")
-	// alternatively you can access values via e.Data.Prev["resource_name_based_on_type"].(map[string]interface{})["resource_property_name"]
-
 	return nil
 }
 
 // customer.subscription.created
 func (s *Service) stripeEventCustomerSubscriptionCreated(e *stripe.Event) error {
-	// e.GetObjValue("subscription", "id")
-	// Customer ID:
-	// e.GetObjValue("subscription", "customer")
-
 	return nil
 }
 
 // customer.subscription.trial_will_end
+// // Sent 3 days before the trial period ends
 func (s *Service) stripeEventCustomerSubscriptionTrialWillEnd(e *stripe.Event) error {
-	// Sent 3 days before the trial period ends
-	// e.GetObjValue("subscription", "id")
-
 	return nil
 }
 
@@ -60,15 +52,73 @@ func (s *Service) stripeEventPaymentSucceeded(e *stripe.Event) error {
 }
 
 // customer.subscription.updated
+// Also received when subscription plan is upgraded or downgraded
 func (s *Service) stripeEventCustomerSubscriptionUpdated(e *stripe.Event) error {
-	// Also received when subscription plan is upgraded or downgraded
+	// Fetch the subscription record from our database
+	subscriptionID := e.GetObjValue("subscription", "id")
+	subscription, err := s.FindSubscriptionBySubscriptionID(subscriptionID)
+	if err != nil {
+		return err
+	}
+
+	// Verify the subscription by fetching it from Stripe
+	stripeSubscription, err := sub.Get(subscriptionID, &stripe.SubParams{})
+	if err != nil {
+		return err
+	}
+
+	// Parse subscription times
+	startedAt, cancelledAt, endedAt, periodStart, periodEnd, trialStart, trialEnd := getStripeSubscriptionTimes(stripeSubscription)
+
+	if cancelledAt != nil && !subscription.CancelledAt.Valid {
+		// cancelled
+	}
+
+	if endedAt != nil && !subscription.EndedAt.Valid {
+		// cancelled
+	}
+
+	// TODO update plan if it changed
+
+	// Update the subscription
+	if err := s.db.Model(subscription).UpdateColumn(Subscription{
+		StartedAt:   util.TimeOrNull(startedAt),
+		CancelledAt: util.TimeOrNull(cancelledAt),
+		EndedAt:     util.TimeOrNull(endedAt),
+		PeriodStart: util.TimeOrNull(periodStart),
+		PeriodEnd:   util.TimeOrNull(periodEnd),
+		TrialStart:  util.TimeOrNull(trialStart),
+		TrialEnd:    util.TimeOrNull(trialEnd),
+	}).Error; err != nil {
+		return nil
+	}
 
 	return nil
 }
 
 // customer.subscription.deleted
+// When customer subscription is cancelled immediately
 func (s *Service) stripeEventCustomerSubscriptionDeleted(e *stripe.Event) error {
-	// When customer subscription is cancelled immediately
+	// Fetch the subscription record from our database
+	subscriptionID := e.GetObjValue("subscription", "id")
+	subscription, err := s.FindSubscriptionBySubscriptionID(subscriptionID)
+	if err != nil {
+		return err
+	}
+
+	// Verify the subscription by fetching it from Stripe
+	stripeSubscription, err := sub.Get(subscriptionID, &stripe.SubParams{})
+	if err != nil {
+		return err
+	}
+
+	// Update the subscription's cancelled_at field
+	cancelledAt := time.Unix(stripeSubscription.Canceled, 0)
+	if err := s.db.Model(subscription).UpdateColumn(Subscription{
+		CancelledAt: util.TimeOrNull(&cancelledAt),
+	}).Error; err != nil {
+		return err
+	}
 
 	return nil
 }

@@ -98,7 +98,7 @@ func newCustomer(user *accounts.User, customerID string) *Customer {
 }
 
 // newSubscription creates new Subscription instance
-func newSubscription(customer *Customer, plan *Plan, subscriptionID string, startedAt, periodStart, periodEnd, trialStart, trialEnd *time.Time) *Subscription {
+func newSubscription(customer *Customer, plan *Plan, subscriptionID string, startedAt, cancelledAt, endedAt, periodStart, periodEnd, trialStart, trialEnd *time.Time) *Subscription {
 	customerID := util.PositiveIntOrNull(int64(customer.ID))
 	planID := util.PositiveIntOrNull(int64(plan.ID))
 	subscription := &Subscription{
@@ -106,6 +106,8 @@ func newSubscription(customer *Customer, plan *Plan, subscriptionID string, star
 		PlanID:         planID,
 		SubscriptionID: subscriptionID,
 		StartedAt:      util.TimeOrNull(startedAt),
+		CancelledAt:    util.TimeOrNull(cancelledAt),
+		EndedAt:        util.TimeOrNull(endedAt),
 		PeriodStart:    util.TimeOrNull(periodStart),
 		PeriodEnd:      util.TimeOrNull(periodEnd),
 		TrialStart:     util.TimeOrNull(trialStart),
