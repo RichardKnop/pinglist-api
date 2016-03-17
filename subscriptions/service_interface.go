@@ -22,5 +22,6 @@ type ServiceInterface interface {
 	listPlansHandler(w http.ResponseWriter, r *http.Request)
 	subscribeUserHandler(w http.ResponseWriter, r *http.Request)
 	listSubscriptionsHandler(w http.ResponseWriter, r *http.Request)
+	cancelSubscriptionHandler(w http.ResponseWriter, r *http.Request)
 	stripeWebhookHandler(w http.ResponseWriter, r *http.Request)
 }

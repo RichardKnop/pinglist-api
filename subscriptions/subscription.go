@@ -30,7 +30,7 @@ func (s *Subscription) IsActive() bool {
 func (s *Service) FindSubscriptionByID(subscriptionID uint) (*Subscription, error) {
 	// Fetch the subscription from the database
 	subscription := new(Subscription)
-	notFound := s.db.Preload("Customer").Preload("Plan").
+	notFound := s.db.Preload("Customer.User").Preload("Plan").
 		First(subscription, subscriptionID).RecordNotFound()
 
 	// Not found
@@ -45,7 +45,7 @@ func (s *Service) FindSubscriptionByID(subscriptionID uint) (*Subscription, erro
 func (s *Service) FindSubscriptionBySubscriptionID(subscriptionID string) (*Subscription, error) {
 	// Fetch the subscription from the database
 	subscription := new(Subscription)
-	notFound := s.db.Preload("Customer").Preload("Plan").
+	notFound := s.db.Preload("Customer.User").Preload("Plan").
 		Where("subscription_id = ?", subscriptionID).
 		First(subscription).RecordNotFound()
 
@@ -224,7 +224,7 @@ func (s *Service) findUserSubscriptions(userID uint) ([]*Subscription, error) {
 	var userSubscriptions []*Subscription
 	userObj := &accounts.User{Model: gorm.Model{ID: userID}}
 	return userSubscriptions, s.paginatedSubscriptionsQuery(userObj).
-		Preload("Customer").Preload("Plan").
+		Preload("Customer.User").Preload("Plan").
 		Order("id").Find(&userSubscriptions).Error
 }
 
@@ -253,7 +253,7 @@ func (s *Service) findPaginatedSubscriptions(offset, limit int, orderBy string, 
 
 	// Retrieve paginated results from the database
 	err := subscriptionsQuery.Offset(offset).Limit(limit).Order(orderBy).
-		Preload("Customer").Preload("Plan").Find(&subscriptions).Error
+		Preload("Customer.User").Preload("Plan").Find(&subscriptions).Error
 	if err != nil {
 		return subscriptions, err
 	}

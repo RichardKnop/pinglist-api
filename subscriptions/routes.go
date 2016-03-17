@@ -44,6 +44,15 @@ func newRoutes(service ServiceInterface) []routes.Route {
 			},
 		},
 		routes.Route{
+			Name:        "cancel_subscription",
+			Method:      "DELETE",
+			Pattern:     "/subscriptions/{id:[0-9]+}",
+			HandlerFunc: service.cancelSubscriptionHandler,
+			Middlewares: []negroni.Handler{
+				accounts.NewUserAuthMiddleware(service.GetAccountsService()),
+			},
+		},
+		routes.Route{
 			Name:        "stripe_webhook",
 			Method:      "POST",
 			Pattern:     "/stripe-webhook",

@@ -55,6 +55,7 @@ func (s *Service) subscribeUserHandler(w http.ResponseWriter, r *http.Request) {
 		subscriptionRequest.StripeEmail,
 	)
 	if err != nil {
+		logger.Errorf("Create subscription error: %s", err)
 		response.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

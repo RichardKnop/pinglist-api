@@ -195,6 +195,14 @@ func (_m *ServiceMock) subscribeUserHandler(w http.ResponseWriter, r *http.Reque
 	_m.Called(w, r)
 }
 
+func (_m *ServiceMock) listSubscriptionsHandler(w http.ResponseWriter, r *http.Request) {
+	_m.Called(w, r)
+}
+
+func (_m *ServiceMock) cancelSubscriptionHandler(w http.ResponseWriter, r *http.Request) {
+	_m.Called(w, r)
+}
+
 func (_m *ServiceMock) stripeWebhookHandler(w http.ResponseWriter, r *http.Request) {
 	_m.Called(w, r)
 }
