@@ -6,8 +6,10 @@ import (
 )
 
 const (
-	rotateAfterHours     = 30 * 24 // 30 days
-	nearingTomorrowHours = 1
+	// RotateAfterHours defines how long to wait before sub tables are rotated away
+	RotateAfterHours = 30 * 24 // 30 days
+	// NearingTomorrowHours defines how many hours before tomorrow triggers table partitioning
+	NearingTomorrowHours = 1
 )
 
 // PartitionTable creates a new result sub table if needed
@@ -37,8 +39,8 @@ func (s *Service) PartitionTable(parentTableName string, now time.Time) error {
 	}
 
 	// If we are not nearing tomorrow yet, just return
-	// (less than nearingTomorrowHours hours from now)
-	if now.Add(nearingTomorrowHours * time.Hour).Before(tomorrow) {
+	// (less than NearingTomorrowHours hours from now)
+	if now.Add(NearingTomorrowHours * time.Hour).Before(tomorrow) {
 		return nil
 	}
 
@@ -63,12 +65,12 @@ func (s *Service) PartitionTable(parentTableName string, now time.Time) error {
 	return nil
 }
 
-// RotateSubTables deletes sub tables older than rotateAfterHours hours
+// RotateSubTables deletes sub tables older than RotateAfterHours hours
 func (s *Service) RotateSubTables() error {
 	var (
 		err             error
 		rotateAfterDate = time.Now().Add(
-			-time.Duration(rotateAfterHours) * time.Hour,
+			-time.Duration(RotateAfterHours) * time.Hour,
 		)
 		resultSubTables []*ResultSubTable
 	)

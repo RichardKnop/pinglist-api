@@ -53,8 +53,8 @@ func (suite *AlarmsTestSuite) TestRotateSubTables() {
 
 	// Create test result sub tables and records
 	for i := 1; i >= 0; i-- {
-		from = now.Add(-time.Duration(i*rotateAfterHours) * time.Hour)
-		to = from.Add(time.Duration(rotateAfterHours) * time.Hour)
+		from = now.Add(-time.Duration(i*RotateAfterHours) * time.Hour)
+		to = from.Add(time.Duration(RotateAfterHours) * time.Hour)
 
 		// Create a new sub table
 		resultSubTable, err = suite.service.createSubTable(

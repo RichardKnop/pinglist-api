@@ -13,7 +13,7 @@ import (
 	"github.com/lib/pq"
 )
 
-// ResultParentTableName defines parent results table name
+// ResultParentTableName defines alarm parent results table name
 const ResultParentTableName = "alarm_results"
 
 // Region is a region from where alarm checks will be run
