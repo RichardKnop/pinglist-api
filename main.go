@@ -70,6 +70,15 @@ func main() {
 				}
 			},
 		},
+		{
+			Name:  "runscheduler",
+			Usage: "run scheduler",
+			Action: func(c *cli.Context) {
+				if err := commands.RunScheduler(); err != nil {
+					log.Fatal(err)
+				}
+			},
+		},
 	}
 
 	// Run the CLI app
