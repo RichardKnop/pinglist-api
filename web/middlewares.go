@@ -216,7 +216,7 @@ func newPasswordResetMiddleware(service ServiceInterface) *passwordResetMiddlewa
 }
 
 // ServeHTTP as per the negroni.Handler interface
-func (m *confirmationMiddleware) ServeHTTP(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+func (m *passwordResetMiddleware) ServeHTTP(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 	vars := mux.Vars(r)
 
 	// Fetch the confirmation
