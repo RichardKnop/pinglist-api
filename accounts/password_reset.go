@@ -26,6 +26,11 @@ func (s *Service) FindPasswordResetByReference(reference string) (*PasswordReset
 	return passwordReset, nil
 }
 
+// DeletePasswordReset soft deletes the password reset
+func (s *Service) DeletePasswordReset(passwordReset *PasswordReset) error {
+	return s.db.Delete(passwordReset).Error
+}
+
 // findUserPasswordReset returns the first password reset for a user
 func (s *Service) findUserPasswordReset(user *User) (*PasswordReset, error) {
 	// Fetch the password reset from the database

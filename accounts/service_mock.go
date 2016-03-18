@@ -325,6 +325,20 @@ func (_m *ServiceMock) FindPasswordResetByReference(reference string) (*Password
 	return r0, r1
 }
 
+// DeletePasswordReset ...
+func (_m *ServiceMock) DeletePasswordReset(passwordReset *PasswordReset) error {
+	ret := _m.Called(passwordReset)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(*PasswordReset) error); ok {
+		r0 = rf(passwordReset)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // CreateFacebookUser ...
 func (_m *ServiceMock) CreateFacebookUser(account *Account, facebookID string, userRequest *UserRequest) (*User, error) {
 	ret := _m.Called(account, facebookID, userRequest)

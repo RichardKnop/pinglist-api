@@ -26,6 +26,7 @@ type ServiceInterface interface {
 	FindConfirmationByReference(reference string) (*Confirmation, error)
 	ConfirmUser(user *User) error
 	FindPasswordResetByReference(reference string) (*PasswordReset, error)
+	DeletePasswordReset(passwordReset *PasswordReset) error
 	CreateFacebookUser(account *Account, facebookID string, userRequest *UserRequest) (*User, error)
 	CreateSuperuser(account *Account, email, password string) (*User, error)
 	GetAccountFromQueryString(r *http.Request) (*Account, error)
