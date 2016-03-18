@@ -10,6 +10,7 @@ func (suite *AccountsTestSuite) TestFindPasswordResetByReference() {
 		err           error
 	)
 
+	// Insert a test password reset
 	testPasswordReset := newPasswordReset(suite.users[1])
 	err = suite.db.Create(testPasswordReset).Error
 	assert.NoError(suite.T(), err, "Inserting test data failed")
@@ -37,4 +38,23 @@ func (suite *AccountsTestSuite) TestFindPasswordResetByReference() {
 		assert.False(suite.T(), passwordReset.EmailSent)
 		assert.False(suite.T(), passwordReset.EmailSentAt.Valid)
 	}
+}
+
+func (suite *AccountsTestSuite) TestResetPassword() {
+	// Insert a test password reset
+	passwordReset := newPasswordReset(suite.users[1])
+	err := suite.db.Create(passwordReset).Error
+	assert.NoError(suite.T(), err, "Inserting test data failed")
+
+	// Error should be nil
+	assert.Nil(
+		suite.T(),
+		suite.service.ResetPassword(passwordReset, "newpassword"),
+	)
+
+	// The password reset object should have been deleted
+	assert.True(
+		suite.T(),
+		suite.db.Find(new(PasswordReset), passwordReset.ID).RecordNotFound(),
+	)
 }

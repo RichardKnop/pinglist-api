@@ -39,7 +39,7 @@ func (s *Service) ResetPassword(passwordReset *PasswordReset, password string) e
 	}
 
 	// Soft delete the password reset
-	if err := s.db.Delete(passwordReset).Error; err != nil {
+	if err := tx.Delete(passwordReset).Error; err != nil {
 		tx.Rollback() // rollback the transaction
 		return err
 	}
