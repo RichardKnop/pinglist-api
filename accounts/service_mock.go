@@ -325,13 +325,13 @@ func (_m *ServiceMock) FindPasswordResetByReference(reference string) (*Password
 	return r0, r1
 }
 
-// DeletePasswordReset ...
-func (_m *ServiceMock) DeletePasswordReset(passwordReset *PasswordReset) error {
-	ret := _m.Called(passwordReset)
+// ResetPassword ...
+func (_m *ServiceMock) ResetPassword(passwordReset *PasswordReset, password string) error {
+	ret := _m.Called(passwordReset, password)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(*PasswordReset) error); ok {
-		r0 = rf(passwordReset)
+	if rf, ok := ret.Get(0).(func(*PasswordReset, string) error); ok {
+		r0 = rf(passwordReset, password)
 	} else {
 		r0 = ret.Error(0)
 	}

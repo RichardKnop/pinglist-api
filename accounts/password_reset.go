@@ -26,9 +26,31 @@ func (s *Service) FindPasswordResetByReference(reference string) (*PasswordReset
 	return passwordReset, nil
 }
 
-// DeletePasswordReset soft deletes the password reset
-func (s *Service) DeletePasswordReset(passwordReset *PasswordReset) error {
-	return s.db.Delete(passwordReset).Error
+// ResetPassword sets a new password and deletes the password reset record
+func (s *Service) ResetPassword(passwordReset *PasswordReset, password string) error {
+	// Begin a transaction
+	tx := s.db.Begin()
+
+	// Set the new password
+	err := s.oauthService.SetPasswordTx(tx, passwordReset.User.OauthUser, password)
+	if err != nil {
+		tx.Rollback() // rollback the transaction
+		return err
+	}
+
+	// Soft delete the password reset
+	if err := s.db.Delete(passwordReset).Error; err != nil {
+		tx.Rollback() // rollback the transaction
+		return err
+	}
+
+	// Commit the transaction
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback() // rollback the transaction
+		return err
+	}
+
+	return nil
 }
 
 // findUserPasswordReset returns the first password reset for a user

@@ -42,25 +42,15 @@ func (s *Service) passwordReset(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Check that both submitted passwords are the same
 	if r.Form.Get("password") != r.Form.Get("password2") {
 		sessionService.SetFlashMessage("Passwords are not the same")
 		http.Redirect(w, r, r.RequestURI, http.StatusFound)
 		return
 	}
 
-	// Set the new password
-	err = s.GetAccountsService().GetOauthService().SetPassword(
-		passwordReset.User.OauthUser,
-		r.Form.Get("password"),
-	)
-	if err != nil {
-		sessionService.SetFlashMessage(err.Error())
-		http.Redirect(w, r, r.RequestURI, http.StatusFound)
-		return
-	}
-
-	// And delete the password reset
-	err = s.GetAccountsService().DeletePasswordReset(passwordReset)
+	// Reset the password
+	err = s.GetAccountsService().ResetPassword(passwordReset, r.Form.Get("password"))
 	if err != nil {
 		sessionService.SetFlashMessage(err.Error())
 		http.Redirect(w, r, r.RequestURI, http.StatusFound)
