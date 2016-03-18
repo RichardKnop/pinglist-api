@@ -17,7 +17,7 @@ func (suite *AlarmsTestSuite) TestDeleteAlarm() {
 	// Insert a test alarm
 	alarm := &Alarm{
 		User:             suite.users[1],
-		Region:           &Region{ID: regions.Singapore},
+		Region:           &Region{ID: regions.Singapore, Name: "Singapore"},
 		AlarmState:       &AlarmState{ID: alarmstates.InsufficientData},
 		EndpointURL:      "http://endpoint-5",
 		ExpectedHTTPCode: 200,
