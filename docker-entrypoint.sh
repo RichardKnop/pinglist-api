@@ -6,6 +6,7 @@
 # 2. Load fixtures
 /go/bin/pinglist-api loaddata \
   oauth/fixtures/scopes.yml \
+  accounts/fixtures/roles.yml \
   subscriptions/fixtures/plans.yml \
   alarms/fixtures/regions.yml \
   alarms/fixtures/alarm_states.yml \
