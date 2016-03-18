@@ -100,6 +100,7 @@ func (suite *AccountsTestSuite) TearDownSuite() {
 // The SetupTest method will be run before every test in the suite.
 func (suite *AccountsTestSuite) SetupTest() {
 	suite.db.Unscoped().Delete(new(Confirmation))
+	suite.db.Unscoped().Delete(new(PasswordReset))
 	suite.db.Unscoped().Not("id", []int64{1, 2}).Delete(new(User))
 
 	// Service.CreateUser also creates a new oauth.User instance
