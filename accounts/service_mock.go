@@ -428,3 +428,7 @@ func (_m *ServiceMock) getMyUserHandler(w http.ResponseWriter, r *http.Request) 
 func (_m *ServiceMock) updateUserHandler(w http.ResponseWriter, r *http.Request) {
 	_m.Called(w, r)
 }
+
+func (_m *ServiceMock) createPasswordResetHandler(w http.ResponseWriter, r *http.Request) {
+	_m.Called(w, r)
+}

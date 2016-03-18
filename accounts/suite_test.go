@@ -137,3 +137,13 @@ func (suite *AccountsTestSuite) mockConfirmationEmail() {
 	).Return(emailMock)
 	suite.emailServiceMock.On("Send", emailMock).Return(nil)
 }
+
+// Mock sending password reset email
+func (suite *AccountsTestSuite) mockPasswordResetEmail() {
+	emailMock := new(email.Email)
+	suite.emailFactoryMock.On(
+		"NewPasswordResetEmail",
+		mock.AnythingOfType("*accounts.PasswordReset"),
+	).Return(emailMock)
+	suite.emailServiceMock.On("Send", emailMock).Return(nil)
+}
