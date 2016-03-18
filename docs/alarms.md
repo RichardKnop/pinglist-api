@@ -57,7 +57,7 @@ curl -XPUT --compressed -v localhost:8080/v1/alarms/1 \
 		"endpoint_url": "http://endpoint-1-updated",
 		"expected_http_code": 201,
 		"interval": 90,
-		"interval": true
+		"active": true
 	}'
 ```
 
