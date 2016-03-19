@@ -34,8 +34,8 @@ func (suite *AlarmsTestSuite) TestGetAlarmsToCheck() {
 	// 0 alarms
 	assert.Equal(suite.T(), 0, len(alarms))
 
-	// Now insert an active test alarm with watermark + interval <= now
-	watermark = time.Now().Add(-time.Duration(interval+1) * time.Second)
+	// Now insert an active test alarm with watermark + interval >= now
+	watermark = time.Now().Add(-time.Duration(interval-1) * time.Second)
 	err = suite.db.Create(&Alarm{
 		User:             suite.users[1],
 		Region:           &Region{ID: regions.Singapore, Name: "Singapore"},
@@ -57,11 +57,11 @@ func (suite *AlarmsTestSuite) TestGetAlarmsToCheck() {
 	// 0 alarms
 	assert.Equal(suite.T(), 0, len(alarms))
 
-	// Now insert an active test alarm with watermark + interval > now
-	watermark = time.Now().Add(-time.Duration(interval-1) * time.Second)
+	// Now insert an active test alarm with watermark + interval < now
+	watermark = time.Now().Add(-time.Duration(interval+1) * time.Second)
 	err = suite.db.Create(&Alarm{
 		User:             suite.users[1],
-		Region: &Region{ID: regions.Singapore, Name: "Singapore"},
+		Region:           &Region{ID: regions.Singapore, Name: "Singapore"},
 		AlarmState:       &AlarmState{ID: alarmstates.InsufficientData},
 		EndpointURL:      "http://bar",
 		Watermark:        util.TimeOrNull(&watermark),
