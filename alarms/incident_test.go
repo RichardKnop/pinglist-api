@@ -23,8 +23,8 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	err = suite.service.openIncident(
 		alarm,
 		incidenttypes.Timeout,
-		nil, // HTTP response
-		"",  // error message
+		nil,                // HTTP response
+		"timeout error...", // error message
 	)
 
 	// Error should be nil, the alarm state changed, a new incident created
@@ -41,6 +41,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		assert.Equal(suite.T(), incidenttypes.Timeout, alarm.Incidents[0].IncidentTypeID.String)
 		assert.False(suite.T(), alarm.Incidents[0].HTTPCode.Valid)
 		assert.False(suite.T(), alarm.Incidents[0].Response.Valid)
+		assert.Equal(suite.T(), "timeout error...", alarm.Incidents[0].ErrorMessage.String)
 		assert.False(suite.T(), alarm.Incidents[0].ResolvedAt.Valid)
 	}
 
@@ -61,6 +62,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	assert.Equal(suite.T(), incidenttypes.Timeout, alarm.Incidents[0].IncidentTypeID.String)
 	assert.False(suite.T(), alarm.Incidents[0].HTTPCode.Valid)
 	assert.False(suite.T(), alarm.Incidents[0].Response.Valid)
+	assert.Equal(suite.T(), "timeout error...", alarm.Incidents[0].ErrorMessage.String)
 	assert.False(suite.T(), alarm.Incidents[0].ResolvedAt.Valid)
 
 	// Second, let's try opening another timeout incident
@@ -68,8 +70,8 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	err = suite.service.openIncident(
 		alarm,
 		incidenttypes.Timeout,
-		nil, // HTTP response
-		"",  // error message
+		nil,                // HTTP response
+		"timeout error...", // error message
 	)
 
 	// Error should be nil, the alarm state unchanged, no new incidents created
@@ -115,7 +117,8 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		assert.Equal(suite.T(), suite.alarms[1].ID, uint(alarm.Incidents[1].AlarmID.Int64))
 		assert.Equal(suite.T(), incidenttypes.BadCode, alarm.Incidents[1].IncidentTypeID.String)
 		assert.Equal(suite.T(), int64(500), alarm.Incidents[1].HTTPCode.Int64)
-		assert.Equal(suite.T(), "", alarm.Incidents[1].Response.String)
+		assert.False(suite.T(), alarm.Incidents[1].Response.Valid)
+		assert.False(suite.T(), alarm.Incidents[1].ErrorMessage.Valid)
 		assert.False(suite.T(), alarm.Incidents[1].ResolvedAt.Valid)
 	}
 
@@ -135,7 +138,8 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	assert.Equal(suite.T(), suite.alarms[1].ID, uint(alarm.Incidents[1].AlarmID.Int64))
 	assert.Equal(suite.T(), incidenttypes.BadCode, alarm.Incidents[1].IncidentTypeID.String)
 	assert.Equal(suite.T(), int64(500), alarm.Incidents[1].HTTPCode.Int64)
-	assert.Equal(suite.T(), "", alarm.Incidents[1].Response.String)
+	assert.False(suite.T(), alarm.Incidents[1].Response.Valid)
+	assert.False(suite.T(), alarm.Incidents[1].ErrorMessage.Valid)
 	assert.False(suite.T(), alarm.Incidents[1].ResolvedAt.Valid)
 
 	// Next, let's try opening another bad code incident with the same code
@@ -190,7 +194,8 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		assert.Equal(suite.T(), suite.alarms[1].ID, uint(alarm.Incidents[2].AlarmID.Int64))
 		assert.Equal(suite.T(), incidenttypes.BadCode, alarm.Incidents[2].IncidentTypeID.String)
 		assert.Equal(suite.T(), int64(404), alarm.Incidents[2].HTTPCode.Int64)
-		assert.Equal(suite.T(), "", alarm.Incidents[2].Response.String)
+		assert.False(suite.T(), alarm.Incidents[2].Response.Valid)
+		assert.False(suite.T(), alarm.Incidents[2].ErrorMessage.Valid)
 		assert.False(suite.T(), alarm.Incidents[2].ResolvedAt.Valid)
 	}
 
@@ -210,7 +215,8 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	assert.Equal(suite.T(), suite.alarms[1].ID, uint(alarm.Incidents[2].AlarmID.Int64))
 	assert.Equal(suite.T(), incidenttypes.BadCode, alarm.Incidents[2].IncidentTypeID.String)
 	assert.Equal(suite.T(), int64(404), alarm.Incidents[2].HTTPCode.Int64)
-	assert.Equal(suite.T(), "", alarm.Incidents[2].Response.String)
+	assert.False(suite.T(), alarm.Incidents[2].Response.Valid)
+	assert.False(suite.T(), alarm.Incidents[2].ErrorMessage.Valid)
 	assert.False(suite.T(), alarm.Incidents[2].ResolvedAt.Valid)
 
 	// Finally, resolve the incidents
