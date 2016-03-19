@@ -69,6 +69,8 @@ func (suite *AlarmsTestSuite) TestCreateAlarm() {
 	suite.oauthServiceMock.AssertExpectations(suite.T())
 	suite.accountsServiceMock.AssertExpectations(suite.T())
 	suite.subscriptionsServiceMock.AssertExpectations(suite.T())
+	suite.emailServiceMock.AssertExpectations(suite.T())
+	suite.emailFactoryMock.AssertExpectations(suite.T())
 
 	// Check the status code
 	if !assert.Equal(suite.T(), 201, w.Code) {
@@ -178,6 +180,8 @@ func (suite *AlarmsTestSuite) TestCreateAlarmMaxLimitReached() {
 	suite.oauthServiceMock.AssertExpectations(suite.T())
 	suite.accountsServiceMock.AssertExpectations(suite.T())
 	suite.subscriptionsServiceMock.AssertExpectations(suite.T())
+	suite.emailServiceMock.AssertExpectations(suite.T())
+	suite.emailFactoryMock.AssertExpectations(suite.T())
 
 	// Check the status code
 	if !assert.Equal(suite.T(), 400, w.Code) {

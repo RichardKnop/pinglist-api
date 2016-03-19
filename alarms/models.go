@@ -43,19 +43,21 @@ func (s *AlarmState) TableName() string {
 // Alarm ...
 type Alarm struct {
 	gorm.Model
-	UserID           sql.NullInt64 `sql:"index;not null"`
-	User             *accounts.User
-	RegionID         sql.NullString `sql:"index;not null"`
-	Region           *Region
-	AlarmStateID     sql.NullString `sql:"index;not null"`
-	AlarmState       *AlarmState
-	Incidents        []*Incident
-	Results          []*Result
-	Watermark        pq.NullTime `sql:"index"`
-	EndpointURL      string      `sql:"type:varchar(254);not null"`
-	ExpectedHTTPCode uint        `sql:"default:200;not null"`
-	Interval         uint        `sql:"default:60;not null"` // seconds
-	Active           bool        `sql:"index;not null"`
+	UserID                sql.NullInt64 `sql:"index;not null"`
+	User                  *accounts.User
+	RegionID              sql.NullString `sql:"index;not null"`
+	Region                *Region
+	AlarmStateID          sql.NullString `sql:"index;not null"`
+	AlarmState            *AlarmState
+	Incidents             []*Incident
+	Results               []*Result
+	EndpointURL           string      `sql:"type:varchar(254);not null"`
+	ExpectedHTTPCode      uint        `sql:"default:200;not null"`
+	Interval              uint        `sql:"default:60;not null"` // seconds
+	Active                bool        `sql:"index;not null"`
+	Watermark             pq.NullTime `sql:"index"`
+	LastDowntimeStartedAt pq.NullTime `sql:"index"`
+	LastUptimeStartedAt   pq.NullTime `sql:"index"`
 }
 
 // TableName specifies table name

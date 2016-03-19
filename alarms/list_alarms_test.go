@@ -41,6 +41,8 @@ func (suite *AlarmsTestSuite) TestListAlarms() {
 	suite.oauthServiceMock.AssertExpectations(suite.T())
 	suite.accountsServiceMock.AssertExpectations(suite.T())
 	suite.subscriptionsServiceMock.AssertExpectations(suite.T())
+	suite.emailServiceMock.AssertExpectations(suite.T())
+	suite.emailFactoryMock.AssertExpectations(suite.T())
 
 	// Check the status code
 	if !assert.Equal(suite.T(), 200, w.Code) {

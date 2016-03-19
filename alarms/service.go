@@ -6,6 +6,7 @@ import (
 
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/RichardKnop/pinglist-api/config"
+	"github.com/RichardKnop/pinglist-api/email"
 	"github.com/RichardKnop/pinglist-api/subscriptions"
 	"github.com/jinzhu/gorm"
 )
@@ -16,11 +17,16 @@ type Service struct {
 	db                   *gorm.DB
 	accountsService      accounts.ServiceInterface      // accounts service dependency injection
 	subscriptionsService subscriptions.ServiceInterface // accounts service dependency injection
+	emailService         email.ServiceInterface         // email service dependency injection
+	emailFactory         EmailFactoryInterface          // email factory dependency injection
 	client               *http.Client                   // clients are safe for concurrent use by multiple goroutines
 }
 
 // NewService starts a new Service instance
-func NewService(cnf *config.Config, db *gorm.DB, accountsService accounts.ServiceInterface, subscriptionsService subscriptions.ServiceInterface, client *http.Client) *Service {
+func NewService(cnf *config.Config, db *gorm.DB, accountsService accounts.ServiceInterface, subscriptionsService subscriptions.ServiceInterface, emailService email.ServiceInterface, emailFactory EmailFactoryInterface, client *http.Client) *Service {
+	if emailFactory == nil {
+		emailFactory = NewEmailFactory(cnf)
+	}
 	if client == nil {
 		client = &http.Client{
 			Timeout: 10 * time.Second, // 10 seconds timeout
@@ -31,6 +37,8 @@ func NewService(cnf *config.Config, db *gorm.DB, accountsService accounts.Servic
 		db:                   db,
 		accountsService:      accountsService,
 		subscriptionsService: subscriptionsService,
+		emailService:         emailService,
+		emailFactory:         emailFactory,
 		client:               client,
 	}
 }

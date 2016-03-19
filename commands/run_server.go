@@ -65,6 +65,8 @@ func RunServer() error {
 		db,
 		accountsService,
 		subscriptionsService,
+		emailService,
+		nil, // alarms.EmailFactory
 		nil, // HTTP client
 	)
 

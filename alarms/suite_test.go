@@ -7,6 +7,7 @@ import (
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/RichardKnop/pinglist-api/config"
 	"github.com/RichardKnop/pinglist-api/database"
+	"github.com/RichardKnop/pinglist-api/email"
 	"github.com/RichardKnop/pinglist-api/oauth"
 	"github.com/RichardKnop/pinglist-api/subscriptions"
 	"github.com/gorilla/mux"
@@ -52,6 +53,8 @@ type AlarmsTestSuite struct {
 	oauthServiceMock         *oauth.ServiceMock
 	accountsServiceMock      *accounts.ServiceMock
 	subscriptionsServiceMock *subscriptions.ServiceMock
+	emailServiceMock         *email.ServiceMock
+	emailFactoryMock         *EmailFactoryMock
 	service                  *Service
 	accounts                 []*accounts.Account
 	users                    []*accounts.User
@@ -123,6 +126,8 @@ func (suite *AlarmsTestSuite) SetupSuite() {
 	suite.oauthServiceMock = new(oauth.ServiceMock)
 	suite.accountsServiceMock = new(accounts.ServiceMock)
 	suite.subscriptionsServiceMock = new(subscriptions.ServiceMock)
+	suite.emailServiceMock = new(email.ServiceMock)
+	suite.emailFactoryMock = new(EmailFactoryMock)
 
 	// Initialise the service
 	suite.service = NewService(
@@ -130,6 +135,8 @@ func (suite *AlarmsTestSuite) SetupSuite() {
 		suite.db,
 		suite.accountsServiceMock,
 		suite.subscriptionsServiceMock,
+		suite.emailServiceMock,
+		suite.emailFactoryMock,
 		nil, // HTTP client
 	)
 
@@ -169,6 +176,10 @@ func (suite *AlarmsTestSuite) SetupTest() {
 	suite.accountsServiceMock.Calls = suite.accountsServiceMock.Calls[:0]
 	suite.subscriptionsServiceMock.ExpectedCalls = suite.subscriptionsServiceMock.ExpectedCalls[:0]
 	suite.subscriptionsServiceMock.Calls = suite.subscriptionsServiceMock.Calls[:0]
+	suite.emailServiceMock.ExpectedCalls = suite.emailServiceMock.ExpectedCalls[:0]
+	suite.emailServiceMock.Calls = suite.emailServiceMock.Calls[:0]
+	suite.emailFactoryMock.ExpectedCalls = suite.emailFactoryMock.ExpectedCalls[:0]
+	suite.emailFactoryMock.Calls = suite.emailFactoryMock.Calls[:0]
 }
 
 // The TearDownTest method will be run after every test in the suite.
@@ -215,4 +226,24 @@ func (suite *AlarmsTestSuite) mockUserFiltering(user *accounts.User) {
 		"GetUserFromQueryString",
 		mock.AnythingOfType("*http.Request"),
 	).Return(user, nil)
+}
+
+// Mock alarm down notification email
+func (suite *AlarmsTestSuite) mockAlarmDownEmail() {
+	emailMock := new(email.Email)
+	suite.emailFactoryMock.On(
+		"NewAlarmDownEmail",
+		mock.AnythingOfType("*alarms.Alarm"),
+	).Return(emailMock)
+	suite.emailServiceMock.On("Send", emailMock).Return(nil)
+}
+
+// Mock alarm up notification email
+func (suite *AlarmsTestSuite) mockAlarmUpEmail() {
+	emailMock := new(email.Email)
+	suite.emailFactoryMock.On(
+		"NewAlarmUpEmail",
+		mock.AnythingOfType("*alarms.Alarm"),
+	).Return(emailMock)
+	suite.emailServiceMock.On("Send", emailMock).Return(nil)
 }

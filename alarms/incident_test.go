@@ -2,9 +2,11 @@ package alarms
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/RichardKnop/pinglist-api/alarms/alarmstates"
 	"github.com/RichardKnop/pinglist-api/alarms/incidenttypes"
+	"github.com/jinzhu/gorm"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -20,6 +22,10 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		Preload("Results").First(alarm, suite.alarms[1].ID).RecordNotFound())
 
 	// First, let's open a new timeout incident
+	when1 := time.Now()
+	gorm.NowFunc = func() time.Time {
+		return when1
+	}
 	err = suite.service.openIncident(
 		alarm,
 		incidenttypes.Timeout,
@@ -31,6 +37,14 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	if assert.Nil(suite.T(), err) {
 		// Status changed to Alarm
 		assert.Equal(suite.T(), alarmstates.Alarm, alarm.AlarmStateID.String)
+		// LastDowntimeStartedAt should be set
+		assert.Equal(
+			suite.T(),
+			when1.Format("2006-01-02T15:04:05Z"),
+			alarm.LastDowntimeStartedAt.Time.Format("2006-01-02T15:04:05Z"),
+		)
+		// LastUptimeStartedAt should be nil
+		assert.False(suite.T(), alarm.LastUptimeStartedAt.Valid)
 
 		// 1 incident, 0 results
 		assert.Equal(suite.T(), 1, len(alarm.Incidents))
@@ -67,6 +81,10 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 
 	// Second, let's try opening another timeout incident
 	// This should not create a new incident entry
+	when2 := time.Now()
+	gorm.NowFunc = func() time.Time {
+		return when2
+	}
 	err = suite.service.openIncident(
 		alarm,
 		incidenttypes.Timeout,
@@ -78,6 +96,14 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	if assert.Nil(suite.T(), err) {
 		// Status still Alarm
 		assert.Equal(suite.T(), alarmstates.Alarm, alarm.AlarmStateID.String)
+		// LastDowntimeStartedAt unchanged
+		assert.Equal(
+			suite.T(),
+			when1.Format("2006-01-02T15:04:05Z"),
+			alarm.LastDowntimeStartedAt.Time.Format("2006-01-02T15:04:05Z"),
+		)
+		// LastUptimeStartedAt still nill
+		assert.False(suite.T(), alarm.LastUptimeStartedAt.Valid)
 
 		// 1 incident, 0 results
 		assert.Equal(suite.T(), 1, len(alarm.Incidents))
@@ -97,6 +123,10 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	assert.Equal(suite.T(), 0, len(alarm.Results))
 
 	// Third, open a new bad code incident
+	when3 := time.Now()
+	gorm.NowFunc = func() time.Time {
+		return when3
+	}
 	err = suite.service.openIncident(
 		alarm,
 		incidenttypes.BadCode,
@@ -108,6 +138,14 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	if assert.Nil(suite.T(), err) {
 		// Status still Alarm
 		assert.Equal(suite.T(), alarmstates.Alarm, alarm.AlarmStateID.String)
+		// LastDowntimeStartedAt unchanged
+		assert.Equal(
+			suite.T(),
+			when1.Format("2006-01-02T15:04:05Z"),
+			alarm.LastDowntimeStartedAt.Time.Format("2006-01-02T15:04:05Z"),
+		)
+		// LastUptimeStartedAt still nill
+		assert.False(suite.T(), alarm.LastUptimeStartedAt.Valid)
 
 		// 2 incidents, 0 results
 		assert.Equal(suite.T(), 2, len(alarm.Incidents))
@@ -144,6 +182,10 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 
 	// Next, let's try opening another bad code incident with the same code
 	// This should not create a new incident entry
+	when4 := time.Now()
+	gorm.NowFunc = func() time.Time {
+		return when4
+	}
 	err = suite.service.openIncident(
 		alarm,
 		incidenttypes.BadCode,
@@ -155,6 +197,14 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	if assert.Nil(suite.T(), err) {
 		// Status still Alarm
 		assert.Equal(suite.T(), alarmstates.Alarm, alarm.AlarmStateID.String)
+		// LastDowntimeStartedAt unchanged
+		assert.Equal(
+			suite.T(),
+			when1.Format("2006-01-02T15:04:05Z"),
+			alarm.LastDowntimeStartedAt.Time.Format("2006-01-02T15:04:05Z"),
+		)
+		// LastUptimeStartedAt still nill
+		assert.False(suite.T(), alarm.LastUptimeStartedAt.Valid)
 
 		// 2 incidents, 0 results
 		assert.Equal(suite.T(), 2, len(alarm.Incidents))
@@ -174,6 +224,10 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	assert.Equal(suite.T(), 0, len(alarm.Results))
 
 	// Next, open a new bad code incident with a different code
+	when5 := time.Now()
+	gorm.NowFunc = func() time.Time {
+		return when5
+	}
 	err = suite.service.openIncident(
 		alarm,
 		incidenttypes.BadCode,
@@ -185,6 +239,14 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	if assert.Nil(suite.T(), err) {
 		// Status still Alarm
 		assert.Equal(suite.T(), alarmstates.Alarm, alarm.AlarmStateID.String)
+		// LastDowntimeStartedAt unchanged
+		assert.Equal(
+			suite.T(),
+			when1.Format("2006-01-02T15:04:05Z"),
+			alarm.LastDowntimeStartedAt.Time.Format("2006-01-02T15:04:05Z"),
+		)
+		// LastUptimeStartedAt still nill
+		assert.False(suite.T(), alarm.LastUptimeStartedAt.Valid)
 
 		// 3 incidents, 0 results
 		assert.Equal(suite.T(), 3, len(alarm.Incidents))
@@ -220,12 +282,28 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	assert.False(suite.T(), alarm.Incidents[2].ResolvedAt.Valid)
 
 	// Finally, resolve the incidents
+	when6 := time.Now()
+	gorm.NowFunc = func() time.Time {
+		return when6
+	}
 	err = suite.service.resolveIncidentsTx(suite.db, alarm)
 
 	// Error should be nil, the alarm state changed, all incidents resolved
 	if assert.Nil(suite.T(), err) {
 		// Status back to OK
 		assert.Equal(suite.T(), alarmstates.OK, alarm.AlarmStateID.String)
+		// LastDowntimeStartedAt unchanged
+		assert.Equal(
+			suite.T(),
+			when1.Format("2006-01-02T15:04:05Z"),
+			alarm.LastDowntimeStartedAt.Time.Format("2006-01-02T15:04:05Z"),
+		)
+		// LastUptimeStartedAt should be set
+		assert.Equal(
+			suite.T(),
+			when6.Format("2006-01-02T15:04:05Z"),
+			alarm.LastUptimeStartedAt.Time.Format("2006-01-02T15:04:05Z"),
+		)
 
 		// 3 incidents, 0 results
 		assert.Equal(suite.T(), 3, len(alarm.Incidents))
