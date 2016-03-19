@@ -38,13 +38,15 @@ func (r *Role) TableName() string {
 // User ...
 type User struct {
 	gorm.Model
-	AccountID   sql.NullInt64  `sql:"index;not null"`
-	OauthUserID sql.NullInt64  `sql:"index;not null"`
-	RoleID      sql.NullInt64  `sql:"index;not null"`
-	FacebookID  sql.NullString `sql:"type:varchar(60);unique"`
+	AccountID   sql.NullInt64 `sql:"index;not null"`
+	OauthUserID sql.NullInt64 `sql:"index;not null"`
+	RoleID      sql.NullInt64 `sql:"index;not null"`
+	TeamID      sql.NullInt64 `sql:"index"`
 	Account     *Account
 	OauthUser   *oauth.User
 	Role        *Role
+	Team        *Team
+	FacebookID  sql.NullString `sql:"type:varchar(60);unique"`
 	FirstName   sql.NullString `sql:"type:varchar(100)"`
 	LastName    sql.NullString `sql:"type:varchar(100)"`
 	Confirmed   bool           `sql:"index;not null"`
@@ -83,6 +85,20 @@ type PasswordReset struct {
 // TableName specifies table name
 func (p *PasswordReset) TableName() string {
 	return "account_password_resets"
+}
+
+// Team ...
+type Team struct {
+	gorm.Model
+	OwnerID sql.NullInt64 `sql:"index;not null"`
+	Owner   *User
+	Name    string `sql:"type:varchar(40);unique;not null"`
+	Members []*User
+}
+
+// TableName specifies table name
+func (t *Team) TableName() string {
+	return "account_teams"
 }
 
 // newAccount creates new Account instance
@@ -151,4 +167,17 @@ func newPasswordReset(user *User) *PasswordReset {
 		passwordReset.User = user
 	}
 	return passwordReset
+}
+
+// newTeam creates new Team instance
+func newTeam(owner *User, teamRequest *TeamRequest) *Team {
+	ownerID := util.PositiveIntOrNull(int64(owner.ID))
+	team := &Team{
+		OwnerID: ownerID,
+		Name:    teamRequest.Name,
+	}
+	if ownerID.Valid {
+		team.Owner = owner
+	}
+	return team
 }

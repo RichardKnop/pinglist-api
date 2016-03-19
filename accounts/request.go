@@ -13,3 +13,8 @@ type UserRequest struct {
 type PasswordResetRequest struct {
 	Email string `json:"email"`
 }
+
+// TeamRequest ...
+type TeamRequest struct {
+	Name string `json:"name"`
+}
