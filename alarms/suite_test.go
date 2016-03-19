@@ -227,3 +227,23 @@ func (suite *AlarmsTestSuite) mockUserFiltering(user *accounts.User) {
 		mock.AnythingOfType("*http.Request"),
 	).Return(user, nil)
 }
+
+// Mock alarm down notification email
+func (suite *AlarmsTestSuite) mockAlarmDownEmail() {
+	emailMock := new(email.Email)
+	suite.emailFactoryMock.On(
+		"NewAlarmDownEmail",
+		mock.AnythingOfType("*alarms.Alarm"),
+	).Return(emailMock)
+	suite.emailServiceMock.On("Send", emailMock).Return(nil)
+}
+
+// Mock alarm up notification email
+func (suite *AlarmsTestSuite) mockAlarmUpEmail() {
+	emailMock := new(email.Email)
+	suite.emailFactoryMock.On(
+		"NewAlarmUpEmail",
+		mock.AnythingOfType("*alarms.Alarm"),
+	).Return(emailMock)
+	suite.emailServiceMock.On("Send", emailMock).Return(nil)
+}
