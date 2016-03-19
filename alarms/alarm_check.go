@@ -21,7 +21,8 @@ func (s *Service) GetAlarmsToCheck(now time.Time) ([]*Alarm, error) {
 	var alarms []*Alarm
 
 	watermarkCondition := "watermark IS NULL OR watermark + interval '1 second' * interval < ?"
-	err := s.db.Where("active = ?", true).Where(watermarkCondition, now).Order("id").Find(&alarms).Error
+	err := s.db.Where("active = ?", true).Where(watermarkCondition, now).
+		Order("id").Find(&alarms).Error
 	if err != nil {
 		return alarms, err
 	}

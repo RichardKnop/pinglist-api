@@ -93,7 +93,7 @@ func (f *EmailFactory) NewAlarmUpEmail(alarm *Alarm) *email.Email {
 		name,
 		alarm.EndpointURL,
 		alarm.LastUptimeStartedAt.Time.Format(TimeFormat),
-		fmt.Sprintf("%.2 minutes", downtime.Minutes()),
+		fmt.Sprintf("%.2f minutes", downtime.Minutes()),
 		f.cnf.Web.Host,
 	)
 

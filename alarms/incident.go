@@ -87,6 +87,10 @@ func (s *Service) resolveIncidentsTx(db *gorm.DB, alarm *Alarm) error {
 
 	// Change the alarm state to alarmstates.OK if it isn't already
 	if alarm.AlarmStateID.String != alarmstates.OK {
+		// Save the current alarm state in a variable
+		alarmInitialState := alarm.AlarmStateID.String
+
+		// Set state to alarmstates.OK and update uptime timestamp
 		err = db.Model(alarm).UpdateColumns(Alarm{
 			AlarmStateID:        util.StringOrNull(alarmstates.OK),
 			LastUptimeStartedAt: util.TimeOrNull(&now),
@@ -95,16 +99,18 @@ func (s *Service) resolveIncidentsTx(db *gorm.DB, alarm *Alarm) error {
 			return err
 		}
 
-		// Send alarm up notification email
-		go func() {
-			alarmUpEmail := s.emailFactory.NewAlarmUpEmail(alarm)
+		if alarmInitialState != alarmstates.InsufficientData {
+			// Send alarm up notification email
+			go func() {
+				alarmUpEmail := s.emailFactory.NewAlarmUpEmail(alarm)
 
-			// Try to send the alarm up email email
-			if err := s.emailService.Send(alarmUpEmail); err != nil {
-				logger.Errorf("Send email error: %s", err)
-				return
-			}
-		}()
+				// Try to send the alarm up email email
+				if err := s.emailService.Send(alarmUpEmail); err != nil {
+					logger.Errorf("Send email error: %s", err)
+					return
+				}
+			}()
+		}
 	}
 
 	// Resolve incidents

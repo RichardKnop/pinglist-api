@@ -73,6 +73,7 @@ func (suite *AlarmsTestSuite) TestFindAlarmById() {
 	if assert.NotNil(suite.T(), alarm) {
 		assert.Equal(suite.T(), suite.alarms[0].ID, alarm.ID)
 		assert.Equal(suite.T(), suite.users[1].ID, alarm.User.ID)
+		assert.Equal(suite.T(), "test@user", alarm.User.OauthUser.Username)
 
 		// Only open incidents should be preloaded
 		assert.Equal(suite.T(), 3, len(alarm.Incidents))
