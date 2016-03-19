@@ -29,7 +29,7 @@ func (s *Scheduler) Run(alarmsInterval, partitionInterval time.Duration) {
 	wg.Add(1)
 	go func() {
 		for {
-			// Wait
+			// Wait before repeating
 			time.Sleep(time.Second * alarmsInterval)
 
 			// Get alarms to check
@@ -63,10 +63,6 @@ func (s *Scheduler) Run(alarmsInterval, partitionInterval time.Duration) {
 	// Partition alarm_results table and rotate old sub tables
 	wg.Add(1)
 	go func() {
-
-		// Wait
-		time.Sleep(time.Second * partitionInterval)
-
 		// Partition the alarm_results table
 		if err := s.alarmsService.PartitionTable(alarms.ResultParentTableName, time.Now()); err != nil {
 			logger.Error(err)
@@ -76,6 +72,9 @@ func (s *Scheduler) Run(alarmsInterval, partitionInterval time.Duration) {
 		if err := s.alarmsService.RotateSubTables(); err != nil {
 			logger.Error(err)
 		}
+
+		// Wait before repeating
+		time.Sleep(time.Second * partitionInterval)
 	}()
 
 	wg.Wait()
