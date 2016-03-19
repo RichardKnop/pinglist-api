@@ -22,6 +22,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		Preload("Results").First(alarm, suite.alarms[1].ID).RecordNotFound())
 
 	// First, let's open a new timeout incident
+	suite.mockAlarmDownEmail()
 	when1 := time.Now()
 	gorm.NowFunc = func() time.Time {
 		return when1
@@ -32,6 +33,13 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		nil,                // HTTP response
 		"timeout error...", // error message
 	)
+
+	// Sleep for the email goroutine to finish
+	time.Sleep(5 * time.Millisecond)
+
+	// Check that the mock object expectations were met
+	suite.emailServiceMock.AssertExpectations(suite.T())
+	suite.emailFactoryMock.AssertExpectations(suite.T())
 
 	// Error should be nil, the alarm state changed, a new incident created
 	if assert.Nil(suite.T(), err) {

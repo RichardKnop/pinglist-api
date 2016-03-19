@@ -25,6 +25,17 @@ func (s *Service) openIncident(alarm *Alarm, incidentTypeID string, resp *http.R
 			tx.Rollback() // rollback the transaction
 			return err
 		}
+
+		// Send alarm down notification email
+		go func() {
+			alarmDownEmail := s.emailFactory.NewAlarmDownEmail(alarm)
+
+			// Try to send the alarm down email email
+			if err := s.emailService.Send(alarmDownEmail); err != nil {
+				logger.Errorf("Send email error: %s", err)
+				return
+			}
+		}()
 	}
 
 	var incident *Incident

@@ -137,6 +137,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	assert.True(suite.T(), alarm.Results[0].RequestTime > 0)
 
 	// Second, let's test a timeout
+	suite.mockAlarmDownEmail()
 	server, client = testServerTimeout()
 	defer server.Close()
 	suite.service.client = client
@@ -145,6 +146,13 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 		return start
 	}
 	err = suite.service.CheckAlarm(alarm.ID, alarm.Watermark.Time)
+
+	// Sleep for the email goroutine to finish
+	time.Sleep(5 * time.Millisecond)
+
+	// Check that the mock object expectations were met
+	suite.emailServiceMock.AssertExpectations(suite.T())
+	suite.emailFactoryMock.AssertExpectations(suite.T())
 
 	// Error should be nil
 	assert.Nil(suite.T(), err)
