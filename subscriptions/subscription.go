@@ -198,31 +198,20 @@ func (s *Service) cancelSubscription(subscription *Subscription) error {
 
 // findActiveUserSubscriptions returns only active subscriptions belonging to a user
 func (s *Service) findActiveUserSubscriptions(userID uint) ([]*Subscription, error) {
-	var activeUserSubscriptions []*Subscription
-
-	// Fetch all user subscriptions first
-	userSubscriptions, err := s.findUserSubscriptions(userID)
-	if err != nil {
-		return activeUserSubscriptions, err
-	}
-
-	// Filter out active subscriptions only
-	for _, userSubscription := range userSubscriptions {
-		if userSubscription.IsActive() {
-			activeUserSubscriptions = append(activeUserSubscriptions, userSubscription)
-		}
-	}
-
-	return activeUserSubscriptions, err
+	var userSubscriptions []*Subscription
+	userObj := &accounts.User{Model: gorm.Model{ID: userID}}
+	return userSubscriptions, s.paginatedSubscriptionsQuery(userObj).
+		Where("active = ?", true).Preload("Customer.User").Preload("Plan").
+		Order("id desc").Find(&userSubscriptions).Error
 }
 
-// findUserSubscriptions returns subscriptions belonging to a user
+// findUserSubscriptions returns all subscriptions belonging to a user
 func (s *Service) findUserSubscriptions(userID uint) ([]*Subscription, error) {
 	var userSubscriptions []*Subscription
 	userObj := &accounts.User{Model: gorm.Model{ID: userID}}
 	return userSubscriptions, s.paginatedSubscriptionsQuery(userObj).
 		Preload("Customer.User").Preload("Plan").
-		Order("id").Find(&userSubscriptions).Error
+		Order("id desc").Find(&userSubscriptions).Error
 }
 
 // paginatedSubscriptionsCount returns a total count of subscriptions
