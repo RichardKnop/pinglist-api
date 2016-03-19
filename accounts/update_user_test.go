@@ -16,22 +16,29 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func (suite *AccountsTestSuite) TestUpdateUserRequiresUserAuthentication() {
+	r, err := http.NewRequest("", "", nil)
+	assert.NoError(suite.T(), err, "Request setup should not get an error")
+
+	w := httptest.NewRecorder()
+
+	suite.service.updateUserHandler(w, r)
+
+	assert.Equal(suite.T(), http.StatusUnauthorized, w.Code, "This requires an authenticated user")
+}
+
 func (suite *AccountsTestSuite) TestUpdateUser() {
 	payload, err := json.Marshal(&UserRequest{
 		FirstName: "John",
 		LastName:  "Reese",
 	})
-	if err != nil {
-		log.Fatal(err)
-	}
+	assert.NoError(suite.T(), err, "JSON marshalling failed")
 	r, err := http.NewRequest(
 		"PUT",
 		fmt.Sprintf("http://1.2.3.4/v1/accounts/users/%d", suite.users[1].ID),
 		bytes.NewBuffer(payload),
 	)
-	if err != nil {
-		log.Fatal(err)
-	}
+	assert.NoError(suite.T(), err, "Request setup should not get an error")
 	r.Header.Set("Authorization", "Bearer test_user_token")
 
 	// Check the routing

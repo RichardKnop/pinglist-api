@@ -17,6 +17,17 @@ import (
 	stripeToken "github.com/stripe/stripe-go/token"
 )
 
+func (suite *SubscriptionsTestSuite) TestSubscribeUserRequiresUserAuthentication() {
+	r, err := http.NewRequest("", "", nil)
+	assert.NoError(suite.T(), err, "Request setup should not get an error")
+
+	w := httptest.NewRecorder()
+
+	suite.service.subscribeUserHandler(w, r)
+
+	assert.Equal(suite.T(), http.StatusUnauthorized, w.Code, "This requires an authenticated user")
+}
+
 func (suite *SubscriptionsTestSuite) TestSubscribeUser() {
 	// Create a test Stripe token
 	theStripeToken, err := stripeToken.New(&stripe.TokenParams{

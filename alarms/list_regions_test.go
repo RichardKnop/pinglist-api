@@ -12,6 +12,17 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func (suite *AlarmsTestSuite) TestListRegionsRequiresUserAuthentication() {
+	r, err := http.NewRequest("", "", nil)
+	assert.NoError(suite.T(), err, "Request setup should not get an error")
+
+	w := httptest.NewRecorder()
+
+	suite.service.listRegionsHandler(w, r)
+
+	assert.Equal(suite.T(), http.StatusUnauthorized, w.Code, "This requires an authenticated user")
+}
+
 func (suite *AlarmsTestSuite) TestListRegions() {
 	// Prepare a request
 	r, err := http.NewRequest(

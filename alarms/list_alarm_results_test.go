@@ -14,6 +14,17 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func (suite *AlarmsTestSuite) TestListAlarmResultsRequiresUserAuthentication() {
+	r, err := http.NewRequest("", "", nil)
+	assert.NoError(suite.T(), err, "Request setup should not get an error")
+
+	w := httptest.NewRecorder()
+
+	suite.service.listAlarmResultsHandler(w, r)
+
+	assert.Equal(suite.T(), http.StatusUnauthorized, w.Code, "This requires an authenticated user")
+}
+
 func (suite *AlarmsTestSuite) TestListAlarmResults() {
 	var (
 		today             = time.Date(2016, time.February, 9, 0, 0, 0, 0, time.UTC)
