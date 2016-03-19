@@ -7,6 +7,9 @@ import (
 	"github.com/RichardKnop/pinglist-api/email"
 )
 
+// TimeFormat specifies how the time will be parsed in emails
+const TimeFormat = "Mon Jan _2 15:04:05 2006"
+
 var alarmDownEmailTemplate = `
 Hello %s,
 
@@ -57,7 +60,7 @@ func (f *EmailFactory) NewAlarmDownEmail(alarm *Alarm) *email.Email {
 		alarmDownEmailTemplate,
 		name,
 		alarm.EndpointURL,
-		alarm.UpdatedAt,
+		alarm.LastDowntimeStartedAt.Time.Format(TimeFormat),
 		f.cnf.Web.Host,
 	)
 
@@ -84,12 +87,13 @@ func (f *EmailFactory) NewAlarmUpEmail(alarm *Alarm) *email.Email {
 	subject := fmt.Sprintf("ALERT: %s is up again", alarm.EndpointURL)
 
 	// Replace placeholders in the email template
+	downtime := alarm.LastUptimeStartedAt.Time.Sub(alarm.LastDowntimeStartedAt.Time)
 	emailText := fmt.Sprintf(
 		alarmUpEmailTemplate,
 		name,
 		alarm.EndpointURL,
-		alarm.UpdatedAt,
-		"TODO", // downtime TODO
+		alarm.LastUptimeStartedAt.Time.Format(TimeFormat),
+		fmt.Sprintf("%.2 minutes", downtime.Minutes()),
 		f.cnf.Web.Host,
 	)
 

@@ -16,7 +16,11 @@ func (s *Service) openIncident(alarm *Alarm, incidentTypeID string, resp *http.R
 
 	// Change the alarm state to alarmstates.Alarm if it isn't already
 	if alarm.AlarmStateID.String != alarmstates.Alarm {
-		err := tx.Model(alarm).UpdateColumn("alarm_state_id", alarmstates.Alarm).Error
+		now := gorm.NowFunc()
+		err := tx.Model(alarm).UpdateColumns(Alarm{
+			AlarmStateID:          util.StringOrNull(alarmstates.Alarm),
+			LastDowntimeStartedAt: util.TimeOrNull(&now),
+		}).Error
 		if err != nil {
 			tx.Rollback() // rollback the transaction
 			return err
@@ -68,14 +72,18 @@ func (s *Service) openIncident(alarm *Alarm, incidentTypeID string, resp *http.R
 func (s *Service) resolveIncidentsTx(db *gorm.DB, alarm *Alarm) error {
 	var err error
 
+	now := gorm.NowFunc()
+
 	// Change alarm state to alarmstates.OK
-	err = db.Model(alarm).UpdateColumn("alarm_state_id", alarmstates.OK).Error
+	err = db.Model(alarm).UpdateColumns(Alarm{
+		AlarmStateID:        util.StringOrNull(alarmstates.OK),
+		LastUptimeStartedAt: util.TimeOrNull(&now),
+	}).Error
 	if err != nil {
 		return err
 	}
 
 	// Resolve incidents
-	now := gorm.NowFunc()
 	err = db.Model(new(Incident)).Where(Incident{
 		AlarmID: util.PositiveIntOrNull(int64(alarm.ID)),
 	}).UpdateColumn("resolved_at", util.TimeOrNull(&now)).Error
