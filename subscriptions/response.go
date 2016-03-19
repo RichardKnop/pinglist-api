@@ -20,17 +20,18 @@ type CustomerResponse struct {
 // PlanResponse ...
 type PlanResponse struct {
 	jsonhal.Hal
-	ID          uint   `json:"id"`
-	PlanID      string `json:"plan_id"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	Currency    string `json:"currency"`
-	Amount      uint   `json:"amount"`
-	TrialPeriod uint   `json:"trial_period"`
-	Interval    uint   `json:"interval"`
-	MaxAlarms   uint   `json:"max_alarms"`
-	CreatedAt   string `json:"created_at"`
-	UpdatedAt   string `json:"updated_at"`
+	ID             uint   `json:"id"`
+	PlanID         string `json:"plan_id"`
+	Name           string `json:"name"`
+	Description    string `json:"description"`
+	Currency       string `json:"currency"`
+	Amount         uint   `json:"amount"`
+	TrialPeriod    uint   `json:"trial_period"`
+	Interval       uint   `json:"interval"`
+	MaxAlarms      uint   `json:"max_alarms"`
+	MaxTeamMembers uint   `json:"max_team_members"`
+	CreatedAt      string `json:"created_at"`
+	UpdatedAt      string `json:"updated_at"`
 }
 
 // ListPlansResponse ...
@@ -84,17 +85,18 @@ func NewCustomerResponse(customer *Customer) (*CustomerResponse, error) {
 // NewPlanResponse creates new PlanResponse instance
 func NewPlanResponse(plan *Plan) (*PlanResponse, error) {
 	response := &PlanResponse{
-		ID:          plan.ID,
-		PlanID:      plan.PlanID,
-		Name:        plan.Name,
-		Description: plan.Description.String,
-		Currency:    plan.Currency,
-		Amount:      plan.Amount,
-		TrialPeriod: plan.TrialPeriod,
-		Interval:    plan.Interval,
-		MaxAlarms:   plan.MaxAlarms,
-		CreatedAt:   plan.CreatedAt.UTC().Format(time.RFC3339),
-		UpdatedAt:   plan.UpdatedAt.UTC().Format(time.RFC3339),
+		ID:             plan.ID,
+		PlanID:         plan.PlanID,
+		Name:           plan.Name,
+		Description:    plan.Description.String,
+		Currency:       plan.Currency,
+		Amount:         plan.Amount,
+		TrialPeriod:    plan.TrialPeriod,
+		Interval:       plan.Interval,
+		MaxAlarms:      plan.MaxAlarms,
+		MaxTeamMembers: plan.MaxTeamMembers,
+		CreatedAt:      plan.CreatedAt.UTC().Format(time.RFC3339),
+		UpdatedAt:      plan.UpdatedAt.UTC().Format(time.RFC3339),
 	}
 
 	// Set the self link

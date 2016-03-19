@@ -68,27 +68,12 @@ func (s *Service) FindAlarmByID(alarmID uint) (*Alarm, error) {
 
 // createAlarm creates a new alarm
 func (s *Service) createAlarm(user *accounts.User, alarmRequest *AlarmRequest) (*Alarm, error) {
-	var maxAlarms int
-
-	// If user is in a free trial, allow one alarm
-	if user.IsInFreeTrial() {
-		maxAlarms = 1
-	}
-
-	// Fetch active user subscription
-	subscription, err := s.subscriptionsService.FindActiveUserSubscription(user.ID)
-
-	// If subscribed, take max allowed alarms from the subscription plan
-	if err == nil && subscription != nil {
-		maxAlarms = int(subscription.Plan.MaxAlarms)
-	}
-
 	// Count how many alarms user already has
 	var countAlarms int
 	s.db.Model(new(Alarm)).Where("user_id = ?", user.ID).Count(&countAlarms)
 
 	// Limit alarms to max number defined above
-	if countAlarms+1 > maxAlarms {
+	if countAlarms+1 > s.getUserMaxAlarms(user) {
 		return nil, ErrMaxAlarmsLimitReached
 	}
 
