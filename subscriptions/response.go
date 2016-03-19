@@ -22,6 +22,8 @@ type PlanResponse struct {
 	jsonhal.Hal
 	ID          uint   `json:"id"`
 	PlanID      string `json:"plan_id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
 	Currency    string `json:"currency"`
 	Amount      uint   `json:"amount"`
 	TrialPeriod uint   `json:"trial_period"`
@@ -84,6 +86,8 @@ func NewPlanResponse(plan *Plan) (*PlanResponse, error) {
 	response := &PlanResponse{
 		ID:          plan.ID,
 		PlanID:      plan.PlanID,
+		Name:        plan.Name,
+		Description: plan.Description.String,
 		Currency:    plan.Currency,
 		Amount:      plan.Amount,
 		TrialPeriod: plan.TrialPeriod,
