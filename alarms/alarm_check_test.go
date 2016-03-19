@@ -223,6 +223,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	assert.False(suite.T(), alarm.Incidents[1].ResolvedAt.Valid)
 
 	// Finally, let's test a return to a successful alarm check
+	suite.mockAlarmUpEmail()
 	server, client = testServer(&http.Response{StatusCode: 200})
 	defer server.Close()
 	suite.service.client = client
@@ -231,6 +232,13 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 		return start
 	}
 	err = suite.service.CheckAlarm(suite.alarms[2].ID, alarm.Watermark.Time)
+
+	// Sleep for the email goroutine to finish
+	time.Sleep(5 * time.Millisecond)
+
+	// Check that the mock object expectations were met
+	suite.emailServiceMock.AssertExpectations(suite.T())
+	suite.emailFactoryMock.AssertExpectations(suite.T())
 
 	// Error should be nil
 	assert.Nil(suite.T(), err)

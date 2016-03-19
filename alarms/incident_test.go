@@ -290,11 +290,19 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	assert.False(suite.T(), alarm.Incidents[2].ResolvedAt.Valid)
 
 	// Finally, resolve the incidents
+	suite.mockAlarmUpEmail()
 	when6 := time.Now()
 	gorm.NowFunc = func() time.Time {
 		return when6
 	}
 	err = suite.service.resolveIncidentsTx(suite.db, alarm)
+
+	// Sleep for the email goroutine to finish
+	time.Sleep(5 * time.Millisecond)
+
+	// Check that the mock object expectations were met
+	suite.emailServiceMock.AssertExpectations(suite.T())
+	suite.emailFactoryMock.AssertExpectations(suite.T())
 
 	// Error should be nil, the alarm state changed, all incidents resolved
 	if assert.Nil(suite.T(), err) {
