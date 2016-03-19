@@ -25,7 +25,7 @@ func (suite *AlarmsTestSuite) TestCreateAlarm() {
 		EndpointURL:      "http://endpoint-5",
 		ExpectedHTTPCode: 200,
 		Interval:         60,
-		Active:           false,
+		Active:           true,
 	})
 	assert.NoError(suite.T(), err, "JSON marshalling failed")
 	r, err := http.NewRequest(
@@ -93,7 +93,7 @@ func (suite *AlarmsTestSuite) TestCreateAlarm() {
 	assert.Equal(suite.T(), "http://endpoint-5", alarm.EndpointURL)
 	assert.Equal(suite.T(), uint(200), alarm.ExpectedHTTPCode)
 	assert.Equal(suite.T(), uint(60), alarm.Interval)
-	assert.False(suite.T(), alarm.Active)
+	assert.True(suite.T(), alarm.Active)
 	assert.Equal(suite.T(), 0, len(alarm.Incidents))
 	assert.Equal(suite.T(), 0, len(alarm.Results))
 
@@ -119,7 +119,7 @@ func (suite *AlarmsTestSuite) TestCreateAlarm() {
 		EndpointURL:      "http://endpoint-5",
 		ExpectedHTTPCode: uint(200),
 		Interval:         uint(60),
-		Active:           false,
+		Active:           true,
 		State:            alarmstates.InsufficientData,
 		CreatedAt:        alarm.CreatedAt.UTC().Format(time.RFC3339),
 		UpdatedAt:        alarm.UpdatedAt.UTC().Format(time.RFC3339),
@@ -140,7 +140,7 @@ func (suite *AlarmsTestSuite) TestCreateAlarmMaxLimitReached() {
 		EndpointURL:      "http://endpoint-5",
 		ExpectedHTTPCode: 200,
 		Interval:         60,
-		Active:           false,
+		Active:           true,
 	})
 	assert.NoError(suite.T(), err, "JSON marshalling failed")
 	r, err := http.NewRequest(
