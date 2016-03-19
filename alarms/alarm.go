@@ -6,6 +6,7 @@ import (
 
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/RichardKnop/pinglist-api/alarms/alarmstates"
+	"github.com/RichardKnop/pinglist-api/alarms/incidenttypes"
 	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/jinzhu/gorm"
 )
@@ -18,18 +19,32 @@ var (
 )
 
 // HasOpenIncident returns true if the alarm already has such open incident
-func (a *Alarm) HasOpenIncident(theType string, resp *http.Response) bool {
+func (a *Alarm) HasOpenIncident(theType string, resp *http.Response, errMsg string) bool {
 	for _, incident := range a.Incidents {
-		if incident.ResolvedAt.Valid || incident.IncidentTypeID.String != theType {
+		// If incident is resolved, continue the loop
+		if incident.ResolvedAt.Valid {
 			continue
 		}
 
-		if resp == nil {
-			return true
+		// If incident is of a different type, continue the loop
+		if incident.IncidentTypeID.String != theType {
+			continue
 		}
 
-		if incident.HTTPCode.Valid && int64(resp.StatusCode) == incident.HTTPCode.Int64 {
-			return true
+		isBadCode := incident.IncidentTypeID.String == incidenttypes.BadCode
+
+		// For other than bad code incidents, we compare the error message
+		if !isBadCode {
+			if incident.ErrorMessage.String == errMsg {
+				return true
+			}
+		}
+
+		// For bad code incidents, we compare the status code
+		if isBadCode {
+			if resp != nil && incident.HTTPCode.Valid && int64(resp.StatusCode) == incident.HTTPCode.Int64 {
+				return true
+			}
 		}
 	}
 

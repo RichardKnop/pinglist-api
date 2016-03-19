@@ -32,9 +32,9 @@ func (s *Service) GetAlarmsToCheck(now time.Time) ([]*Alarm, error) {
 // CheckAlarm performs an alarm check
 func (s *Service) CheckAlarm(alarmID uint, watermark time.Time) error {
 	// Fetch the alarm
-	alarm := new(Alarm)
-	if s.db.First(alarm, alarmID).RecordNotFound() {
-		return ErrAlarmNotFound
+	alarm, err := s.FindAlarmByID(alarmID)
+	if err != nil {
+		return err
 	}
 
 	// Idempotency check
@@ -62,19 +62,19 @@ func (s *Service) CheckAlarm(alarmID uint, watermark time.Time) error {
 
 	// The request timed out
 	if e, ok := err.(net.Error); ok && e.Timeout() {
-		return s.openIncident(alarm, incidenttypes.Timeout, resp)
+		return s.openIncident(alarm, incidenttypes.Timeout, resp, err.Error())
 	}
 
 	// The request failed due to any other error
 	if err != nil {
-		return s.openIncident(alarm, incidenttypes.Other, resp)
+		return s.openIncident(alarm, incidenttypes.Other, resp, err.Error())
 	}
 
 	defer resp.Body.Close()
 
 	// The request returned a response with a bad status code
 	if resp.StatusCode != int(alarm.ExpectedHTTPCode) {
-		return s.openIncident(alarm, incidenttypes.BadCode, resp)
+		return s.openIncident(alarm, incidenttypes.BadCode, resp, "")
 	}
 
 	// Begin a transaction

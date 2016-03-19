@@ -84,7 +84,8 @@ type Incident struct {
 	IncidentType   *IncidentType
 	HTTPCode       sql.NullInt64
 	Response       sql.NullString `sql:"type:text"`
-	ResolvedAt     pq.NullTime    `sql:"index"`
+	ErrorMessage   sql.NullString
+	ResolvedAt     pq.NullTime `sql:"index"`
 }
 
 // TableName specifies table name
@@ -148,12 +149,13 @@ func newAlarm(user *accounts.User, region *Region, alarmState *AlarmState, alarm
 }
 
 // newIncident creates new Incident instance
-func newIncident(alarm *Alarm, incidentType *IncidentType, resp *http.Response) *Incident {
+func newIncident(alarm *Alarm, incidentType *IncidentType, resp *http.Response, errMsg string) *Incident {
 	alarmID := util.PositiveIntOrNull(int64(alarm.ID))
 	incidentTypeID := util.StringOrNull(incidentType.ID)
 	incident := &Incident{
 		AlarmID:        alarmID,
 		IncidentTypeID: incidentTypeID,
+		ErrorMessage:   util.StringOrNull(errMsg),
 	}
 	if alarmID.Valid {
 		incident.Alarm = alarm

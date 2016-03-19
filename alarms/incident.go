@@ -10,7 +10,7 @@ import (
 )
 
 // openIncident opens a new alarm incident
-func (s *Service) openIncident(alarm *Alarm, incidentTypeID string, resp *http.Response) error {
+func (s *Service) openIncident(alarm *Alarm, incidentTypeID string, resp *http.Response, errMsg string) error {
 	// Begin a transaction
 	tx := s.db.Begin()
 
@@ -26,7 +26,7 @@ func (s *Service) openIncident(alarm *Alarm, incidentTypeID string, resp *http.R
 	var incident *Incident
 
 	// If the alarm does not have an open incident of such type yet
-	if !alarm.HasOpenIncident(incidentTypeID, resp) {
+	if !alarm.HasOpenIncident(incidentTypeID, resp, errMsg) {
 		// Fetch the incident type from the database
 		incidentType, err := s.findIncidentTypeByID(incidentTypeID)
 		if err != nil {
@@ -39,6 +39,7 @@ func (s *Service) openIncident(alarm *Alarm, incidentTypeID string, resp *http.R
 			alarm,
 			incidentType,
 			resp,
+			errMsg,
 		)
 
 		// Save the incident to the database

@@ -24,6 +24,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		alarm,
 		incidenttypes.Timeout,
 		nil, // HTTP response
+		"",  // error message
 	)
 
 	// Error should be nil, the alarm state changed, a new incident created
@@ -68,6 +69,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		alarm,
 		incidenttypes.Timeout,
 		nil, // HTTP response
+		"",  // error message
 	)
 
 	// Error should be nil, the alarm state unchanged, no new incidents created
@@ -97,6 +99,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		alarm,
 		incidenttypes.BadCode,
 		&http.Response{StatusCode: 500},
+		"", // error message
 	)
 
 	// Error should be nil, the alarm state unchanged, a new incident created
@@ -141,6 +144,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		alarm,
 		incidenttypes.BadCode,
 		&http.Response{StatusCode: 500},
+		"", // error message
 	)
 
 	// Error should be nil, the alarm state unchanged, no new incidents created
@@ -170,6 +174,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		alarm,
 		incidenttypes.BadCode,
 		&http.Response{StatusCode: 404},
+		"", // error message
 	)
 
 	// Error should be nil, the alarm state unchanged, a new incident created

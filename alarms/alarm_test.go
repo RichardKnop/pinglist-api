@@ -15,6 +15,11 @@ func TestHasOpenIncident(t *testing.T) {
 		Incidents: []*Incident{
 			&Incident{
 				IncidentTypeID: util.StringOrNull(incidenttypes.Timeout),
+				ErrorMessage:   util.StringOrNull("timeout error..."),
+			},
+			&Incident{
+				IncidentTypeID: util.StringOrNull(incidenttypes.Other),
+				ErrorMessage:   util.StringOrNull("other error..."),
 			},
 			&Incident{
 				IncidentTypeID: util.StringOrNull(incidenttypes.BadCode),
@@ -23,15 +28,21 @@ func TestHasOpenIncident(t *testing.T) {
 		},
 	}
 
-	assert.True(t, alarm.HasOpenIncident(incidenttypes.Timeout, nil))
-	assert.False(t, alarm.HasOpenIncident(incidenttypes.Other, nil))
+	assert.False(t, alarm.HasOpenIncident(incidenttypes.Timeout, nil, ""))
+	assert.True(t, alarm.HasOpenIncident(incidenttypes.Timeout, nil, "timeout error..."))
+
+	assert.False(t, alarm.HasOpenIncident(incidenttypes.Other, nil, ""))
+	assert.True(t, alarm.HasOpenIncident(incidenttypes.Other, nil, "other error..."))
+
 	assert.True(t, alarm.HasOpenIncident(
 		incidenttypes.BadCode,
 		&http.Response{StatusCode: 500},
+		"",
 	))
 	assert.False(t, alarm.HasOpenIncident(
 		incidenttypes.BadCode,
 		&http.Response{StatusCode: 404},
+		"",
 	))
 }
 
