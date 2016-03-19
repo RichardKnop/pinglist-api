@@ -19,6 +19,63 @@ type ListRegionsResponse struct {
 	jsonhal.Hal
 }
 
+// AlarmResponse ...
+type AlarmResponse struct {
+	jsonhal.Hal
+	ID               uint   `json:"id"`
+	UserID           uint   `json:"user_id"`
+	Region           string `json:"region"`
+	EndpointURL      string `json:"endpoint_url"`
+	ExpectedHTTPCode uint   `json:"expected_http_code"`
+	Interval         uint   `json:"interval"`
+	Active           bool   `json:"active"`
+	State            string `json:"state"`
+	CreatedAt        string `json:"created_at"`
+	UpdatedAt        string `json:"updated_at"`
+}
+
+// ListAlarmsResponse ...
+type ListAlarmsResponse struct {
+	jsonhal.Hal
+	Count uint `json:"count"`
+	Page  uint `json:"page"`
+}
+
+// IncidentResponse ...
+type IncidentResponse struct {
+	jsonhal.Hal
+	ID           uint    `json:"id"`
+	AlarmID      uint    `json:"alarm_id"`
+	Type         string  `json:"type"`
+	HTTPCode     *uint   `json:"http_code"`
+	Response     *string `json:"response"`
+	ErrorMessage *string `json:"error_message"`
+	ResolvedAt   *string `json:"created_at"`
+	CreatedAt    string  `json:"created_at"`
+	UpdatedAt    string  `json:"updated_at"`
+}
+
+// ListIncidentsResponse ...
+type ListIncidentsResponse struct {
+	jsonhal.Hal
+	Count uint `json:"count"`
+	Page  uint `json:"page"`
+}
+
+// ResultResponse ...
+type ResultResponse struct {
+	jsonhal.Hal
+	Timestamp   string `json:"timestamp"`
+	RequestTime int64  `json:"request_time"`
+}
+
+// ListResultsResponse ...
+type ListResultsResponse struct {
+	jsonhal.Hal
+	Count uint `json:"count"`
+	Page  uint `json:"page"`
+}
+
 // NewRegionResponse creates new ResultResponse instance
 func NewRegionResponse(region *Region) (*RegionResponse, error) {
 	response := &RegionResponse{
@@ -60,62 +117,6 @@ func NewListRegionsResponse(regions []*Region) (*ListRegionsResponse, error) {
 	)
 
 	return response, nil
-}
-
-// AlarmResponse ...
-type AlarmResponse struct {
-	jsonhal.Hal
-	ID               uint   `json:"id"`
-	UserID           uint   `json:"user_id"`
-	Region           string `json:"region"`
-	EndpointURL      string `json:"endpoint_url"`
-	ExpectedHTTPCode uint   `json:"expected_http_code"`
-	Interval         uint   `json:"interval"`
-	Active           bool   `json:"active"`
-	State            string `json:"state"`
-	CreatedAt        string `json:"created_at"`
-	UpdatedAt        string `json:"updated_at"`
-}
-
-// ListAlarmsResponse ...
-type ListAlarmsResponse struct {
-	jsonhal.Hal
-	Count uint `json:"count"`
-	Page  uint `json:"page"`
-}
-
-// IncidentResponse ...
-type IncidentResponse struct {
-	jsonhal.Hal
-	ID         uint    `json:"id"`
-	AlarmID    uint    `json:"alarm_id"`
-	Type       string  `json:"type"`
-	HTTPCode   *uint   `json:"http_code"`
-	Response   *string `json:"response"`
-	ResolvedAt *string `json:"created_at"`
-	CreatedAt  string  `json:"created_at"`
-	UpdatedAt  string  `json:"updated_at"`
-}
-
-// ListIncidentsResponse ...
-type ListIncidentsResponse struct {
-	jsonhal.Hal
-	Count uint `json:"count"`
-	Page  uint `json:"page"`
-}
-
-// ResultResponse ...
-type ResultResponse struct {
-	jsonhal.Hal
-	Timestamp   string `json:"timestamp"`
-	RequestTime int64  `json:"request_time"`
-}
-
-// ListResultsResponse ...
-type ListResultsResponse struct {
-	jsonhal.Hal
-	Count uint `json:"count"`
-	Page  uint `json:"page"`
 }
 
 // NewAlarmResponse creates new AlarmResponse instance
@@ -200,6 +201,10 @@ func NewIncidentResponse(incident *Incident) (*IncidentResponse, error) {
 	if incident.Response.Valid {
 		r := incident.Response.String
 		response.Response = &r
+	}
+	if incident.ErrorMessage.Valid {
+		e := incident.ErrorMessage.String
+		response.ErrorMessage = &e
 	}
 	if incident.ResolvedAt.Valid {
 		resolvedAt := incident.ResolvedAt.Time.UTC().Format(time.RFC3339)

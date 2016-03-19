@@ -49,6 +49,7 @@ Example response:
 				"type": "timeout",
 				"http_code": null,
 				"response": null,
+				"error_message": "timeout error...",
 				"resolved_at": null,
 				"created_at": "2016-01-14T13:52:24Z",
 				"updated_at": "2016-01-14T13:52:24Z"
@@ -64,6 +65,7 @@ Example response:
 				"type": "bad_code",
 				"http_code": 500,
 				"response": "Internal Server Error",
+				"error_message": null,
 				"resolved_at": null,
 				"created_at": "2016-01-14T13:52:24Z",
 				"updated_at": "2016-01-14T13:52:24Z"
