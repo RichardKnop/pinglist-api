@@ -27,7 +27,7 @@ Hello %s,
 
 Our system has noticed the downtime of one of your alarms has been resolved.
 
-%s is up again since %s after %d downtime.
+%s is up again since %s after %s downtime.
 
 Kind Regards,
 
