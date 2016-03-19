@@ -23,10 +23,10 @@
     name: 'Professional'
     description: 'description ...'
     currency: 'GBP'
-    amount: 2000
+    amount: 1000
     trial_period: 0
     interval: 30
-    max_alarms: 10
+    max_alarms: 5
     created_at: 'ON_INSERT_NOW()'
     updated_at: 'ON_UPDATE_NOW()'
 
@@ -38,7 +38,7 @@
     name: 'Enterprise'
     description: 'description ...'
     currency: 'GBP'
-    amount: 40000
+    amount: 35000
     trial_period: 0
     interval: 30
     max_alarms: 100
