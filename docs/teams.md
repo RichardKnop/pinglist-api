@@ -44,7 +44,7 @@ Example response:
 				"first_name": "John",
 				"last_name": "Reese",
 				"role": "user",
-				"confirmed": false,
+				"confirmed": true,
 				"created_at": "2015-12-17T06:17:54Z",
 				"updated_at": "2015-12-17T06:17:54Z"
 			}
