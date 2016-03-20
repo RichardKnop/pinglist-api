@@ -168,11 +168,12 @@ func newPasswordReset(user *User) *PasswordReset {
 }
 
 // newTeam creates new Team instance
-func newTeam(owner *User, teamRequest *TeamRequest) *Team {
+func newTeam(owner *User, members []*User, teamRequest *TeamRequest) *Team {
 	ownerID := util.PositiveIntOrNull(int64(owner.ID))
 	team := &Team{
 		OwnerID: ownerID,
 		Name:    teamRequest.Name,
+		Members: members,
 	}
 	if ownerID.Valid {
 		team.Owner = owner

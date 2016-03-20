@@ -14,7 +14,13 @@ type PasswordResetRequest struct {
 	Email string `json:"email"`
 }
 
+// TeamMemberRequest ...
+type TeamMemberRequest struct {
+	ID uint `json:"id"`
+}
+
 // TeamRequest ...
 type TeamRequest struct {
-	Name string `json:"name"`
+	Name    string               `json:"name"`
+	Members []*TeamMemberRequest `json:"members"`
 }

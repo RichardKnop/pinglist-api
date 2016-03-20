@@ -77,7 +77,7 @@ func (suite *AccountsTestSuite) SetupSuite() {
 
 	// Fetch test teams
 	suite.teams = make([]*Team, 0)
-	err = suite.db.Preload("Owner").Preload("Members").
+	err = suite.db.Preload("Owner.OauthUser").Preload("Members.OauthUser").
 		Order("id").Find(&suite.teams).Error
 	if err != nil {
 		log.Fatal(err)
@@ -111,8 +111,8 @@ func (suite *AccountsTestSuite) TearDownSuite() {
 func (suite *AccountsTestSuite) SetupTest() {
 	suite.db.Unscoped().Delete(new(Confirmation))
 	suite.db.Unscoped().Delete(new(PasswordReset))
-	suite.db.Exec("delete from account_team_members;")
-	suite.db.Unscoped().Delete(new(Team))
+	suite.db.Exec("delete from account_team_members where team_id <> 1;")
+	suite.db.Unscoped().Not("id", []int64{1}).Delete(new(Team))
 	suite.db.Unscoped().Not("id", []int64{1, 2}).Delete(new(User))
 
 	// Service.CreateUser also creates a new oauth.User instance

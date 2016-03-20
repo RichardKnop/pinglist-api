@@ -70,20 +70,20 @@ func NewTeamResponse(team *Team) (*TeamResponse, error) {
 		"", // title
 	)
 
-	// Create slice of user responses
-	userResponses := make([]*UserResponse, len(team.Members))
+	// Create slice of member responses
+	memberResponses := make([]*UserResponse, len(team.Members))
 	for i, user := range team.Members {
-		userResponse, err := NewUserResponse(user)
+		memberResponse, err := NewUserResponse(user)
 		if err != nil {
 			return nil, err
 		}
-		userResponses[i] = userResponse
+		memberResponses[i] = memberResponse
 	}
 
 	// Set embedded members
 	response.SetEmbedded(
 		"members",
-		jsonhal.Embedded(userResponses),
+		jsonhal.Embedded(memberResponses),
 	)
 
 	return response, nil
