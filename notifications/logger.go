@@ -1,7 +1,7 @@
 package notifications
 
 import (
-	"github.com/AreaHQ/logging"
+	"github.com/RichardKnop/logging"
 )
 
 var logger *logging.Logger

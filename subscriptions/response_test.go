@@ -9,10 +9,19 @@ import (
 
 func TestNewListPlansResponse(t *testing.T) {
 	// Some mock Plan objects
-	plans := []*Plan{new(Plan), new(Plan)}
+	plans := []*Plan{new(Plan), new(Plan), new(Plan)}
 
 	// Create list response
-	response, err := NewListPlansResponse(plans)
+	response, err := NewListPlansResponse(
+		3,           // count
+		1,           // page
+		"/v1/plans", // self
+		"/v1/plans", // first
+		"/v1/plans", // last
+		"",          // previous
+		"",          // next
+		plans,
+	)
 
 	// Error should be nil
 	assert.Nil(t, err)
@@ -23,15 +32,43 @@ func TestNewListPlansResponse(t *testing.T) {
 		assert.Equal(t, "/v1/plans", selfLink.Href)
 	}
 
+	// Test first link
+	firstLink, err := response.GetLink("first")
+	if assert.Nil(t, err) {
+		assert.Equal(t, "/v1/plans", firstLink.Href)
+	}
+
+	// Test last link
+	lastLink, err := response.GetLink("last")
+	if assert.Nil(t, err) {
+		assert.Equal(t, "/v1/plans", lastLink.Href)
+	}
+
+	// Test previous link
+	previousLink, err := response.GetLink("prev")
+	if assert.Nil(t, err) {
+		assert.Equal(t, "", previousLink.Href)
+	}
+
+	// Test next link
+	nextLink, err := response.GetLink("next")
+	if assert.Nil(t, err) {
+		assert.Equal(t, "", nextLink.Href)
+	}
+
 	// Test embedded alarms
 	embeddedPlans, err := response.GetEmbedded("plans")
 	if assert.Nil(t, err) {
 		reflectedValue := reflect.ValueOf(embeddedPlans)
 		expectedType := reflect.SliceOf(reflect.TypeOf(new(PlanResponse)))
 		if assert.Equal(t, expectedType, reflectedValue.Type()) {
-			assert.Equal(t, 2, reflectedValue.Len())
+			assert.Equal(t, 3, reflectedValue.Len())
 		}
 	}
+
+	// Test the rest
+	assert.Equal(t, uint(3), response.Count)
+	assert.Equal(t, uint(1), response.Page)
 }
 
 func TestNewListSubscriptionsResponse(t *testing.T) {

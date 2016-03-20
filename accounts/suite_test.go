@@ -23,6 +23,7 @@ var testFixtures = []string{
 	"fixtures/roles.yml",
 	"fixtures/test_accounts.yml",
 	"fixtures/test_users.yml",
+	"fixtures/test_teams.yml",
 }
 
 // db migrations needed for tests
@@ -41,6 +42,7 @@ type AccountsTestSuite struct {
 	service          *Service
 	accounts         []*Account
 	users            []*User
+	teams            []*Team
 	router           *mux.Router
 }
 
@@ -73,6 +75,14 @@ func (suite *AccountsTestSuite) SetupSuite() {
 		log.Fatal(err)
 	}
 
+	// Fetch test teams
+	suite.teams = make([]*Team, 0)
+	err = suite.db.Preload("Owner").Preload("Members").
+		Order("id").Find(&suite.teams).Error
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	// Initialise mocks
 	suite.emailServiceMock = new(email.ServiceMock)
 	suite.emailFactoryMock = new(EmailFactoryMock)
@@ -101,6 +111,8 @@ func (suite *AccountsTestSuite) TearDownSuite() {
 func (suite *AccountsTestSuite) SetupTest() {
 	suite.db.Unscoped().Delete(new(Confirmation))
 	suite.db.Unscoped().Delete(new(PasswordReset))
+	suite.db.Exec("delete from alarm_team_members;")
+	suite.db.Unscoped().Delete(new(Team))
 	suite.db.Unscoped().Not("id", []int64{1, 2}).Delete(new(User))
 
 	// Service.CreateUser also creates a new oauth.User instance

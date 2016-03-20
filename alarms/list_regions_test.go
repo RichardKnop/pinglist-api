@@ -27,7 +27,7 @@ func (suite *AlarmsTestSuite) TestListRegions() {
 	// Prepare a request
 	r, err := http.NewRequest(
 		"GET",
-		"http://1.2.3.4/v1/alarms/regions",
+		"http://1.2.3.4/v1/regions",
 		nil,
 	)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
@@ -71,13 +71,23 @@ func (suite *AlarmsTestSuite) TestListRegions() {
 		Hal: jsonhal.Hal{
 			Links: map[string]*jsonhal.Link{
 				"self": &jsonhal.Link{
-					Href: "/v1/alarms/regions",
+					Href: "/v1/regions",
 				},
+				"first": &jsonhal.Link{
+					Href: "/v1/regions",
+				},
+				"last": &jsonhal.Link{
+					Href: "/v1/regions",
+				},
+				"prev": new(jsonhal.Link),
+				"next": new(jsonhal.Link),
 			},
 			Embedded: map[string]jsonhal.Embedded{
 				"regions": jsonhal.Embedded(regionResponses),
 			},
 		},
+		Count: 1,
+		Page:  1,
 	}
 
 	expectedJSON, err := json.Marshal(expected)

@@ -5,6 +5,7 @@ import (
 
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/RichardKnop/pinglist-api/response"
+	"github.com/RichardKnop/pinglist-api/util"
 )
 
 // Handles calls to list subscription plans (GET /v1/plans)
@@ -24,7 +25,14 @@ func (s *Service) listPlansHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Create response
-	listPlansResponse, err := NewListPlansResponse(plans)
+	count, page := len(plans), 1
+	self, first, last := util.GetCurrentURL(r), util.GetCurrentURL(r), util.GetCurrentURL(r)
+	next, previous := "", ""
+	listPlansResponse, err := NewListPlansResponse(
+		count, page,
+		self, first, last, next, previous,
+		plans,
+	)
 	if err != nil {
 		response.Error(w, err.Error(), http.StatusInternalServerError)
 		return

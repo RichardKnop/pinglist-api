@@ -146,6 +146,32 @@ func migrate0001(db *gorm.DB) error {
 			"account_teams.owner_id for account_users(id): %s", err)
 	}
 
+	// Add foreign key on account_team_members.team_id
+	err = db.Table("account_team_members").AddForeignKey(
+		"team_id",
+		"account_teams(id)",
+		"RESTRICT",
+		"RESTRICT",
+	).Error
+	if err != nil {
+		return fmt.Errorf("Error creating foreign key on account_team_members.team_id "+
+			"for account_teams(id): %s",
+			err,
+		)
+	}
+
+	// Add foreign key on account_team_members.user_id
+	err = db.Table("account_team_members").AddForeignKey(
+		"user_id",
+		"account_users(id)",
+		"RESTRICT",
+		"RESTRICT",
+	).Error
+	if err != nil {
+		return fmt.Errorf("Error creating foreign key on "+
+			"account_team_members.user_id for account_users(id): %s", err)
+	}
+
 	// Save a record to migrations table,
 	// so we don't rerun this migration again
 	migration.Name = migrationName

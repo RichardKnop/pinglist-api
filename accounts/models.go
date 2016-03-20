@@ -41,11 +41,9 @@ type User struct {
 	AccountID   sql.NullInt64 `sql:"index;not null"`
 	OauthUserID sql.NullInt64 `sql:"index;not null"`
 	RoleID      sql.NullInt64 `sql:"index;not null"`
-	TeamID      sql.NullInt64 `sql:"index"`
 	Account     *Account
 	OauthUser   *oauth.User
 	Role        *Role
-	Team        *Team
 	FacebookID  sql.NullString `sql:"type:varchar(60);unique"`
 	FirstName   sql.NullString `sql:"type:varchar(100)"`
 	LastName    sql.NullString `sql:"type:varchar(100)"`
@@ -92,8 +90,8 @@ type Team struct {
 	gorm.Model
 	OwnerID sql.NullInt64 `sql:"index;not null"`
 	Owner   *User
-	Name    string `sql:"type:varchar(40);unique;not null"`
-	Members []*User
+	Name    string  `sql:"type:varchar(40);unique;not null"`
+	Members []*User `gorm:"many2many:account_team_members"`
 }
 
 // TableName specifies table name

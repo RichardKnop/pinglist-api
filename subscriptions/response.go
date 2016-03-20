@@ -37,6 +37,8 @@ type PlanResponse struct {
 // ListPlansResponse ...
 type ListPlansResponse struct {
 	jsonhal.Hal
+	Count uint `json:"count"`
+	Page  uint `json:"page"`
 }
 
 // SubscriptionResponse ...
@@ -110,11 +112,26 @@ func NewPlanResponse(plan *Plan) (*PlanResponse, error) {
 }
 
 // NewListPlansResponse creates new ListPlansResponse instance
-func NewListPlansResponse(plans []*Plan) (*ListPlansResponse, error) {
-	response := new(ListPlansResponse)
+func NewListPlansResponse(count, page int, self, first, last, previous, next string, plans []*Plan) (*ListPlansResponse, error) {
+	response := &ListPlansResponse{
+		Count: uint(count),
+		Page:  uint(page),
+	}
 
 	// Set the self link
-	response.SetLink("self", "/v1/plans", "")
+	response.SetLink("self", self, "")
+
+	// Set the first link
+	response.SetLink("first", first, "")
+
+	// Set the last link
+	response.SetLink("last", last, "")
+
+	// Set the previous link
+	response.SetLink("prev", previous, "")
+
+	// Set the next link
+	response.SetLink("next", next, "")
 
 	// Create slice of plan responses
 	planResponses := make([]*PlanResponse, len(plans))

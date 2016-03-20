@@ -1,5 +1,9 @@
 ---
 
+#-----------#
+# Incidents #
+#-----------#
+
 - table: 'alarm_incidents'
   pk:
     id: 1

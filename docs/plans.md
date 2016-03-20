@@ -16,6 +16,18 @@ Example response:
 ```json
 {
 	"_links": {
+		"first": {
+			"href": "/v1/plans"
+		},
+		"last": {
+			"href": "/v1/plans"
+		},
+		"next": {
+			"href": ""
+		},
+		"prev": {
+			"href": ""
+		},
 		"self": {
 			"href": "/v1/plans"
 		}
@@ -80,6 +92,8 @@ Example response:
 				"updated_at": "2016-01-14T13:52:24Z"
 			}
 		]
-	}
+	},
+	"count": 3,
+	"page": 1
 }
 ```

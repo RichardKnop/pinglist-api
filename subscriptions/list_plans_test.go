@@ -70,11 +70,21 @@ func (suite *SubscriptionsTestSuite) TestListPlans() {
 				"self": &jsonhal.Link{
 					Href: "/v1/plans",
 				},
+				"first": &jsonhal.Link{
+					Href: "/v1/plans",
+				},
+				"last": &jsonhal.Link{
+					Href: "/v1/plans",
+				},
+				"prev": new(jsonhal.Link),
+				"next": new(jsonhal.Link),
 			},
 			Embedded: map[string]jsonhal.Embedded{
 				"plans": jsonhal.Embedded(planResponses),
 			},
 		},
+		Count: 3,
+		Page:  1,
 	}
 
 	expectedJSON, err := json.Marshal(expected)

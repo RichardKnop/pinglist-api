@@ -7,6 +7,70 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestNewListRegionsResponse(t *testing.T) {
+	// Some mock Region objects
+	regions := []*Region{new(Region), new(Region), new(Region)}
+
+	// Create list response
+	response, err := NewListRegionsResponse(
+		3,             // count
+		1,             // page
+		"/v1/regions", // self
+		"/v1/regions", // first
+		"/v1/regions", // last
+		"",            // previous
+		"",            // next
+		regions,
+	)
+
+	// Error should be nil
+	assert.Nil(t, err)
+
+	// Test self link
+	selfLink, err := response.GetLink("self")
+	if assert.Nil(t, err) {
+		assert.Equal(t, "/v1/regions", selfLink.Href)
+	}
+
+	// Test first link
+	firstLink, err := response.GetLink("first")
+	if assert.Nil(t, err) {
+		assert.Equal(t, "/v1/regions", firstLink.Href)
+	}
+
+	// Test last link
+	lastLink, err := response.GetLink("last")
+	if assert.Nil(t, err) {
+		assert.Equal(t, "/v1/regions", lastLink.Href)
+	}
+
+	// Test previous link
+	previousLink, err := response.GetLink("prev")
+	if assert.Nil(t, err) {
+		assert.Equal(t, "", previousLink.Href)
+	}
+
+	// Test next link
+	nextLink, err := response.GetLink("next")
+	if assert.Nil(t, err) {
+		assert.Equal(t, "", nextLink.Href)
+	}
+
+	// Test embedded alarms
+	embeddedPlans, err := response.GetEmbedded("regions")
+	if assert.Nil(t, err) {
+		reflectedValue := reflect.ValueOf(embeddedPlans)
+		expectedType := reflect.SliceOf(reflect.TypeOf(new(RegionResponse)))
+		if assert.Equal(t, expectedType, reflectedValue.Type()) {
+			assert.Equal(t, 3, reflectedValue.Len())
+		}
+	}
+
+	// Test the rest
+	assert.Equal(t, uint(3), response.Count)
+	assert.Equal(t, uint(1), response.Page)
+}
+
 func TestNewListAlarmsResponse(t *testing.T) {
 	// Some mock Alarm objects
 	alarms := []*Alarm{new(Alarm), new(Alarm)}
