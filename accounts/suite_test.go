@@ -111,7 +111,7 @@ func (suite *AccountsTestSuite) TearDownSuite() {
 func (suite *AccountsTestSuite) SetupTest() {
 	suite.db.Unscoped().Delete(new(Confirmation))
 	suite.db.Unscoped().Delete(new(PasswordReset))
-	suite.db.Exec("delete from alarm_team_members;")
+	suite.db.Exec("delete from account_team_members;")
 	suite.db.Unscoped().Delete(new(Team))
 	suite.db.Unscoped().Not("id", []int64{1, 2}).Delete(new(User))
 

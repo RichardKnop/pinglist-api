@@ -181,7 +181,7 @@ func (suite *AccountsTestSuite) TestCreateFacebookUser() {
 
 	// Correct error should be returned
 	if assert.NotNil(suite.T(), err) {
-		assert.Equal(suite.T(), "UNIQUE constraint failed: oauth_users.username", err.Error())
+		assert.Equal(suite.T(), ErrEmailTaken, err)
 	}
 
 	// We try to create a facebook user with a non unique facebook ID
@@ -245,7 +245,7 @@ func (suite *AccountsTestSuite) TestCreateSuperuser() {
 
 	// Correct error should be returned
 	if assert.NotNil(suite.T(), err) {
-		assert.Equal(suite.T(), "UNIQUE constraint failed: oauth_users.username", err.Error())
+		assert.Equal(suite.T(), ErrEmailTaken, err)
 	}
 
 	// We try to insert a unique superuser

@@ -51,5 +51,14 @@ func newRoutes(service ServiceInterface) []routes.Route {
 				NewAccountAuthMiddleware(service),
 			},
 		},
+		routes.Route{
+			Name:        "create_team",
+			Method:      "POST",
+			Pattern:     "/teams",
+			HandlerFunc: service.createTeamHandler,
+			Middlewares: []negroni.Handler{
+				NewUserAuthMiddleware(service),
+			},
+		},
 	}
 }

@@ -37,4 +37,5 @@ type ServiceInterface interface {
 	getMyUserHandler(w http.ResponseWriter, r *http.Request)
 	updateUserHandler(w http.ResponseWriter, r *http.Request)
 	createPasswordResetHandler(w http.ResponseWriter, r *http.Request)
+	createTeamHandler(w http.ResponseWriter, r *http.Request)
 }
