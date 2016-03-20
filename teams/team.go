@@ -11,6 +11,8 @@ var (
 	ErrTeamNotFound = errors.New("Team not found")
 	// ErrUserCanCreateOnlyOneTeam ...
 	ErrUserCanOnlyCreateOneTeam = errors.New("User can only create one team")
+	// ErrMaxTeamMembersLimitReached ...
+	ErrMaxTeamMembersLimitReached = errors.New("Max team members limit reached")
 )
 
 // FindTeamByID looks up a team by ID
@@ -57,6 +59,11 @@ func (s *Service) createTeam(owner *accounts.User, teamRequest *TeamRequest) (*T
 		return nil, ErrUserCanOnlyCreateOneTeam
 	}
 
+	// Limit team members to the max number defined as per subscription plan
+	if len(teamRequest.Members) > s.getUserMaxTeamMembers(owner) {
+		return nil, ErrMaxTeamMembersLimitReached
+	}
+
 	// Members
 	members := make([]*accounts.User, len(teamRequest.Members))
 	for i, teamMemberRequest := range teamRequest.Members {
@@ -81,6 +88,11 @@ func (s *Service) createTeam(owner *accounts.User, teamRequest *TeamRequest) (*T
 
 // updateTeam updates an existing team
 func (s *Service) updateTeam(team *Team, teamRequest *TeamRequest) error {
+	// Limit team members to the max number defined as per subscription plan
+	if len(teamRequest.Members) > s.getUserMaxTeamMembers(team.Owner) {
+		return ErrMaxTeamMembersLimitReached
+	}
+
 	// Members
 	members := make([]*accounts.User, len(teamRequest.Members))
 	for i, teamMemberRequest := range teamRequest.Members {

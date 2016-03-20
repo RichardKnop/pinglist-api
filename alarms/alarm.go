@@ -76,7 +76,7 @@ func (s *Service) createAlarm(user *accounts.User, alarmRequest *AlarmRequest) (
 			Active: true,
 		}).Count(&countAlarms)
 
-		// Limit alarms to max number defined above
+		// Limit alarms to the max number defined as per subscription plan
 		if countAlarms+1 > s.getUserMaxAlarms(user) {
 			return nil, ErrMaxAlarmsLimitReached
 		}

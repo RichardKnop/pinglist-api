@@ -12,6 +12,7 @@ import (
 
 	"github.com/RichardKnop/jsonhal"
 	"github.com/RichardKnop/pinglist-api/accounts"
+	"github.com/RichardKnop/pinglist-api/subscriptions"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
 )
@@ -112,6 +113,13 @@ func (suite *TeamsTestSuite) TestCreateTeamWithoutMembers() {
 	// Mock authentication
 	suite.mockAuthentication(suite.users[1])
 
+	// Mock find active subscription
+	suite.mockFindActiveSubscription(
+		suite.users[1].ID,
+		nil,
+		subscriptions.ErrUserHasNoActiveSubscription,
+	)
+
 	// Count before
 	var countBefore int
 	suite.db.Model(new(Team)).Count(&countBefore)
@@ -205,6 +213,17 @@ func (suite *TeamsTestSuite) TestCreateTeamWithMembers() {
 
 	// Mock authentication
 	suite.mockAuthentication(suite.users[1])
+
+	// Mock find active subscription
+	suite.mockFindActiveSubscription(
+		suite.users[1].ID,
+		&subscriptions.Subscription{
+			Plan: &subscriptions.Plan{
+				MaxTeamMembers: 10,
+			},
+		},
+		nil,
+	)
 
 	// Mock find user
 	suite.mockFindUser(suite.users[2].ID, suite.users[2], nil)
