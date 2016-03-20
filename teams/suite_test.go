@@ -152,3 +152,19 @@ func (suite *TeamsTestSuite) mockAuthentication(user *accounts.User) {
 	suite.accountsServiceMock.On("FindUserByOauthUserID", user.OauthUser.ID).
 		Return(user, nil)
 }
+
+// Mock find active subscription
+func (suite *TeamsTestSuite) mockFindActiveSubscription(userID uint, subscription *subscriptions.Subscription, err error) {
+	suite.subscriptionsServiceMock.On(
+		"FindActiveUserSubscription",
+		userID,
+	).Return(subscription, err)
+}
+
+// Mock find user
+func (suite *TeamsTestSuite) mockFindUser(userID uint, user *accounts.User, err error) {
+	suite.accountsServiceMock.On(
+		"FindUserByID",
+		userID,
+	).Return(user, err)
+}
