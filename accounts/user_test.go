@@ -251,7 +251,7 @@ func (suite *AccountsTestSuite) TestCreateSuperuser() {
 	// We try to insert a unique superuser
 	user, err = suite.service.CreateSuperuser(
 		suite.accounts[0], // account
-		"test@superuser2", // email
+		"test@newsuperuser", // email
 		"test_password",   // password
 	)
 
@@ -260,7 +260,7 @@ func (suite *AccountsTestSuite) TestCreateSuperuser() {
 
 	// Correct user object should be returned
 	if assert.NotNil(suite.T(), user) {
-		assert.Equal(suite.T(), "test@superuser2", user.OauthUser.Username)
+		assert.Equal(suite.T(), "test@newsuperuser", user.OauthUser.Username)
 		assert.False(suite.T(), user.FacebookID.Valid)
 		assert.False(suite.T(), user.FirstName.Valid)
 		assert.False(suite.T(), user.LastName.Valid)
