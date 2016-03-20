@@ -13,11 +13,11 @@ import (
 )
 
 var (
-	errUpdateUserPermission = errors.New("Need permission to update user")
+	errUpdateTeamPermission = errors.New("Need permission to update team")
 )
 
-// Handles requests to update a user (PUT /v1/accounts/users/{id:[0-9]+})
-func (s *Service) updateUserHandler(w http.ResponseWriter, r *http.Request) {
+// Handles requests to update a team (PUT /v1/accounts/teams/{id:[0-9]+})
+func (s *Service) updateTeamHandler(w http.ResponseWriter, r *http.Request) {
 	// Get the authenticated user from the request context
 	authenticatedUser, err := GetAuthenticatedUser(r)
 	if err != nil {
@@ -39,37 +39,37 @@ func (s *Service) updateUserHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Unmarshal the request body into the request prototype
-	userRequest := new(UserRequest)
-	if err := json.Unmarshal(payload, userRequest); err != nil {
-		logger.Errorf("Failed to unmarshal user request: %s", payload)
+	teamRequest := new(TeamRequest)
+	if err := json.Unmarshal(payload, teamRequest); err != nil {
+		logger.Errorf("Failed to unmarshal team request: %s", payload)
 		response.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	// Get the id from request URI and type assert it
 	vars := mux.Vars(r)
-	userID, err := strconv.Atoi(vars["id"])
+	teamID, err := strconv.Atoi(vars["id"])
 	if err != nil {
 		response.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	// Fetch the user we want to update
-	user, err := s.FindUserByID(uint(userID))
+	// Fetch the team we want to update
+	team, err := s.FindTeamByID(uint(teamID))
 	if err != nil {
 		response.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
 
 	// Check permissions
-	if err := checkUpdateUserPermissions(authenticatedUser, user); err != nil {
+	if err := checkUpdateTeamPermissions(authenticatedUser, team); err != nil {
 		response.Error(w, err.Error(), http.StatusForbidden)
 		return
 	}
 
-	// Update the user
-	if err := s.UpdateUser(user, userRequest); err != nil {
-		logger.Errorf("Update user error: %s", err)
+	// Update the team
+	if err := s.updateTeam(team, teamRequest); err != nil {
+		logger.Errorf("Update team error: %s", err)
 		code, ok := errStatusCodeMap[err]
 		if !ok {
 			code = http.StatusInternalServerError
@@ -79,26 +79,26 @@ func (s *Service) updateUserHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Create response
-	userResponse, err := NewUserResponse(user)
+	teamResponse, err := NewTeamResponse(team)
 	if err != nil {
 		response.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	// Write JSON response
-	response.WriteJSON(w, userResponse, http.StatusOK)
+	response.WriteJSON(w, teamResponse, http.StatusOK)
 }
 
-func checkUpdateUserPermissions(authenticatedUser, user *User) error {
-	// Superusers can update any users
+func checkUpdateTeamPermissions(authenticatedUser *User, team *Team) error {
+	// Superusers can update any team
 	if authenticatedUser.Role.Name == roles.Superuser {
 		return nil
 	}
 
-	// Users can update their own accounts
-	if authenticatedUser.ID == user.ID {
+	// Owners can update their own team
+	if authenticatedUser.ID == team.Owner.ID {
 		return nil
 	}
 
 	// The user doesn't have the permission
-	return errUpdateUserPermission
+	return errUpdateTeamPermission
 }

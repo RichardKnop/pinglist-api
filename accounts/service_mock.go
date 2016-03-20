@@ -496,3 +496,7 @@ func (_m *ServiceMock) createPasswordResetHandler(w http.ResponseWriter, r *http
 func (_m *ServiceMock) createTeamHandler(w http.ResponseWriter, r *http.Request) {
 	_m.Called(w, r)
 }
+
+func (_m *ServiceMock) updateTeamHandler(w http.ResponseWriter, r *http.Request) {
+	_m.Called(w, r)
+}
