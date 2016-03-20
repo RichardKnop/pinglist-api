@@ -44,16 +44,11 @@ func (s *Service) createAlarmHandler(w http.ResponseWriter, r *http.Request) {
 	alarm, err := s.createAlarm(authenticatedUser, alarmRequest)
 	if err != nil {
 		logger.Errorf("Create alarm error: %s", err)
-		switch err {
-		case ErrMaxAlarmsLimitReached:
-			response.Error(w, err.Error(), http.StatusBadRequest)
-		case ErrRegionNotFound:
-			response.Error(w, err.Error(), http.StatusBadRequest)
-		case ErrAlarmStateNotFound:
-			response.Error(w, err.Error(), http.StatusBadRequest)
-		default:
-			response.Error(w, err.Error(), http.StatusInternalServerError)
+		code, ok := errStatusCodeMap[err]
+		if !ok {
+			code = http.StatusInternalServerError
 		}
+		response.Error(w, err.Error(), code)
 		return
 	}
 

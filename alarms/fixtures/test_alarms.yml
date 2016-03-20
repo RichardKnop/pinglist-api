@@ -1,5 +1,9 @@
 ---
 
+#--------#
+# Alarms #
+#--------#
+
 - table: 'alarm_alarms'
   pk:
     id: 1
@@ -9,7 +13,7 @@
     endpoint_url: 'http://endpoint-1'
     expected_http_code: 200
     interval: 60
-    active: false
+    active: true
     alarm_state_id: 'ok'
     created_at: 'ON_INSERT_NOW()'
     updated_at: 'ON_UPDATE_NOW()'

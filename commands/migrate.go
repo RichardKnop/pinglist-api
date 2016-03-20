@@ -7,6 +7,7 @@ import (
 	"github.com/RichardKnop/pinglist-api/notifications"
 	"github.com/RichardKnop/pinglist-api/oauth"
 	"github.com/RichardKnop/pinglist-api/subscriptions"
+	"github.com/RichardKnop/pinglist-api/teams"
 	"github.com/jinzhu/gorm"
 )
 
@@ -15,6 +16,7 @@ var migrationFunctions = []func(*gorm.DB) error{
 	accounts.MigrateAll,
 	subscriptions.MigrateAll,
 	alarms.MigrateAll,
+	teams.MigrateAll,
 	notifications.MigrateAll,
 }
 

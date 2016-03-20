@@ -1,12 +1,16 @@
 ---
 
+#-------#
+# Users #
+#-------#
+
 - table: 'account_users'
   pk:
     id: 1
   fields:
     account_id: 1
     oauth_user_id: 1
-    role_id: 1
+    role_id: 'superuser'
     first_name: 'test_first_name_1'
     last_name: 'test_last_name_1'
     confirmed: true
@@ -19,10 +23,24 @@
   fields:
     account_id: 1
     oauth_user_id: 2
-    role_id: 2
+    role_id: 'user'
     facebook_id: 'facebook_id_2'
     first_name: 'test_first_name_2'
     last_name: 'test_last_name_2'
+    confirmed: true
+    created_at: 'ON_INSERT_NOW()'
+    updated_at: 'ON_UPDATE_NOW()'
+
+- table: 'account_users'
+  pk:
+    id: 3
+  fields:
+    account_id: 1
+    oauth_user_id: 3
+    role_id: 'user'
+    facebook_id: 'facebook_id_3'
+    first_name: 'test_first_name_3'
+    last_name: 'test_last_name_3'
     confirmed: true
     created_at: 'ON_INSERT_NOW()'
     updated_at: 'ON_UPDATE_NOW()'

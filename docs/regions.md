@@ -7,7 +7,7 @@
 Example request:
 
 ```
-curl --compressed -v "localhost:8080/v1/alarms/regions" \
+curl --compressed -v "localhost:8080/v1/regions" \
 	-H "Authorization: Bearer 00ccd40e-72ca-4e79-a4b6-67c95e2e3f1c"
 ```
 
@@ -16,8 +16,20 @@ Example response:
 ```json
 {
 	"_links": {
+		"first": {
+			"href": "/v1/regions"
+		},
+		"last": {
+			"href": "/v1/regions"
+		},
+		"next": {
+			"href": ""
+		},
+		"prev": {
+			"href": ""
+		},
 		"self": {
-			"href": "/v1/alarms/regions"
+			"href": "/v1/regions"
 		}
 	},
 	"_embedded": {
@@ -25,13 +37,15 @@ Example response:
 			{
 				"_links": {
 					"self": {
-						"href": "/v1/alarms/regions/1"
+						"href": "/v1/regions/1"
 					}
 				},
 				"id": "SGP",
 				"name": "Singapore"
 			}
 		]
-	}
+	},
+	"count": 4,
+	"page": 1
 }
 ```

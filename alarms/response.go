@@ -17,6 +17,8 @@ type RegionResponse struct {
 // ListRegionsResponse ...
 type ListRegionsResponse struct {
 	jsonhal.Hal
+	Count uint `json:"count"`
+	Page  uint `json:"page"`
 }
 
 // AlarmResponse ...
@@ -94,11 +96,26 @@ func NewRegionResponse(region *Region) (*RegionResponse, error) {
 }
 
 // NewListRegionsResponse creates new ListRegionsResponse instance
-func NewListRegionsResponse(regions []*Region) (*ListRegionsResponse, error) {
-	response := new(ListRegionsResponse)
+func NewListRegionsResponse(count, page int, self, first, last, previous, next string, regions []*Region) (*ListRegionsResponse, error) {
+	response := &ListRegionsResponse{
+		Count: uint(count),
+		Page:  uint(page),
+	}
 
 	// Set the self link
-	response.SetLink("self", "/v1/alarms/regions", "")
+	response.SetLink("self", self, "")
+
+	// Set the first link
+	response.SetLink("first", first, "")
+
+	// Set the last link
+	response.SetLink("last", last, "")
+
+	// Set the previous link
+	response.SetLink("prev", previous, "")
+
+	// Set the next link
+	response.SetLink("next", next, "")
 
 	// Create slice of region responses
 	regionResponses := make([]*RegionResponse, len(regions))

@@ -19,7 +19,7 @@ func newRoutes(service ServiceInterface) []routes.Route {
 		routes.Route{
 			Name:        "list_regions",
 			Method:      "GET",
-			Pattern:     "/alarms/regions",
+			Pattern:     "/regions",
 			HandlerFunc: service.listRegionsHandler,
 			Middlewares: []negroni.Handler{
 				accounts.NewUserAuthMiddleware(service.GetAccountsService()),

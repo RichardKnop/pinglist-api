@@ -11,6 +11,7 @@ import (
 	"github.com/RichardKnop/pinglist-api/notifications"
 	"github.com/RichardKnop/pinglist-api/oauth"
 	"github.com/RichardKnop/pinglist-api/subscriptions"
+	"github.com/RichardKnop/pinglist-api/teams"
 	"github.com/RichardKnop/pinglist-api/web"
 	"github.com/codegangsta/negroni"
 	"github.com/gorilla/mux"
@@ -70,6 +71,14 @@ func RunServer() error {
 		nil, // HTTP client
 	)
 
+	// Initialise the teams service
+	teamsService := teams.NewService(
+		cnf,
+		db,
+		accountsService,
+		subscriptionsService,
+	)
+
 	// Initialise the notifications service
 	notificationsService := notifications.NewService(
 		cnf,
@@ -103,11 +112,14 @@ func RunServer() error {
 	// Register routes for the facebook service
 	facebook.RegisterRoutes(router, facebookService)
 
+	// Register routes for the subscriptions service
+	subscriptions.RegisterRoutes(router, subscriptionsService)
+
 	// Register routes for the alarms service
 	alarms.RegisterRoutes(router, alarmsService)
 
-	// Register routes for the subscriptions service
-	subscriptions.RegisterRoutes(router, subscriptionsService)
+	// Register routes for the teams service
+	teams.RegisterRoutes(router, teamsService)
 
 	// Register routes for the notifications service
 	notifications.RegisterRoutes(router, notificationsService)

@@ -51,7 +51,11 @@ func (s *Service) createPasswordResetHandler(w http.ResponseWriter, r *http.Requ
 	passwordReset, err := s.createPasswordReset(user)
 	if err != nil {
 		logger.Errorf("Create password reset error: %s", err)
-		response.Error(w, err.Error(), http.StatusInternalServerError)
+		code, ok := errStatusCodeMap[err]
+		if !ok {
+			code = http.StatusInternalServerError
+		}
+		response.Error(w, err.Error(), code)
 		return
 	}
 

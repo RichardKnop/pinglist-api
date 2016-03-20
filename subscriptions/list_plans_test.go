@@ -12,6 +12,17 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func (suite *SubscriptionsTestSuite) TestListPlansRequiresUserAuthentication() {
+	r, err := http.NewRequest("", "", nil)
+	assert.NoError(suite.T(), err, "Request setup should not get an error")
+
+	w := httptest.NewRecorder()
+
+	suite.service.listPlansHandler(w, r)
+
+	assert.Equal(suite.T(), http.StatusUnauthorized, w.Code, "This requires an authenticated user")
+}
+
 func (suite *SubscriptionsTestSuite) TestListPlans() {
 	// Prepare a request
 	r, err := http.NewRequest(
@@ -59,11 +70,21 @@ func (suite *SubscriptionsTestSuite) TestListPlans() {
 				"self": &jsonhal.Link{
 					Href: "/v1/plans",
 				},
+				"first": &jsonhal.Link{
+					Href: "/v1/plans",
+				},
+				"last": &jsonhal.Link{
+					Href: "/v1/plans",
+				},
+				"prev": new(jsonhal.Link),
+				"next": new(jsonhal.Link),
 			},
 			Embedded: map[string]jsonhal.Embedded{
 				"plans": jsonhal.Embedded(planResponses),
 			},
 		},
+		Count: 3,
+		Page:  1,
 	}
 
 	expectedJSON, err := json.Marshal(expected)

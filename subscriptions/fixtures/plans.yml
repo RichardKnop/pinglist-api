@@ -7,11 +7,12 @@
     plan_id: 'personal'
     name: 'personal'
     description: 'description ...'
-    currency: 'GBP'
+    currency: 'USD'
     amount: 250
     trial_period: 0
     interval: 30
     max_alarms: 1
+    max_team_members: 1
     created_at: 'ON_INSERT_NOW()'
     updated_at: 'ON_UPDATE_NOW()'
 
@@ -22,11 +23,12 @@
     plan_id: 'professional'
     name: 'Professional'
     description: 'description ...'
-    currency: 'GBP'
+    currency: 'USD'
     amount: 1000
     trial_period: 0
     interval: 30
     max_alarms: 5
+    max_team_members: 1
     created_at: 'ON_INSERT_NOW()'
     updated_at: 'ON_UPDATE_NOW()'
 
@@ -37,10 +39,11 @@
     plan_id: 'enterprise'
     name: 'Enterprise'
     description: 'description ...'
-    currency: 'GBP'
+    currency: 'USD'
     amount: 35000
     trial_period: 0
     interval: 30
     max_alarms: 100
+    max_team_members: 20
     created_at: 'ON_INSERT_NOW()'
     updated_at: 'ON_UPDATE_NOW()'

@@ -68,28 +68,18 @@ func (s *Service) FindAlarmByID(alarmID uint) (*Alarm, error) {
 
 // createAlarm creates a new alarm
 func (s *Service) createAlarm(user *accounts.User, alarmRequest *AlarmRequest) (*Alarm, error) {
-	var maxAlarms int
+	if alarmRequest.Active {
+		// Count how many active alarms user already has
+		var countAlarms int
+		s.db.Model(new(Alarm)).Where(Alarm{
+			UserID: util.IntOrNull(int64(user.ID)),
+			Active: true,
+		}).Count(&countAlarms)
 
-	// If user is in a free trial, allow one alarm
-	if user.IsInFreeTrial() {
-		maxAlarms = 1
-	}
-
-	// Fetch active user subscription
-	subscription, err := s.subscriptionsService.FindActiveUserSubscription(user.ID)
-
-	// If subscribed, take max allowed alarms from the subscription plan
-	if err == nil && subscription != nil {
-		maxAlarms = int(subscription.Plan.MaxAlarms)
-	}
-
-	// Count how many alarms user already has
-	var countAlarms int
-	s.db.Model(new(Alarm)).Where("user_id = ?", user.ID).Count(&countAlarms)
-
-	// Limit alarms to max number defined above
-	if countAlarms+1 > maxAlarms {
-		return nil, ErrMaxAlarmsLimitReached
+		// Limit alarms to the max number defined as per subscription plan
+		if countAlarms+1 > s.getUserMaxAlarms(user) {
+			return nil, ErrMaxAlarmsLimitReached
+		}
 	}
 
 	// Fetch the region from the database
@@ -117,6 +107,20 @@ func (s *Service) createAlarm(user *accounts.User, alarmRequest *AlarmRequest) (
 
 // updateAlarm updates an existing alarm
 func (s *Service) updateAlarm(alarm *Alarm, alarmRequest *AlarmRequest) error {
+	if !alarm.Active && alarmRequest.Active {
+		// Count how many active alarms user already has
+		var countAlarms int
+		s.db.Model(new(Alarm)).Where(Alarm{
+			UserID: alarm.UserID,
+			Active: true,
+		}).Count(&countAlarms)
+
+		// Limit alarms to max number defined above
+		if countAlarms+1 > s.getUserMaxAlarms(alarm.User) {
+			return ErrMaxAlarmsLimitReached
+		}
+	}
+
 	// Fetch the region from the database
 	region, err := s.findRegionByID(alarmRequest.Region)
 	if err != nil {
