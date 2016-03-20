@@ -26,6 +26,63 @@ func (suite *AccountsTestSuite) TestCreateTeamRequiresUserAuthentication() {
 	assert.Equal(suite.T(), http.StatusUnauthorized, w.Code, "This requires an authenticated user")
 }
 
+func (suite *AccountsTestSuite) TestCreateTeamFailsWhenUserAlreadyOwnsOne() {
+	// Prepare a request
+	payload, err := json.Marshal(&TeamRequest{
+		Name:    "Test Team 2",
+		Members: []*TeamMemberRequest{},
+	})
+	assert.NoError(suite.T(), err, "JSON marshalling failed")
+	r, err := http.NewRequest(
+		"POST",
+		"http://1.2.3.4/v1/accounts/teams",
+		bytes.NewBuffer(payload),
+	)
+	assert.NoError(suite.T(), err, "Request setup should not get an error")
+	r.Header.Set("Authorization", "Bearer test_superuser_token")
+
+	// Check the routing
+	match := new(mux.RouteMatch)
+	suite.router.Match(r, match)
+	if assert.NotNil(suite.T(), match.Route) {
+		assert.Equal(suite.T(), "create_team", match.Route.GetName())
+	}
+
+	// Count before
+	var countBefore int
+	suite.db.Model(new(Team)).Count(&countBefore)
+
+	// And serve the request
+	w := httptest.NewRecorder()
+	suite.router.ServeHTTP(w, r)
+
+	// Check that the mock object expectations were met
+	suite.emailServiceMock.AssertExpectations(suite.T())
+	suite.emailFactoryMock.AssertExpectations(suite.T())
+
+	// Check the status code
+	if !assert.Equal(suite.T(), 400, w.Code) {
+		log.Print(w.Body.String())
+	}
+
+	// Count after
+	var countAfter int
+	suite.db.Model(new(Team)).Count(&countAfter)
+	assert.Equal(suite.T(), countBefore, countAfter)
+
+	// Check the response body
+	expectedJSON, err := json.Marshal(
+		map[string]string{"error": ErrUserCanOnlyCreateOneTeam.Error()})
+	if assert.NoError(suite.T(), err, "JSON marshalling failed") {
+		assert.Equal(
+			suite.T(),
+			string(expectedJSON),
+			strings.TrimRight(w.Body.String(), "\n"),
+			"Body should contain JSON detailing the error",
+		)
+	}
+}
+
 func (suite *AccountsTestSuite) TestCreateTeam() {
 	// Prepare a request
 	payload, err := json.Marshal(&TeamRequest{

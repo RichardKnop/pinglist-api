@@ -6,9 +6,9 @@ import (
 
 var (
 	errStatusCodeMap = map[error]int{
-		ErrSuperuserOnlyManually: http.StatusBadRequest,
-		ErrEmailTaken:            http.StatusBadRequest,
-		ErrEmailCannotBeChanged:  http.StatusBadRequest,
-		ErrUserCanCreateOnlyOneTeam: http.StatusBadRequest,
+		ErrSuperuserOnlyManually:    http.StatusBadRequest,
+		ErrEmailTaken:               http.StatusBadRequest,
+		ErrEmailCannotBeChanged:     http.StatusBadRequest,
+		ErrUserCanOnlyCreateOneTeam: http.StatusBadRequest,
 	}
 )

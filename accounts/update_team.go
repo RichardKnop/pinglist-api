@@ -13,7 +13,8 @@ import (
 )
 
 var (
-	errUpdateTeamPermission = errors.New("Need permission to update team")
+	// ErrUpdateTeamPermission ...
+	ErrUpdateTeamPermission = errors.New("Need permission to update team")
 )
 
 // Handles requests to update a team (PUT /v1/accounts/teams/{id:[0-9]+})
@@ -100,5 +101,5 @@ func checkUpdateTeamPermissions(authenticatedUser *User, team *Team) error {
 	}
 
 	// The user doesn't have the permission
-	return errUpdateTeamPermission
+	return ErrUpdateTeamPermission
 }

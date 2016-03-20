@@ -8,7 +8,7 @@ var (
 	// ErrTeamNotFound ...
 	ErrTeamNotFound = errors.New("Team not found")
 	// ErrUserCanCreateOnlyOneTeam ...
-	ErrUserCanCreateOnlyOneTeam = errors.New("User can create only one team")
+	ErrUserCanOnlyCreateOneTeam = errors.New("User can only create one team")
 )
 
 // FindTeamByID looks up a team by ID
@@ -52,7 +52,7 @@ func (s *Service) userOwnsTeam(user *User) bool {
 func (s *Service) createTeam(owner *User, teamRequest *TeamRequest) (*Team, error) {
 	// Users can only be owners of a single team
 	if s.userOwnsTeam(owner) {
-		return nil, ErrUserCanCreateOnlyOneTeam
+		return nil, ErrUserCanOnlyCreateOneTeam
 	}
 
 	// Members
