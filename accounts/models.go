@@ -85,20 +85,6 @@ func (p *PasswordReset) TableName() string {
 	return "account_password_resets"
 }
 
-// Team ...
-type Team struct {
-	gorm.Model
-	OwnerID sql.NullInt64 `sql:"index;not null"`
-	Owner   *User
-	Name    string  `sql:"type:varchar(40);unique;not null"`
-	Members []*User `gorm:"many2many:account_team_members"`
-}
-
-// TableName specifies table name
-func (t *Team) TableName() string {
-	return "account_teams"
-}
-
 // newAccount creates new Account instance
 func newAccount(oauthClient *oauth.Client, name, description string) *Account {
 	oauthClientID := util.PositiveIntOrNull(int64(oauthClient.ID))
@@ -165,18 +151,4 @@ func newPasswordReset(user *User) *PasswordReset {
 		passwordReset.User = user
 	}
 	return passwordReset
-}
-
-// newTeam creates new Team instance
-func newTeam(owner *User, members []*User, teamRequest *TeamRequest) *Team {
-	ownerID := util.PositiveIntOrNull(int64(owner.ID))
-	team := &Team{
-		OwnerID: ownerID,
-		Name:    teamRequest.Name,
-		Members: members,
-	}
-	if ownerID.Valid {
-		team.Owner = owner
-	}
-	return team
 }

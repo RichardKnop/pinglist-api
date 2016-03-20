@@ -1,4 +1,4 @@
-package accounts
+package teams
 
 import (
 	"bytes"
@@ -11,11 +11,12 @@ import (
 	"time"
 
 	"github.com/RichardKnop/jsonhal"
+	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
 )
 
-func (suite *AccountsTestSuite) TestCreateTeamRequiresUserAuthentication() {
+func (suite *TeamsTestSuite) TestCreateTeamRequiresUserAuthentication() {
 	r, err := http.NewRequest("", "", nil)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
 
@@ -26,7 +27,7 @@ func (suite *AccountsTestSuite) TestCreateTeamRequiresUserAuthentication() {
 	assert.Equal(suite.T(), http.StatusUnauthorized, w.Code, "This requires an authenticated user")
 }
 
-func (suite *AccountsTestSuite) TestCreateTeamFailsWhenUserAlreadyOwnsOne() {
+func (suite *TeamsTestSuite) TestCreateTeamFailsWhenUserAlreadyOwnsOne() {
 	// Prepare a request
 	payload, err := json.Marshal(&TeamRequest{
 		Name:    "Test Team 2",
@@ -35,11 +36,11 @@ func (suite *AccountsTestSuite) TestCreateTeamFailsWhenUserAlreadyOwnsOne() {
 	assert.NoError(suite.T(), err, "JSON marshalling failed")
 	r, err := http.NewRequest(
 		"POST",
-		"http://1.2.3.4/v1/accounts/teams",
+		"http://1.2.3.4/v1/teams",
 		bytes.NewBuffer(payload),
 	)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
-	r.Header.Set("Authorization", "Bearer test_superuser_token")
+	r.Header.Set("Authorization", "Bearer test_token")
 
 	// Check the routing
 	match := new(mux.RouteMatch)
@@ -47,6 +48,9 @@ func (suite *AccountsTestSuite) TestCreateTeamFailsWhenUserAlreadyOwnsOne() {
 	if assert.NotNil(suite.T(), match.Route) {
 		assert.Equal(suite.T(), "create_team", match.Route.GetName())
 	}
+
+	// Mock authentication
+	suite.mockAuthentication(suite.users[0])
 
 	// Count before
 	var countBefore int
@@ -57,8 +61,8 @@ func (suite *AccountsTestSuite) TestCreateTeamFailsWhenUserAlreadyOwnsOne() {
 	suite.router.ServeHTTP(w, r)
 
 	// Check that the mock object expectations were met
-	suite.emailServiceMock.AssertExpectations(suite.T())
-	suite.emailFactoryMock.AssertExpectations(suite.T())
+	suite.accountsServiceMock.AssertExpectations(suite.T())
+	suite.subscriptionsServiceMock.AssertExpectations(suite.T())
 
 	// Check the status code
 	if !assert.Equal(suite.T(), 400, w.Code) {
@@ -83,7 +87,7 @@ func (suite *AccountsTestSuite) TestCreateTeamFailsWhenUserAlreadyOwnsOne() {
 	}
 }
 
-func (suite *AccountsTestSuite) TestCreateTeam() {
+func (suite *TeamsTestSuite) TestCreateTeam() {
 	// Prepare a request
 	payload, err := json.Marshal(&TeamRequest{
 		Name:    "Test Team 2",
@@ -92,11 +96,11 @@ func (suite *AccountsTestSuite) TestCreateTeam() {
 	assert.NoError(suite.T(), err, "JSON marshalling failed")
 	r, err := http.NewRequest(
 		"POST",
-		"http://1.2.3.4/v1/accounts/teams",
+		"http://1.2.3.4/v1/teams",
 		bytes.NewBuffer(payload),
 	)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
-	r.Header.Set("Authorization", "Bearer test_user_token")
+	r.Header.Set("Authorization", "Bearer test_token")
 
 	// Check the routing
 	match := new(mux.RouteMatch)
@@ -104,6 +108,9 @@ func (suite *AccountsTestSuite) TestCreateTeam() {
 	if assert.NotNil(suite.T(), match.Route) {
 		assert.Equal(suite.T(), "create_team", match.Route.GetName())
 	}
+
+	// Mock authentication
+	suite.mockAuthentication(suite.users[1])
 
 	// Count before
 	var countBefore int
@@ -114,8 +121,8 @@ func (suite *AccountsTestSuite) TestCreateTeam() {
 	suite.router.ServeHTTP(w, r)
 
 	// Check that the mock object expectations were met
-	suite.emailServiceMock.AssertExpectations(suite.T())
-	suite.emailFactoryMock.AssertExpectations(suite.T())
+	suite.accountsServiceMock.AssertExpectations(suite.T())
+	suite.subscriptionsServiceMock.AssertExpectations(suite.T())
 
 	// Check the status code
 	if !assert.Equal(suite.T(), 201, w.Code) {
@@ -154,7 +161,7 @@ func (suite *AccountsTestSuite) TestCreateTeam() {
 				},
 			},
 			Embedded: map[string]jsonhal.Embedded{
-				"members": jsonhal.Embedded([]*UserResponse{}),
+				"members": jsonhal.Embedded([]*accounts.UserResponse{}),
 			},
 		},
 		ID:        team.ID,

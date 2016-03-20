@@ -130,6 +130,7 @@ go run main.go loaddata \
 	alarms/fixtures/incident_types.yml \
 	alarms/fixtures/test_alarms.yml \
 	alarms/fixtures/test_incidents.yml \
+	teams/fixtures/test_teams.yml \
 	notifications/fixtures/test_endpoints.yml
 ```
 

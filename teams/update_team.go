@@ -1,4 +1,4 @@
-package accounts
+package teams
 
 import (
 	"encoding/json"
@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/RichardKnop/pinglist-api/accounts/roles"
 	"github.com/RichardKnop/pinglist-api/response"
 	"github.com/gorilla/mux"
@@ -20,7 +21,7 @@ var (
 // Handles requests to update a team (PUT /v1/accounts/teams/{id:[0-9]+})
 func (s *Service) updateTeamHandler(w http.ResponseWriter, r *http.Request) {
 	// Get the authenticated user from the request context
-	authenticatedUser, err := GetAuthenticatedUser(r)
+	authenticatedUser, err := accounts.GetAuthenticatedUser(r)
 	if err != nil {
 		response.UnauthorizedError(w, err.Error())
 		return
@@ -89,7 +90,7 @@ func (s *Service) updateTeamHandler(w http.ResponseWriter, r *http.Request) {
 	response.WriteJSON(w, teamResponse, http.StatusOK)
 }
 
-func checkUpdateTeamPermissions(authenticatedUser *User, team *Team) error {
+func checkUpdateTeamPermissions(authenticatedUser *accounts.User, team *Team) error {
 	// Superusers can update any team
 	if authenticatedUser.Role.Name == roles.Superuser {
 		return nil

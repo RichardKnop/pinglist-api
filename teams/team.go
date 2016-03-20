@@ -1,7 +1,9 @@
-package accounts
+package teams
 
 import (
 	"errors"
+
+	"github.com/RichardKnop/pinglist-api/accounts"
 )
 
 var (
@@ -43,23 +45,23 @@ func (s *Service) FindTeamByOwnerID(ownerID uint) (*Team, error) {
 }
 
 // userOwnsTeam returns true if the user is an owner of a team already
-func (s *Service) userOwnsTeam(user *User) bool {
+func (s *Service) userOwnsTeam(user *accounts.User) bool {
 	_, err := s.FindTeamByOwnerID(user.ID)
 	return err == nil
 }
 
 // createTeam creates a new team
-func (s *Service) createTeam(owner *User, teamRequest *TeamRequest) (*Team, error) {
+func (s *Service) createTeam(owner *accounts.User, teamRequest *TeamRequest) (*Team, error) {
 	// Users can only be owners of a single team
 	if s.userOwnsTeam(owner) {
 		return nil, ErrUserCanOnlyCreateOneTeam
 	}
 
 	// Members
-	members := make([]*User, len(teamRequest.Members))
+	members := make([]*accounts.User, len(teamRequest.Members))
 	for i, teamMemberRequest := range teamRequest.Members {
 		// Fetch the member from the database
-		member, err := s.FindUserByID(teamMemberRequest.ID)
+		member, err := s.GetAccountsService().FindUserByID(teamMemberRequest.ID)
 		if err != nil {
 			return nil, err
 		}
@@ -80,10 +82,10 @@ func (s *Service) createTeam(owner *User, teamRequest *TeamRequest) (*Team, erro
 // updateTeam updates an existing team
 func (s *Service) updateTeam(team *Team, teamRequest *TeamRequest) error {
 	// Members
-	members := make([]*User, len(teamRequest.Members))
+	members := make([]*accounts.User, len(teamRequest.Members))
 	for i, teamMemberRequest := range teamRequest.Members {
 		// Fetch the member from the database
-		member, err := s.FindUserByID(teamMemberRequest.ID)
+		member, err := s.GetAccountsService().FindUserByID(teamMemberRequest.ID)
 		if err != nil {
 			return err
 		}

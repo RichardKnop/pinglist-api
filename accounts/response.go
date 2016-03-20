@@ -20,15 +20,6 @@ type UserResponse struct {
 	UpdatedAt string `json:"updated_at"`
 }
 
-// TeamResponse ...
-type TeamResponse struct {
-	jsonhal.Hal
-	ID        uint   `json:"id"`
-	Name      string `json:"name"`
-	CreatedAt string `json:"created_at"`
-	UpdatedAt string `json:"updated_at"`
-}
-
 // NewUserResponse creates new UserResponse instance
 func NewUserResponse(user *User) (*UserResponse, error) {
 	response := &UserResponse{
@@ -47,41 +38,6 @@ func NewUserResponse(user *User) (*UserResponse, error) {
 		"self", // name
 		fmt.Sprintf("/v1/accounts/users/%d", user.ID), // href
 		"", // title
-	)
-
-	return response, nil
-}
-
-// NewTeamResponse creates new TeamResponse instance
-func NewTeamResponse(team *Team) (*TeamResponse, error) {
-	response := &TeamResponse{
-		ID:        team.ID,
-		Name:      team.Name,
-		CreatedAt: team.CreatedAt.UTC().Format(time.RFC3339),
-		UpdatedAt: team.UpdatedAt.UTC().Format(time.RFC3339),
-	}
-
-	// Set the self link
-	response.SetLink(
-		"self", // name
-		fmt.Sprintf("/v1/accounts/teams/%d", team.ID), // href
-		"", // title
-	)
-
-	// Create slice of member responses
-	memberResponses := make([]*UserResponse, len(team.Members))
-	for i, user := range team.Members {
-		memberResponse, err := NewUserResponse(user)
-		if err != nil {
-			return nil, err
-		}
-		memberResponses[i] = memberResponse
-	}
-
-	// Set embedded members
-	response.SetEmbedded(
-		"members",
-		jsonhal.Embedded(memberResponses),
 	)
 
 	return response, nil

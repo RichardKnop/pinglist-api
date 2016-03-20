@@ -1,4 +1,4 @@
-package accounts
+package teams
 
 import (
 	"encoding/json"
@@ -6,13 +6,14 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/RichardKnop/pinglist-api/response"
 )
 
 // Handles requests to create a new team (POST /v1/accounts/teams)
 func (s *Service) createTeamHandler(w http.ResponseWriter, r *http.Request) {
 	// Get the authenticated user from the request context
-	authenticatedUser, err := GetAuthenticatedUser(r)
+	authenticatedUser, err := accounts.GetAuthenticatedUser(r)
 	if err != nil {
 		response.UnauthorizedError(w, err.Error())
 		return

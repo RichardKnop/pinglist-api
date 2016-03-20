@@ -1,15 +1,16 @@
-package accounts
+package teams
 
 import (
 	"net/http"
 
+	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/RichardKnop/pinglist-api/response"
 )
 
-// Handles requests to get owned team data (GET /v1/accounts/ownedteam)
-func (s *Service) getOwnedTeamHandler(w http.ResponseWriter, r *http.Request) {
+// Handles requests to get own team data (GET /v1/ownteam)
+func (s *Service) getOwnTeamHandler(w http.ResponseWriter, r *http.Request) {
 	// Get the authenticated user from the request context
-	authenticatedUser, err := GetAuthenticatedUser(r)
+	authenticatedUser, err := accounts.GetAuthenticatedUser(r)
 	if err != nil {
 		response.UnauthorizedError(w, err.Error())
 		return

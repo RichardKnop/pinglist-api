@@ -1,4 +1,4 @@
-package accounts
+package teams
 
 import (
 	"net/http"
@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func (suite *AccountsTestSuite) TestUpdateTeamRequiresUserAuthentication() {
+func (suite *TeamsTestSuite) TestUpdateTeamRequiresUserAuthentication() {
 	r, err := http.NewRequest("", "", nil)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
 

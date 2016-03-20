@@ -4,7 +4,7 @@
 # Teams #
 #-------#
 
-- table: 'account_teams'
+- table: 'team_teams'
   pk:
     id: 1
   fields:

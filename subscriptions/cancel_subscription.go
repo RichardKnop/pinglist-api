@@ -13,7 +13,7 @@ import (
 
 var (
 	// ErrCancelSubscriptionPermission ...
-	ErrCancelSubscriptionPermission = errors.New("Need permission to cancel subscriptions")
+	ErrCancelSubscriptionPermission = errors.New("Need permission to cancel subscription")
 )
 
 // Handles calls to cancel a subscription (DELETE /v1/subscriptions/{id:[0-9]+})

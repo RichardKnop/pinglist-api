@@ -29,8 +29,6 @@ type ServiceInterface interface {
 	ResetPassword(passwordReset *PasswordReset, password string) error
 	CreateFacebookUser(account *Account, facebookID string, userRequest *UserRequest) (*User, error)
 	CreateSuperuser(account *Account, email, password string) (*User, error)
-	FindTeamByID(teamID uint) (*Team, error)
-	FindTeamByOwnerID(ownerID uint) (*Team, error)
 	GetAccountFromQueryString(r *http.Request) (*Account, error)
 	GetUserFromQueryString(r *http.Request) (*User, error)
 
@@ -39,7 +37,4 @@ type ServiceInterface interface {
 	getMyUserHandler(w http.ResponseWriter, r *http.Request)
 	updateUserHandler(w http.ResponseWriter, r *http.Request)
 	createPasswordResetHandler(w http.ResponseWriter, r *http.Request)
-	createTeamHandler(w http.ResponseWriter, r *http.Request)
-	getOwnedTeamHandler(w http.ResponseWriter, r *http.Request)
-	updateTeamHandler(w http.ResponseWriter, r *http.Request)
 }

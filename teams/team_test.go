@@ -1,10 +1,10 @@
-package accounts
+package teams
 
 import (
 	"github.com/stretchr/testify/assert"
 )
 
-func (suite *AccountsTestSuite) TestFindTeamByID() {
+func (suite *TeamsTestSuite) TestFindTeamByID() {
 	var (
 		team *Team
 		err  error
@@ -34,7 +34,7 @@ func (suite *AccountsTestSuite) TestFindTeamByID() {
 	}
 }
 
-func (suite *AccountsTestSuite) TestFindTeamByOwnerID() {
+func (suite *TeamsTestSuite) TestFindTeamByOwnerID() {
 	var (
 		team *Team
 		err  error
