@@ -29,6 +29,8 @@ type ServiceInterface interface {
 	ResetPassword(passwordReset *PasswordReset, password string) error
 	CreateFacebookUser(account *Account, facebookID string, userRequest *UserRequest) (*User, error)
 	CreateSuperuser(account *Account, email, password string) (*User, error)
+	FindTeamByID(teamID uint) (*Team, error)
+	FindTeamByOwnerID(ownerID uint) (*Team, error)
 	GetAccountFromQueryString(r *http.Request) (*Account, error)
 	GetUserFromQueryString(r *http.Request) (*User, error)
 

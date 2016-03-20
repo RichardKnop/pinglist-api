@@ -9,5 +9,6 @@ var (
 		ErrSuperuserOnlyManually: http.StatusBadRequest,
 		ErrEmailTaken:            http.StatusBadRequest,
 		ErrEmailCannotBeChanged:  http.StatusBadRequest,
+		ErrUserCanCreateOnlyOneTeam: http.StatusBadRequest,
 	}
 )

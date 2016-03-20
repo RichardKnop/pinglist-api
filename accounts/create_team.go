@@ -39,18 +39,15 @@ func (s *Service) createTeamHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Check if this user already is an owner of a team
-	_, err = s.findTeamByOwnerID(authenticatedUser.ID)
-	if err == nil {
-		response.Error(w, "You already have a team", http.StatusBadRequest)
-		return
-	}
-
 	// Create a new team
 	team, err := s.createTeam(authenticatedUser, teamRequest)
 	if err != nil {
 		logger.Errorf("Create team error: %s", err)
-		response.Error(w, err.Error(), http.StatusInternalServerError)
+		code, ok := errStatusCodeMap[err]
+		if !ok {
+			code = http.StatusInternalServerError
+		}
+		response.Error(w, err.Error(), code)
 		return
 	}
 
