@@ -24,7 +24,6 @@ type UserResponse struct {
 type TeamResponse struct {
 	jsonhal.Hal
 	ID        uint   `json:"id"`
-	OwnerID   uint   `json:"owner_id"`
 	Name      string `json:"name"`
 	CreatedAt string `json:"created_at"`
 	UpdatedAt string `json:"updated_at"`
@@ -57,7 +56,6 @@ func NewUserResponse(user *User) (*UserResponse, error) {
 func NewTeamResponse(team *Team) (*TeamResponse, error) {
 	response := &TeamResponse{
 		ID:        team.ID,
-		OwnerID:   uint(team.OwnerID.Int64),
 		Name:      team.Name,
 		CreatedAt: team.CreatedAt.UTC().Format(time.RFC3339),
 		UpdatedAt: team.UpdatedAt.UTC().Format(time.RFC3339),

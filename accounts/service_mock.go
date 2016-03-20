@@ -497,6 +497,10 @@ func (_m *ServiceMock) createTeamHandler(w http.ResponseWriter, r *http.Request)
 	_m.Called(w, r)
 }
 
+func (_m *ServiceMock) getOwnedTeamHandler(w http.ResponseWriter, r *http.Request) {
+	_m.Called(w, r)
+}
+
 func (_m *ServiceMock) updateTeamHandler(w http.ResponseWriter, r *http.Request) {
 	_m.Called(w, r)
 }

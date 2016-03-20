@@ -61,6 +61,15 @@ func newRoutes(service ServiceInterface) []routes.Route {
 			},
 		},
 		routes.Route{
+			Name:        "get_owned_user",
+			Method:      "GET",
+			Pattern:     "/ownedteam",
+			HandlerFunc: service.getOwnedTeamHandler,
+			Middlewares: []negroni.Handler{
+				NewUserAuthMiddleware(service),
+			},
+		},
+		routes.Route{
 			Name:        "update_team",
 			Method:      "PUT",
 			Pattern:     "/teams/{id:[0-9]+}",
