@@ -6,6 +6,7 @@ import (
 
 var (
 	errStatusCodeMap = map[error]int{
-		ErrUserCanOnlyCreateOneTeam: http.StatusBadRequest,
+		ErrUserCanOnlyCreateOneTeam:   http.StatusBadRequest,
+		ErrMaxTeamMembersLimitReached: http.StatusBadRequest,
 	}
 )

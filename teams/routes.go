@@ -26,7 +26,7 @@ func newRoutes(service ServiceInterface) []routes.Route {
 			},
 		},
 		routes.Route{
-			Name:        "get_owned_user",
+			Name:        "get_own_team",
 			Method:      "GET",
 			Pattern:     "/ownteam",
 			HandlerFunc: service.getOwnTeamHandler,

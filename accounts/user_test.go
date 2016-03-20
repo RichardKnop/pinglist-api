@@ -54,6 +54,7 @@ func (suite *AccountsTestSuite) TestFindUserByOauthUserID() {
 	if assert.NotNil(suite.T(), user) {
 		assert.Equal(suite.T(), "test_client_1", user.Account.OauthClient.Key)
 		assert.Equal(suite.T(), "test@user", user.OauthUser.Username)
+		assert.Equal(suite.T(), roles.User, user.Role.ID)
 	}
 }
 
@@ -84,6 +85,7 @@ func (suite *AccountsTestSuite) TestFindUserByEmail() {
 	if assert.NotNil(suite.T(), user) {
 		assert.Equal(suite.T(), "test_client_1", user.Account.OauthClient.Key)
 		assert.Equal(suite.T(), "test@user", user.OauthUser.Username)
+		assert.Equal(suite.T(), roles.User, user.Role.ID)
 	}
 }
 
@@ -114,6 +116,7 @@ func (suite *AccountsTestSuite) TestFindUserByID() {
 	if assert.NotNil(suite.T(), user) {
 		assert.Equal(suite.T(), "test_client_1", user.Account.OauthClient.Key)
 		assert.Equal(suite.T(), "test@user", user.OauthUser.Username)
+		assert.Equal(suite.T(), roles.User, user.Role.ID)
 	}
 }
 
@@ -155,7 +158,7 @@ func (suite *AccountsTestSuite) TestFindUserByFacebookID() {
 	if assert.NotNil(suite.T(), user) {
 		assert.Equal(suite.T(), "test_client_1", user.Account.OauthClient.Key)
 		assert.Equal(suite.T(), "test@user", user.OauthUser.Username)
-		assert.Equal(suite.T(), roles.User, user.Role.Name)
+		assert.Equal(suite.T(), roles.User, user.Role.ID)
 	}
 }
 
@@ -250,9 +253,9 @@ func (suite *AccountsTestSuite) TestCreateSuperuser() {
 
 	// We try to insert a unique superuser
 	user, err = suite.service.CreateSuperuser(
-		suite.accounts[0], // account
+		suite.accounts[0],   // account
 		"test@newsuperuser", // email
-		"test_password",   // password
+		"test_password",     // password
 	)
 
 	// Error should be nil
