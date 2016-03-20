@@ -111,7 +111,7 @@ func (suite *TeamsTestSuite) TearDownSuite() {
 
 // The SetupTest method will be run before every test in the suite.
 func (suite *TeamsTestSuite) SetupTest() {
-	suite.db.Exec("delete from team_team_members where team_id <> 1;")
+	suite.db.Exec("delete from team_team_members;")
 	suite.db.Unscoped().Not("id", []int64{1}).Delete(new(Team))
 
 	// Reset mocks

@@ -9,7 +9,7 @@ import (
 var (
 	// ErrTeamNotFound ...
 	ErrTeamNotFound = errors.New("Team not found")
-	// ErrUserCanCreateOnlyOneTeam ...
+	// ErrUserCanOnlyCreateOneTeam ...
 	ErrUserCanOnlyCreateOneTeam = errors.New("User can only create one team")
 	// ErrMaxTeamMembersLimitReached ...
 	ErrMaxTeamMembersLimitReached = errors.New("Max team members limit reached")
@@ -46,10 +46,22 @@ func (s *Service) FindTeamByOwnerID(ownerID uint) (*Team, error) {
 	return team, nil
 }
 
-// userOwnsTeam returns true if the user is an owner of a team already
-func (s *Service) userOwnsTeam(user *accounts.User) bool {
-	_, err := s.FindTeamByOwnerID(user.ID)
-	return err == nil
+// FindTeamByOwnerID looks up a team by a member ID
+func (s *Service) FindTeamByMemberID(memberID uint) (*Team, error) {
+	// Fetch the team from the database
+	team := new(Team)
+	notFound := s.db.
+		Joins("inner join team_team_members on team_team_members.team_id = team_teams.id").
+		Where("team_team_members.user_id = ?", memberID).
+		Preload("Owner.OauthUser").Preload("Members.OauthUser").
+		First(team).RecordNotFound()
+
+	// Not found
+	if notFound {
+		return nil, ErrTeamNotFound
+	}
+
+	return team, nil
 }
 
 // createTeam creates a new team
@@ -129,4 +141,10 @@ func (s *Service) updateTeam(team *Team, teamRequest *TeamRequest) error {
 	}
 
 	return nil
+}
+
+// userOwnsTeam returns true if the user is an owner of a team already
+func (s *Service) userOwnsTeam(user *accounts.User) bool {
+	_, err := s.FindTeamByOwnerID(user.ID)
+	return err == nil
 }
