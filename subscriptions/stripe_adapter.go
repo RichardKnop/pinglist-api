@@ -65,6 +65,19 @@ func (a *StripeAdapter) GetSubscription(subscriptionID string) (*stripe.Sub, err
 	return stripeSubscription.Get(subscriptionID, &stripe.SubParams{})
 }
 
+// ChangeSubscriptionPlan upgrades or downgrades a subscription plan
+func (a *StripeAdapter) ChangeSubscriptionPlan(subscriptionID, planID string) (*stripe.Sub, error) {
+	s, err := a.GetSubscription(subscriptionID)
+	if err != nil {
+		return nil, err
+	}
+	params := &stripe.SubParams{
+		Customer: s.Customer.ID,
+		Plan:     planID,
+	}
+	return stripeSubscription.Update(s.ID, params)
+}
+
 // CancelSubscription cancels a subscription
 func (a *StripeAdapter) CancelSubscription(subscriptionID, customerID string) (*stripe.Sub, error) {
 	return stripeSubscription.Cancel(

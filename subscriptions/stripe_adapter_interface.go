@@ -12,6 +12,7 @@ type StripeAdapterInterface interface {
 	GetOrCreateCustomer(customerID, stripeEmail, stripeToken string) (*stripe.Customer, error, bool)
 	CreateSubscription(customerID, planID string) (*stripe.Sub, error)
 	GetSubscription(subscriptionID string) (*stripe.Sub, error)
+	ChangeSubscriptionPlan(subscriptionID, planID string) (*stripe.Sub, error)
 	CancelSubscription(subscriptionID, customerID string) (*stripe.Sub, error)
 	GetEvent(eventID string) (*stripe.Event, error)
 }

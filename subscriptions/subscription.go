@@ -90,9 +90,9 @@ func (s *Service) createSubscription(user *accounts.User, plan *Plan, stripeToke
 	}
 
 	var (
-		customer       *Customer
-		stripeCustomer *stripe.Customer
-		stripeCustomerCreated        bool
+		customer              *Customer
+		stripeCustomer        *stripe.Customer
+		stripeCustomerCreated bool
 	)
 
 	// Do we already store a customer recors for this user?
@@ -200,7 +200,50 @@ func (s *Service) createSubscription(user *accounts.User, plan *Plan, stripeToke
 	return subscription, nil
 }
 
-// cancelSubscription cancells a subscription immediatelly
+// changeSubscriptionPlan upgrades or downgrades a subscription plan
+func (s *Service) changeSubscriptionPlan(subscription *Subscription, plan *Plan) error {
+	if subscription.Plan.ID == plan.ID {
+		return nil
+	}
+
+	// Begin a transaction
+	tx := s.db.Begin()
+
+	// Change the subscription plan
+	_, err := s.stripeAdapter.ChangeSubscriptionPlan(
+		subscription.SubscriptionID,
+		plan.PlanID,
+	)
+	if err != nil {
+		tx.Rollback() // rollback the transaction
+		return err
+	}
+
+	logger.Infof(
+		"Changed subscription plan: %s -> %s",
+		subscription.SubscriptionID,
+		plan.PlanID,
+	)
+
+	// Update the subscription plan
+	if err := tx.Model(subscription).UpdateColumn(Subscription{
+		PlanID: util.PositiveIntOrNull(int64(plan.ID)),
+	}).Error; err != nil {
+		tx.Rollback() // rollback the transaction
+		return err
+	}
+	subscription.Plan = plan
+
+	// Commit the transaction
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback() // rollback the transaction
+		return err
+	}
+
+	return nil
+}
+
+// cancelSubscription cancels a subscription immediatelly
 func (s *Service) cancelSubscription(subscription *Subscription) error {
 	// Cancel the subscription
 	stripeSubscription, err := s.stripeAdapter.CancelSubscription(
