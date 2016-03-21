@@ -26,7 +26,7 @@ func (suite *SubscriptionsTestSuite) TestCancelSubscriptionRequiresUserAuthentic
 
 func (suite *SubscriptionsTestSuite) TestCancelSubscription() {
 	// Create a test Stripe token
-	theStripeToken, err := stripeToken.New(&stripe.TokenParams{
+	testStripeToken, err := stripeToken.New(&stripe.TokenParams{
 		Card: &stripe.CardParams{
 			Number: "4242424242424242",
 			Month:  "10",
@@ -37,19 +37,19 @@ func (suite *SubscriptionsTestSuite) TestCancelSubscription() {
 	})
 	assert.NoError(suite.T(), err, "Creating test Stripe token failed")
 
-	// Create a test Stripe subscription
-	subscription, err := suite.service.createSubscription(
+	// Create a test subscription
+	testSubscription, err := suite.service.createSubscription(
 		suite.users[1],
 		suite.plans[0],
-		theStripeToken.ID,
-		theStripeToken.Email,
+		testStripeToken.ID,
+		testStripeToken.Email,
 	)
-	assert.NoError(suite.T(), err, "Creating test Stripe subscription failed")
+	assert.NoError(suite.T(), err, "Creating test subscription failed")
 
 	// Prepare a request
 	r, err := http.NewRequest(
 		"DELETE",
-		fmt.Sprintf("http://1.2.3.4/v1/subscriptions/%d", subscription.ID),
+		fmt.Sprintf("http://1.2.3.4/v1/subscriptions/%d", testSubscription.ID),
 		nil,
 	)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
@@ -97,9 +97,9 @@ func (suite *SubscriptionsTestSuite) TestCancelSubscription() {
 	assert.Equal(suite.T(), customerCountBefore, customerCountAfter)
 
 	// Fetch the cancelled subscription
-	subscription = new(Subscription)
+	subscription := new(Subscription)
 	notFound := suite.db.Preload("Customer.User").Preload("Plan").
-		Last(subscription).RecordNotFound()
+		First(subscription, testSubscription.ID).RecordNotFound()
 	assert.False(suite.T(), notFound)
 
 	// Check that the correct data was saved
