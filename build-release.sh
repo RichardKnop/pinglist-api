@@ -37,8 +37,8 @@ function main() {
   read -p "Container name (default: pinglist): " container_name
   [ -z "$container_name" ] && container_name="pinglist"
 
-  read -p "S3 bucket (default: pinglist.builds): " s3_bucket
-  [ -z "$s3_bucket" ] && s3_bucket="pinglist.builds"
+  read -p "S3 bucket (default: pinglist.releases): " s3_bucket
+  [ -z "$s3_bucket" ] && s3_bucket="pinglist.releases"
 
   local -r github=`git config --get remote.origin.url`
   declare -r temp_dir=$(mktemp -d "/tmp/${container_name}-${new_version}.XXXX")
