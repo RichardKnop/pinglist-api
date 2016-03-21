@@ -95,6 +95,29 @@ func (_m *ServiceMock) FindCustomerByID(customerID uint) (*Customer, error) {
 	return r0, r1
 }
 
+// FindCustomerByUserID ...
+func (_m *ServiceMock) FindCustomerByUserID(userID uint) (*Customer, error) {
+	ret := _m.Called(userID)
+
+	var r0 *Customer
+	if rf, ok := ret.Get(0).(func(uint) *Customer); ok {
+		r0 = rf(userID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*Customer)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(uint) error); ok {
+		r1 = rf(userID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // FindCustomerByCustomerID ...
 func (_m *ServiceMock) FindCustomerByCustomerID(customerID string) (*Customer, error) {
 	ret := _m.Called(customerID)

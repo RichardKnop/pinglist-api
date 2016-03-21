@@ -13,6 +13,7 @@ type ServiceInterface interface {
 	FindPlanByID(planID uint) (*Plan, error)
 	FindPlanByPlanID(planID string) (*Plan, error)
 	FindCustomerByID(customerID uint) (*Customer, error)
+	FindCustomerByUserID(userID uint) (*Customer, error)
 	FindCustomerByCustomerID(customerID string) (*Customer, error)
 	FindSubscriptionByID(subscriptionID uint) (*Subscription, error)
 	FindSubscriptionBySubscriptionID(subscriptionID string) (*Subscription, error)

@@ -89,31 +89,84 @@ func (s *Service) createSubscription(user *accounts.User, plan *Plan, stripeToke
 		return nil, ErrUserCanOnlyHaveOneActiveSubscription
 	}
 
-	// Create a new Stripe customer and subscribe him/her to a plan
-	stripeCustomer, err := s.stripeAdapter.CreateSubscription(
+	var (
+		customer       *Customer
+		stripeCustomer *stripe.Customer
+		stripeCustomerCreated        bool
+	)
+
+	// Do we already store a customer recors for this user?
+	customer, err = s.FindCustomerByUserID(user.ID)
+
+	// Begin a transaction
+	tx := s.db.Begin()
+
+	// Unexpected server error
+	if err != nil && err != ErrCustomerNotFound {
+		tx.Rollback() // rollback the transaction
+		return nil, err
+	}
+
+	if err != nil && err == ErrCustomerNotFound {
+		// Create a new Stripe customer
+		stripeCustomer, err = s.stripeAdapter.CreateCustomer(stripeEmail, stripeToken)
+		if err != nil {
+			tx.Rollback() // rollback the transaction
+			return nil, err
+		}
+
+		logger.Infof("Created customer: %s", stripeCustomer.ID)
+
+		// Create a new customer object
+		customer = newCustomer(user, stripeCustomer.ID)
+
+		// Save the customer to the database
+		if err := tx.Create(customer).Error; err != nil {
+			tx.Rollback() // rollback the transaction
+			return nil, err
+		}
+	} else {
+		// Get an existing Stripe customer or create a new one
+		stripeCustomer, err, stripeCustomerCreated = s.stripeAdapter.GetOrCreateCustomer(
+			customer.CustomerID,
+			stripeEmail,
+			stripeToken,
+		)
+		if err != nil {
+			tx.Rollback() // rollback the transaction
+			return nil, err
+		}
+
+		if stripeCustomerCreated {
+			logger.Infof("Created customer: %s", stripeCustomer.ID)
+
+			// Our customer record is not valid so delete it
+			if err := tx.Delete(customer).Error; err != nil {
+				tx.Rollback() // rollback the transaction
+				return nil, err
+			}
+
+			// Create a new customer object
+			customer = newCustomer(user, stripeCustomer.ID)
+
+			// Save the customer to the database
+			if err := tx.Create(customer).Error; err != nil {
+				tx.Rollback() // rollback the transaction
+				return nil, err
+			}
+		}
+	}
+
+	// Create a new Stripe subscription
+	stripeSubscription, err := s.stripeAdapter.CreateSubscription(
+		customer.CustomerID,
 		plan.PlanID,
-		stripeEmail,
-		stripeToken,
 	)
 	if err != nil {
 		return nil, err
 	}
 
-	// Create a new customer object
-	logger.Infof("Created customer: %s", stripeCustomer.ID)
-	customer := newCustomer(user, stripeCustomer.ID)
-
-	// Begin a transaction
-	tx := s.db.Begin()
-
-	// Save the customer to the database
-	if err := tx.Create(customer).Error; err != nil {
-		tx.Rollback() // rollback the transaction
-		return nil, err
-	}
-
-	// Assign Stripe subscription to a less confusing variable
-	stripeSubscription := stripeCustomer.Subs.Values[0]
+	logger.Infof("Created subscription: %s", stripeSubscription.ID)
 
 	// Parse subscription times
 	startedAt, cancelledAt, endedAt, periodStart, periodEnd, trialStart, trialEnd := getStripeSubscriptionTimes(stripeSubscription)
@@ -150,7 +203,6 @@ func (s *Service) createSubscription(user *accounts.User, plan *Plan, stripeToke
 // cancelSubscription cancells a subscription immediatelly
 func (s *Service) cancelSubscription(subscription *Subscription) error {
 	// Cancel the subscription
-	logger.Infof("Deleting customer: %s", subscription.Customer.CustomerID)
 	stripeSubscription, err := s.stripeAdapter.CancelSubscription(
 		subscription.SubscriptionID,
 		subscription.Customer.CustomerID,
@@ -158,6 +210,8 @@ func (s *Service) cancelSubscription(subscription *Subscription) error {
 	if err != nil {
 		return err
 	}
+
+	logger.Infof("Cancelled subscription: %s", subscription.SubscriptionID)
 
 	// Update the subscription's cancelled_at field
 	cancelledAt := time.Unix(stripeSubscription.Canceled, 0)

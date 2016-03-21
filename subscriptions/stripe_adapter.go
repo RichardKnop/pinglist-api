@@ -1,6 +1,8 @@
 package subscriptions
 
 import (
+	"fmt"
+
 	"github.com/RichardKnop/pinglist-api/config"
 	stripe "github.com/stripe/stripe-go"
 	stripeCustomer "github.com/stripe/stripe-go/customer"
@@ -20,15 +22,42 @@ func NewStripeAdapter(cnf *config.Config) *StripeAdapter {
 	return &StripeAdapter{}
 }
 
-// CreateSubscription creates a new Stripe customer and subscribes him/her to a plan
-func (a *StripeAdapter) CreateSubscription(planID, stripeEmail, stripeToken string) (*stripe.Customer, error) {
-	// Create a new Stripe customer and subscribe him/her to a plan
+// CreateCustomer creates a new customer
+func (a *StripeAdapter) CreateCustomer(stripeEmail, stripeToken string) (*stripe.Customer, error) {
 	params := &stripe.CustomerParams{
-		Plan:  planID,
-		Email: stripeEmail,
+		Desc: fmt.Sprintf("Customer for %s", stripeEmail),
 	}
-	params.SetSource(stripeToken)
+	params.SetSource(stripeToken) // obtained with Stripe.js
 	return stripeCustomer.New(params)
+}
+
+// GetCustomer retrieves a customer
+func (a *StripeAdapter) GetCustomer(customerID string) (*stripe.Customer, error) {
+	return stripeCustomer.Get(customerID, &stripe.CustomerParams{})
+}
+
+// GetOrCreateCustomer tries to retrieve a customer first, otherwise creates a new one
+func (a *StripeAdapter) GetOrCreateCustomer(customerID, stripeEmail, stripeToken string) (*stripe.Customer, error, bool) {
+	var (
+		c       *stripe.Customer
+		err     error
+		created bool
+	)
+	c, err = a.GetCustomer(customerID)
+	if err != nil {
+		c, err = a.CreateCustomer(stripeEmail, stripeToken)
+		created = true
+	}
+	return c, err, created
+}
+
+// CreateSubscription creates a new subscription
+func (a *StripeAdapter) CreateSubscription(customerID, planID string) (*stripe.Sub, error) {
+	params := &stripe.SubParams{
+		Customer: customerID,
+		Plan:     planID,
+	}
+	return stripeSubscription.New(params)
 }
 
 // GetSubscription retrieves a subscription
