@@ -70,7 +70,7 @@ Example response:
 			"created_at": "2016-01-14T13:52:24Z",
 			"updated_at": "2016-01-14T13:52:24Z"
 		},
-		"plan": {
+		"plan":	{
 			"_links": {
 				"self": {
 					"href": "/v1/plans/1"
@@ -78,10 +78,14 @@ Example response:
 			},
 			"id": 1,
 			"plan_id": "personal",
-			"currency": "GBP",
-			"amount": 250,
+			"name": "Personal",
+			"description": "Personal website and/or a blog.",
+			"currency": "USD",
+			"amount": 500,
 			"trial_period": 30,
 			"interval": 30,
+			"max_alarms": 2,
+			"max_team_members": 0,
 			"created_at": "2016-01-14T13:52:24Z",
 			"updated_at": "2016-01-14T13:52:24Z"
 		}
@@ -102,7 +106,72 @@ Example response:
 
 ## Update Subscription
 
-TODO
+Example request:
+
+```
+curl -XPUT --compressed -v localhost:8080/v1/subscriptions \
+	-H "Content-Type: application/json" \
+	-H "Authorization: Bearer 00ccd40e-72ca-4e79-a4b6-67c95e2e3f1c" \
+	-d '{
+		"plan_id": 2
+	}'
+```
+
+Example response:
+
+```json
+{
+	"_links": {
+		"self": {
+			"href": "/v1/subscriptions/1"
+		}
+	},
+	"_embedded": {
+		"customer": {
+			"_links": {
+				"self": {
+					"href": "/v1/customers/1"
+				}
+			},
+			"id": 1,
+			"user_id": 1,
+			"customer_id": "cus_7z94mLsfxLva84",
+			"created_at": "2016-01-14T13:52:24Z",
+			"updated_at": "2016-01-14T13:52:24Z"
+		},
+		"plan": {
+			"_links": {
+				"self": {
+					"href": "/v1/plans/2"
+				}
+			},
+			"id": 2,
+			"plan_id": "professional",
+			"name": "Professional",
+			"description": "Monitor up to 10 different websites or APIs.",
+			"currency": "USD",
+			"amount": 2000,
+			"trial_period": 30,
+			"interval": 30,
+			"max_alarms": 15,
+			"max_team_members": 0,
+			"created_at": "2016-01-14T13:52:24Z",
+			"updated_at": "2016-01-14T13:52:24Z"
+		}
+	},
+	"id": 1,
+	"subscription_id": "sub_7z94rezxDE9frw",
+	"started_at": "2016-01-14T13:52:24Z",
+	"cancelled_at": "",
+	"ended_at": "",
+	"period_start": "2016-01-14T13:52:24Z",
+	"period_end": "2016-02-14T13:52:24Z",
+	"trial_start": "",
+	"trial_end": "",
+	"created_at": "2016-01-14T13:52:24Z",
+	"updated_at": "2016-01-14T13:52:24Z"
+}
+```
 
 ## Cancel Subscription
 
@@ -172,7 +241,7 @@ Example response:
 						"created_at": "2016-01-14T13:52:24Z",
 						"updated_at": "2016-01-14T13:52:24Z"
 					},
-					"plan": {
+					"plan":	{
 						"_links": {
 							"self": {
 								"href": "/v1/plans/1"
@@ -180,10 +249,14 @@ Example response:
 						},
 						"id": 1,
 						"plan_id": "personal",
-						"currency": "GBP",
-						"amount": 250,
+						"name": "Personal",
+						"description": "Personal website and/or a blog.",
+						"currency": "USD",
+						"amount": 500,
 						"trial_period": 30,
 						"interval": 30,
+						"max_alarms": 2,
+						"max_team_members": 0,
 						"created_at": "2016-01-14T13:52:24Z",
 						"updated_at": "2016-01-14T13:52:24Z"
 					}
@@ -219,7 +292,7 @@ Example response:
 						"created_at": "2016-01-14T13:52:24Z",
 						"updated_at": "2016-01-14T13:52:24Z"
 					},
-					"plan": {
+					"plan":	{
 						"_links": {
 							"self": {
 								"href": "/v1/plans/1"
@@ -227,10 +300,14 @@ Example response:
 						},
 						"id": 1,
 						"plan_id": "personal",
-						"currency": "GBP",
-						"amount": 250,
+						"name": "Personal",
+						"description": "Personal website and/or a blog.",
+						"currency": "USD",
+						"amount": 500,
 						"trial_period": 30,
 						"interval": 30,
+						"max_alarms": 2,
+						"max_team_members": 0,
 						"created_at": "2016-01-14T13:52:24Z",
 						"updated_at": "2016-01-14T13:52:24Z"
 					}
