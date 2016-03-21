@@ -6,13 +6,13 @@
   fields:
     plan_id: 'personal'
     name: 'personal'
-    description: 'description ...'
+    description: 'Personal website and/or a blog.'
     currency: 'USD'
-    amount: 250
+    amount: 500
     trial_period: 0
     interval: 30
-    max_alarms: 1
-    max_team_members: 1
+    max_alarms: 2
+    max_team_members: 0
     created_at: 'ON_INSERT_NOW()'
     updated_at: 'ON_UPDATE_NOW()'
 
@@ -22,13 +22,13 @@
   fields:
     plan_id: 'professional'
     name: 'Professional'
-    description: 'description ...'
+    description: 'Monitor up to 15 different websites or APIs.'
     currency: 'USD'
-    amount: 1000
+    amount: 2500
     trial_period: 0
     interval: 30
-    max_alarms: 5
-    max_team_members: 1
+    max_alarms: 15
+    max_team_members: 0
     created_at: 'ON_INSERT_NOW()'
     updated_at: 'ON_UPDATE_NOW()'
 
@@ -38,9 +38,9 @@
   fields:
     plan_id: 'enterprise'
     name: 'Enterprise'
-    description: 'description ...'
+    description: '100 alarms and ability to add up 20 team members.'
     currency: 'USD'
-    amount: 35000
+    amount: 15000
     trial_period: 0
     interval: 30
     max_alarms: 100
