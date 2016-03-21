@@ -13,6 +13,8 @@ var (
 	ErrUserCanOnlyCreateOneTeam = errors.New("User can only create one team")
 	// ErrMaxTeamMembersLimitReached ...
 	ErrMaxTeamMembersLimitReached = errors.New("Max team members limit reached")
+	// ErrUserCanOnlyBeMemberOfOneTeam ...
+	ErrUserCanOnlyBeMemberOfOneTeam = errors.New("User can only be member of one team")
 )
 
 // FindTeamByID looks up a team by ID
@@ -46,7 +48,7 @@ func (s *Service) FindTeamByOwnerID(ownerID uint) (*Team, error) {
 	return team, nil
 }
 
-// FindTeamByOwnerID looks up a team by a member ID
+// FindTeamByMemberID looks up a team by a member ID
 func (s *Service) FindTeamByMemberID(memberID uint) (*Team, error) {
 	// Fetch the team from the database
 	team := new(Team)
@@ -84,6 +86,12 @@ func (s *Service) createTeam(owner *accounts.User, teamRequest *TeamRequest) (*T
 		if err != nil {
 			return nil, err
 		}
+
+		// Users can only be members of a single team
+		if s.userIsMemberOfTeam(member) {
+			return nil, ErrUserCanOnlyBeMemberOfOneTeam
+		}
+
 		members[i] = member
 	}
 
@@ -113,6 +121,12 @@ func (s *Service) updateTeam(team *Team, teamRequest *TeamRequest) error {
 		if err != nil {
 			return err
 		}
+
+		// Users can only be members of a single team
+		if s.userIsMemberOfTeam(member) {
+			return ErrUserCanOnlyBeMemberOfOneTeam
+		}
+
 		members[i] = member
 	}
 
@@ -146,5 +160,11 @@ func (s *Service) updateTeam(team *Team, teamRequest *TeamRequest) error {
 // userOwnsTeam returns true if the user is an owner of a team already
 func (s *Service) userOwnsTeam(user *accounts.User) bool {
 	_, err := s.FindTeamByOwnerID(user.ID)
+	return err == nil
+}
+
+// userIsMemberOfTeam returns true if the user is a member of a team already
+func (s *Service) userIsMemberOfTeam(user *accounts.User) bool {
+	_, err := s.FindTeamByMemberID(user.ID)
 	return err == nil
 }
