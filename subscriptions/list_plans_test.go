@@ -83,7 +83,7 @@ func (suite *SubscriptionsTestSuite) TestListPlans() {
 				"plans": jsonhal.Embedded(planResponses),
 			},
 		},
-		Count: 3,
+		Count: 5,
 		Page:  1,
 	}
 

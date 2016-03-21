@@ -24,6 +24,11 @@ func (s *Subscription) IsActive() bool {
 	return !s.EndedAt.Valid || s.EndedAt.Time.After(time.Now())
 }
 
+// IsCancelled returns true if the subscription has been cancelled
+func (s *Subscription) IsCancelled() bool {
+	return !s.CancelledAt.Valid || s.CancelledAt.Time.After(time.Now())
+}
+
 // FindSubscriptionByID looks up a subscription by an ID and returns it
 func (s *Service) FindSubscriptionByID(subscriptionID uint) (*Subscription, error) {
 	// Fetch the subscription from the database
@@ -95,6 +100,7 @@ func (s *Service) createSubscription(user *accounts.User, plan *Plan, stripeToke
 	}
 
 	// Create a new customer object
+	logger.Infof("Created customer: %s", stripeCustomer.ID)
 	customer := newCustomer(user, stripeCustomer.ID)
 
 	// Begin a transaction
@@ -141,42 +147,10 @@ func (s *Service) createSubscription(user *accounts.User, plan *Plan, stripeToke
 	return subscription, nil
 }
 
-// getStripeSubscriptionTimes parses UNIX timestamps from a subscription
-func getStripeSubscriptionTimes(stripeSubscription *stripe.Sub) (startedAt, cancelledAt, endedAt, periodStart, periodEnd, trialStart, trialEnd *time.Time) {
-	if stripeSubscription.Start > 0 {
-		t := time.Unix(stripeSubscription.Start, 0)
-		startedAt = &t
-	}
-	if stripeSubscription.Canceled > 0 {
-		t := time.Unix(stripeSubscription.Canceled, 0)
-		cancelledAt = &t
-	}
-	if stripeSubscription.Ended > 0 {
-		t := time.Unix(stripeSubscription.Ended, 0)
-		endedAt = &t
-	}
-	if stripeSubscription.PeriodStart > 0 {
-		t := time.Unix(stripeSubscription.PeriodStart, 0)
-		periodStart = &t
-	}
-	if stripeSubscription.PeriodEnd > 0 {
-		t := time.Unix(stripeSubscription.PeriodEnd, 0)
-		periodEnd = &t
-	}
-	if stripeSubscription.TrialStart > 0 {
-		t := time.Unix(stripeSubscription.TrialStart, 0)
-		trialStart = &t
-	}
-	if stripeSubscription.TrialEnd > 0 {
-		t := time.Unix(stripeSubscription.TrialEnd, 0)
-		trialEnd = &t
-	}
-	return
-}
-
 // cancelSubscription cancells a subscription immediatelly
 func (s *Service) cancelSubscription(subscription *Subscription) error {
 	// Cancel the subscription
+	logger.Infof("Deleting customer: %s", subscription.Customer.CustomerID)
 	stripeSubscription, err := s.stripeAdapter.CancelSubscription(
 		subscription.SubscriptionID,
 		subscription.Customer.CustomerID,
@@ -206,7 +180,7 @@ func (s *Service) findActiveUserSubscriptions(userID uint) ([]*Subscription, err
 		return activeUserSubscriptions, err
 	}
 
-	// Filter only active Subscriptions
+	// Filter only active subscriptions
 	for _, sub := range userSubscriptions {
 		if sub.IsActive() {
 			activeUserSubscriptions = append(activeUserSubscriptions, sub)
@@ -272,4 +246,37 @@ func (s *Service) paginatedSubscriptionsQuery(user *accounts.User) *gorm.DB {
 	}
 
 	return subscriptionsQuery
+}
+
+// getStripeSubscriptionTimes parses UNIX timestamps from a subscription
+func getStripeSubscriptionTimes(stripeSubscription *stripe.Sub) (startedAt, cancelledAt, endedAt, periodStart, periodEnd, trialStart, trialEnd *time.Time) {
+	if stripeSubscription.Start > 0 {
+		t := time.Unix(stripeSubscription.Start, 0)
+		startedAt = &t
+	}
+	if stripeSubscription.Canceled > 0 {
+		t := time.Unix(stripeSubscription.Canceled, 0)
+		cancelledAt = &t
+	}
+	if stripeSubscription.Ended > 0 {
+		t := time.Unix(stripeSubscription.Ended, 0)
+		endedAt = &t
+	}
+	if stripeSubscription.PeriodStart > 0 {
+		t := time.Unix(stripeSubscription.PeriodStart, 0)
+		periodStart = &t
+	}
+	if stripeSubscription.PeriodEnd > 0 {
+		t := time.Unix(stripeSubscription.PeriodEnd, 0)
+		periodEnd = &t
+	}
+	if stripeSubscription.TrialStart > 0 {
+		t := time.Unix(stripeSubscription.TrialStart, 0)
+		trialStart = &t
+	}
+	if stripeSubscription.TrialEnd > 0 {
+		t := time.Unix(stripeSubscription.TrialEnd, 0)
+		trialEnd = &t
+	}
+	return
 }

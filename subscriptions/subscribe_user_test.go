@@ -111,8 +111,8 @@ func (suite *SubscriptionsTestSuite) TestSubscribeUser() {
 	assert.False(suite.T(), subscription.EndedAt.Valid)
 	assert.True(suite.T(), subscription.PeriodStart.Valid)
 	assert.True(suite.T(), subscription.PeriodEnd.Valid)
-	assert.False(suite.T(), subscription.TrialStart.Valid)
-	assert.False(suite.T(), subscription.TrialEnd.Valid)
+	assert.True(suite.T(), subscription.TrialStart.Valid)
+	assert.True(suite.T(), subscription.TrialEnd.Valid)
 
 	// Check the Location header
 	assert.Equal(
@@ -143,6 +143,8 @@ func (suite *SubscriptionsTestSuite) TestSubscribeUser() {
 		StartedAt:      subscription.StartedAt.Time.UTC().Format(time.RFC3339),
 		PeriodStart:    subscription.PeriodStart.Time.UTC().Format(time.RFC3339),
 		PeriodEnd:      subscription.PeriodEnd.Time.UTC().Format(time.RFC3339),
+		TrialStart:     subscription.TrialStart.Time.UTC().Format(time.RFC3339),
+		TrialEnd:       subscription.TrialEnd.Time.UTC().Format(time.RFC3339),
 		CreatedAt:      subscription.CreatedAt.UTC().Format(time.RFC3339),
 		UpdatedAt:      subscription.UpdatedAt.UTC().Format(time.RFC3339),
 	}
