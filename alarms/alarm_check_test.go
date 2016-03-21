@@ -38,7 +38,7 @@ func (suite *AlarmsTestSuite) TestGetAlarmsToCheck() {
 	watermark = time.Now().Add(-time.Duration(interval-1) * time.Second)
 	err = suite.db.Create(&Alarm{
 		User:             suite.users[1],
-		Region:           &Region{ID: regions.Singapore, Name: "Singapore"},
+		Region:           &Region{ID: regions.USWest2, Name: "US West (Oregon)"},
 		AlarmState:       &AlarmState{ID: alarmstates.InsufficientData},
 		EndpointURL:      "http://foo",
 		Watermark:        util.TimeOrNull(&watermark),
@@ -61,7 +61,7 @@ func (suite *AlarmsTestSuite) TestGetAlarmsToCheck() {
 	watermark = time.Now().Add(-time.Duration(interval+1) * time.Second)
 	err = suite.db.Create(&Alarm{
 		User:             suite.users[1],
-		Region:           &Region{ID: regions.Singapore, Name: "Singapore"},
+		Region:           &Region{ID: regions.USWest2, Name: "US West (Oregon)"},
 		AlarmState:       &AlarmState{ID: alarmstates.InsufficientData},
 		EndpointURL:      "http://bar",
 		Watermark:        util.TimeOrNull(&watermark),

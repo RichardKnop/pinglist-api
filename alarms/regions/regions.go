@@ -1,6 +1,6 @@
 package regions
 
 const (
-	// Singapore ...
-	Singapore = "SGP"
+	// USWest2 ...
+	USWest2 = "us-west-2"
 )

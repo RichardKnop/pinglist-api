@@ -108,7 +108,7 @@ func (suite *AlarmsTestSuite) TestUpdateAlarm() {
 		},
 		ID:               alarm.ID,
 		UserID:           suite.users[1].ID,
-		Region:           regions.Singapore,
+		Region:           regions.USWest2,
 		EndpointURL:      "http://endpoint-1-updated",
 		ExpectedHTTPCode: uint(201),
 		Interval:         uint(90),

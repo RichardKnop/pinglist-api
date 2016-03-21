@@ -40,8 +40,8 @@ Example response:
 						"href": "/v1/regions/1"
 					}
 				},
-				"id": "SGP",
-				"name": "Singapore"
+				"id": "us-west-2",
+				"name": "US West (Oregon)"
 			}
 		]
 	},

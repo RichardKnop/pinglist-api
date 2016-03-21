@@ -6,8 +6,8 @@
 
 - table: 'alarm_regions'
   pk:
-    id: 'SGP'
+    id: 'us-west-2'
   fields:
-    name: 'Singapore'
+    name: 'US West (Oregon)'
     created_at: 'ON_INSERT_NOW()'
     updated_at: 'ON_UPDATE_NOW()'

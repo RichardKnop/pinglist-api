@@ -30,6 +30,6 @@ func (suite *AlarmsTestSuite) TestFindRegionByID() {
 
 	// Correct region should be returned with preloaded data
 	if assert.NotNil(suite.T(), region) {
-		assert.Equal(suite.T(), regions.Singapore, region.ID)
+		assert.Equal(suite.T(), regions.USWest2, region.ID)
 	}
 }
