@@ -28,7 +28,7 @@ func (suite *SubscriptionsTestSuite) TestSubscribeUserRequiresUserAuthentication
 	assert.Equal(suite.T(), http.StatusUnauthorized, w.Code, "This requires an authenticated user")
 }
 
-func (suite *SubscriptionsTestSuite) TestSubscribeUser() {
+func (suite *SubscriptionsTestSuite) TestSubscribeUserNewCustomer() {
 	// Create a test Stripe token
 	theStripeToken, err := stripeToken.New(&stripe.TokenParams{
 		Card: &stripe.CardParams{
@@ -97,14 +97,26 @@ func (suite *SubscriptionsTestSuite) TestSubscribeUser() {
 	assert.Equal(suite.T(), countBefore+1, countAfter)
 	assert.Equal(suite.T(), customerCountBefore+1, customerCountAfter)
 
+	var (
+		customer     *Customer
+		subscription *Subscription
+		notFound     bool
+	)
+
+	// Fetch the created customer
+	customer = new(Customer)
+	notFound = suite.db.Preload("User").Last(customer).RecordNotFound()
+	assert.False(suite.T(), notFound)
+
 	// Fetch the created subscription
-	subscription := new(Subscription)
-	notFound := suite.db.Preload("Customer.User").Preload("Plan").
+	subscription = new(Subscription)
+	notFound = suite.db.Preload("Customer.User").Preload("Plan").
 		Last(subscription).RecordNotFound()
 	assert.False(suite.T(), notFound)
 
 	// Check that the correct data was saved
-	assert.Equal(suite.T(), suite.users[1].ID, uint(subscription.Customer.UserID.Int64))
+	assert.Equal(suite.T(), suite.users[1].ID, uint(customer.UserID.Int64))
+	assert.Equal(suite.T(), customer.ID, subscription.Customer.ID)
 	assert.Equal(suite.T(), suite.plans[0].ID, uint(subscription.PlanID.Int64))
 	assert.True(suite.T(), subscription.StartedAt.Valid)
 	assert.False(suite.T(), subscription.CancelledAt.Valid)
