@@ -22,12 +22,12 @@
   fields:
     plan_id: 'professional'
     name: 'Professional'
-    description: 'Monitor up to 15 different websites or APIs.'
+    description: 'Monitor up to 10 different websites or APIs.'
     currency: 'USD'
-    amount: 2500
+    amount: 2000
     trial_period: 0
     interval: 30
-    max_alarms: 15
+    max_alarms: 10
     max_team_members: 0
     created_at: 'ON_INSERT_NOW()'
     updated_at: 'ON_UPDATE_NOW()'
@@ -36,14 +36,30 @@
   pk:
     id: 3
   fields:
-    plan_id: 'enterprise'
-    name: 'Enterprise'
-    description: '100 alarms and ability to add up 20 team members.'
+    plan_id: 'business'
+    name: 'Business'
+    description: 'Create a team of 10 members with 10 alarms each.'
     currency: 'USD'
     amount: 15000
     trial_period: 0
     interval: 30
-    max_alarms: 100
-    max_team_members: 20
+    max_alarms: 10
+    max_team_members: 10
+    created_at: 'ON_INSERT_NOW()'
+    updated_at: 'ON_UPDATE_NOW()'
+
+- table: 'subscription_plans'
+  pk:
+    id: 4
+  fields:
+    plan_id: 'enterprise'
+    name: 'Enterprise'
+    description: 'Create a team of 30 members with 10 alarms each.'
+    currency: 'USD'
+    amount: 35000
+    trial_period: 0
+    interval: 30
+    max_alarms: 10
+    max_team_members: 30
     created_at: 'ON_INSERT_NOW()'
     updated_at: 'ON_UPDATE_NOW()'

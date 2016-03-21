@@ -62,9 +62,9 @@ Example response:
 				"id": 2,
 				"plan_id": "professional",
 				"name": "Professional",
-				"description": "Monitor up to 15 different websites or APIs.",
+				"description": "Monitor up to 10 different websites or APIs.",
 				"currency": "USD",
-				"amount": 2500,
+				"amount": 2000,
 				"trial_period": 0,
 				"interval": 30,
 				"max_alarms": 15,
@@ -79,15 +79,34 @@ Example response:
 					}
 				},
 				"id": 3,
-				"plan_id": "enterprise",
-				"name": "Enterprise",
-				"description": "100 alarms and ability to add up 20 team members.",
+				"plan_id": "business",
+				"name": "Business",
+				"description": "Create a team of 10 members with 10 alarms each.",
 				"currency": "USD",
 				"amount": 15000,
 				"trial_period": 0,
 				"interval": 30,
 				"max_alarms": 100,
-				"max_team_members": 20,
+				"max_team_members": 10,
+				"created_at": "2016-01-14T13:52:24Z",
+				"updated_at": "2016-01-14T13:52:24Z"
+			},
+			{
+				"_links": {
+					"self": {
+						"href": "/v1/plans/3"
+					}
+				},
+				"id": 3,
+				"plan_id": "enterprise",
+				"name": "Enterprise",
+				"description": "Create a team of 30 members with 10 alarms each.",
+				"currency": "USD",
+				"amount": 35000,
+				"trial_period": 0,
+				"interval": 30,
+				"max_alarms": 100,
+				"max_team_members": 10,
 				"created_at": "2016-01-14T13:52:24Z",
 				"updated_at": "2016-01-14T13:52:24Z"
 			}
