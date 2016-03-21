@@ -26,10 +26,19 @@ func newRoutes(service ServiceInterface) []routes.Route {
 			},
 		},
 		routes.Route{
-			Name:        "subscribe_user",
+			Name:        "create_subscription",
 			Method:      "POST",
 			Pattern:     "/subscriptions",
-			HandlerFunc: service.subscribeUserHandler,
+			HandlerFunc: service.createSubscriptionHandler,
+			Middlewares: []negroni.Handler{
+				accounts.NewUserAuthMiddleware(service.GetAccountsService()),
+			},
+		},
+		routes.Route{
+			Name:        "update_subscription",
+			Method:      "PUT",
+			Pattern:     "/subscriptions/{id:[0-9]+}",
+			HandlerFunc: service.updateSubscriptionHandler,
 			Middlewares: []negroni.Handler{
 				accounts.NewUserAuthMiddleware(service.GetAccountsService()),
 			},

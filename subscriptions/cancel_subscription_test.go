@@ -40,9 +40,11 @@ func (suite *SubscriptionsTestSuite) TestCancelSubscription() {
 	// Create a test subscription
 	testSubscription, err := suite.service.createSubscription(
 		suite.users[1],
-		suite.plans[0],
-		testStripeToken.ID,
-		testStripeToken.Email,
+		&SubscriptionRequest{
+			StripeToken: testStripeToken.ID,
+			StripeEmail: testStripeToken.Email,
+			PlanID:      suite.plans[0].ID,
+		},
 	)
 	assert.NoError(suite.T(), err, "Creating test subscription failed")
 

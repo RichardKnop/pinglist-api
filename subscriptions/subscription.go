@@ -77,7 +77,7 @@ func (s *Service) FindActiveUserSubscription(userID uint) (*Subscription, error)
 }
 
 // createSubscription creates a new Stripe user and subscribes him/her to a plan
-func (s *Service) createSubscription(user *accounts.User, plan *Plan, stripeToken, stripeEmail string) (*Subscription, error) {
+func (s *Service) createSubscription(user *accounts.User, subscriptionRequest *SubscriptionRequest) (*Subscription, error) {
 	// Fetch all active user subscriptions
 	activeUserSubscriptions, err := s.findActiveUserSubscriptions(user.ID)
 	if err != nil {
@@ -87,6 +87,12 @@ func (s *Service) createSubscription(user *accounts.User, plan *Plan, stripeToke
 	// User should only have one active subscription at any time
 	if len(activeUserSubscriptions) > 0 {
 		return nil, ErrUserCanOnlyHaveOneActiveSubscription
+	}
+
+	// Fetch the plan
+	plan, err := s.FindPlanByID(subscriptionRequest.PlanID)
+	if err != nil {
+		return nil, err
 	}
 
 	var (
@@ -109,7 +115,10 @@ func (s *Service) createSubscription(user *accounts.User, plan *Plan, stripeToke
 
 	if err != nil && err == ErrCustomerNotFound {
 		// Create a new Stripe customer
-		stripeCustomer, err = s.stripeAdapter.CreateCustomer(stripeEmail, stripeToken)
+		stripeCustomer, err = s.stripeAdapter.CreateCustomer(
+			subscriptionRequest.StripeEmail,
+			subscriptionRequest.StripeToken,
+		)
 		if err != nil {
 			tx.Rollback() // rollback the transaction
 			return nil, err
@@ -129,8 +138,8 @@ func (s *Service) createSubscription(user *accounts.User, plan *Plan, stripeToke
 		// Get an existing Stripe customer or create a new one
 		stripeCustomer, err, stripeCustomerCreated = s.stripeAdapter.GetOrCreateCustomer(
 			customer.CustomerID,
-			stripeEmail,
-			stripeToken,
+			subscriptionRequest.StripeEmail,
+			subscriptionRequest.StripeToken,
 		)
 		if err != nil {
 			tx.Rollback() // rollback the transaction
@@ -201,7 +210,14 @@ func (s *Service) createSubscription(user *accounts.User, plan *Plan, stripeToke
 }
 
 // changeSubscriptionPlan upgrades or downgrades a subscription plan
-func (s *Service) changeSubscriptionPlan(subscription *Subscription, plan *Plan) error {
+func (s *Service) updateSubscription(subscription *Subscription, subscriptionRequest *SubscriptionRequest) error {
+	// Fetch the plan
+	plan, err := s.FindPlanByID(subscriptionRequest.PlanID)
+	if err != nil {
+		return err
+	}
+
+	// Plan hasn't changed, nothing to do
 	if subscription.Plan.ID == plan.ID {
 		return nil
 	}
@@ -210,7 +226,7 @@ func (s *Service) changeSubscriptionPlan(subscription *Subscription, plan *Plan)
 	tx := s.db.Begin()
 
 	// Change the subscription plan
-	_, err := s.stripeAdapter.ChangeSubscriptionPlan(
+	_, err = s.stripeAdapter.ChangeSubscriptionPlan(
 		subscription.SubscriptionID,
 		plan.PlanID,
 	)

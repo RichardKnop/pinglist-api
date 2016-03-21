@@ -1,7 +1,8 @@
 # Subscriptions
 
 * [Checkout Button](#checkout-button)
-* [Subscribe User](#subscribe-user)
+* [Create Subscription](#create-subscription)
+* [Update Subscription](#update-subscription)
 * [Cancel Subscription](#cancel-subscription)
 * [List Subscriptions](#list-subscriptions)
 
@@ -32,7 +33,7 @@ Simple integration example:
 
 When submitted, the above form with add `stripeToken` and `stripeEmail` parameters to the request data.
 
-## Subscribe User
+## Create Subscription
 
 Example request:
 
@@ -98,6 +99,10 @@ Example response:
 	"updated_at": "2016-01-14T13:52:24Z"
 }
 ```
+
+## Update Subscription
+
+TODO
 
 ## Cancel Subscription
 

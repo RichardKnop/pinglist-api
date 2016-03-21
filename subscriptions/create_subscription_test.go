@@ -17,18 +17,18 @@ import (
 	stripeToken "github.com/stripe/stripe-go/token"
 )
 
-func (suite *SubscriptionsTestSuite) TestSubscribeUserRequiresUserAuthentication() {
+func (suite *SubscriptionsTestSuite) TestCreateSubscriptionRequiresUserAuthentication() {
 	r, err := http.NewRequest("", "", nil)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
 
 	w := httptest.NewRecorder()
 
-	suite.service.subscribeUserHandler(w, r)
+	suite.service.createSubscriptionHandler(w, r)
 
 	assert.Equal(suite.T(), http.StatusUnauthorized, w.Code, "This requires an authenticated user")
 }
 
-func (suite *SubscriptionsTestSuite) TestSubscribeUserExistingValidCustomer() {
+func (suite *SubscriptionsTestSuite) TestCreateSubscriptionExistingValidCustomer() {
 	// Create a test Stripe token
 	testStripeToken, err := stripeToken.New(&stripe.TokenParams{
 		Card: &stripe.CardParams{
@@ -72,7 +72,7 @@ func (suite *SubscriptionsTestSuite) TestSubscribeUserExistingValidCustomer() {
 	match := new(mux.RouteMatch)
 	suite.router.Match(r, match)
 	if assert.NotNil(suite.T(), match.Route) {
-		assert.Equal(suite.T(), "subscribe_user", match.Route.GetName())
+		assert.Equal(suite.T(), "create_subscription", match.Route.GetName())
 	}
 
 	// Mock authentication
@@ -183,7 +183,7 @@ func (suite *SubscriptionsTestSuite) TestSubscribeUserExistingValidCustomer() {
 	}
 }
 
-func (suite *SubscriptionsTestSuite) TestSubscribeUserExistingInvalidCustomer() {
+func (suite *SubscriptionsTestSuite) TestCreateSubscriptionExistingInvalidCustomer() {
 	// Create a test Stripe token
 	testStripeToken, err := stripeToken.New(&stripe.TokenParams{
 		Card: &stripe.CardParams{
@@ -220,7 +220,7 @@ func (suite *SubscriptionsTestSuite) TestSubscribeUserExistingInvalidCustomer() 
 	match := new(mux.RouteMatch)
 	suite.router.Match(r, match)
 	if assert.NotNil(suite.T(), match.Route) {
-		assert.Equal(suite.T(), "subscribe_user", match.Route.GetName())
+		assert.Equal(suite.T(), "create_subscription", match.Route.GetName())
 	}
 
 	// Mock authentication
@@ -330,7 +330,7 @@ func (suite *SubscriptionsTestSuite) TestSubscribeUserExistingInvalidCustomer() 
 	}
 }
 
-func (suite *SubscriptionsTestSuite) TestSubscribeUserNewCustomer() {
+func (suite *SubscriptionsTestSuite) TestCreateSubscriptionNewCustomer() {
 	// Create a test Stripe token
 	theStripeToken, err := stripeToken.New(&stripe.TokenParams{
 		Card: &stripe.CardParams{
@@ -362,7 +362,7 @@ func (suite *SubscriptionsTestSuite) TestSubscribeUserNewCustomer() {
 	match := new(mux.RouteMatch)
 	suite.router.Match(r, match)
 	if assert.NotNil(suite.T(), match.Route) {
-		assert.Equal(suite.T(), "subscribe_user", match.Route.GetName())
+		assert.Equal(suite.T(), "create_subscription", match.Route.GetName())
 	}
 
 	// Mock authentication

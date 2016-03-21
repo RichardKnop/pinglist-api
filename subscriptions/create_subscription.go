@@ -10,8 +10,8 @@ import (
 	"github.com/RichardKnop/pinglist-api/response"
 )
 
-// Handles calls to subscribe a user (POST /v1/subscriptions)
-func (s *Service) subscribeUserHandler(w http.ResponseWriter, r *http.Request) {
+// Handles calls to create a subscription (POST /v1/subscriptions)
+func (s *Service) createSubscriptionHandler(w http.ResponseWriter, r *http.Request) {
 	// Get the authenticated user from the request context
 	authenticatedUser, err := accounts.GetAuthenticatedUser(r)
 	if err != nil {
@@ -40,23 +40,15 @@ func (s *Service) subscribeUserHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Fetch the plan
-	plan, err := s.FindPlanByID(subscriptionRequest.PlanID)
-	if err != nil {
-		response.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
 	// Subscribe the user to the plan
-	subscription, err := s.createSubscription(
-		authenticatedUser,
-		plan,
-		subscriptionRequest.StripeToken,
-		subscriptionRequest.StripeEmail,
-	)
+	subscription, err := s.createSubscription(authenticatedUser, subscriptionRequest)
 	if err != nil {
 		logger.Errorf("Create subscription error: %s", err)
-		response.Error(w, err.Error(), http.StatusInternalServerError)
+		code, ok := errStatusCodeMap[err]
+		if !ok {
+			code = http.StatusInternalServerError
+		}
+		response.Error(w, err.Error(), code)
 		return
 	}
 

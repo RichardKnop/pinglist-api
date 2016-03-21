@@ -56,9 +56,15 @@ func (suite *SubscriptionsTestSuite) TestListPlans() {
 		log.Print(w.Body.String())
 	}
 
+	// Refresh plans
+	var plans []*Plan
+	if suite.db.Order("id").Find(&plans).Error != nil {
+		log.Fatal(err)
+	}
+
 	// Check the response body
-	planResponses := make([]*PlanResponse, len(suite.plans))
-	for i, plan := range suite.plans {
+	planResponses := make([]*PlanResponse, len(plans))
+	for i, plan := range plans {
 		planResponse, err := NewPlanResponse(plan)
 		assert.NoError(suite.T(), err, "Creating response object failed")
 		planResponses[i] = planResponse
