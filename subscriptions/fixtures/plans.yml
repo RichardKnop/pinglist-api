@@ -9,7 +9,7 @@
     description: 'Personal website and/or a blog.'
     currency: 'USD'
     amount: 500
-    trial_period: 0
+    trial_period: 30
     interval: 30
     max_alarms: 2
     max_team_members: 0
@@ -25,7 +25,7 @@
     description: 'Monitor up to 10 different websites or APIs.'
     currency: 'USD'
     amount: 2000
-    trial_period: 0
+    trial_period: 30
     interval: 30
     max_alarms: 10
     max_team_members: 0
@@ -36,12 +36,28 @@
   pk:
     id: 3
   fields:
+    plan_id: 'startup'
+    name: 'Startup'
+    description: 'Create a team of 5 members with 10 alarms each.'
+    currency: 'USD'
+    amount: 7500
+    trial_period: 30
+    interval: 30
+    max_alarms: 10
+    max_team_members: 5
+    created_at: 'ON_INSERT_NOW()'
+    updated_at: 'ON_UPDATE_NOW()'
+
+- table: 'subscription_plans'
+  pk:
+    id: 4
+  fields:
     plan_id: 'business'
     name: 'Business'
     description: 'Create a team of 10 members with 10 alarms each.'
     currency: 'USD'
     amount: 15000
-    trial_period: 0
+    trial_period: 30
     interval: 30
     max_alarms: 10
     max_team_members: 10
@@ -50,14 +66,14 @@
 
 - table: 'subscription_plans'
   pk:
-    id: 4
+    id: 5
   fields:
     plan_id: 'enterprise'
     name: 'Enterprise'
     description: 'Create a team of 30 members with 10 alarms each.'
     currency: 'USD'
     amount: 35000
-    trial_period: 0
+    trial_period: 30
     interval: 30
     max_alarms: 10
     max_team_members: 30

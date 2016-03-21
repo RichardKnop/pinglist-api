@@ -46,7 +46,7 @@ Example response:
 				"description": "Personal website and/or a blog.",
 				"currency": "USD",
 				"amount": 500,
-				"trial_period": 0,
+				"trial_period": 30,
 				"interval": 30,
 				"max_alarms": 2,
 				"max_team_members": 0,
@@ -65,7 +65,7 @@ Example response:
 				"description": "Monitor up to 10 different websites or APIs.",
 				"currency": "USD",
 				"amount": 2000,
-				"trial_period": 0,
+				"trial_period": 30,
 				"interval": 30,
 				"max_alarms": 15,
 				"max_team_members": 0,
@@ -79,14 +79,33 @@ Example response:
 					}
 				},
 				"id": 3,
+				"plan_id": "startup",
+				"name": "Startup",
+				"description": "Create a team of 5 members with 10 alarms each.",
+				"currency": "USD",
+				"amount": 2000,
+				"trial_period": 30,
+				"interval": 30,
+				"max_alarms": 10,
+				"max_team_members": 5,
+				"created_at": "2016-01-14T13:52:24Z",
+				"updated_at": "2016-01-14T13:52:24Z"
+			},
+			{
+				"_links": {
+					"self": {
+						"href": "/v1/plans/4"
+					}
+				},
+				"id": 4,
 				"plan_id": "business",
 				"name": "Business",
 				"description": "Create a team of 10 members with 10 alarms each.",
 				"currency": "USD",
 				"amount": 15000,
-				"trial_period": 0,
+				"trial_period": 30,
 				"interval": 30,
-				"max_alarms": 100,
+				"max_alarms": 10,
 				"max_team_members": 10,
 				"created_at": "2016-01-14T13:52:24Z",
 				"updated_at": "2016-01-14T13:52:24Z"
@@ -103,10 +122,10 @@ Example response:
 				"description": "Create a team of 30 members with 10 alarms each.",
 				"currency": "USD",
 				"amount": 35000,
-				"trial_period": 0,
+				"trial_period": 30,
 				"interval": 30,
-				"max_alarms": 100,
-				"max_team_members": 10,
+				"max_alarms": 10,
+				"max_team_members": 30,
 				"created_at": "2016-01-14T13:52:24Z",
 				"updated_at": "2016-01-14T13:52:24Z"
 			}
