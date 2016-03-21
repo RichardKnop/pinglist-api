@@ -61,7 +61,10 @@ func (s *Service) stripeEventCustomerSubscriptionUpdated(e *stripe.Event) error 
 	}
 
 	// Verify the subscription by fetching it from Stripe
-	stripeSubscription, err := s.stripeAdapter.GetSubscription(subscriptionID)
+	stripeSubscription, err := s.stripeAdapter.GetSubscription(
+		subscription.SubscriptionID,
+		subscription.Customer.CustomerID,
+	)
 	if err != nil {
 		return err
 	}
@@ -115,7 +118,10 @@ func (s *Service) stripeEventCustomerSubscriptionDeleted(e *stripe.Event) error 
 	}
 
 	// Verify the subscription by fetching it from Stripe
-	stripeSubscription, err := s.stripeAdapter.GetSubscription(subscriptionID)
+	stripeSubscription, err := s.stripeAdapter.GetSubscription(
+		subscription.SubscriptionID,
+		subscription.Customer.CustomerID,
+	)
 	if err != nil {
 		return err
 	}

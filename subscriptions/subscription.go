@@ -96,9 +96,9 @@ func (s *Service) createSubscription(user *accounts.User, subscriptionRequest *S
 	}
 
 	var (
-		customer              *Customer
-		stripeCustomer        *stripe.Customer
-		stripeCustomerCreated bool
+		customer       *Customer
+		stripeCustomer *stripe.Customer
+		created        bool
 	)
 
 	// Do we already store a customer recors for this user?
@@ -107,13 +107,13 @@ func (s *Service) createSubscription(user *accounts.User, subscriptionRequest *S
 	// Begin a transaction
 	tx := s.db.Begin()
 
-	// Unexpected server error
-	if err != nil && err != ErrCustomerNotFound {
-		tx.Rollback() // rollback the transaction
-		return nil, err
-	}
+	if err != nil {
+		// Unexpected server error
+		if err != ErrCustomerNotFound {
+			tx.Rollback() // rollback the transaction
+			return nil, err
+		}
 
-	if err != nil && err == ErrCustomerNotFound {
 		// Create a new Stripe customer
 		stripeCustomer, err = s.stripeAdapter.CreateCustomer(
 			subscriptionRequest.StripeEmail,
@@ -136,7 +136,7 @@ func (s *Service) createSubscription(user *accounts.User, subscriptionRequest *S
 		}
 	} else {
 		// Get an existing Stripe customer or create a new one
-		stripeCustomer, err, stripeCustomerCreated = s.stripeAdapter.GetOrCreateCustomer(
+		stripeCustomer, created, err = s.stripeAdapter.GetOrCreateCustomer(
 			customer.CustomerID,
 			subscriptionRequest.StripeEmail,
 			subscriptionRequest.StripeToken,
@@ -146,7 +146,7 @@ func (s *Service) createSubscription(user *accounts.User, subscriptionRequest *S
 			return nil, err
 		}
 
-		if stripeCustomerCreated {
+		if created {
 			logger.Infof("Created customer: %s", stripeCustomer.ID)
 
 			// Our customer record is not valid so delete it
@@ -226,8 +226,9 @@ func (s *Service) updateSubscription(subscription *Subscription, subscriptionReq
 	tx := s.db.Begin()
 
 	// Change the subscription plan
-	_, err = s.stripeAdapter.ChangeSubscriptionPlan(
+	stripeSubscription, err := s.stripeAdapter.ChangeSubscriptionPlan(
 		subscription.SubscriptionID,
+		subscription.Customer.CustomerID,
 		plan.PlanID,
 	)
 	if err != nil {
@@ -241,9 +242,19 @@ func (s *Service) updateSubscription(subscription *Subscription, subscriptionReq
 		plan.PlanID,
 	)
 
+	// Parse subscription times
+	startedAt, cancelledAt, endedAt, periodStart, periodEnd, trialStart, trialEnd := getStripeSubscriptionTimes(stripeSubscription)
+
 	// Update the subscription plan
 	if err := tx.Model(subscription).UpdateColumn(Subscription{
-		PlanID: util.PositiveIntOrNull(int64(plan.ID)),
+		PlanID:      util.PositiveIntOrNull(int64(plan.ID)),
+		StartedAt:   util.TimeOrNull(startedAt),
+		CancelledAt: util.TimeOrNull(cancelledAt),
+		EndedAt:     util.TimeOrNull(endedAt),
+		PeriodStart: util.TimeOrNull(periodStart),
+		PeriodEnd:   util.TimeOrNull(periodEnd),
+		TrialStart:  util.TimeOrNull(trialStart),
+		TrialEnd:    util.TimeOrNull(trialEnd),
 	}).Error; err != nil {
 		tx.Rollback() // rollback the transaction
 		return err
@@ -359,37 +370,4 @@ func (s *Service) paginatedSubscriptionsQuery(user *accounts.User) *gorm.DB {
 	}
 
 	return subscriptionsQuery
-}
-
-// getStripeSubscriptionTimes parses UNIX timestamps from a subscription
-func getStripeSubscriptionTimes(stripeSubscription *stripe.Sub) (startedAt, cancelledAt, endedAt, periodStart, periodEnd, trialStart, trialEnd *time.Time) {
-	if stripeSubscription.Start > 0 {
-		t := time.Unix(stripeSubscription.Start, 0)
-		startedAt = &t
-	}
-	if stripeSubscription.Canceled > 0 {
-		t := time.Unix(stripeSubscription.Canceled, 0)
-		cancelledAt = &t
-	}
-	if stripeSubscription.Ended > 0 {
-		t := time.Unix(stripeSubscription.Ended, 0)
-		endedAt = &t
-	}
-	if stripeSubscription.PeriodStart > 0 {
-		t := time.Unix(stripeSubscription.PeriodStart, 0)
-		periodStart = &t
-	}
-	if stripeSubscription.PeriodEnd > 0 {
-		t := time.Unix(stripeSubscription.PeriodEnd, 0)
-		periodEnd = &t
-	}
-	if stripeSubscription.TrialStart > 0 {
-		t := time.Unix(stripeSubscription.TrialStart, 0)
-		trialStart = &t
-	}
-	if stripeSubscription.TrialEnd > 0 {
-		t := time.Unix(stripeSubscription.TrialEnd, 0)
-		trialEnd = &t
-	}
-	return
 }

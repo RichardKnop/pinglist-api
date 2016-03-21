@@ -6,10 +6,6 @@
 	],
 	"Deps": [
 		{
-			"ImportPath": "github.com/AreaHQ/logging",
-			"Rev": "51e3c3d1765f56bc1bb7b564fd38534d0b98d67c"
-		},
-		{
 			"ImportPath": "github.com/RichardKnop/go-fixtures",
 			"Rev": "121e5a22d59650f6cecfab81cb9e9b860152fb42"
 		},
@@ -23,28 +19,28 @@
 		},
 		{
 			"ImportPath": "github.com/aws/aws-sdk-go/aws",
-			"Comment": "v1.1.11-16-gbd1647d",
-			"Rev": "bd1647dd41603455655e8a66a42bc009ebc85fa0"
+			"Comment": "v1.1.12",
+			"Rev": "4da0bec8953a0a540f391930a946917b12a95671"
 		},
 		{
 			"ImportPath": "github.com/aws/aws-sdk-go/private/endpoints",
-			"Comment": "v1.1.11-16-gbd1647d",
-			"Rev": "bd1647dd41603455655e8a66a42bc009ebc85fa0"
+			"Comment": "v1.1.12",
+			"Rev": "4da0bec8953a0a540f391930a946917b12a95671"
 		},
 		{
 			"ImportPath": "github.com/aws/aws-sdk-go/private/protocol",
-			"Comment": "v1.1.11-16-gbd1647d",
-			"Rev": "bd1647dd41603455655e8a66a42bc009ebc85fa0"
+			"Comment": "v1.1.12",
+			"Rev": "4da0bec8953a0a540f391930a946917b12a95671"
 		},
 		{
 			"ImportPath": "github.com/aws/aws-sdk-go/private/signer/v4",
-			"Comment": "v1.1.11-16-gbd1647d",
-			"Rev": "bd1647dd41603455655e8a66a42bc009ebc85fa0"
+			"Comment": "v1.1.12",
+			"Rev": "4da0bec8953a0a540f391930a946917b12a95671"
 		},
 		{
 			"ImportPath": "github.com/aws/aws-sdk-go/service/sns",
-			"Comment": "v1.1.11-16-gbd1647d",
-			"Rev": "bd1647dd41603455655e8a66a42bc009ebc85fa0"
+			"Comment": "v1.1.12",
+			"Rev": "4da0bec8953a0a540f391930a946917b12a95671"
 		},
 		{
 			"ImportPath": "github.com/codegangsta/cli",
@@ -186,8 +182,8 @@
 		},
 		{
 			"ImportPath": "github.com/stripe/stripe-go",
-			"Comment": "v13.1.0",
-			"Rev": "1eb8a605efcd46c4f486d20fb67487cafa473b9c"
+			"Comment": "v13.2.0",
+			"Rev": "ef09e90591579eefe99b56400061a85f7cac3641"
 		},
 		{
 			"ImportPath": "github.com/unrolled/secure",
