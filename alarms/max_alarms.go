@@ -1,7 +1,7 @@
 package alarms
 
 import (
-  "github.com/RichardKnop/pinglist-api/accounts"
+	"github.com/RichardKnop/pinglist-api/accounts"
 )
 
 // getUserMaxAlarms finds out how many alarms user is allowed to have

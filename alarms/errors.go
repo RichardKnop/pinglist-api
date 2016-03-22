@@ -1,7 +1,7 @@
 package alarms
 
 import (
-  "net/http"
+	"net/http"
 )
 
 var (

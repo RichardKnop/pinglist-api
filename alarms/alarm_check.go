@@ -51,7 +51,10 @@ func (s *Service) CheckAlarm(alarmID uint, watermark time.Time) error {
 
 	// Update the watermark
 	newWatermark := gorm.NowFunc()
-	err = s.db.Model(alarm).UpdateColumn("watermark", util.TimeOrNull(&newWatermark)).Error
+	err = s.db.Model(alarm).UpdateColumns(Alarm{
+		Watermark: util.TimeOrNull(&newWatermark),
+		Model:     gorm.Model{UpdatedAt: newWatermark},
+	}).Error
 	if err != nil {
 		return err
 	}

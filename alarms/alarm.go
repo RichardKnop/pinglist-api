@@ -3,6 +3,7 @@ package alarms
 import (
 	"errors"
 	"net/http"
+	"time"
 
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/RichardKnop/pinglist-api/alarms/alarmstates"
@@ -127,13 +128,15 @@ func (s *Service) updateAlarm(alarm *Alarm, alarmRequest *AlarmRequest) error {
 		return err
 	}
 
-	// Update the alarm
-	if err := s.db.Model(alarm).UpdateColumns(Alarm{
-		RegionID:         util.StringOrNull(region.ID),
-		EndpointURL:      alarmRequest.EndpointURL,
-		ExpectedHTTPCode: alarmRequest.ExpectedHTTPCode,
-		Interval:         alarmRequest.Interval,
-		Active:           alarmRequest.Active,
+	// Update the alarm (need to use map here because active field might be
+	// changing to false which would not work with struct)
+	if err := s.db.Model(alarm).UpdateColumns(map[string]interface{}{
+		"region_id":          region.ID,
+		"endpoint_url":       alarmRequest.EndpointURL,
+		"expected_http_code": alarmRequest.ExpectedHTTPCode,
+		"interval":           alarmRequest.Interval,
+		"active":             alarmRequest.Active,
+		"updated_at":         time.Now(),
 	}).Error; err != nil {
 		return err
 	}

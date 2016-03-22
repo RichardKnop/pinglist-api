@@ -255,6 +255,7 @@ func (s *Service) updateSubscription(subscription *Subscription, subscriptionReq
 		PeriodEnd:   util.TimeOrNull(periodEnd),
 		TrialStart:  util.TimeOrNull(trialStart),
 		TrialEnd:    util.TimeOrNull(trialEnd),
+		Model:       gorm.Model{UpdatedAt: time.Now()},
 	}).Error; err != nil {
 		tx.Rollback() // rollback the transaction
 		return err
@@ -287,6 +288,7 @@ func (s *Service) cancelSubscription(subscription *Subscription) error {
 	cancelledAt := time.Unix(stripeSubscription.Canceled, 0)
 	if err := s.db.Model(subscription).UpdateColumn(Subscription{
 		CancelledAt: util.TimeOrNull(&cancelledAt),
+		Model:       gorm.Model{UpdatedAt: time.Now()},
 	}).Error; err != nil {
 		return err
 	}

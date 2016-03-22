@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/RichardKnop/pinglist-api/util"
+	"github.com/jinzhu/gorm"
 	stripe "github.com/stripe/stripe-go"
 )
 
@@ -100,6 +101,7 @@ func (s *Service) stripeEventCustomerSubscriptionUpdated(e *stripe.Event) error 
 		PeriodEnd:   util.TimeOrNull(periodEnd),
 		TrialStart:  util.TimeOrNull(trialStart),
 		TrialEnd:    util.TimeOrNull(trialEnd),
+		Model:       gorm.Model{UpdatedAt: time.Now()},
 	}).Error; err != nil {
 		return nil
 	}
@@ -128,8 +130,9 @@ func (s *Service) stripeEventCustomerSubscriptionDeleted(e *stripe.Event) error 
 
 	// Update the subscription's cancelled_at field
 	cancelledAt := time.Unix(stripeSubscription.Canceled, 0)
-	if err := s.db.Model(subscription).UpdateColumn(Subscription{
+	if err := s.db.Model(subscription).UpdateColumns(Subscription{
 		CancelledAt: util.TimeOrNull(&cancelledAt),
+		Model:       gorm.Model{UpdatedAt: time.Now()},
 	}).Error; err != nil {
 		return err
 	}

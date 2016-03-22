@@ -6,8 +6,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/RichardKnop/pinglist-api/email"
 	"github.com/RichardKnop/pinglist-api/accounts"
+	"github.com/RichardKnop/pinglist-api/email"
 	"github.com/RichardKnop/pinglist-api/oauth"
 )
 

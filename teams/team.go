@@ -2,8 +2,10 @@ package teams
 
 import (
 	"errors"
+	"time"
 
 	"github.com/RichardKnop/pinglist-api/accounts"
+	"github.com/jinzhu/gorm"
 )
 
 var (
@@ -135,7 +137,8 @@ func (s *Service) updateTeam(team *Team, teamRequest *TeamRequest) error {
 
 	// Update basic metadata
 	if err := s.db.Model(team).UpdateColumns(Team{
-		Name: teamRequest.Name,
+		Name:  teamRequest.Name,
+		Model: gorm.Model{UpdatedAt: time.Now()},
 	}).Error; err != nil {
 		tx.Rollback() // rollback the transaction
 		return err

@@ -9,6 +9,7 @@ import (
 
 	"github.com/RichardKnop/pinglist-api/response"
 	"github.com/RichardKnop/pinglist-api/util"
+	"github.com/jinzhu/gorm"
 )
 
 // Handles requests to create a new user (POST /v1/accounts/users)
@@ -88,6 +89,7 @@ func (s *Service) createUserHandler(w http.ResponseWriter, r *http.Request) {
 		s.db.Model(confirmation).UpdateColumns(Confirmation{
 			EmailSent:   true,
 			EmailSentAt: util.TimeOrNull(&now),
+			Model:       gorm.Model{UpdatedAt: now},
 		})
 	}()
 

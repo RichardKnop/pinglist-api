@@ -2,9 +2,11 @@ package notifications
 
 import (
 	"errors"
+	"time"
 
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/RichardKnop/pinglist-api/util"
+	"github.com/jinzhu/gorm"
 )
 
 var (
@@ -92,6 +94,7 @@ func (s *Service) createOrUpdateEndpoint(user *accounts.User, applicationARN, de
 		if err := s.db.Model(endpoint).UpdateColumns(Endpoint{
 			DeviceToken: deviceToken,
 			Enabled:     true,
+			Model:       gorm.Model{UpdatedAt: time.Now()},
 		}).Error; err != nil {
 			return nil, err
 		}

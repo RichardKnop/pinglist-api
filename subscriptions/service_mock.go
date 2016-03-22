@@ -214,11 +214,15 @@ func (_m *ServiceMock) listPlansHandler(w http.ResponseWriter, r *http.Request) 
 	_m.Called(w, r)
 }
 
-func (_m *ServiceMock) subscribeUserHandler(w http.ResponseWriter, r *http.Request) {
+func (_m *ServiceMock) createSubscriptionHandler(w http.ResponseWriter, r *http.Request) {
 	_m.Called(w, r)
 }
 
 func (_m *ServiceMock) listSubscriptionsHandler(w http.ResponseWriter, r *http.Request) {
+	_m.Called(w, r)
+}
+
+func (_m *ServiceMock) updateSubscriptionHandler(w http.ResponseWriter, r *http.Request) {
 	_m.Called(w, r)
 }
 

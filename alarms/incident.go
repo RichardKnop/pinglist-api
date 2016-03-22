@@ -20,6 +20,7 @@ func (s *Service) openIncident(alarm *Alarm, incidentTypeID string, resp *http.R
 		err := tx.Model(alarm).UpdateColumns(Alarm{
 			AlarmStateID:          util.StringOrNull(alarmstates.Alarm),
 			LastDowntimeStartedAt: util.TimeOrNull(&now),
+			Model: gorm.Model{UpdatedAt: now},
 		}).Error
 		if err != nil {
 			tx.Rollback() // rollback the transaction
@@ -94,6 +95,7 @@ func (s *Service) resolveIncidentsTx(db *gorm.DB, alarm *Alarm) error {
 		err = db.Model(alarm).UpdateColumns(Alarm{
 			AlarmStateID:        util.StringOrNull(alarmstates.OK),
 			LastUptimeStartedAt: util.TimeOrNull(&now),
+			Model:               gorm.Model{UpdatedAt: now},
 		}).Error
 		if err != nil {
 			return err
@@ -116,7 +118,10 @@ func (s *Service) resolveIncidentsTx(db *gorm.DB, alarm *Alarm) error {
 	// Resolve incidents
 	err = db.Model(new(Incident)).Where(Incident{
 		AlarmID: util.PositiveIntOrNull(int64(alarm.ID)),
-	}).UpdateColumn("resolved_at", util.TimeOrNull(&now)).Error
+	}).UpdateColumns(Incident{
+		ResolvedAt: util.TimeOrNull(&now),
+		Model:      gorm.Model{UpdatedAt: now},
+	}).Error
 	if err != nil {
 		return err
 	}
