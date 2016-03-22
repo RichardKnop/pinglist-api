@@ -124,8 +124,6 @@ func (suite *SubscriptionsTestSuite) TestUpdateSubscriptionNothingChanged() {
 	assert.True(suite.T(), subscription.TrialEnd.Valid)
 
 	// Check the response body
-	customerResponse, err := NewCustomerResponse(subscription.Customer)
-	assert.NoError(suite.T(), err, "Creating response object failed")
 	planResponse, err := NewPlanResponse(subscription.Plan)
 	assert.NoError(suite.T(), err, "Creating response object failed")
 	expected := &SubscriptionResponse{
@@ -136,8 +134,7 @@ func (suite *SubscriptionsTestSuite) TestUpdateSubscriptionNothingChanged() {
 				},
 			},
 			Embedded: map[string]jsonhal.Embedded{
-				"customer": jsonhal.Embedded(customerResponse),
-				"plan":     jsonhal.Embedded(planResponse),
+				"plan": jsonhal.Embedded(planResponse),
 			},
 		},
 		ID:             subscription.ID,
@@ -256,8 +253,6 @@ func (suite *SubscriptionsTestSuite) TestUpdateSubscriptionPlanChanged() {
 	assert.True(suite.T(), subscription.TrialEnd.Valid)
 
 	// Check the response body
-	customerResponse, err := NewCustomerResponse(subscription.Customer)
-	assert.NoError(suite.T(), err, "Creating response object failed")
 	planResponse, err := NewPlanResponse(subscription.Plan)
 	assert.NoError(suite.T(), err, "Creating response object failed")
 	expected := &SubscriptionResponse{
@@ -268,8 +263,7 @@ func (suite *SubscriptionsTestSuite) TestUpdateSubscriptionPlanChanged() {
 				},
 			},
 			Embedded: map[string]jsonhal.Embedded{
-				"customer": jsonhal.Embedded(customerResponse),
-				"plan":     jsonhal.Embedded(planResponse),
+				"plan": jsonhal.Embedded(planResponse),
 			},
 		},
 		ID:             subscription.ID,

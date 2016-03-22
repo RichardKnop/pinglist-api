@@ -187,16 +187,6 @@ func NewSubscriptionResponse(subscription *Subscription) (*SubscriptionResponse,
 		"", // title
 	)
 
-	// Set embedded customer
-	customerResponse, err := NewCustomerResponse(subscription.Customer)
-	if err != nil {
-		return nil, err
-	}
-	response.SetEmbedded(
-		"customer",
-		jsonhal.Embedded(customerResponse),
-	)
-
 	// Set embedded plan
 	planResponse, err := NewPlanResponse(subscription.Plan)
 	if err != nil {

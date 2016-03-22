@@ -58,18 +58,6 @@ Example response:
 		}
 	},
 	"_embedded": {
-		"customer": {
-			"_links": {
-				"self": {
-					"href": "/v1/customers/1"
-				}
-			},
-			"id": 1,
-			"user_id": 1,
-			"customer_id": "cus_7z94mLsfxLva84",
-			"created_at": "2016-01-14T13:52:24Z",
-			"updated_at": "2016-01-14T13:52:24Z"
-		},
 		"plan":	{
 			"_links": {
 				"self": {
@@ -81,7 +69,7 @@ Example response:
 			"name": "Personal",
 			"description": "Personal website and/or a blog.",
 			"currency": "USD",
-			"amount": 500,
+			"amount": 250,
 			"trial_period": 30,
 			"interval": 30,
 			"max_alarms": 2,
@@ -127,18 +115,6 @@ Example response:
 		}
 	},
 	"_embedded": {
-		"customer": {
-			"_links": {
-				"self": {
-					"href": "/v1/customers/1"
-				}
-			},
-			"id": 1,
-			"user_id": 1,
-			"customer_id": "cus_7z94mLsfxLva84",
-			"created_at": "2016-01-14T13:52:24Z",
-			"updated_at": "2016-01-14T13:52:24Z"
-		},
 		"plan": {
 			"_links": {
 				"self": {
@@ -150,7 +126,7 @@ Example response:
 			"name": "Professional",
 			"description": "Monitor up to 10 different websites or APIs.",
 			"currency": "USD",
-			"amount": 2000,
+			"amount": 1000,
 			"trial_period": 30,
 			"interval": 30,
 			"max_alarms": 15,
@@ -221,7 +197,7 @@ Example response:
 		}
 	},
 	"_embedded": {
-		"alarms": [
+		"subscriptions": [
 			{
 				"_links": {
 					"self": {
@@ -229,18 +205,6 @@ Example response:
 					}
 				},
 				"_embedded": {
-					"customer": {
-						"_links": {
-							"self": {
-								"href": "/v1/customers/1"
-							}
-						},
-						"id": 1,
-						"user_id": 1,
-						"customer_id": "cus_7z94mLsfxLva84",
-						"created_at": "2016-01-14T13:52:24Z",
-						"updated_at": "2016-01-14T13:52:24Z"
-					},
 					"plan":	{
 						"_links": {
 							"self": {
@@ -248,14 +212,14 @@ Example response:
 							}
 						},
 						"id": 1,
-						"plan_id": "personal",
-						"name": "Personal",
-						"description": "Personal website and/or a blog.",
+						"plan_id": "professional",
+						"name": "Professional",
+						"description": "Monitor up to 10 different websites or APIs.",
 						"currency": "USD",
-						"amount": 500,
+						"amount": 1000,
 						"trial_period": 30,
 						"interval": 30,
-						"max_alarms": 2,
+						"max_alarms": 10,
 						"max_team_members": 0,
 						"created_at": "2016-01-14T13:52:24Z",
 						"updated_at": "2016-01-14T13:52:24Z"
@@ -263,15 +227,15 @@ Example response:
 				},
 				"id": 1,
 				"subscription_id": "sub_7z94rezxDE9frw",
-				"started_at": "2016-01-14T13:52:24Z",
+				"started_at": "2016-02-14T13:52:24Z",
 				"cancelled_at": "",
 				"ended_at": "",
-				"period_start": "2016-01-14T13:52:24Z",
-				"period_end": "2016-02-14T13:52:24Z",
+				"period_start": "2016-02-14T13:52:24Z",
+				"period_end": "2016-03-14T13:52:24Z",
 				"trial_start": "",
 				"trial_end": "",
-				"created_at": "2016-01-14T13:52:24Z",
-				"updated_at": "2016-01-14T13:52:24Z"
+				"created_at": "2016-02-14T13:52:24Z",
+				"updated_at": "2016-02-14T13:52:24Z"
 			},
 			{
 				"_links": {
@@ -280,18 +244,6 @@ Example response:
 					}
 				},
 				"_embedded": {
-					"customer": {
-						"_links": {
-							"self": {
-								"href": "/v1/customers/2"
-							}
-						},
-						"id": 1,
-						"user_id": 1,
-						"customer_id": "cus_9Hir123hxAP0a",
-						"created_at": "2016-01-14T13:52:24Z",
-						"updated_at": "2016-01-14T13:52:24Z"
-					},
 					"plan":	{
 						"_links": {
 							"self": {
@@ -303,7 +255,7 @@ Example response:
 						"name": "Personal",
 						"description": "Personal website and/or a blog.",
 						"currency": "USD",
-						"amount": 500,
+						"amount": 250,
 						"trial_period": 30,
 						"interval": 30,
 						"max_alarms": 2,
@@ -315,8 +267,8 @@ Example response:
 				"id": 2,
 				"subscription_id": "sub_87HIdrte99poeq",
 				"started_at": "2016-01-14T13:52:24Z",
-				"cancelled_at": "",
-				"ended_at": "",
+				"cancelled_at": "2016-01-18T13:52:24Z",
+				"ended_at": "2016-02-14T13:52:24Z",
 				"period_start": "2016-01-14T13:52:24Z",
 				"period_end": "2016-02-14T13:52:24Z",
 				"trial_start": "",
@@ -326,7 +278,7 @@ Example response:
 			}
 		]
 	},
-	"count": 4,
+	"count": 1,
 	"page": 1
 }
 ```

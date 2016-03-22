@@ -45,7 +45,7 @@ Example response:
 				"name": "Personal",
 				"description": "Personal website and/or a blog.",
 				"currency": "USD",
-				"amount": 500,
+				"amount": 250,
 				"trial_period": 30,
 				"interval": 30,
 				"max_alarms": 2,
@@ -64,10 +64,10 @@ Example response:
 				"name": "Professional",
 				"description": "Monitor up to 10 different websites or APIs.",
 				"currency": "USD",
-				"amount": 2000,
+				"amount": 1000,
 				"trial_period": 30,
 				"interval": 30,
-				"max_alarms": 15,
+				"max_alarms": 10,
 				"max_team_members": 0,
 				"created_at": "2016-01-14T13:52:24Z",
 				"updated_at": "2016-01-14T13:52:24Z"
@@ -83,11 +83,11 @@ Example response:
 				"name": "Startup",
 				"description": "Create a team of 5 members with 10 alarms each.",
 				"currency": "USD",
-				"amount": 2000,
+				"amount": 7500,
 				"trial_period": 30,
 				"interval": 30,
 				"max_alarms": 10,
-				"max_team_members": 5,
+				"max_team_members": 10,
 				"created_at": "2016-01-14T13:52:24Z",
 				"updated_at": "2016-01-14T13:52:24Z"
 			},
@@ -100,32 +100,32 @@ Example response:
 				"id": 4,
 				"plan_id": "business",
 				"name": "Business",
-				"description": "Create a team of 10 members with 10 alarms each.",
+				"description": "Create a team of 20 members with 10 alarms each.",
 				"currency": "USD",
 				"amount": 15000,
 				"trial_period": 30,
 				"interval": 30,
 				"max_alarms": 10,
-				"max_team_members": 10,
+				"max_team_members": 20,
 				"created_at": "2016-01-14T13:52:24Z",
 				"updated_at": "2016-01-14T13:52:24Z"
 			},
 			{
 				"_links": {
 					"self": {
-						"href": "/v1/plans/3"
+						"href": "/v1/plans/5"
 					}
 				},
-				"id": 3,
+				"id": 5,
 				"plan_id": "enterprise",
 				"name": "Enterprise",
-				"description": "Create a team of 30 members with 10 alarms each.",
+				"description": "Create a team of 50 members with 10 alarms each.",
 				"currency": "USD",
 				"amount": 35000,
 				"trial_period": 30,
 				"interval": 30,
 				"max_alarms": 10,
-				"max_team_members": 30,
+				"max_team_members": 50,
 				"created_at": "2016-01-14T13:52:24Z",
 				"updated_at": "2016-01-14T13:52:24Z"
 			}
