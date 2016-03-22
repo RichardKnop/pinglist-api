@@ -52,26 +52,23 @@ func (s *Service) loginHandler(w http.ResponseWriter, r *http.Request) {
 		lastName   = fmt.Sprintf("%s", resp["last_name"])
 		user       *accounts.User
 	)
+	logger.Info("Fetched Facebook user's data")
+	logger.Infof("Facebook ID: %s", facebookID)
+	logger.Infof("Email: %s", email)
 
-	// Try to look up a user in our database based on facebook ID
-	user, err = s.GetAccountsService().FindUserByFacebookID(facebookID)
-
-	// User with such facebook id does not exist, let's create a new account
+	// Get or create a new user based on facebook ID and other details
+	user, err = s.GetAccountsService().GetOrCreateFacebookUser(
+		authenticatedAccount,
+		facebookID,
+		&accounts.UserRequest{
+			Email:     email,
+			FirstName: firstName,
+			LastName:  lastName,
+		},
+	)
 	if err != nil {
-		// Create a new user account
-		user, err = s.GetAccountsService().CreateFacebookUser(
-			authenticatedAccount,
-			facebookID,
-			&accounts.UserRequest{
-				Email:     email,
-				FirstName: firstName,
-				LastName:  lastName,
-			},
-		)
-		if err != nil {
-			response.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
+		response.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	// Check that the same account is being used
