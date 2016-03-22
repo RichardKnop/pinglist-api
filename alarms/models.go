@@ -19,7 +19,7 @@ const ResultParentTableName = "alarm_results"
 // Region is a region from where alarm checks will be run
 type Region struct {
 	database.TimestampModel
-	ID   string `gorm:"primary_key"`
+	ID   string `gorm:"primary_key" sql:"type:varchar(20)"`
 	Name string `sql:"type:varchar(50);unique;not null"`
 }
 
@@ -31,7 +31,7 @@ func (r *Region) TableName() string {
 // AlarmState is a state that an alarm can be in
 type AlarmState struct {
 	database.TimestampModel
-	ID   string `gorm:"primary_key"`
+	ID   string `gorm:"primary_key" sql:"type:varchar(20)"`
 	Name string `sql:"type:varchar(50);unique;not null"`
 }
 
@@ -45,9 +45,9 @@ type Alarm struct {
 	gorm.Model
 	UserID                sql.NullInt64 `sql:"index;not null"`
 	User                  *accounts.User
-	RegionID              sql.NullString `sql:"index;not null"`
+	RegionID              sql.NullString `sql:"type:varchar(20);index;not null"`
 	Region                *Region
-	AlarmStateID          sql.NullString `sql:"index;not null"`
+	AlarmStateID          sql.NullString `sql:"type:varchar(20);index;not null"`
 	AlarmState            *AlarmState
 	Incidents             []*Incident
 	Results               []*Result

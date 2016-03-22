@@ -9,7 +9,7 @@
     id: 1
   fields:
     user_id: 2
-    region_id: 'SGP'
+    region_id: 'us-west-2'
     endpoint_url: 'http://endpoint-1'
     expected_http_code: 200
     interval: 60
@@ -23,7 +23,7 @@
     id: 2
   fields:
     user_id: 2
-    region_id: 'SGP'
+    region_id: 'us-west-2'
     endpoint_url: 'http://endpoint-2'
     expected_http_code: 200
     interval: 60
@@ -37,7 +37,7 @@
     id: 3
   fields:
     user_id: 2
-    region_id: 'SGP'
+    region_id: 'us-west-2'
     endpoint_url: 'http://endpoint-3'
     expected_http_code: 200
     interval: 60
@@ -51,7 +51,7 @@
     id: 4
   fields:
     user_id: 2
-    region_id: 'SGP'
+    region_id: 'us-west-2'
     endpoint_url: 'http://endpoint-4'
     expected_http_code: 200
     interval: 60

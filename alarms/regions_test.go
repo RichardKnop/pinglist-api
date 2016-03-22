@@ -23,7 +23,7 @@ func (suite *AlarmsTestSuite) TestFindRegionByID() {
 	}
 
 	// Now let's pass a valid ID
-	region, err = suite.service.findRegionByID("SGP")
+	region, err = suite.service.findRegionByID("us-west-2")
 
 	// Error should be nil
 	assert.Nil(suite.T(), err)

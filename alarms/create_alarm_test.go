@@ -32,6 +32,7 @@ func (suite *AlarmsTestSuite) TestCreateAlarmRequiresUserAuthentication() {
 func (suite *AlarmsTestSuite) TestCreateAlarmMaxLimitReached() {
 	// Prepare a request
 	payload, err := json.Marshal(&AlarmRequest{
+		Region:           "us-west-2",
 		EndpointURL:      "http://endpoint-5",
 		ExpectedHTTPCode: 200,
 		Interval:         60,
@@ -103,7 +104,7 @@ func (suite *AlarmsTestSuite) TestCreateAlarmMaxLimitReached() {
 func (suite *AlarmsTestSuite) TestCreateAlarm() {
 	// Prepare a request
 	payload, err := json.Marshal(&AlarmRequest{
-		Region:           "SGP",
+		Region:           "us-west-2",
 		EndpointURL:      "http://endpoint-5",
 		ExpectedHTTPCode: 200,
 		Interval:         60,
