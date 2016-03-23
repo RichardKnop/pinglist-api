@@ -70,15 +70,12 @@ func (s *Service) FindAlarmByID(alarmID uint) (*Alarm, error) {
 // createAlarm creates a new alarm
 func (s *Service) createAlarm(user *accounts.User, alarmRequest *AlarmRequest) (*Alarm, error) {
 	if alarmRequest.Active {
-		// Count how many active alarms user already has
-		var countAlarms int
-		s.db.Model(new(Alarm)).Where(Alarm{
-			UserID: util.IntOrNull(int64(user.ID)),
-			Active: true,
-		}).Count(&countAlarms)
-
-		// Limit alarms to the max number defined as per subscription plan
-		if countAlarms+1 > s.getUserMaxAlarms(user) {
+		// Limit maximum number of active alarms per user
+		alarmsCount, err := s.userActiveAlarmsCount(user)
+		if err != nil {
+			return nil, err
+		}
+		if alarmsCount+1 > s.getUserMaxAlarms(user) {
 			return nil, ErrMaxAlarmsLimitReached
 		}
 	}
@@ -109,15 +106,12 @@ func (s *Service) createAlarm(user *accounts.User, alarmRequest *AlarmRequest) (
 // updateAlarm updates an existing alarm
 func (s *Service) updateAlarm(alarm *Alarm, alarmRequest *AlarmRequest) error {
 	if !alarm.Active && alarmRequest.Active {
-		// Count how many active alarms user already has
-		var countAlarms int
-		s.db.Model(new(Alarm)).Where(Alarm{
-			UserID: alarm.UserID,
-			Active: true,
-		}).Count(&countAlarms)
-
-		// Limit alarms to max number defined above
-		if countAlarms+1 > s.getUserMaxAlarms(alarm.User) {
+		// Limit maximum number of active alarms per user
+		alarmsCount, err := s.userActiveAlarmsCount(alarm.User)
+		if err != nil {
+			return err
+		}
+		if alarmsCount+1 > s.getUserMaxAlarms(alarm.User) {
 			return ErrMaxAlarmsLimitReached
 		}
 	}
@@ -131,12 +125,14 @@ func (s *Service) updateAlarm(alarm *Alarm, alarmRequest *AlarmRequest) error {
 	// Update the alarm (need to use map here because active field might be
 	// changing to false which would not work with struct)
 	if err := s.db.Model(alarm).UpdateColumns(map[string]interface{}{
-		"region_id":          region.ID,
-		"endpoint_url":       alarmRequest.EndpointURL,
-		"expected_http_code": alarmRequest.ExpectedHTTPCode,
-		"interval":           alarmRequest.Interval,
-		"active":             alarmRequest.Active,
-		"updated_at":         time.Now(),
+		"region_id":                region.ID,
+		"endpoint_url":             alarmRequest.EndpointURL,
+		"expected_http_code":       alarmRequest.ExpectedHTTPCode,
+		"interval":                 alarmRequest.Interval,
+		"email_alerts":             alarmRequest.EmailAlerts,
+		"push_notification_alerts": alarmRequest.PushNotificationAlerts,
+		"active":                   alarmRequest.Active,
+		"updated_at":               time.Now(),
 	}).Error; err != nil {
 		return err
 	}
@@ -145,6 +141,17 @@ func (s *Service) updateAlarm(alarm *Alarm, alarmRequest *AlarmRequest) error {
 	alarm.Region = region
 
 	return nil
+}
+
+// userActiveAlarmsCount counts active alarms of a user
+func (s *Service) userActiveAlarmsCount(user *accounts.User) (int, error) {
+	var count int
+	err := s.db.Model(new(Alarm)).Where("user_id = ?", user.ID).
+		Where("active = true").Count(&count).Error
+	if err != nil {
+		return 0, err
+	}
+	return count, nil
 }
 
 // paginatedAlarmsCount returns a total count of alarms

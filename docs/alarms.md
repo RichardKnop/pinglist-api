@@ -18,6 +18,8 @@ curl --compressed -v localhost:8080/v1/alarms \
 		"endpoint_url": "http://endpoint-1",
 		"expected_http_code": 200,
 		"interval": 60,
+		"email_alerts": true,
+		"push_notification_alerts": true,
 		"active": false
 	}'
 ```
@@ -37,6 +39,8 @@ Example response:
 	"endpoint_url": "http://endpoint-1",
 	"expected_http_code": 200,
 	"interval": 60,
+	"email_alerts": true,
+	"push_notification_alerts": true,
 	"active": false,
 	"state": "insufficient_data",
 	"created_at": "2016-01-14T13:52:24Z",
@@ -57,6 +61,8 @@ curl -XPUT --compressed -v localhost:8080/v1/alarms/1 \
 		"endpoint_url": "http://endpoint-1-updated",
 		"expected_http_code": 201,
 		"interval": 90,
+		"email_alerts": true,
+		"push_notification_alerts": false,
 		"active": true
 	}'
 ```
@@ -76,6 +82,8 @@ Example response:
 	"endpoint_url": "http://endpoint-1-updated",
 	"expected_http_code": 201,
 	"interval": 90,
+	"email_alerts": true,
+	"push_notification_alerts": false,
 	"active": true,
 	"state": "insufficient_data",
 	"created_at": "2016-01-14T13:52:24Z",
@@ -144,6 +152,8 @@ Example response:
 				"endpoint_url": "http://endpoint-1",
 				"expected_http_code": 200,
 				"interval": 60,
+				"email_alerts": true,
+				"push_notification_alerts": true,
 				"active": true,
 				"state": "ok",
 				"created_at": "2016-01-14T13:52:24Z",
@@ -161,6 +171,8 @@ Example response:
 				"endpoint_url": "http://endpoint-2",
 				"expected_http_code": 200,
 				"interval": 60,
+				"email_alerts": true,
+				"push_notification_alerts": true,
 				"active": true,
 				"state": "alarm",
 				"created_at": "2016-01-14T13:52:24Z",

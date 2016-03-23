@@ -43,21 +43,23 @@ func (s *AlarmState) TableName() string {
 // Alarm ...
 type Alarm struct {
 	gorm.Model
-	UserID                sql.NullInt64 `sql:"index;not null"`
-	User                  *accounts.User
-	RegionID              sql.NullString `sql:"type:varchar(20);index;not null"`
-	Region                *Region
-	AlarmStateID          sql.NullString `sql:"type:varchar(20);index;not null"`
-	AlarmState            *AlarmState
-	Incidents             []*Incident
-	Results               []*Result
-	EndpointURL           string      `sql:"type:varchar(254);not null"`
-	ExpectedHTTPCode      uint        `sql:"default:200;not null"`
-	Interval              uint        `sql:"default:60;not null"` // seconds
-	Active                bool        `sql:"index;not null"`
-	Watermark             pq.NullTime `sql:"index"`
-	LastDowntimeStartedAt pq.NullTime `sql:"index"`
-	LastUptimeStartedAt   pq.NullTime `sql:"index"`
+	UserID                 sql.NullInt64 `sql:"index;not null"`
+	User                   *accounts.User
+	RegionID               sql.NullString `sql:"type:varchar(20);index;not null"`
+	Region                 *Region
+	AlarmStateID           sql.NullString `sql:"type:varchar(20);index;not null"`
+	AlarmState             *AlarmState
+	Incidents              []*Incident
+	Results                []*Result
+	EndpointURL            string      `sql:"type:varchar(254);not null"`
+	ExpectedHTTPCode       uint        `sql:"default:200;not null"`
+	Interval               uint        `sql:"default:60;not null"` // seconds
+	EmailAlerts            bool        `sql:"default:false;index;not null"`
+	PushNotificationAlerts bool        `sql:"default:false;index;not null"`
+	Active                 bool        `sql:"index;not null"`
+	Watermark              pq.NullTime `sql:"index"`
+	LastDowntimeStartedAt  pq.NullTime `sql:"index"`
+	LastUptimeStartedAt    pq.NullTime `sql:"index"`
 }
 
 // TableName specifies table name
@@ -130,13 +132,15 @@ func newAlarm(user *accounts.User, region *Region, alarmState *AlarmState, alarm
 	regionID := util.StringOrNull(region.ID)
 	alarmStateID := util.StringOrNull(alarmState.ID)
 	alarm := &Alarm{
-		UserID:           userID,
-		RegionID:         regionID,
-		AlarmStateID:     alarmStateID,
-		EndpointURL:      alarmRequest.EndpointURL,
-		ExpectedHTTPCode: alarmRequest.ExpectedHTTPCode,
-		Interval:         alarmRequest.Interval,
-		Active:           alarmRequest.Active,
+		UserID:                 userID,
+		RegionID:               regionID,
+		AlarmStateID:           alarmStateID,
+		EndpointURL:            alarmRequest.EndpointURL,
+		ExpectedHTTPCode:       alarmRequest.ExpectedHTTPCode,
+		Interval:               alarmRequest.Interval,
+		EmailAlerts:            alarmRequest.EmailAlerts,
+		PushNotificationAlerts: alarmRequest.PushNotificationAlerts,
+		Active:                 alarmRequest.Active,
 	}
 	if userID.Valid {
 		alarm.User = user

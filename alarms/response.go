@@ -24,16 +24,18 @@ type ListRegionsResponse struct {
 // AlarmResponse ...
 type AlarmResponse struct {
 	jsonhal.Hal
-	ID               uint   `json:"id"`
-	UserID           uint   `json:"user_id"`
-	Region           string `json:"region"`
-	EndpointURL      string `json:"endpoint_url"`
-	ExpectedHTTPCode uint   `json:"expected_http_code"`
-	Interval         uint   `json:"interval"`
-	Active           bool   `json:"active"`
-	State            string `json:"state"`
-	CreatedAt        string `json:"created_at"`
-	UpdatedAt        string `json:"updated_at"`
+	ID                     uint   `json:"id"`
+	UserID                 uint   `json:"user_id"`
+	Region                 string `json:"region"`
+	EndpointURL            string `json:"endpoint_url"`
+	ExpectedHTTPCode       uint   `json:"expected_http_code"`
+	Interval               uint   `json:"interval"`
+	EmailAlerts            bool   `json:"email_alerts"`
+	PushNotificationAlerts bool   `json:"push_notification_alerts"`
+	Active                 bool   `json:"active"`
+	State                  string `json:"state"`
+	CreatedAt              string `json:"created_at"`
+	UpdatedAt              string `json:"updated_at"`
 }
 
 // ListAlarmsResponse ...
@@ -139,16 +141,18 @@ func NewListRegionsResponse(count, page int, self, first, last, previous, next s
 // NewAlarmResponse creates new AlarmResponse instance
 func NewAlarmResponse(alarm *Alarm) (*AlarmResponse, error) {
 	response := &AlarmResponse{
-		ID:               alarm.ID,
-		UserID:           uint(alarm.UserID.Int64),
-		Region:           alarm.RegionID.String,
-		EndpointURL:      alarm.EndpointURL,
-		ExpectedHTTPCode: alarm.ExpectedHTTPCode,
-		Interval:         alarm.Interval,
-		Active:           alarm.Active,
-		State:            alarm.AlarmStateID.String,
-		CreatedAt:        alarm.CreatedAt.UTC().Format(time.RFC3339),
-		UpdatedAt:        alarm.UpdatedAt.UTC().Format(time.RFC3339),
+		ID:                     alarm.ID,
+		UserID:                 uint(alarm.UserID.Int64),
+		Region:                 alarm.RegionID.String,
+		EndpointURL:            alarm.EndpointURL,
+		ExpectedHTTPCode:       alarm.ExpectedHTTPCode,
+		Interval:               alarm.Interval,
+		EmailAlerts:            alarm.EmailAlerts,
+		PushNotificationAlerts: alarm.PushNotificationAlerts,
+		Active:                 alarm.Active,
+		State:                  alarm.AlarmStateID.String,
+		CreatedAt:              alarm.CreatedAt.UTC().Format(time.RFC3339),
+		UpdatedAt:              alarm.UpdatedAt.UTC().Format(time.RFC3339),
 	}
 
 	// Set the self link

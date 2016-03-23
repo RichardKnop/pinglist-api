@@ -32,11 +32,13 @@ func (suite *AlarmsTestSuite) TestCreateAlarmRequiresUserAuthentication() {
 func (suite *AlarmsTestSuite) TestCreateAlarmMaxLimitReached() {
 	// Prepare a request
 	payload, err := json.Marshal(&AlarmRequest{
-		Region:           "us-west-2",
-		EndpointURL:      "http://endpoint-5",
-		ExpectedHTTPCode: 200,
-		Interval:         60,
-		Active:           true,
+		Region:                 "us-west-2",
+		EndpointURL:            "http://endpoint-5",
+		ExpectedHTTPCode:       200,
+		Interval:               60,
+		EmailAlerts:            true,
+		PushNotificationAlerts: true,
+		Active:                 true,
 	})
 	assert.NoError(suite.T(), err, "JSON marshalling failed")
 	r, err := http.NewRequest(
@@ -104,11 +106,13 @@ func (suite *AlarmsTestSuite) TestCreateAlarmMaxLimitReached() {
 func (suite *AlarmsTestSuite) TestCreateAlarm() {
 	// Prepare a request
 	payload, err := json.Marshal(&AlarmRequest{
-		Region:           "us-west-2",
-		EndpointURL:      "http://endpoint-5",
-		ExpectedHTTPCode: 200,
-		Interval:         60,
-		Active:           true,
+		Region:                 "us-west-2",
+		EndpointURL:            "http://endpoint-5",
+		ExpectedHTTPCode:       200,
+		Interval:               60,
+		EmailAlerts:            true,
+		PushNotificationAlerts: true,
+		Active:                 true,
 	})
 	assert.NoError(suite.T(), err, "JSON marshalling failed")
 	r, err := http.NewRequest(
@@ -176,6 +180,8 @@ func (suite *AlarmsTestSuite) TestCreateAlarm() {
 	assert.Equal(suite.T(), "http://endpoint-5", alarm.EndpointURL)
 	assert.Equal(suite.T(), uint(200), alarm.ExpectedHTTPCode)
 	assert.Equal(suite.T(), uint(60), alarm.Interval)
+	assert.True(suite.T(), alarm.EmailAlerts)
+	assert.True(suite.T(), alarm.PushNotificationAlerts)
 	assert.True(suite.T(), alarm.Active)
 	assert.Equal(suite.T(), 0, len(alarm.Incidents))
 	assert.Equal(suite.T(), 0, len(alarm.Results))
@@ -196,16 +202,18 @@ func (suite *AlarmsTestSuite) TestCreateAlarm() {
 				},
 			},
 		},
-		ID:               alarm.ID,
-		UserID:           suite.users[1].ID,
-		Region:           regions.USWest2,
-		EndpointURL:      "http://endpoint-5",
-		ExpectedHTTPCode: uint(200),
-		Interval:         uint(60),
-		Active:           true,
-		State:            alarmstates.InsufficientData,
-		CreatedAt:        alarm.CreatedAt.UTC().Format(time.RFC3339),
-		UpdatedAt:        alarm.UpdatedAt.UTC().Format(time.RFC3339),
+		ID:                     alarm.ID,
+		UserID:                 suite.users[1].ID,
+		Region:                 regions.USWest2,
+		EndpointURL:            "http://endpoint-5",
+		ExpectedHTTPCode:       uint(200),
+		Interval:               uint(60),
+		EmailAlerts:            true,
+		PushNotificationAlerts: true,
+		Active:                 true,
+		State:                  alarmstates.InsufficientData,
+		CreatedAt:              alarm.CreatedAt.UTC().Format(time.RFC3339),
+		UpdatedAt:              alarm.UpdatedAt.UTC().Format(time.RFC3339),
 	}
 	expectedJSON, err := json.Marshal(expected)
 	if assert.NoError(suite.T(), err, "JSON marshalling failed") {

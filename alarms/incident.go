@@ -28,15 +28,17 @@ func (s *Service) openIncident(alarm *Alarm, incidentTypeID string, resp *http.R
 		}
 
 		// Send alarm down notification email
-		go func() {
-			alarmDownEmail := s.emailFactory.NewAlarmDownEmail(alarm)
+		if alarm.EmailAlerts {
+			go func() {
+				alarmDownEmail := s.emailFactory.NewAlarmDownEmail(alarm)
 
-			// Try to send the alarm down email email
-			if err := s.emailService.Send(alarmDownEmail); err != nil {
-				logger.Errorf("Send email error: %s", err)
-				return
-			}
-		}()
+				// Try to send the alarm down email email
+				if err := s.emailService.Send(alarmDownEmail); err != nil {
+					logger.Errorf("Send email error: %s", err)
+					return
+				}
+			}()
+		}
 	}
 
 	var incident *Incident
@@ -101,7 +103,7 @@ func (s *Service) resolveIncidentsTx(db *gorm.DB, alarm *Alarm) error {
 			return err
 		}
 
-		if alarmInitialState != alarmstates.InsufficientData {
+		if alarm.EmailAlerts && alarmInitialState != alarmstates.InsufficientData {
 			// Send alarm up notification email
 			go func() {
 				alarmUpEmail := s.emailFactory.NewAlarmUpEmail(alarm)

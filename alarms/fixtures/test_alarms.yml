@@ -13,6 +13,8 @@
     endpoint_url: 'http://endpoint-1'
     expected_http_code: 200
     interval: 60
+    email_alerts: true
+    push_notification_alerts: true
     active: true
     alarm_state_id: 'ok'
     created_at: 'ON_INSERT_NOW()'
@@ -27,6 +29,8 @@
     endpoint_url: 'http://endpoint-2'
     expected_http_code: 200
     interval: 60
+    email_alerts: true
+    push_notification_alerts: true
     active: false
     alarm_state_id: 'ok'
     created_at: 'ON_INSERT_NOW()'
@@ -41,6 +45,8 @@
     endpoint_url: 'http://endpoint-3'
     expected_http_code: 200
     interval: 60
+    email_alerts: true
+    push_notification_alerts: true
     active: false
     alarm_state_id: 'ok'
     created_at: 'ON_INSERT_NOW()'
@@ -55,6 +61,8 @@
     endpoint_url: 'http://endpoint-4'
     expected_http_code: 200
     interval: 60
+    email_alerts: true
+    push_notification_alerts: true
     active: false
     alarm_state_id: 'ok'
     created_at: 'ON_INSERT_NOW()'

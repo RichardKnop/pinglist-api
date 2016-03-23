@@ -4,7 +4,7 @@ import (
 	"github.com/RichardKnop/pinglist-api/accounts"
 )
 
-// getUserMaxAlarms finds out how many alarms user is allowed to have
+// getMaxAlarms finds out how many alarms user is allowed to have
 func (s *Service) getUserMaxAlarms(user *accounts.User) int {
 	var maxAlarms int
 
