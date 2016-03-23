@@ -28,6 +28,75 @@ func (suite *SubscriptionsTestSuite) TestCreateSubscriptionRequiresUserAuthentic
 	assert.Equal(suite.T(), http.StatusUnauthorized, w.Code, "This requires an authenticated user")
 }
 
+func (suite *SubscriptionsTestSuite) TestCreateSubscriptionFailsWhenUserAlreadyHasOne() {
+	// Prepare a request
+	payload, err := json.Marshal(&SubscriptionRequest{
+		StripeToken: "does not matter",
+		StripeEmail: "does not matter",
+		PlanID:      suite.plans[0].ID,
+	})
+	assert.NoError(suite.T(), err, "JSON marshalling failed")
+	r, err := http.NewRequest(
+		"POST",
+		"http://1.2.3.4/v1/subscriptions",
+		bytes.NewBuffer(payload),
+	)
+	assert.NoError(suite.T(), err, "Request setup should not get an error")
+	r.Header.Set("Authorization", "Bearer test_token")
+
+	// Check the routing
+	match := new(mux.RouteMatch)
+	suite.router.Match(r, match)
+	if assert.NotNil(suite.T(), match.Route) {
+		assert.Equal(suite.T(), "create_subscription", match.Route.GetName())
+	}
+
+	// Mock authentication
+	suite.mockAuthentication(suite.users[0])
+
+	// Count before
+	var (
+		countBefore         int
+		customerCountBefore int
+	)
+	suite.db.Model(new(Subscription)).Count(&countBefore)
+	suite.db.Model(new(Customer)).Count(&customerCountBefore)
+
+	// And serve the request
+	w := httptest.NewRecorder()
+	suite.router.ServeHTTP(w, r)
+
+	// Check that the mock object expectations were met
+	suite.oauthServiceMock.AssertExpectations(suite.T())
+	suite.accountsServiceMock.AssertExpectations(suite.T())
+
+	// Check the status code
+	if !assert.Equal(suite.T(), 400, w.Code) {
+		log.Print(w.Body.String())
+	}
+
+	// Count after
+	var (
+		countAfter         int
+		customerCountAfter int
+	)
+	suite.db.Model(new(Subscription)).Count(&countAfter)
+	suite.db.Model(new(Customer)).Count(&customerCountAfter)
+	assert.Equal(suite.T(), countBefore, countAfter)
+	assert.Equal(suite.T(), customerCountBefore, customerCountAfter)
+
+	expectedJSON, err := json.Marshal(
+		map[string]string{"error": ErrUserCanOnlyHaveOneActiveSubscription.Error()})
+	if assert.NoError(suite.T(), err, "JSON marshalling failed") {
+		assert.Equal(
+			suite.T(),
+			string(expectedJSON),
+			strings.TrimRight(w.Body.String(), "\n"),
+			"Body should contain JSON detailing the error",
+		)
+	}
+}
+
 func (suite *SubscriptionsTestSuite) TestCreateSubscriptionExistingValidCustomer() {
 	// Create a test Stripe token
 	testStripeToken, err := stripeToken.New(&stripe.TokenParams{

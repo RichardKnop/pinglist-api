@@ -26,7 +26,7 @@ func (s *Subscription) IsActive() bool {
 
 // IsCancelled returns true if the subscription has been cancelled
 func (s *Subscription) IsCancelled() bool {
-	return !s.CancelledAt.Valid || s.CancelledAt.Time.After(time.Now())
+	return s.CancelledAt.Valid && s.CancelledAt.Time.Before(time.Now())
 }
 
 // FindSubscriptionByID looks up a subscription by an ID and returns it
