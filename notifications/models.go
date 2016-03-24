@@ -25,8 +25,8 @@ func (e *Endpoint) TableName() string {
 	return "notification_endpoints"
 }
 
-// newEndpoint creates new Endpoint instance
-func newEndpoint(user *accounts.User, applicationARN, arn, deviceToken, customUserData string, enabled bool) *Endpoint {
+// NewEndpoint creates new Endpoint instance
+func NewEndpoint(user *accounts.User, applicationARN, arn, deviceToken, customUserData string, enabled bool) *Endpoint {
 	userID := util.PositiveIntOrNull(int64(user.ID))
 	endpoint := &Endpoint{
 		UserID:         userID,

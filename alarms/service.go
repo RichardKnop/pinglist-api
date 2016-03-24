@@ -7,6 +7,7 @@ import (
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/RichardKnop/pinglist-api/config"
 	"github.com/RichardKnop/pinglist-api/email"
+	"github.com/RichardKnop/pinglist-api/metrics"
 	"github.com/RichardKnop/pinglist-api/subscriptions"
 	"github.com/jinzhu/gorm"
 )
@@ -16,6 +17,7 @@ type Service struct {
 	cnf                  *config.Config
 	db                   *gorm.DB
 	accountsService      accounts.ServiceInterface
+	metricsService       metrics.ServiceInterface
 	subscriptionsService subscriptions.ServiceInterface
 	emailService         email.ServiceInterface
 	emailFactory         EmailFactoryInterface
@@ -23,7 +25,7 @@ type Service struct {
 }
 
 // NewService starts a new Service instance
-func NewService(cnf *config.Config, db *gorm.DB, accountsService accounts.ServiceInterface, subscriptionsService subscriptions.ServiceInterface, emailService email.ServiceInterface, emailFactory EmailFactoryInterface, client *http.Client) *Service {
+func NewService(cnf *config.Config, db *gorm.DB, accountsService accounts.ServiceInterface, metricsService metrics.ServiceInterface, subscriptionsService subscriptions.ServiceInterface, emailService email.ServiceInterface, emailFactory EmailFactoryInterface, client *http.Client) *Service {
 	if emailFactory == nil {
 		emailFactory = NewEmailFactory(cnf)
 	}
@@ -36,6 +38,7 @@ func NewService(cnf *config.Config, db *gorm.DB, accountsService accounts.Servic
 		cnf:                  cnf,
 		db:                   db,
 		accountsService:      accountsService,
+		metricsService:       metricsService,
 		subscriptionsService: subscriptionsService,
 		emailService:         emailService,
 		emailFactory:         emailFactory,

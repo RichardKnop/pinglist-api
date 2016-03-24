@@ -55,8 +55,8 @@ func (s *Service) listAlarmResultsHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	// Count total number of results
-	count, err := s.paginatedResultsCount(alarm)
+	// Count total number of metric records
+	count, err := s.metricsService.PaginatedRequestTimesCount(alarm.ID)
 	if err != nil {
 		response.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -74,12 +74,12 @@ func (s *Service) listAlarmResultsHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	// Get paginated results
-	results, err := s.findPaginatedResults(
+	// Get paginated metric records
+	requestTimes, err := s.metricsService.FindPaginatedRequestTimes(
 		pagination.GetOffsetForPage(count, page, limit),
 		limit,
 		r.URL.Query().Get("order_by"),
-		alarm,
+		alarm.ID,
 	)
 	if err != nil {
 		response.Error(w, err.Error(), http.StatusInternalServerError)
@@ -88,17 +88,17 @@ func (s *Service) listAlarmResultsHandler(w http.ResponseWriter, r *http.Request
 
 	// Create response
 	self := util.GetCurrentURL(r)
-	listResultsResponse, err := NewListResultsResponse(
+	listRequestTimesResponse, err := NewListRequestTimesResponse(
 		count, page,
 		self, first, last, next, previous,
-		results,
+		requestTimes,
 	)
 	if err != nil {
 		response.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	// Write JSON response
-	response.WriteJSON(w, listResultsResponse, http.StatusOK)
+	response.WriteJSON(w, listRequestTimesResponse, http.StatusOK)
 }
 
 func checkListAlarmResultsPermissions(authenticatedUser *accounts.User, alarm *Alarm) error {

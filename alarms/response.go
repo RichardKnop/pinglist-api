@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/RichardKnop/jsonhal"
+	"github.com/RichardKnop/pinglist-api/metrics"
 )
 
 // RegionResponse ...
@@ -66,15 +67,15 @@ type ListIncidentsResponse struct {
 	Page  uint `json:"page"`
 }
 
-// ResultResponse ...
-type ResultResponse struct {
+// RequestTimeResponse ...
+type RequestTimeResponse struct {
 	jsonhal.Hal
 	Timestamp   string `json:"timestamp"`
 	RequestTime int64  `json:"request_time"`
 }
 
-// ListResultsResponse ...
-type ListResultsResponse struct {
+// ListRequestTimesResponse ...
+type ListRequestTimesResponse struct {
 	jsonhal.Hal
 	Count uint `json:"count"`
 	Page  uint `json:"page"`
@@ -287,17 +288,9 @@ func NewListIncidentsResponse(count, page int, self, first, last, previous, next
 	return response, nil
 }
 
-// NewResultResponse creates new ResultResponse instance
-func NewResultResponse(result *Result) (*ResultResponse, error) {
-	return &ResultResponse{
-		Timestamp:   result.Timestamp.UTC().Format(time.RFC3339),
-		RequestTime: result.RequestTime,
-	}, nil
-}
-
-// NewListResultsResponse creates new ListResultsResponse instance
-func NewListResultsResponse(count, page int, self, first, last, previous, next string, results []*Result) (*ListResultsResponse, error) {
-	response := &ListResultsResponse{
+// NewListRequestTimesResponse creates new ListRequestTimesResponse instance
+func NewListRequestTimesResponse(count, page int, self, first, last, previous, next string, requestTimes []*metrics.RequestTime) (*ListRequestTimesResponse, error) {
+	response := &ListRequestTimesResponse{
 		Count: uint(count),
 		Page:  uint(page),
 	}
@@ -317,20 +310,23 @@ func NewListResultsResponse(count, page int, self, first, last, previous, next s
 	// Set the next link
 	response.SetLink("next", next, "")
 
-	// Create slice of result responses
-	resultResponses := make([]*ResultResponse, len(results))
-	for i, result := range results {
-		resultResponse, err := NewResultResponse(result)
+	// Create slice of metrics responses
+	metricResponses := make([]*metrics.MetricResponse, len(requestTimes))
+	for i, requestTime := range requestTimes {
+		metricResponse, err := metrics.NewMetricResponse(
+			requestTime.Timestamp,
+			requestTime.Value,
+		)
 		if err != nil {
 			return nil, err
 		}
-		resultResponses[i] = resultResponse
+		metricResponses[i] = metricResponse
 	}
 
 	// Set embedded results
 	response.SetEmbedded(
-		"results",
-		jsonhal.Embedded(resultResponses),
+		"requesttimes",
+		jsonhal.Embedded(metricResponses),
 	)
 
 	return response, nil

@@ -50,7 +50,7 @@ func (s *Service) stripeWebhookHandler(w http.ResponseWriter, r *http.Request) {
 		response.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	stripeEventLog := newStripeEventLog(
+	stripeEventLog := NewStripeEventLog(
 		stripeEventRequest.ID,
 		stripeEventRequest.Type,
 		string(requestDump),

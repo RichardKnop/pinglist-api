@@ -1,9 +1,9 @@
 package metrics
 
 import (
-  "time"
-  "github.com/stretchr/testify/mock"
-  "github.com/RichardKnop/pinglist-api/accounts"
+	"github.com/RichardKnop/pinglist-api/accounts"
+	"github.com/stretchr/testify/mock"
+	"time"
 )
 
 // ServiceMock is a mocked object implementing ServiceInterface
@@ -89,15 +89,15 @@ func (_m *ServiceMock) PaginatedRequestTimesCount(referenceID uint) (int, error)
 }
 
 // FindPaginatedRequestTimes ...
-func (_m *ServiceMock) FindPaginatedRequestTimes(offset int, limit int, orderBy string, referenceID uint) ([]*metrics.RequestTime, error) {
+func (_m *ServiceMock) FindPaginatedRequestTimes(offset int, limit int, orderBy string, referenceID uint) ([]*RequestTime, error) {
 	ret := _m.Called(offset, limit, orderBy, referenceID)
 
-	var r0 []*metrics.RequestTime
-	if rf, ok := ret.Get(0).(func(int, int, string, uint) []*metrics.RequestTime); ok {
+	var r0 []*RequestTime
+	if rf, ok := ret.Get(0).(func(int, int, string, uint) []*RequestTime); ok {
 		r0 = rf(offset, limit, orderBy, referenceID)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*metrics.RequestTime)
+			r0 = ret.Get(0).([]*RequestTime)
 		}
 	}
 

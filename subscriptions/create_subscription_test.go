@@ -118,7 +118,7 @@ func (suite *SubscriptionsTestSuite) TestCreateSubscriptionExistingValidCustomer
 	assert.NoError(suite.T(), err, "Creating test Stripe customer failed")
 
 	// Create a test customer
-	testCustomer := newCustomer(suite.users[1], teststripeCustomer.ID)
+	testCustomer := NewCustomer(suite.users[1], teststripeCustomer.ID)
 	err = suite.db.Create(testCustomer).Error
 	assert.NoError(suite.T(), err, "Creating test customer failed")
 
@@ -263,7 +263,7 @@ func (suite *SubscriptionsTestSuite) TestCreateSubscriptionExistingInvalidCustom
 	assert.NoError(suite.T(), err, "Creating test Stripe token failed")
 
 	// Create a test customer
-	testCustomer := newCustomer(suite.users[1], "bogus_customer_id")
+	testCustomer := NewCustomer(suite.users[1], "bogus_customer_id")
 	err = suite.db.Create(testCustomer).Error
 	assert.NoError(suite.T(), err, "Creating test customer failed")
 

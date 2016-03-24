@@ -48,9 +48,10 @@ func (suite *AlarmsTestSuite) TestListAlarmIncidents() {
 	w := httptest.NewRecorder()
 	suite.router.ServeHTTP(w, r)
 
-	// Check mock expectations were met
+	// Check that the mock object expectations were met
 	suite.oauthServiceMock.AssertExpectations(suite.T())
 	suite.accountsServiceMock.AssertExpectations(suite.T())
+	suite.metricsServiceMock.AssertExpectations(suite.T())
 	suite.subscriptionsServiceMock.AssertExpectations(suite.T())
 	suite.emailServiceMock.AssertExpectations(suite.T())
 	suite.emailFactoryMock.AssertExpectations(suite.T())

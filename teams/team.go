@@ -98,7 +98,7 @@ func (s *Service) createTeam(owner *accounts.User, teamRequest *TeamRequest) (*T
 	}
 
 	// Create a new team
-	team := newTeam(owner, members, teamRequest)
+	team := NewTeam(owner, members, teamRequest)
 
 	// Save the team to the database
 	if err := s.db.Create(team).Error; err != nil {

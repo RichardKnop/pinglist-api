@@ -102,8 +102,8 @@ func (suite *MetricsTestSuite) TestCreateRequestTimeSubTable() {
 
 	// These records should be inserted in the today's table
 	requestTimes = []*RequestTime{
-		newRequestTime(todaySubTableName, 1, today, 123),
-		newRequestTime(todaySubTableName, 1, today.Add(1*time.Hour), 234),
+		NewRequestTime(todaySubTableName, 1, today, 123),
+		NewRequestTime(todaySubTableName, 1, today.Add(1*time.Hour), 234),
 	}
 	for _, requestTime := range requestTimes {
 		err := suite.db.Create(requestTime).Error
@@ -112,8 +112,8 @@ func (suite *MetricsTestSuite) TestCreateRequestTimeSubTable() {
 
 	// These records should be inserted in the tomorrow's table
 	requestTimes = []*RequestTime{
-		newRequestTime(tomorrowSubTableName, 1, tomorrow, 321),
-		newRequestTime(tomorrowSubTableName, 1, tomorrow.Add(1*time.Hour), 432),
+		NewRequestTime(tomorrowSubTableName, 1, tomorrow, 321),
+		NewRequestTime(tomorrowSubTableName, 1, tomorrow.Add(1*time.Hour), 432),
 	}
 	for _, requestTime := range requestTimes {
 		err := suite.db.Create(requestTime).Error

@@ -15,7 +15,7 @@ import (
 
 var (
 	testDbUser = "pinglist"
-	testDbName = "pinglist_alarms_test"
+	testDbName = "pinglist_metrics_test"
 )
 
 var testFixtures = []string{

@@ -14,6 +14,6 @@ func RegisterRoutes(router *mux.Router, service ServiceInterface) {
 // newRoutes returns []routes.Route slice for the alarms service
 func newRoutes(service ServiceInterface) []routes.Route {
 	return []routes.Route{
-    // TODO
+	// TODO
 	}
 }

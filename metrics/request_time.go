@@ -8,7 +8,7 @@ import (
 
 // LogRequestTime logs request time metric
 func (s *Service) LogRequestTime(timestamp time.Time, referenceID uint, value int64) error {
-	requestTimeRecord := newRequestTime(
+	requestTimeRecord := NewRequestTime(
 		getSubTableName(RequestTimeParentTableName, timestamp),
 		referenceID,
 		timestamp,

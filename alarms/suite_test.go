@@ -3,11 +3,13 @@ package alarms
 import (
 	"log"
 	"testing"
+	"time"
 
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/RichardKnop/pinglist-api/config"
 	"github.com/RichardKnop/pinglist-api/database"
 	"github.com/RichardKnop/pinglist-api/email"
+	"github.com/RichardKnop/pinglist-api/metrics"
 	"github.com/RichardKnop/pinglist-api/oauth"
 	"github.com/RichardKnop/pinglist-api/subscriptions"
 	"github.com/gorilla/mux"
@@ -41,6 +43,7 @@ var testFixtures = []string{
 var testMigrations = []func(*gorm.DB) error{
 	oauth.MigrateAll,
 	accounts.MigrateAll,
+	metrics.MigrateAll,
 	subscriptions.MigrateAll,
 	MigrateAll,
 }
@@ -52,6 +55,7 @@ type AlarmsTestSuite struct {
 	db                       *gorm.DB
 	oauthServiceMock         *oauth.ServiceMock
 	accountsServiceMock      *accounts.ServiceMock
+	metricsServiceMock       *metrics.ServiceMock
 	subscriptionsServiceMock *subscriptions.ServiceMock
 	emailServiceMock         *email.ServiceMock
 	emailFactoryMock         *EmailFactoryMock
@@ -68,7 +72,7 @@ type AlarmsTestSuite struct {
 // start of the testing suite, before any tests are run.
 func (suite *AlarmsTestSuite) SetupSuite() {
 	// NOTE: using Postgres test database instead of sqlite here as
-	// we need to test a Postgres specific functionality (table inheritance)
+	// we need to test a Postgres specific functionality (interval '1 second')
 
 	// Initialise the config
 	suite.cnf = config.NewConfig(false, false)
@@ -125,6 +129,7 @@ func (suite *AlarmsTestSuite) SetupSuite() {
 	// Initialise mocks
 	suite.oauthServiceMock = new(oauth.ServiceMock)
 	suite.accountsServiceMock = new(accounts.ServiceMock)
+	suite.metricsServiceMock = new(metrics.ServiceMock)
 	suite.subscriptionsServiceMock = new(subscriptions.ServiceMock)
 	suite.emailServiceMock = new(email.ServiceMock)
 	suite.emailFactoryMock = new(EmailFactoryMock)
@@ -134,6 +139,7 @@ func (suite *AlarmsTestSuite) SetupSuite() {
 		suite.cnf,
 		suite.db,
 		suite.accountsServiceMock,
+		suite.metricsServiceMock,
 		suite.subscriptionsServiceMock,
 		suite.emailServiceMock,
 		suite.emailFactoryMock,
@@ -155,25 +161,14 @@ func (suite *AlarmsTestSuite) TearDownSuite() {
 func (suite *AlarmsTestSuite) SetupTest() {
 	suite.db.Unscoped().Not("id", []int64{1, 2, 3, 4}).Delete(new(Alarm))
 	suite.db.Unscoped().Not("id", []int64{1, 2, 3, 4}).Delete(new(Incident))
-	suite.db.Unscoped().Delete(new(Result))
-
-	// Delete result sub tables
-	var resultSubTables []*ResultSubTable
-	if err := suite.db.Order("id").Find(&resultSubTables).Error; err != nil {
-		log.Fatal(err)
-	}
-	for _, resultSubTable := range resultSubTables {
-		if err := suite.db.DropTable(resultSubTable.Name).Error; err != nil {
-			log.Fatal(err)
-		}
-	}
-	suite.db.Unscoped().Delete(new(ResultSubTable))
 
 	// Reset mocks
 	suite.oauthServiceMock.ExpectedCalls = suite.oauthServiceMock.ExpectedCalls[:0]
 	suite.oauthServiceMock.Calls = suite.oauthServiceMock.Calls[:0]
 	suite.accountsServiceMock.ExpectedCalls = suite.accountsServiceMock.ExpectedCalls[:0]
 	suite.accountsServiceMock.Calls = suite.accountsServiceMock.Calls[:0]
+	suite.metricsServiceMock.ExpectedCalls = suite.metricsServiceMock.ExpectedCalls[:0]
+	suite.metricsServiceMock.Calls = suite.metricsServiceMock.Calls[:0]
 	suite.subscriptionsServiceMock.ExpectedCalls = suite.subscriptionsServiceMock.ExpectedCalls[:0]
 	suite.subscriptionsServiceMock.Calls = suite.subscriptionsServiceMock.Calls[:0]
 	suite.emailServiceMock.ExpectedCalls = suite.emailServiceMock.ExpectedCalls[:0]
@@ -246,4 +241,33 @@ func (suite *AlarmsTestSuite) mockAlarmUpEmail() {
 		mock.AnythingOfType("*alarms.Alarm"),
 	).Return(emailMock)
 	suite.emailServiceMock.On("Send", emailMock).Return(nil)
+}
+
+// Mock logging of request time metric
+func (suite *AlarmsTestSuite) mockLogRequestTime(timestamp time.Time, referenceID uint, err error) {
+	suite.metricsServiceMock.On(
+		"LogRequestTime",
+		timestamp,
+		referenceID,
+		mock.AnythingOfType("int64"),
+	).Return(err)
+}
+
+// Mock counting of paginated request time metrics
+func (suite *AlarmsTestSuite) mockPaginatedRequestTimesCount(alarmID uint, count int, err error) {
+	suite.metricsServiceMock.On(
+		"PaginatedRequestTimesCount",
+		alarmID,
+	).Return(count, err)
+}
+
+// Mock finding paginated request time metrics
+func (suite *AlarmsTestSuite) mockFindPaginatedRequestTimes(offset, limit int, orderBy string, alarmID uint, requestTimes []*metrics.RequestTime, err error) {
+	suite.metricsServiceMock.On(
+		"FindPaginatedRequestTimes",
+		offset,
+		limit,
+		orderBy,
+		alarmID,
+	).Return(requestTimes, err)
 }

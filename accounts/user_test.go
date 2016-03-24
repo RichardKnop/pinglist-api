@@ -231,9 +231,9 @@ func (suite *AccountsTestSuite) TestGetOrCreateFacebookUser() {
 	// We pass new facebook ID and new email
 	user, err = suite.service.GetOrCreateFacebookUser(
 		suite.accounts[0],     // account
-		"newuser_facebook_id", // facebook ID
+		"NewUser_facebook_id", // facebook ID
 		&UserRequest{
-			Email:     "test@newuser",
+			Email:     "test@NewUser",
 			FirstName: "John",
 			LastName:  "Reese",
 		},
@@ -248,8 +248,8 @@ func (suite *AccountsTestSuite) TestGetOrCreateFacebookUser() {
 
 	// Correct user object should be returned
 	if assert.NotNil(suite.T(), user) {
-		assert.Equal(suite.T(), "test@newuser", user.OauthUser.Username)
-		assert.Equal(suite.T(), "newuser_facebook_id", user.FacebookID.String)
+		assert.Equal(suite.T(), "test@NewUser", user.OauthUser.Username)
+		assert.Equal(suite.T(), "NewUser_facebook_id", user.FacebookID.String)
 		assert.Equal(suite.T(), "John", user.FirstName.String)
 		assert.Equal(suite.T(), "Reese", user.LastName.String)
 		assert.True(suite.T(), user.Confirmed)

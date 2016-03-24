@@ -1,7 +1,7 @@
 package metrics
 
 import (
-  "time"
+	"time"
 )
 
 // RotateAfterHours defines how long to wait before sub tables are rotated away

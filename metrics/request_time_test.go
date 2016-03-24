@@ -20,9 +20,9 @@ func (suite *MetricsTestSuite) TestPaginatedRequestTimesCount() {
 
 	// Insert some test records
 	testRecords := []*RequestTime{
-		newRequestTime(todaySubTableName, 1, today, 123),
-		newRequestTime(todaySubTableName, 1, today.Add(1*time.Hour), 234),
-		newRequestTime(todaySubTableName, 2, today, 345),
+		NewRequestTime(todaySubTableName, 1, today, 123),
+		NewRequestTime(todaySubTableName, 1, today.Add(1*time.Hour), 234),
+		NewRequestTime(todaySubTableName, 2, today, 345),
 	}
 	for _, testRecord := range testRecords {
 		err := suite.db.Create(testRecord).Error
@@ -64,10 +64,10 @@ func (suite *MetricsTestSuite) TestFindPaginatedRequestTimes() {
 
 	// Insert some test records
 	testRecords := []*RequestTime{
-		newRequestTime(todaySubTableName, 1, today, 123),
-		newRequestTime(todaySubTableName, 1, today.Add(1*time.Hour), 234),
-		newRequestTime(todaySubTableName, 1, today.Add(2*time.Hour), 345),
-		newRequestTime(todaySubTableName, 1, today.Add(3*time.Hour), 456),
+		NewRequestTime(todaySubTableName, 1, today, 123),
+		NewRequestTime(todaySubTableName, 1, today.Add(1*time.Hour), 234),
+		NewRequestTime(todaySubTableName, 1, today.Add(2*time.Hour), 345),
+		NewRequestTime(todaySubTableName, 1, today.Add(3*time.Hour), 456),
 	}
 	for _, testRecord := range testRecords {
 		err := suite.db.Create(testRecord).Error

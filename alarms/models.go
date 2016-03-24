@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"net/http"
 	"net/http/httputil"
-	"time"
 
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/RichardKnop/pinglist-api/database"
@@ -12,9 +11,6 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/lib/pq"
 )
-
-// ResultParentTableName defines alarm parent results table name
-const ResultParentTableName = "alarm_results"
 
 // Region is a region from where alarm checks will be run
 type Region struct {
@@ -50,7 +46,6 @@ type Alarm struct {
 	AlarmStateID           sql.NullString `sql:"type:varchar(20);index;not null"`
 	AlarmState             *AlarmState
 	Incidents              []*Incident
-	Results                []*Result
 	EndpointURL            string      `sql:"type:varchar(254);not null"`
 	ExpectedHTTPCode       uint        `sql:"default:200;not null"`
 	Interval               uint        `sql:"default:60;not null"` // seconds
@@ -97,37 +92,8 @@ func (i *Incident) TableName() string {
 	return "alarm_incidents"
 }
 
-// ResultSubTable keeps track of all result sub tables
-type ResultSubTable struct {
-	gorm.Model
-	Name string `sql:"type:varchar(254);unique;not null"`
-}
-
-// TableName specifies table name
-func (t *ResultSubTable) TableName() string {
-	return "alarm_result_sub_tables"
-}
-
-// Result represents a parent table used to vertically partition results,
-// sub tables will inherit from this table and split data by day
-type Result struct {
-	AlarmID     sql.NullInt64 `sql:"index;not null"`
-	Alarm       *Alarm
-	Timestamp   time.Time `sql:"index;not null"`
-	RequestTime int64     // request time in nanoseconds
-	Table       string    `sql:"-"` // ignore this field
-}
-
-// TableName specifies table name
-func (r *Result) TableName() string {
-	if r.Table == "" {
-		return ResultParentTableName
-	}
-	return r.Table
-}
-
-// newAlarm creates new Alarm instance
-func newAlarm(user *accounts.User, region *Region, alarmState *AlarmState, alarmRequest *AlarmRequest) *Alarm {
+// NewAlarm creates new Alarm instance
+func NewAlarm(user *accounts.User, region *Region, alarmState *AlarmState, alarmRequest *AlarmRequest) *Alarm {
 	userID := util.PositiveIntOrNull(int64(user.ID))
 	regionID := util.StringOrNull(region.ID)
 	alarmStateID := util.StringOrNull(alarmState.ID)
@@ -154,8 +120,8 @@ func newAlarm(user *accounts.User, region *Region, alarmState *AlarmState, alarm
 	return alarm
 }
 
-// newIncident creates new Incident instance
-func newIncident(alarm *Alarm, incidentType *IncidentType, resp *http.Response, errMsg string) *Incident {
+// NewIncident creates new Incident instance
+func NewIncident(alarm *Alarm, incidentType *IncidentType, resp *http.Response, errMsg string) *Incident {
 	alarmID := util.PositiveIntOrNull(int64(alarm.ID))
 	incidentTypeID := util.StringOrNull(incidentType.ID)
 	incident := &Incident{
@@ -185,19 +151,4 @@ func newIncident(alarm *Alarm, incidentType *IncidentType, resp *http.Response, 
 	}
 
 	return incident
-}
-
-// newResult creates new Result instance
-func newResult(table string, alarm *Alarm, timestamp time.Time, requestTime int64) *Result {
-	alarmID := util.PositiveIntOrNull(int64(alarm.ID))
-	result := &Result{
-		AlarmID:     alarmID,
-		Timestamp:   timestamp,
-		RequestTime: requestTime,
-		Table:       table,
-	}
-	if alarmID.Valid {
-		result.Alarm = alarm
-	}
-	return result
 }

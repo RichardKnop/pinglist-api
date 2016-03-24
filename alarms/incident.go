@@ -53,7 +53,7 @@ func (s *Service) openIncident(alarm *Alarm, incidentTypeID string, resp *http.R
 		}
 
 		// Create a new incident object
-		incident = newIncident(
+		incident = NewIncident(
 			alarm,
 			incidentType,
 			resp,
@@ -82,9 +82,12 @@ func (s *Service) openIncident(alarm *Alarm, incidentTypeID string, resp *http.R
 	return nil
 }
 
-// resolveIncidentsTx resolves any open alarm incidents inside a transaction
-func (s *Service) resolveIncidentsTx(db *gorm.DB, alarm *Alarm) error {
+// resolveIncidents resolves any open alarm incidents
+func (s *Service) resolveIncidents(alarm *Alarm) error {
 	var err error
+
+	// Begin a transaction
+	tx := s.db.Begin()
 
 	now := gorm.NowFunc()
 
@@ -94,12 +97,13 @@ func (s *Service) resolveIncidentsTx(db *gorm.DB, alarm *Alarm) error {
 		alarmInitialState := alarm.AlarmStateID.String
 
 		// Set state to alarmstates.OK and update uptime timestamp
-		err = db.Model(alarm).UpdateColumns(Alarm{
+		err = tx.Model(alarm).UpdateColumns(Alarm{
 			AlarmStateID:        util.StringOrNull(alarmstates.OK),
 			LastUptimeStartedAt: util.TimeOrNull(&now),
 			Model:               gorm.Model{UpdatedAt: now},
 		}).Error
 		if err != nil {
+			tx.Rollback() // rollback the transaction
 			return err
 		}
 
@@ -118,19 +122,26 @@ func (s *Service) resolveIncidentsTx(db *gorm.DB, alarm *Alarm) error {
 	}
 
 	// Resolve incidents
-	err = db.Model(new(Incident)).Where(Incident{
+	err = tx.Model(new(Incident)).Where(Incident{
 		AlarmID: util.PositiveIntOrNull(int64(alarm.ID)),
 	}).UpdateColumns(Incident{
 		ResolvedAt: util.TimeOrNull(&now),
 		Model:      gorm.Model{UpdatedAt: now},
 	}).Error
 	if err != nil {
+		tx.Rollback() // rollback the transaction
 		return err
 	}
 
 	// Make sure incidents of the passed alarm object are up-to-date
 	for _, incident := range alarm.Incidents {
 		incident.ResolvedAt = util.TimeOrNull(&now)
+	}
+
+	// Commit the transaction
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback() // rollback the transaction
+		return err
 	}
 
 	return nil

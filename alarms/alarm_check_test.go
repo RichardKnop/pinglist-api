@@ -91,10 +91,6 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 		start  time.Time
 	)
 
-	// Partition the results table
-	err = suite.service.PartitionTable(ResultParentTableName, time.Now())
-	assert.NoError(suite.T(), err, "Partitioning table failed")
-
 	// First, let's test a successful alarm check
 	server, client = testServer(&http.Response{StatusCode: 200})
 	defer server.Close()
@@ -103,6 +99,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	gorm.NowFunc = func() time.Time {
 		return start
 	}
+	suite.mockLogRequestTime(start, alarm.ID, nil)
 	err = suite.service.CheckAlarm(alarm.ID, alarm.Watermark.Time)
 
 	// Error should be nil
@@ -111,7 +108,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	// Fetch the updated alarm
 	alarm = new(Alarm)
 	assert.False(suite.T(), suite.service.db.Preload("User").Preload("Incidents").
-		Preload("Results").First(alarm, suite.alarms[2].ID).RecordNotFound())
+		First(alarm, suite.alarms[2].ID).RecordNotFound())
 
 	// Watermark updated
 	assert.Equal(
@@ -123,21 +120,18 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	// Status OK
 	assert.Equal(suite.T(), alarmstates.OK, alarm.AlarmStateID.String)
 
-	// 0 incidents, 1 result
+	// 0 incidents
 	assert.Equal(suite.T(), 0, len(alarm.Incidents))
-	assert.Equal(suite.T(), 1, len(alarm.Results))
 
-	// New result
-	assert.Equal(suite.T(), suite.alarms[2].ID, uint(alarm.Results[0].AlarmID.Int64))
-	assert.Equal(
-		suite.T(),
-		start.Format("2006-01-02T15:04:05Z"),
-		alarm.Results[0].Timestamp.Format("2006-01-02T15:04:05Z"),
-	)
-	assert.True(suite.T(), alarm.Results[0].RequestTime > 0)
+	// Check that the mock object expectations were met
+	suite.oauthServiceMock.AssertExpectations(suite.T())
+	suite.accountsServiceMock.AssertExpectations(suite.T())
+	suite.metricsServiceMock.AssertExpectations(suite.T())
+	suite.subscriptionsServiceMock.AssertExpectations(suite.T())
+	suite.emailServiceMock.AssertExpectations(suite.T())
+	suite.emailFactoryMock.AssertExpectations(suite.T())
 
 	// Second, let's test a timeout
-	suite.mockAlarmDownEmail()
 	server, client = testServerTimeout()
 	defer server.Close()
 	suite.service.client = client
@@ -145,12 +139,17 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	gorm.NowFunc = func() time.Time {
 		return start
 	}
+	suite.mockAlarmDownEmail()
 	err = suite.service.CheckAlarm(alarm.ID, alarm.Watermark.Time)
 
 	// Sleep for the email goroutine to finish
 	time.Sleep(5 * time.Millisecond)
 
 	// Check that the mock object expectations were met
+	suite.oauthServiceMock.AssertExpectations(suite.T())
+	suite.accountsServiceMock.AssertExpectations(suite.T())
+	suite.metricsServiceMock.AssertExpectations(suite.T())
+	suite.subscriptionsServiceMock.AssertExpectations(suite.T())
 	suite.emailServiceMock.AssertExpectations(suite.T())
 	suite.emailFactoryMock.AssertExpectations(suite.T())
 
@@ -160,7 +159,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	// Fetch the updated alarm
 	alarm = new(Alarm)
 	assert.False(suite.T(), suite.service.db.Preload("User").Preload("Incidents").
-		Preload("Results").First(alarm, suite.alarms[2].ID).RecordNotFound())
+		First(alarm, suite.alarms[2].ID).RecordNotFound())
 
 	// Watermark updated
 	assert.Equal(
@@ -172,9 +171,8 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	// Status changed to Alarm
 	assert.Equal(suite.T(), alarmstates.Alarm, alarm.AlarmStateID.String)
 
-	// 1 incident, 1 result
+	// 1 incident
 	assert.Equal(suite.T(), 1, len(alarm.Incidents))
-	assert.Equal(suite.T(), 1, len(alarm.Results))
 
 	// New incident
 	assert.Equal(suite.T(), suite.alarms[2].ID, uint(alarm.Incidents[0].AlarmID.Int64))
@@ -199,7 +197,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	// Fetch the updated alarm
 	alarm = new(Alarm)
 	assert.False(suite.T(), suite.service.db.Preload("User").Preload("Incidents").
-		Preload("Results").First(alarm, suite.alarms[2].ID).RecordNotFound())
+		First(alarm, suite.alarms[2].ID).RecordNotFound())
 
 	// Watermark updated
 	assert.Equal(
@@ -211,9 +209,8 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	// Status still Alarm
 	assert.Equal(suite.T(), alarmstates.Alarm, alarm.AlarmStateID.String)
 
-	// 2 incidents, 1 result
+	// 2 incidents
 	assert.Equal(suite.T(), 2, len(alarm.Incidents))
-	assert.Equal(suite.T(), 1, len(alarm.Results))
 
 	// New incident
 	assert.Equal(suite.T(), suite.alarms[2].ID, uint(alarm.Incidents[1].AlarmID.Int64))
@@ -222,8 +219,15 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	assert.Equal(suite.T(), "", alarm.Incidents[1].Response.String)
 	assert.False(suite.T(), alarm.Incidents[1].ResolvedAt.Valid)
 
+	// Check that the mock object expectations were met
+	suite.oauthServiceMock.AssertExpectations(suite.T())
+	suite.accountsServiceMock.AssertExpectations(suite.T())
+	suite.metricsServiceMock.AssertExpectations(suite.T())
+	suite.subscriptionsServiceMock.AssertExpectations(suite.T())
+	suite.emailServiceMock.AssertExpectations(suite.T())
+	suite.emailFactoryMock.AssertExpectations(suite.T())
+
 	// Finally, let's test a return to a successful alarm check
-	suite.mockAlarmUpEmail()
 	server, client = testServer(&http.Response{StatusCode: 200})
 	defer server.Close()
 	suite.service.client = client
@@ -231,12 +235,18 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	gorm.NowFunc = func() time.Time {
 		return start
 	}
+	suite.mockAlarmUpEmail()
+	suite.mockLogRequestTime(start, alarm.ID, nil)
 	err = suite.service.CheckAlarm(suite.alarms[2].ID, alarm.Watermark.Time)
 
 	// Sleep for the email goroutine to finish
 	time.Sleep(5 * time.Millisecond)
 
 	// Check that the mock object expectations were met
+	suite.oauthServiceMock.AssertExpectations(suite.T())
+	suite.accountsServiceMock.AssertExpectations(suite.T())
+	suite.metricsServiceMock.AssertExpectations(suite.T())
+	suite.subscriptionsServiceMock.AssertExpectations(suite.T())
 	suite.emailServiceMock.AssertExpectations(suite.T())
 	suite.emailFactoryMock.AssertExpectations(suite.T())
 
@@ -246,7 +256,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	// Fetch the updated alarm
 	alarm = new(Alarm)
 	assert.False(suite.T(), suite.service.db.Preload("User").Preload("Incidents").
-		Preload("Results").First(alarm, suite.alarms[2].ID).RecordNotFound())
+		First(alarm, suite.alarms[2].ID).RecordNotFound())
 
 	// Watermark updated
 	assert.Equal(
@@ -258,34 +268,28 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	// Status back to OK
 	assert.Equal(suite.T(), alarmstates.OK, alarm.AlarmStateID.String)
 
-	// 2 incidents, 2 results
+	// 2 incidents
 	assert.Equal(suite.T(), 2, len(alarm.Incidents))
-	assert.Equal(suite.T(), 2, len(alarm.Results))
 
 	// Resolved incidents
 	for _, incident := range alarm.Incidents {
 		assert.True(suite.T(), incident.ResolvedAt.Valid)
 	}
 
-	// New result
-	assert.Equal(suite.T(), suite.alarms[2].ID, uint(alarm.Results[1].AlarmID.Int64))
-	assert.Equal(
-		suite.T(),
-		start.Format("2006-01-02T15:04:05Z"),
-		alarm.Results[1].Timestamp.Format("2006-01-02T15:04:05Z"),
-	)
-	assert.True(suite.T(), alarm.Results[1].RequestTime > 0)
+	// Check that the mock object expectations were met
+	suite.oauthServiceMock.AssertExpectations(suite.T())
+	suite.accountsServiceMock.AssertExpectations(suite.T())
+	suite.metricsServiceMock.AssertExpectations(suite.T())
+	suite.subscriptionsServiceMock.AssertExpectations(suite.T())
+	suite.emailServiceMock.AssertExpectations(suite.T())
+	suite.emailFactoryMock.AssertExpectations(suite.T())
 }
 
 func (suite *AlarmsTestSuite) TestAlarmCheckIdempotency() {
 	// Fetch the alarm
 	alarm := new(Alarm)
 	assert.False(suite.T(), suite.service.db.Preload("User").Preload("Incidents").
-		Preload("Results").First(alarm, suite.alarms[2].ID).RecordNotFound())
-
-	// Partition the results table
-	err := suite.service.PartitionTable(ResultParentTableName, time.Now())
-	assert.NoError(suite.T(), err, "Partitioning table failed")
+		First(alarm, suite.alarms[2].ID).RecordNotFound())
 
 	// Prepare test server and client
 	server, client := testServer(&http.Response{StatusCode: 200})
@@ -295,6 +299,9 @@ func (suite *AlarmsTestSuite) TestAlarmCheckIdempotency() {
 	gorm.NowFunc = func() time.Time {
 		return start
 	}
+
+	// Just one request time metric will be logged
+	suite.mockLogRequestTime(start, alarm.ID, nil)
 
 	concurrency := 4
 
@@ -331,7 +338,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheckIdempotency() {
 	// Fetch the updated alarm
 	alarm = new(Alarm)
 	assert.False(suite.T(), suite.service.db.Preload("User").Preload("Incidents").
-		Preload("Results").First(alarm, suite.alarms[2].ID).RecordNotFound())
+		First(alarm, suite.alarms[2].ID).RecordNotFound())
 
 	// Watermark updated
 	assert.Equal(
@@ -343,18 +350,16 @@ func (suite *AlarmsTestSuite) TestAlarmCheckIdempotency() {
 	// Status OK
 	assert.Equal(suite.T(), alarmstates.OK, alarm.AlarmStateID.String)
 
-	// 0 incidents, 1 result
+	// 0 incidents
 	assert.Equal(suite.T(), 0, len(alarm.Incidents))
-	assert.Equal(suite.T(), 1, len(alarm.Results))
 
-	// New result
-	assert.Equal(suite.T(), suite.alarms[2].ID, uint(alarm.Results[0].AlarmID.Int64))
-	assert.Equal(
-		suite.T(),
-		start.Format("2006-01-02T15:04:05Z"),
-		alarm.Results[0].Timestamp.Format("2006-01-02T15:04:05Z"),
-	)
-	assert.True(suite.T(), alarm.Results[0].RequestTime > 0)
+	// Check that the mock object expectations were met
+	suite.oauthServiceMock.AssertExpectations(suite.T())
+	suite.accountsServiceMock.AssertExpectations(suite.T())
+	suite.metricsServiceMock.AssertExpectations(suite.T())
+	suite.subscriptionsServiceMock.AssertExpectations(suite.T())
+	suite.emailServiceMock.AssertExpectations(suite.T())
+	suite.emailFactoryMock.AssertExpectations(suite.T())
 }
 
 func (suite *AlarmsTestSuite) alarmCheckWrapper(alarmID uint, watermark time.Time, errChan chan error) {

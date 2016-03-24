@@ -38,8 +38,8 @@ func (r *RequestTime) TableName() string {
 	return r.Table
 }
 
-// newRequestTime creates new RequestTime instance
-func newRequestTime(table string, referenceID uint, timestamp time.Time, value int64) *RequestTime {
+// NewRequestTime creates new RequestTime instance
+func NewRequestTime(table string, referenceID uint, timestamp time.Time, value int64) *RequestTime {
 	return &RequestTime{
 		ReferenceID: referenceID,
 		Timestamp:   timestamp,

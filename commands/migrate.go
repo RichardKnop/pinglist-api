@@ -3,6 +3,7 @@ package commands
 import (
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/RichardKnop/pinglist-api/alarms"
+	"github.com/RichardKnop/pinglist-api/metrics"
 	"github.com/RichardKnop/pinglist-api/migrations"
 	"github.com/RichardKnop/pinglist-api/notifications"
 	"github.com/RichardKnop/pinglist-api/oauth"
@@ -14,6 +15,7 @@ import (
 var migrationFunctions = []func(*gorm.DB) error{
 	oauth.MigrateAll,
 	accounts.MigrateAll,
+	metrics.MigrateAll,
 	subscriptions.MigrateAll,
 	alarms.MigrateAll,
 	teams.MigrateAll,
