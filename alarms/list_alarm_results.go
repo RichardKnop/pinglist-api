@@ -35,7 +35,7 @@ func (s *Service) listAlarmResultsHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	// Fetch the alarm we want to update
+	// Fetch the alarm
 	alarm, err := s.FindAlarmByID(uint(alarmID))
 	if err != nil {
 		response.Error(w, err.Error(), http.StatusNotFound)

@@ -15,11 +15,11 @@ import (
 type Service struct {
 	cnf                  *config.Config
 	db                   *gorm.DB
-	accountsService      accounts.ServiceInterface      // accounts service dependency injection
-	subscriptionsService subscriptions.ServiceInterface // accounts service dependency injection
-	emailService         email.ServiceInterface         // email service dependency injection
-	emailFactory         EmailFactoryInterface          // email factory dependency injection
-	client               *http.Client                   // clients are safe for concurrent use by multiple goroutines
+	accountsService      accounts.ServiceInterface
+	subscriptionsService subscriptions.ServiceInterface
+	emailService         email.ServiceInterface
+	emailFactory         EmailFactoryInterface
+	client               *http.Client
 }
 
 // NewService starts a new Service instance
