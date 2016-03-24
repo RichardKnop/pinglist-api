@@ -1,4 +1,4 @@
-package timeseries
+package metrics
 
 import (
 	"time"
@@ -12,6 +12,7 @@ type ServiceInterface interface {
 	GetAccountsService() accounts.ServiceInterface
 	PartitionRequestTime(parentTableName string, now time.Time) error
 	RotateSubTables() error
+	LogRequestTime(timestamp time.Time, referenceID uint, value int64) error
 	PaginatedRequestTimesCount(referenceID uint) (int, error)
 	FindPaginatedRequestTimes(offset, limit int, orderBy string, referenceID uint) ([]*RequestTime, error)
 

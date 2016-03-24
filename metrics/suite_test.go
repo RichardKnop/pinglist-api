@@ -1,4 +1,4 @@
-package timeseries
+package metrics
 
 import (
 	"log"
@@ -34,7 +34,7 @@ var testMigrations = []func(*gorm.DB) error{
 }
 
 // AlarmsTestSuite needs to be exported so the tests run
-type TimeseriesTestSuite struct {
+type MetricsTestSuite struct {
 	suite.Suite
 	cnf                 *config.Config
 	db                  *gorm.DB
@@ -48,7 +48,7 @@ type TimeseriesTestSuite struct {
 
 // The SetupSuite method will be run by testify once, at the very
 // start of the testing suite, before any tests are run.
-func (suite *TimeseriesTestSuite) SetupSuite() {
+func (suite *MetricsTestSuite) SetupSuite() {
 	// NOTE: using Postgres test database instead of sqlite here as
 	// we need to test a Postgres specific functionality (table inheritance)
 
@@ -100,12 +100,12 @@ func (suite *TimeseriesTestSuite) SetupSuite() {
 
 // The TearDownSuite method will be run by testify once, at the very
 // end of the testing suite, after all tests have been run.
-func (suite *TimeseriesTestSuite) TearDownSuite() {
+func (suite *MetricsTestSuite) TearDownSuite() {
 	//
 }
 
 // The SetupTest method will be run before every test in the suite.
-func (suite *TimeseriesTestSuite) SetupTest() {
+func (suite *MetricsTestSuite) SetupTest() {
 	suite.db.Unscoped().Delete(new(RequestTime))
 
 	// Delete sub tables
@@ -128,19 +128,19 @@ func (suite *TimeseriesTestSuite) SetupTest() {
 }
 
 // The TearDownTest method will be run after every test in the suite.
-func (suite *TimeseriesTestSuite) TearDownTest() {
+func (suite *MetricsTestSuite) TearDownTest() {
 	//
 }
 
-// TestTimeseriesTestSuite ...
+// TestMetricsTestSuite ...
 // In order for 'go test' to run this suite, we need to create
 // a normal test function and pass our suite to suite.Run
-func TestTimeseriesTestSuite(t *testing.T) {
-	suite.Run(t, new(TimeseriesTestSuite))
+func TestMetricsTestSuite(t *testing.T) {
+	suite.Run(t, new(MetricsTestSuite))
 }
 
 // Mock authentication
-func (suite *TimeseriesTestSuite) mockAuthentication(user *accounts.User) {
+func (suite *MetricsTestSuite) mockAuthentication(user *accounts.User) {
 	// Mock GetConfig call to return the config object
 	suite.accountsServiceMock.On("GetConfig").Return(suite.cnf)
 

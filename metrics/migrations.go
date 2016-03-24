@@ -1,4 +1,4 @@
-package timeseries
+package metrics
 
 import (
 	"fmt"
@@ -18,7 +18,7 @@ func MigrateAll(db *gorm.DB) error {
 
 // Migrate0001 creates files schema
 func migrate0001(db *gorm.DB) error {
-	migrationName := "timeseries_initial"
+	migrationName := "metrics_initial"
 
 	migration := new(migrations.Migration)
 	found := !db.Where("name = ?", migrationName).First(migration).RecordNotFound()
@@ -30,14 +30,14 @@ func migrate0001(db *gorm.DB) error {
 
 	logger.Infof("Running %s migration", migrationName)
 
-	// Create timeseries_sub_tables table
+	// Create metrics_sub_tables table
 	if err := db.CreateTable(new(SubTable)).Error; err != nil {
-		return fmt.Errorf("Error creating timeseries_sub_tables table: %s", err)
+		return fmt.Errorf("Error creating metrics_sub_tables table: %s", err)
 	}
 
-	// Create timeseries_request_times table
+	// Create metrics_request_times table
 	if err := db.CreateTable(new(RequestTime)).Error; err != nil {
-		return fmt.Errorf("Error creating timeseries_request_times table: %s", err)
+		return fmt.Errorf("Error creating metrics_request_times table: %s", err)
 	}
 
 	// Save a record to migrations table,

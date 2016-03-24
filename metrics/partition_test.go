@@ -1,4 +1,4 @@
-package timeseries
+package metrics
 
 import (
 	"time"
@@ -6,11 +6,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func (suite *TimeseriesTestSuite) TestPartitionRequestTime() {
+func (suite *MetricsTestSuite) TestPartitionRequestTime() {
 	var (
 		today                = time.Date(2016, time.February, 9, 0, 0, 0, 0, time.UTC)
-		todaySubTableName    = "timeseries_request_times_2016_02_09"
-		tomorrowSubTableName = "timeseries_request_times_2016_02_10"
+		todaySubTableName    = "metrics_request_times_2016_02_09"
+		tomorrowSubTableName = "metrics_request_times_2016_02_10"
 		err                  error
 	)
 
@@ -28,13 +28,13 @@ func (suite *TimeseriesTestSuite) TestPartitionRequestTime() {
 	}
 }
 
-func (suite *TimeseriesTestSuite) TestCreateRequestTimeSubTable() {
+func (suite *MetricsTestSuite) TestCreateRequestTimeSubTable() {
 	var (
 		today                = time.Date(2016, time.February, 9, 0, 0, 0, 0, time.UTC)
 		tomorrow             = today.Add(24 * time.Hour)
 		dayAfterTomorrow     = tomorrow.Add(24 * time.Hour)
-		todaySubTableName    = "timeseries_request_times_2016_02_09"
-		tomorrowSubTableName = "timeseries_request_times_2016_02_10"
+		todaySubTableName    = "metrics_request_times_2016_02_09"
+		tomorrowSubTableName = "metrics_request_times_2016_02_10"
 		subTable             *SubTable
 		err                  error
 		subTables            []*SubTable

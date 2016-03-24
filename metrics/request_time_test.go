@@ -1,4 +1,4 @@
-package timeseries
+package metrics
 
 import (
 	"time"
@@ -6,10 +6,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func (suite *TimeseriesTestSuite) TestPaginatedRequestTimesCount() {
+func (suite *MetricsTestSuite) TestPaginatedRequestTimesCount() {
 	var (
 		today             = time.Date(2016, time.February, 9, 0, 0, 0, 0, time.UTC)
-		todaySubTableName = "timeseries_request_times_2016_02_09"
+		todaySubTableName = "metrics_request_times_2016_02_09"
 		count             int
 		err               error
 	)
@@ -50,10 +50,10 @@ func (suite *TimeseriesTestSuite) TestPaginatedRequestTimesCount() {
 	}
 }
 
-func (suite *TimeseriesTestSuite) TestFindPaginatedRequestTimes() {
+func (suite *MetricsTestSuite) TestFindPaginatedRequestTimes() {
 	var (
 		today             = time.Date(2016, time.February, 9, 0, 0, 0, 0, time.UTC)
-		todaySubTableName = "timeseries_request_times_2016_02_09"
+		todaySubTableName = "metrics_request_times_2016_02_09"
 		requestTimes      []*RequestTime
 		err               error
 	)

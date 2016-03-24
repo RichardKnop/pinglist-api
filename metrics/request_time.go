@@ -1,8 +1,21 @@
-package timeseries
+package metrics
 
 import (
+	"time"
+
 	"github.com/jinzhu/gorm"
 )
+
+// LogRequestTime logs request time metric
+func (s *Service) LogRequestTime(timestamp time.Time, referenceID uint, value int64) error {
+	requestTimeRecord := newRequestTime(
+		getSubTableName(RequestTimeParentTableName, timestamp),
+		referenceID,
+		timestamp,
+		value,
+	)
+	return s.db.Create(requestTimeRecord).Error
+}
 
 // PaginatedRequestTimesCount returns a total count of request time records
 func (s *Service) PaginatedRequestTimesCount(referenceID uint) (int, error) {

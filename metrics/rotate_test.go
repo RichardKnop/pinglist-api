@@ -1,4 +1,4 @@
-package timeseries
+package metrics
 
 import (
 	"time"
@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func (suite *TimeseriesTestSuite) TestRotateSubTables() {
+func (suite *MetricsTestSuite) TestRotateSubTables() {
 	var (
 		now      = time.Now()
 		from, to time.Time

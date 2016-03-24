@@ -31,8 +31,8 @@ test-subscriptions:
 test-alarms:
 	bash -c 'go test -timeout=30s github.com/RichardKnop/pinglist-api/alarms'
 
-test-timeseries:
-	bash -c 'go test -timeout=30s github.com/RichardKnop/pinglist-api/timeseries'
+test-metrics:
+	bash -c 'go test -timeout=30s github.com/RichardKnop/pinglist-api/metrics'
 
 test-teams:
 	bash -c 'go test -timeout=30s github.com/RichardKnop/pinglist-api/teams'

@@ -1,4 +1,4 @@
-package timeseries
+package metrics
 
 import (
 	"time"
@@ -7,7 +7,7 @@ import (
 )
 
 // RequestTimeParentTableName defines request time parent table name
-const RequestTimeParentTableName = "timeseries_request_times"
+const RequestTimeParentTableName = "metrics_request_times"
 
 // SubTable keeps track of all result sub tables
 type SubTable struct {
@@ -18,7 +18,7 @@ type SubTable struct {
 
 // TableName specifies table name
 func (t *SubTable) TableName() string {
-	return "timeseries_sub_tables"
+	return "metrics_sub_tables"
 }
 
 // RequestTime represents a parent table used to vertically partition request times,
