@@ -4,10 +4,11 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
-	"net/http/httputil"
+	"time"
 
 	"github.com/RichardKnop/pinglist-api/response"
 	stripe "github.com/stripe/stripe-go"
+	"github.com/jinzhu/gorm"
 )
 
 // Handles calls to Stripe webhook (POST /v1/stripe-webhook)
@@ -40,23 +41,10 @@ func (s *Service) stripeWebhookHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Once we have veriefied the event was sent by Stripe, log the request
-	requestDump, err := httputil.DumpRequest(
-		r,
-		true, // include body
-	)
+	// Log the event data in event log table
+	stripeEventLog, err := s.logStripeEvent(stripeEvent, r)
 	if err != nil {
-		logger.Error("Failed to dump the request")
-		response.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	stripeEventLog := NewStripeEventLog(
-		stripeEventRequest.ID,
-		stripeEventRequest.Type,
-		string(requestDump),
-	)
-	if err := s.db.Create(stripeEventLog).Error; err != nil {
-		logger.Error("Failed to log the request")
+		logger.Error("Failed to log the stripe event")
 		response.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -87,6 +75,15 @@ func (s *Service) stripeWebhookHandler(w http.ResponseWriter, r *http.Request) {
 	// An error occured while processing an event sent by Stripe
 	if err != nil {
 		logger.Errorf("Failed to process stripe event: %v", stripeEvent)
+		response.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Flag the event as processed in the event log table
+	if err := s.db.Model(stripeEventLog).UpdateColumns(StripeEventLog{
+		Processed: true,
+		Model:     gorm.Model{UpdatedAt: time.Now()},
+	}).Error; err != nil {
 		response.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

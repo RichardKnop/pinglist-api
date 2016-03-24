@@ -16,6 +16,7 @@ type StripeEventLog struct {
 	EventID     string `sql:"type:varchar(60);unique;not null"`
 	EventType   string `sql:"type:varchar(60);index;not null"`
 	RequestDump string `sql:"type:text"`
+	Processed   bool
 }
 
 // TableName specifies table name

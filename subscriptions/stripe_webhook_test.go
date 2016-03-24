@@ -2,11 +2,13 @@ package subscriptions
 
 import (
 	"bytes"
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
+	stripe "github.com/stripe/stripe-go"
 )
 
 func (suite *SubscriptionsTestSuite) TestStripeWebhookNoPayload() {
@@ -38,7 +40,11 @@ func (suite *SubscriptionsTestSuite) TestStripeWebhookNoPayload() {
 
 func (suite *SubscriptionsTestSuite) TestStripeWebhook() {
 	// Prepare a request
-	var payload []byte
+	payload, err := json.Marshal(&stripe.Event{
+		ID:   "test_event_id",
+		Type: "test_event_type",
+	})
+	assert.NoError(suite.T(), err, "JSON marshalling failed")
 	r, err := http.NewRequest(
 		"POST",
 		"http://1.2.3.4/v1/stripe-webhook",
@@ -53,6 +59,10 @@ func (suite *SubscriptionsTestSuite) TestStripeWebhook() {
 		assert.Equal(suite.T(), "stripe_webhook", match.Route.GetName())
 	}
 
+	// Count before
+	var countBefore int
+	suite.db.Model(new(StripeEventLog)).Count(&countBefore)
+
 	// And serve the request
 	w := httptest.NewRecorder()
 	suite.router.ServeHTTP(w, r)
@@ -61,5 +71,23 @@ func (suite *SubscriptionsTestSuite) TestStripeWebhook() {
 	suite.oauthServiceMock.AssertExpectations(suite.T())
 	suite.accountsServiceMock.AssertExpectations(suite.T())
 
-	// TODO
+	// // Check the status code
+	// if !assert.Equal(suite.T(), 200, w.Code) {
+	// 	log.Print(w.Body.String())
+	// }
+	//
+	// // Count after
+	// var countAfter int
+	// suite.db.Model(new(StripeEventLog)).Count(&countAfter)
+	// assert.Equal(suite.T(), countBefore+1, countAfter)
+	//
+	// // Fetch the created stripe event log record
+	// stripeEventLog := new(StripeEventLog)
+	// notFound := suite.db.Last(stripeEventLog).RecordNotFound()
+	// assert.False(suite.T(), notFound)
+	//
+	// // Check that the correct data was saved
+	// assert.Equal(suite.T(), "test_event_id", stripeEventLog.EventID)
+	// assert.Equal(suite.T(), "test_event_type", stripeEventLog.EventType)
+	// assert.True(suite.T(), stripeEventLog.Processed)
 }
