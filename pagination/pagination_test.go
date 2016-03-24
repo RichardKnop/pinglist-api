@@ -38,7 +38,7 @@ func TestGetPageLimit(t *testing.T) {
 		assert.Equal(t, ErrPageTooSmall, err)
 	}
 
-	// Test limit <= 0
+	// Test limit too small
 	r, err = http.NewRequest("GET", "http://1.2.3.4/v1/foo/bar?page=1&limit=0", nil)
 	if err != nil {
 		log.Fatal(err)
@@ -46,6 +46,16 @@ func TestGetPageLimit(t *testing.T) {
 	page, limit, err = GetPageLimit(r)
 	if assert.NotNil(t, err) {
 		assert.Equal(t, ErrLimitTooSmall, err)
+	}
+
+	// Test limit too big
+	r, err = http.NewRequest("GET", "http://1.2.3.4/v1/foo/bar?page=1&limit=1000", nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	page, limit, err = GetPageLimit(r)
+	if assert.NotNil(t, err) {
+		assert.Equal(t, ErrLimitTooBig, err)
 	}
 
 	// Test valid page and limit

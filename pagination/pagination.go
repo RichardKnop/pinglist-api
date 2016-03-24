@@ -12,10 +12,16 @@ import (
 var (
 	// DefaultLimit ...
 	DefaultLimit = 25
+	// MinLimit ...
+	MinLimit = 1
+	// MaxLimit ...
+	MaxLimit = 100
 	// ErrPageTooSmall ...
 	ErrPageTooSmall = errors.New("Page must be a positive number")
 	// ErrLimitTooSmall ...
-	ErrLimitTooSmall = errors.New("Limit must be a positive number")
+	ErrLimitTooSmall = fmt.Errorf("Limit must be < %d", MinLimit)
+	// ErrLimitTooBig ...
+	ErrLimitTooBig = fmt.Errorf("Limit must be < %d", MaxLimit)
 	// ErrPageTooBig ...
 	ErrPageTooBig = errors.New("Page too big")
 )
@@ -53,6 +59,11 @@ func GetPageLimit(r *http.Request) (int, int, error) {
 		// Limit must be > 0
 		if limit < 1 {
 			return 0, 0, ErrLimitTooSmall
+		}
+
+		// Limit too big
+		if limit > MaxLimit {
+			return 0, 0, ErrLimitTooBig
 		}
 	}
 
