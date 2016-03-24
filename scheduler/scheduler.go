@@ -66,8 +66,12 @@ func (s *Scheduler) Run(alarmsInterval, partitionInterval time.Duration) {
 	// Partition alarm_results table and rotate old sub tables
 	wg.Add(1)
 	go func() {
-		// Partition the alarm_results table
-		if err := s.metricsService.PartitionTable(metrics.RequestTimeParentTableName, time.Now()); err != nil {
+		// Partition the request time metrics table
+		err := s.metricsService.PartitionRequestTime(
+			metrics.RequestTimeParentTableName,
+			time.Now(),
+		)
+		if err != nil {
 			logger.Error(err)
 		}
 

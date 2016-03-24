@@ -62,8 +62,11 @@ func RunScheduler() error {
 		nil, // HTTP client
 	)
 
+	// Initialise the scheduler
+	theScheduler := scheduler.New(metricsService, alarmsService)
+
 	// Run the scheduler
-	scheduler.New(alarmsService).Run(
+	theScheduler.Run(
 		time.Duration(10),  // alarms interval = 10s
 		time.Duration(600), // partition / rotate interval  = 10m
 	)
