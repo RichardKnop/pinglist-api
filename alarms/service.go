@@ -7,6 +7,7 @@ import (
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/RichardKnop/pinglist-api/config"
 	"github.com/RichardKnop/pinglist-api/email"
+	"github.com/RichardKnop/pinglist-api/metrics"
 	"github.com/RichardKnop/pinglist-api/subscriptions"
 	"github.com/jinzhu/gorm"
 )
@@ -15,15 +16,16 @@ import (
 type Service struct {
 	cnf                  *config.Config
 	db                   *gorm.DB
-	accountsService      accounts.ServiceInterface      // accounts service dependency injection
-	subscriptionsService subscriptions.ServiceInterface // accounts service dependency injection
-	emailService         email.ServiceInterface         // email service dependency injection
-	emailFactory         EmailFactoryInterface          // email factory dependency injection
-	client               *http.Client                   // clients are safe for concurrent use by multiple goroutines
+	accountsService      accounts.ServiceInterface
+	metricsService       metrics.ServiceInterface
+	subscriptionsService subscriptions.ServiceInterface
+	emailService         email.ServiceInterface
+	emailFactory         EmailFactoryInterface
+	client               *http.Client
 }
 
 // NewService starts a new Service instance
-func NewService(cnf *config.Config, db *gorm.DB, accountsService accounts.ServiceInterface, subscriptionsService subscriptions.ServiceInterface, emailService email.ServiceInterface, emailFactory EmailFactoryInterface, client *http.Client) *Service {
+func NewService(cnf *config.Config, db *gorm.DB, accountsService accounts.ServiceInterface, metricsService metrics.ServiceInterface, subscriptionsService subscriptions.ServiceInterface, emailService email.ServiceInterface, emailFactory EmailFactoryInterface, client *http.Client) *Service {
 	if emailFactory == nil {
 		emailFactory = NewEmailFactory(cnf)
 	}
@@ -36,6 +38,7 @@ func NewService(cnf *config.Config, db *gorm.DB, accountsService accounts.Servic
 		cnf:                  cnf,
 		db:                   db,
 		accountsService:      accountsService,
+		metricsService:       metricsService,
 		subscriptionsService: subscriptionsService,
 		emailService:         emailService,
 		emailFactory:         emailFactory,

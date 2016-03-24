@@ -92,9 +92,6 @@ func (suite *AlarmsTestSuite) TestFindAlarmById() {
 		assert.Equal(suite.T(), incidenttypes.Other, alarm.Incidents[2].IncidentTypeID.String)
 		assert.False(suite.T(), alarm.Incidents[2].HTTPCode.Valid)
 		assert.False(suite.T(), alarm.Incidents[2].Response.Valid)
-
-		// Results should not be preloaded
-		assert.Equal(suite.T(), 0, len(alarm.Results))
 	}
 }
 

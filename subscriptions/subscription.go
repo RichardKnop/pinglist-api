@@ -127,7 +127,7 @@ func (s *Service) createSubscription(user *accounts.User, subscriptionRequest *S
 		logger.Infof("Created customer: %s", stripeCustomer.ID)
 
 		// Create a new customer object
-		customer = newCustomer(user, stripeCustomer.ID)
+		customer = NewCustomer(user, stripeCustomer.ID)
 
 		// Save the customer to the database
 		if err := tx.Create(customer).Error; err != nil {
@@ -156,7 +156,7 @@ func (s *Service) createSubscription(user *accounts.User, subscriptionRequest *S
 			}
 
 			// Create a new customer object
-			customer = newCustomer(user, stripeCustomer.ID)
+			customer = NewCustomer(user, stripeCustomer.ID)
 
 			// Save the customer to the database
 			if err := tx.Create(customer).Error; err != nil {
@@ -181,7 +181,7 @@ func (s *Service) createSubscription(user *accounts.User, subscriptionRequest *S
 	startedAt, cancelledAt, endedAt, periodStart, periodEnd, trialStart, trialEnd := getStripeSubscriptionTimes(stripeSubscription)
 
 	// Create a new subscription object
-	subscription := newSubscription(
+	subscription := NewSubscription(
 		customer,
 		plan,
 		stripeSubscription.ID,

@@ -10,6 +10,8 @@ import (
 	"time"
 
 	"github.com/RichardKnop/jsonhal"
+	"github.com/RichardKnop/pinglist-api/metrics"
+	"github.com/RichardKnop/pinglist-api/pagination"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
 )
@@ -28,25 +30,8 @@ func (suite *AlarmsTestSuite) TestListAlarmResultsRequiresUserAuthentication() {
 func (suite *AlarmsTestSuite) TestListAlarmResults() {
 	var (
 		today             = time.Date(2016, time.February, 9, 0, 0, 0, 0, time.UTC)
-		todaySubTableName = "alarm_results_2016_02_09"
-		err               error
+		todaySubTableName = "metrics_request_times_2016_02_09"
 	)
-
-	// Partition the results table
-	err = suite.service.PartitionTable(ResultParentTableName, today)
-	assert.NoError(suite.T(), err, "Partitioning table failed")
-
-	// Insert some test results
-	testResults := []*Result{
-		newResult(todaySubTableName, suite.alarms[0], today, 123),
-		newResult(todaySubTableName, suite.alarms[0], today.Add(1*time.Hour), 234),
-		newResult(todaySubTableName, suite.alarms[0], today.Add(2*time.Hour), 345),
-		newResult(todaySubTableName, suite.alarms[0], today.Add(3*time.Hour), 456),
-	}
-	for _, result := range testResults {
-		err := suite.db.Create(result).Error
-		assert.NoError(suite.T(), err, "Inserting test data failed")
-	}
 
 	// Prepare a request
 	r, err := http.NewRequest(
@@ -67,13 +52,31 @@ func (suite *AlarmsTestSuite) TestListAlarmResults() {
 	// Mock authentication
 	suite.mockAuthentication(suite.users[1])
 
+	// Mock paginated request time metrics
+	suite.mockPaginatedRequestTimesCount(suite.alarms[0].ID, 4, nil)
+	testMetrics := []*metrics.RequestTime{
+		metrics.NewRequestTime(todaySubTableName, suite.alarms[0].ID, today, 123),
+		metrics.NewRequestTime(todaySubTableName, suite.alarms[0].ID, today.Add(1*time.Hour), 234),
+		metrics.NewRequestTime(todaySubTableName, suite.alarms[0].ID, today.Add(2*time.Hour), 345),
+		metrics.NewRequestTime(todaySubTableName, suite.alarms[0].ID, today.Add(3*time.Hour), 456),
+	}
+	suite.mockFindPaginatedRequestTimes(
+		0, // offset
+		pagination.DefaultLimit,
+		"", // order by
+		suite.alarms[0].ID,
+		testMetrics,
+		nil,
+	)
+
 	// And serve the request
 	w := httptest.NewRecorder()
 	suite.router.ServeHTTP(w, r)
 
-	// Check mock expectations were met
+	// Check that the mock object expectations were met
 	suite.oauthServiceMock.AssertExpectations(suite.T())
 	suite.accountsServiceMock.AssertExpectations(suite.T())
+	suite.metricsServiceMock.AssertExpectations(suite.T())
 	suite.subscriptionsServiceMock.AssertExpectations(suite.T())
 	suite.emailServiceMock.AssertExpectations(suite.T())
 	suite.emailFactoryMock.AssertExpectations(suite.T())
@@ -84,17 +87,15 @@ func (suite *AlarmsTestSuite) TestListAlarmResults() {
 	}
 
 	// Check the response body
-	var results []*Result
-	err = suite.db.Order("timestamp").Find(&results).Error
-	assert.NoError(suite.T(), err, "Fetching data failed")
-
-	resultResponses := make([]*ResultResponse, len(results))
-	for i, result := range results {
-		resultResponse, err := NewResultResponse(result)
+	requestTimeResponses := make([]*metrics.MetricResponse, len(testMetrics))
+	for i, testMetric := range testMetrics {
+		requestTimeResponse, err := metrics.NewMetricResponse(
+			testMetric.Timestamp,
+			testMetric.Value,
+		)
 		assert.NoError(suite.T(), err, "Creating response object failed")
-		resultResponses[i] = resultResponse
+		requestTimeResponses[i] = requestTimeResponse
 	}
-
 	expected := &ListIncidentsResponse{
 		Hal: jsonhal.Hal{
 			Links: map[string]*jsonhal.Link{
@@ -111,7 +112,7 @@ func (suite *AlarmsTestSuite) TestListAlarmResults() {
 				"next": new(jsonhal.Link),
 			},
 			Embedded: map[string]jsonhal.Embedded{
-				"results": jsonhal.Embedded(resultResponses),
+				"requesttimes": jsonhal.Embedded(requestTimeResponses),
 			},
 		},
 		Count: 4,

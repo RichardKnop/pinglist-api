@@ -60,7 +60,7 @@ func (s *Service) CheckAlarm(alarmID uint, watermark time.Time) error {
 	}
 
 	// Make the request
-	start := time.Now()
+	start := gorm.NowFunc()
 	resp, err := s.client.Do(req)
 	elapsed := time.Since(start)
 
@@ -81,37 +81,16 @@ func (s *Service) CheckAlarm(alarmID uint, watermark time.Time) error {
 		return s.openIncident(alarm, incidenttypes.BadCode, resp, "")
 	}
 
-	// Begin a transaction
-	tx := s.db.Begin()
-
 	// Resolve any open incidents
-	if err := s.resolveIncidentsTx(tx, alarm); err != nil {
-		tx.Rollback() // rollback the transaction
+	if err := s.resolveIncidents(alarm); err != nil {
 		return err
 	}
 
-	// Create a new result object
-	result := newResult(
-		getSubtableName(ResultParentTableName, start),
-		alarm,
-		newWatermark,
-		elapsed.Nanoseconds(),
-	)
-
-	// Save the result to the database
-	if err := tx.Create(result).Error; err != nil {
-		tx.Rollback() // rollback the transaction
+	// Log the request time metric
+	err = s.metricsService.LogRequestTime(start, alarm.ID, elapsed.Nanoseconds())
+	if err != nil {
 		return err
 	}
-
-	// Commit the transaction
-	if err := tx.Commit().Error; err != nil {
-		tx.Rollback() // rollback the transaction
-		return err
-	}
-
-	// Make sure to keep the passed alarm object up-to-date
-	alarm.Results = append(alarm.Results, result)
 
 	return nil
 }

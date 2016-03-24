@@ -10,17 +10,21 @@ import (
 )
 
 var (
-	defaultLimit     = 25
-	errPageTooSmall  = errors.New("Page must be a positive number")
-	errLimitTooSmall = errors.New("Limit must be a positive number")
-	errPageTooBig    = errors.New("Page too big")
+	// DefaultLimit ...
+	DefaultLimit = 25
+	// ErrPageTooSmall ...
+	ErrPageTooSmall = errors.New("Page must be a positive number")
+	// ErrLimitTooSmall ...
+	ErrLimitTooSmall = errors.New("Limit must be a positive number")
+	// ErrPageTooBig ...
+	ErrPageTooBig = errors.New("Page too big")
 )
 
 // GetPageLimit parses querystring and returns page and limit
 func GetPageLimit(r *http.Request) (int, int, error) {
 	var (
 		page  = 1 // default page
-		limit = defaultLimit
+		limit = DefaultLimit
 		err   error
 	)
 
@@ -34,7 +38,7 @@ func GetPageLimit(r *http.Request) (int, int, error) {
 
 		// Page must be >= 0
 		if page < 1 {
-			return 0, 0, errPageTooSmall
+			return 0, 0, ErrPageTooSmall
 		}
 	}
 
@@ -48,7 +52,7 @@ func GetPageLimit(r *http.Request) (int, int, error) {
 
 		// Limit must be > 0
 		if limit < 1 {
-			return 0, 0, errLimitTooSmall
+			return 0, 0, ErrLimitTooSmall
 		}
 	}
 
@@ -73,7 +77,7 @@ func GetPaginationLinks(urlObject *url.URL, count, page, limit int) (string, str
 
 	// Page too big
 	if page > nuPages {
-		return first, last, previous, next, errPageTooBig
+		return first, last, previous, next, ErrPageTooBig
 	}
 
 	// First page

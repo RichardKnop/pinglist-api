@@ -57,16 +57,6 @@ func migrate0001(db *gorm.DB) error {
 		return fmt.Errorf("Error creating alarm_incidents table: %s", err)
 	}
 
-	// Create alarm_result_sub_tables table
-	if err := db.CreateTable(new(ResultSubTable)).Error; err != nil {
-		return fmt.Errorf("Error creating alarm_result_sub_tables table: %s", err)
-	}
-
-	// Create alarm_results table
-	if err := db.CreateTable(new(Result)).Error; err != nil {
-		return fmt.Errorf("Error creating alarm_results table: %s", err)
-	}
-
 	// Add foreign key on alarm_alarms.user_id
 	err = db.Model(new(Alarm)).AddForeignKey(
 		"user_id",

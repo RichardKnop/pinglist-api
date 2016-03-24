@@ -77,6 +77,7 @@ func (suite *AlarmsTestSuite) TestCreateAlarmMaxLimitReached() {
 	// Check that the mock object expectations were met
 	suite.oauthServiceMock.AssertExpectations(suite.T())
 	suite.accountsServiceMock.AssertExpectations(suite.T())
+	suite.metricsServiceMock.AssertExpectations(suite.T())
 	suite.subscriptionsServiceMock.AssertExpectations(suite.T())
 	suite.emailServiceMock.AssertExpectations(suite.T())
 	suite.emailFactoryMock.AssertExpectations(suite.T())
@@ -155,6 +156,7 @@ func (suite *AlarmsTestSuite) TestCreateAlarm() {
 	// Check that the mock object expectations were met
 	suite.oauthServiceMock.AssertExpectations(suite.T())
 	suite.accountsServiceMock.AssertExpectations(suite.T())
+	suite.metricsServiceMock.AssertExpectations(suite.T())
 	suite.subscriptionsServiceMock.AssertExpectations(suite.T())
 	suite.emailServiceMock.AssertExpectations(suite.T())
 	suite.emailFactoryMock.AssertExpectations(suite.T())
@@ -171,7 +173,7 @@ func (suite *AlarmsTestSuite) TestCreateAlarm() {
 
 	// Fetch the created alarm
 	alarm := new(Alarm)
-	notFound := suite.db.Preload("User").Preload("Incidents").Preload("Results").
+	notFound := suite.db.Preload("User").Preload("Incidents").
 		Last(alarm).RecordNotFound()
 	assert.False(suite.T(), notFound)
 
@@ -184,7 +186,6 @@ func (suite *AlarmsTestSuite) TestCreateAlarm() {
 	assert.True(suite.T(), alarm.PushNotificationAlerts)
 	assert.True(suite.T(), alarm.Active)
 	assert.Equal(suite.T(), 0, len(alarm.Incidents))
-	assert.Equal(suite.T(), 0, len(alarm.Results))
 
 	// Check the Location header
 	assert.Equal(

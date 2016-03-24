@@ -8,6 +8,7 @@ import (
 	"github.com/RichardKnop/pinglist-api/email"
 	"github.com/RichardKnop/pinglist-api/facebook"
 	"github.com/RichardKnop/pinglist-api/health"
+	"github.com/RichardKnop/pinglist-api/metrics"
 	"github.com/RichardKnop/pinglist-api/notifications"
 	"github.com/RichardKnop/pinglist-api/oauth"
 	"github.com/RichardKnop/pinglist-api/subscriptions"
@@ -52,6 +53,13 @@ func RunServer() error {
 		nil, // facebook.Adapter
 	)
 
+	// Initialise the metrics service
+	metricsService := metrics.NewService(
+		cnf,
+		db,
+		accountsService,
+	)
+
 	// Initialise the subscriptions service
 	subscriptionsService := subscriptions.NewService(
 		cnf,
@@ -65,6 +73,7 @@ func RunServer() error {
 		cnf,
 		db,
 		accountsService,
+		metricsService,
 		subscriptionsService,
 		emailService,
 		nil, // alarms.EmailFactory
@@ -111,6 +120,9 @@ func RunServer() error {
 
 	// Register routes for the facebook service
 	facebook.RegisterRoutes(router, facebookService)
+
+	// Register routes for the metrics service
+	metrics.RegisterRoutes(router, metricsService)
 
 	// Register routes for the subscriptions service
 	subscriptions.RegisterRoutes(router, subscriptionsService)

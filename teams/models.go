@@ -22,8 +22,8 @@ func (t *Team) TableName() string {
 	return "team_teams"
 }
 
-// newTeam creates new Team instance
-func newTeam(owner *accounts.User, members []*accounts.User, teamRequest *TeamRequest) *Team {
+// NewTeam creates new Team instance
+func NewTeam(owner *accounts.User, members []*accounts.User, teamRequest *TeamRequest) *Team {
 	ownerID := util.PositiveIntOrNull(int64(owner.ID))
 	team := &Team{
 		OwnerID: ownerID,

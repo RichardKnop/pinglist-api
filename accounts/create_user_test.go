@@ -20,7 +20,7 @@ import (
 func (suite *AccountsTestSuite) TestCreateUser() {
 	// Prepare a request
 	payload, err := json.Marshal(&UserRequest{
-		Email:    "test@newuser",
+		Email:    "test@NewUser",
 		Password: "test_password",
 	})
 	assert.NoError(suite.T(), err, "JSON marshalling failed")
@@ -94,10 +94,10 @@ func (suite *AccountsTestSuite) TestCreateUser() {
 		First(confirmation).RecordNotFound())
 
 	// And correct data was saved
-	assert.Equal(suite.T(), "test@newuser", confirmation.User.OauthUser.Username)
+	assert.Equal(suite.T(), "test@NewUser", confirmation.User.OauthUser.Username)
 	assert.True(suite.T(), confirmation.EmailSent)
 	assert.True(suite.T(), confirmation.EmailSentAt.Valid)
-	assert.Equal(suite.T(), "test@newuser", user.OauthUser.Username)
+	assert.Equal(suite.T(), "test@NewUser", user.OauthUser.Username)
 	assert.Equal(suite.T(), "", user.FirstName.String)
 	assert.Equal(suite.T(), "", user.LastName.String)
 	assert.Equal(suite.T(), roles.User, user.Role.ID)
@@ -120,7 +120,7 @@ func (suite *AccountsTestSuite) TestCreateUser() {
 			},
 		},
 		ID:        user.ID,
-		Email:     "test@newuser",
+		Email:     "test@NewUser",
 		Role:      roles.User,
 		Confirmed: false,
 		CreatedAt: user.CreatedAt.UTC().Format(time.RFC3339),

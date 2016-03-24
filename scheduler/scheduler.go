@@ -5,17 +5,20 @@ import (
 	"time"
 
 	"github.com/RichardKnop/pinglist-api/alarms"
+	"github.com/RichardKnop/pinglist-api/metrics"
 )
 
 // Scheduler ...
 type Scheduler struct {
-	alarmsService alarms.ServiceInterface
+	metricsService metrics.ServiceInterface
+	alarmsService  alarms.ServiceInterface
 }
 
 // New starts a new Scheduler instance
-func New(alarmsService alarms.ServiceInterface) *Scheduler {
+func New(metricsService metrics.ServiceInterface, alarmsService alarms.ServiceInterface) *Scheduler {
 	return &Scheduler{
-		alarmsService: alarmsService,
+		metricsService: metricsService,
+		alarmsService:  alarmsService,
 	}
 }
 
@@ -63,13 +66,17 @@ func (s *Scheduler) Run(alarmsInterval, partitionInterval time.Duration) {
 	// Partition alarm_results table and rotate old sub tables
 	wg.Add(1)
 	go func() {
-		// Partition the alarm_results table
-		if err := s.alarmsService.PartitionTable(alarms.ResultParentTableName, time.Now()); err != nil {
+		// Partition the request time metrics table
+		err := s.metricsService.PartitionRequestTime(
+			metrics.RequestTimeParentTableName,
+			time.Now(),
+		)
+		if err != nil {
 			logger.Error(err)
 		}
 
 		// Rotate old sub tables
-		if err := s.alarmsService.RotateSubTables(); err != nil {
+		if err := s.metricsService.RotateSubTables(); err != nil {
 			logger.Error(err)
 		}
 

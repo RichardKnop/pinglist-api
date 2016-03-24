@@ -35,7 +35,7 @@ func TestGetPageLimit(t *testing.T) {
 	}
 	page, limit, err = GetPageLimit(r)
 	if assert.NotNil(t, err) {
-		assert.Equal(t, errPageTooSmall, err)
+		assert.Equal(t, ErrPageTooSmall, err)
 	}
 
 	// Test limit <= 0
@@ -45,7 +45,7 @@ func TestGetPageLimit(t *testing.T) {
 	}
 	page, limit, err = GetPageLimit(r)
 	if assert.NotNil(t, err) {
-		assert.Equal(t, errLimitTooSmall, err)
+		assert.Equal(t, ErrLimitTooSmall, err)
 	}
 
 	// Test valid page and limit
@@ -145,7 +145,7 @@ func TestGetPaginationLinks(t *testing.T) {
 			2,  // limit
 		)
 		if assert.NotNil(t, err) {
-			assert.Equal(t, errPageTooBig, err)
+			assert.Equal(t, ErrPageTooBig, err)
 		}
 
 		// Test when limit > count

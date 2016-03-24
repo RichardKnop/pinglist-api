@@ -77,6 +77,7 @@ func (suite *AlarmsTestSuite) TestUpdateAlarmMaxLimitReached() {
 	// Check that the mock object expectations were met
 	suite.oauthServiceMock.AssertExpectations(suite.T())
 	suite.accountsServiceMock.AssertExpectations(suite.T())
+	suite.metricsServiceMock.AssertExpectations(suite.T())
 	suite.subscriptionsServiceMock.AssertExpectations(suite.T())
 	suite.emailServiceMock.AssertExpectations(suite.T())
 	suite.emailFactoryMock.AssertExpectations(suite.T())
@@ -133,6 +134,17 @@ func (suite *AlarmsTestSuite) TestUpdateAlarm() {
 	// Mock authentication
 	suite.mockAuthentication(suite.users[1])
 
+	// Mock find active subscription
+	suite.mockFindActiveSubscription(
+		suite.users[1].ID,
+		&subscriptions.Subscription{
+			Plan: &subscriptions.Plan{
+				MaxAlarms: 10,
+			},
+		},
+		nil,
+	)
+
 	// Count before
 	var countBefore int
 	suite.db.Model(new(Alarm)).Count(&countBefore)
@@ -144,6 +156,7 @@ func (suite *AlarmsTestSuite) TestUpdateAlarm() {
 	// Check that the mock object expectations were met
 	suite.oauthServiceMock.AssertExpectations(suite.T())
 	suite.accountsServiceMock.AssertExpectations(suite.T())
+	suite.metricsServiceMock.AssertExpectations(suite.T())
 	suite.subscriptionsServiceMock.AssertExpectations(suite.T())
 	suite.emailServiceMock.AssertExpectations(suite.T())
 	suite.emailFactoryMock.AssertExpectations(suite.T())
@@ -160,7 +173,7 @@ func (suite *AlarmsTestSuite) TestUpdateAlarm() {
 
 	// Fetch the updated alarm
 	alarm := new(Alarm)
-	notFound := suite.db.Preload("User").Preload("Incidents").Preload("Results").
+	notFound := suite.db.Preload("User").Preload("Incidents").
 		Find(alarm, suite.alarms[0].ID).RecordNotFound()
 	assert.False(suite.T(), notFound)
 
@@ -173,7 +186,6 @@ func (suite *AlarmsTestSuite) TestUpdateAlarm() {
 	assert.False(suite.T(), alarm.PushNotificationAlerts)
 	assert.True(suite.T(), alarm.Active)
 	assert.Equal(suite.T(), 4, len(alarm.Incidents))
-	assert.Equal(suite.T(), 0, len(alarm.Results))
 
 	// Check the response body
 	expected := &AlarmResponse{

@@ -78,8 +78,8 @@ func (s *Subscription) TableName() string {
 	return "subscription_subscriptions"
 }
 
-// newStripeEventLog creates new StripeEventLog instance
-func newStripeEventLog(eventID, eventType, requestDump string) *StripeEventLog {
+// NewStripeEventLog creates new StripeEventLog instance
+func NewStripeEventLog(eventID, eventType, requestDump string) *StripeEventLog {
 	return &StripeEventLog{
 		EventID:     eventID,
 		EventType:   eventType,
@@ -87,8 +87,8 @@ func newStripeEventLog(eventID, eventType, requestDump string) *StripeEventLog {
 	}
 }
 
-// newCustomer creates new Customer instance
-func newCustomer(user *accounts.User, customerID string) *Customer {
+// NewCustomer creates new Customer instance
+func NewCustomer(user *accounts.User, customerID string) *Customer {
 	userID := util.PositiveIntOrNull(int64(user.ID))
 	customer := &Customer{
 		UserID:     userID,
@@ -100,8 +100,8 @@ func newCustomer(user *accounts.User, customerID string) *Customer {
 	return customer
 }
 
-// newSubscription creates new Subscription instance
-func newSubscription(customer *Customer, plan *Plan, subscriptionID string, startedAt, cancelledAt, endedAt, periodStart, periodEnd, trialStart, trialEnd *time.Time) *Subscription {
+// NewSubscription creates new Subscription instance
+func NewSubscription(customer *Customer, plan *Plan, subscriptionID string, startedAt, cancelledAt, endedAt, periodStart, periodEnd, trialStart, trialEnd *time.Time) *Subscription {
 	customerID := util.PositiveIntOrNull(int64(customer.ID))
 	planID := util.PositiveIntOrNull(int64(plan.ID))
 	subscription := &Subscription{

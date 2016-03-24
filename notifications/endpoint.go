@@ -53,7 +53,7 @@ func (s *Service) createOrUpdateEndpoint(user *accounts.User, applicationARN, de
 		}
 
 		// And store the platform endpoint ARN in our database
-		endpoint := newEndpoint(
+		endpoint := NewEndpoint(
 			user,
 			applicationARN,
 			endpointARN,

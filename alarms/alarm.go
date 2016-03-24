@@ -93,7 +93,7 @@ func (s *Service) createAlarm(user *accounts.User, alarmRequest *AlarmRequest) (
 	}
 
 	// Create a new alarm object
-	alarm := newAlarm(user, region, alarmState, alarmRequest)
+	alarm := NewAlarm(user, region, alarmState, alarmRequest)
 
 	// Save the alarm to the database
 	if err := s.db.Create(alarm).Error; err != nil {
@@ -147,7 +147,7 @@ func (s *Service) updateAlarm(alarm *Alarm, alarmRequest *AlarmRequest) error {
 func (s *Service) userActiveAlarmsCount(user *accounts.User) (int, error) {
 	var count int
 	err := s.db.Model(new(Alarm)).Where("user_id = ?", user.ID).
-		Where("active = true").Count(&count).Error
+		Where("active = ?", true).Count(&count).Error
 	if err != nil {
 		return 0, err
 	}
