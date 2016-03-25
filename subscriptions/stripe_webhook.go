@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/RichardKnop/pinglist-api/response"
-	"github.com/jinzhu/gorm"
 	stripe "github.com/stripe/stripe-go"
 )
 
@@ -49,43 +48,30 @@ func (s *Service) stripeWebhookHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Start with a nil error
-	err = nil
-
-	// Process event types we are interested in
-	switch stripeEvent.Type {
-	case "customer.created":
-		err = s.stripeEventCustomerCreated(stripeEvent)
-	case "customer.subscription.created":
-		err = s.stripeEventCustomerSubscriptionCreated(stripeEvent)
-	case "customer.subscription.trial_will_end":
-		err = s.stripeEventCustomerSubscriptionTrialWillEnd(stripeEvent)
-	case "invoice.created":
-		err = s.stripeEventInvoiceCreated(stripeEvent)
-	case "charge.succeeded":
-		err = s.stripeEventChargeSucceeded(stripeEvent)
-	case "invoice.payment_succeeded":
-		err = s.stripeEventPaymentSucceeded(stripeEvent)
-	case "customer.subscription.updated":
-		err = s.stripeEventCustomerSubscriptionUpdated(stripeEvent)
-	case "customer.subscription.deleted":
-		err = s.stripeEventCustomerSubscriptionDeleted(stripeEvent)
+	// Map events we are interested in to respective handlers
+	stripeEventHandlerMap := map[string]func(e *stripe.Event) error{
+		"customer.subscription.updated":        s.stripeEventCustomerSubscriptionUpdated,
+		"customer.subscription.deleted":        s.stripeEventCustomerSubscriptionDeleted,
+		"customer.subscription.trial_will_end": s.stripeEventCustomerSubscriptionTrialWillEnd,
 	}
 
-	// An error occured while processing an event sent by Stripe
-	if err != nil {
-		logger.Errorf("Failed to process stripe event: %v", stripeEvent)
-		response.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	// Process the event if we are interested in it
+	stripeEventHandler, ok := stripeEventHandlerMap[stripeEvent.Type]
+	if ok {
+		if err := stripeEventHandler(stripeEvent); err != nil {
+			logger.Errorf("Failed to process stripe event: %v", stripeEvent)
+			response.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 
-	// Flag the event as processed in the event log table
-	if err := s.db.Model(stripeEventLog).UpdateColumns(StripeEventLog{
-		Processed: true,
-		Model:     gorm.Model{UpdatedAt: time.Now()},
-	}).Error; err != nil {
-		response.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		// Update the processed flag in the event log table
+		if err := s.db.Model(stripeEventLog).UpdateColumns(map[string]interface{}{
+			"processed":  true,
+			"updated_at": time.Now(),
+		}).Error; err != nil {
+			response.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 	}
 
 	// Write JSON response
