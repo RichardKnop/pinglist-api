@@ -10,8 +10,8 @@ import (
 	"github.com/RichardKnop/pinglist-api/response"
 )
 
-// Handles calls to create a subscription (POST /v1/subscriptions)
-func (s *Service) createSubscriptionHandler(w http.ResponseWriter, r *http.Request) {
+// Handles calls to create a card (POST /v1/cards)
+func (s *Service) createCardHandler(w http.ResponseWriter, r *http.Request) {
 	// Get the authenticated user from the request context
 	authenticatedUser, err := accounts.GetAuthenticatedUser(r)
 	if err != nil {
@@ -33,17 +33,17 @@ func (s *Service) createSubscriptionHandler(w http.ResponseWriter, r *http.Reque
 	}
 
 	// Unmarshal the request body into the request prototype
-	subscriptionRequest := new(SubscriptionRequest)
-	if err := json.Unmarshal(payload, subscriptionRequest); err != nil {
-		logger.Errorf("Failed to unmarshal subscription request: %s", payload)
+	cardRequest := new(CardRequest)
+	if err := json.Unmarshal(payload, cardRequest); err != nil {
+		logger.Errorf("Failed to unmarshal card request: %s", payload)
 		response.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	// Create a subscription
-	subscription, err := s.createSubscription(authenticatedUser, subscriptionRequest)
+	// Create a new card
+	card, err := s.createCard(authenticatedUser, cardRequest)
 	if err != nil {
-		logger.Errorf("Create subscription error: %s", err)
+		logger.Errorf("Create card error: %s", err)
 		code, ok := errStatusCodeMap[err]
 		if !ok {
 			code = http.StatusInternalServerError
@@ -53,13 +53,13 @@ func (s *Service) createSubscriptionHandler(w http.ResponseWriter, r *http.Reque
 	}
 
 	// Create response
-	subscriptionResponse, err := NewSubscriptionResponse(subscription)
+	cardResponse, err := NewCardResponse(card)
 	if err != nil {
 		response.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	// Set Location header to the newly created resource
-	w.Header().Set("Location", fmt.Sprintf("/v1/subscriptions/%d", subscription.ID))
+	w.Header().Set("Location", fmt.Sprintf("/v1/cards/%d", card.ID))
 	// Write JSON response
-	response.WriteJSON(w, subscriptionResponse, http.StatusCreated)
+	response.WriteJSON(w, cardResponse, http.StatusCreated)
 }

@@ -7,14 +7,15 @@ import (
 	"github.com/RichardKnop/jsonhal"
 )
 
-// CustomerResponse ...
-type CustomerResponse struct {
+// CardResponse ...
+type CardResponse struct {
 	jsonhal.Hal
-	ID         uint   `json:"id"`
-	UserID     uint   `json:"user_id"`
-	CustomerID string `json:"customer_id"`
-	CreatedAt  string `json:"created_at"`
-	UpdatedAt  string `json:"updated_at"`
+	ID        uint   `json:"id"`
+	CardID    string `json:"card_id"`
+	Brand     string `json:"brand"`
+	LastFour  string `json:"last_four"`
+	CreatedAt string `json:"created_at"`
+	UpdatedAt string `json:"updated_at"`
 }
 
 // PlanResponse ...
@@ -64,20 +65,21 @@ type ListSubscriptionsResponse struct {
 	Page  uint `json:"page"`
 }
 
-// NewCustomerResponse creates new CustomerResponse instance
-func NewCustomerResponse(customer *Customer) (*CustomerResponse, error) {
-	response := &CustomerResponse{
-		ID:         customer.ID,
-		UserID:     uint(customer.UserID.Int64),
-		CustomerID: customer.CustomerID,
-		CreatedAt:  customer.CreatedAt.UTC().Format(time.RFC3339),
-		UpdatedAt:  customer.UpdatedAt.UTC().Format(time.RFC3339),
+// NewCardResponse creates new CardResponse instance
+func NewCardResponse(card *Card) (*CardResponse, error) {
+	response := &CardResponse{
+		ID:        card.ID,
+		CardID:    card.CardID,
+		Brand:     card.Brand,
+		LastFour:  card.LastFour,
+		CreatedAt: card.CreatedAt.UTC().Format(time.RFC3339),
+		UpdatedAt: card.UpdatedAt.UTC().Format(time.RFC3339),
 	}
 
 	// Set the self link
 	response.SetLink(
 		"self", // name
-		fmt.Sprintf("/v1/customers/%d", customer.ID), // href
+		fmt.Sprintf("/v1/cards/%d", card.ID), // href
 		"", // title
 	)
 

@@ -5,6 +5,7 @@ import (
 
 	"github.com/RichardKnop/pinglist-api/config"
 	stripe "github.com/stripe/stripe-go"
+	stripeCard "github.com/stripe/stripe-go/card"
 	stripeCustomer "github.com/stripe/stripe-go/customer"
 	stripeEvent "github.com/stripe/stripe-go/event"
 	stripeSubscription "github.com/stripe/stripe-go/sub"
@@ -28,7 +29,10 @@ func (a *StripeAdapter) CreateCustomer(stripeEmail, stripeToken string) (*stripe
 		Email: stripeEmail,
 		Desc:  fmt.Sprintf("Customer for %s", stripeEmail),
 	}
-	params.SetSource(stripeToken)
+	// Optionally add a payment source to the customer
+	if stripeToken != "" {
+		params.SetSource(stripeToken)
+	}
 	return stripeCustomer.New(params)
 }
 
@@ -50,6 +54,23 @@ func (a *StripeAdapter) GetOrCreateCustomer(customerID, stripeEmail, stripeToken
 		created = true
 	}
 	return c, created, err
+}
+
+// CreateCard creates a new card
+func (a *StripeAdapter) CreateCard(customerID, stripeToken string) (*stripe.Card, error) {
+	params := &stripe.CardParams{
+		Customer: customerID,
+		Token:    stripeToken,
+	}
+	return stripeCard.New(params)
+}
+
+// DeleteCard deletes a card
+func (a *StripeAdapter) DeleteCard(customerID, cardID string) (*stripe.Card, error) {
+	params := &stripe.CardParams{
+		Customer: customerID,
+	}
+	return stripeCard.Del(cardID, params)
 }
 
 // CreateSubscription creates a new subscription

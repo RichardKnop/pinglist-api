@@ -57,6 +57,21 @@ func (c *Customer) TableName() string {
 	return "subscription_customers"
 }
 
+// Card ...
+type Card struct {
+	gorm.Model
+	CustomerID sql.NullInt64 `sql:"index;not null"`
+	Customer   *Customer
+	CardID     string `sql:"type:varchar(60);unique;not null"`
+	Brand      string `sql:"type:varchar(20);not null"`
+	LastFour   string `sql:"type:varchar(4);not null"`
+}
+
+// TableName specifies table name
+func (c *Card) TableName() string {
+	return "subscription_cards"
+}
+
 // Subscription ...
 type Subscription struct {
 	gorm.Model
@@ -99,6 +114,21 @@ func NewCustomer(user *accounts.User, customerID string) *Customer {
 		customer.User = user
 	}
 	return customer
+}
+
+// NewCard creates new Card instance
+func NewCard(customer *Customer, cardID, brand, lastFour string) *Card {
+	customerID := util.PositiveIntOrNull(int64(customer.ID))
+	card := &Card{
+		CustomerID: customerID,
+		CardID:     cardID,
+		Brand:      brand,
+		LastFour:   lastFour,
+	}
+	if customerID.Valid {
+		card.Customer = customer
+	}
+	return card
 }
 
 // NewSubscription creates new Subscription instance

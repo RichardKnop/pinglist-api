@@ -47,6 +47,11 @@ func migrate0001(db *gorm.DB) error {
 		return fmt.Errorf("Error creating subscription_customers table: %s", err)
 	}
 
+	// Create subscription_cards table
+	if err := db.CreateTable(new(Card)).Error; err != nil {
+		return fmt.Errorf("Error creating subscription_cards table: %s", err)
+	}
+
 	// Create subscription_subscriptions table
 	if err := db.CreateTable(new(Subscription)).Error; err != nil {
 		return fmt.Errorf("Error creating subscription_subscriptions table: %s", err)
@@ -62,6 +67,18 @@ func migrate0001(db *gorm.DB) error {
 	if err != nil {
 		return fmt.Errorf("Error creating foreign key on "+
 			"subscription_customers.user_id for account_users(id): %s", err)
+	}
+
+	// Add foreign key on subscription_cards.customer_id
+	err = db.Model(new(Card)).AddForeignKey(
+		"customer_id",
+		"subscription_customers(id)",
+		"RESTRICT",
+		"RESTRICT",
+	).Error
+	if err != nil {
+		return fmt.Errorf("Error creating foreign key on "+
+			"subscription_cards.customer_id for subscription_customers(id): %s", err)
 	}
 
 	// Add foreign key on subscription_subscriptions.customer_id

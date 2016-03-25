@@ -26,6 +26,7 @@ var testFixtures = []string{
 	"../accounts/fixtures/test_users.yml",
 	"fixtures/plans.yml",
 	"fixtures/test_customers.yml",
+	"fixtures/test_cards.yml",
 	"fixtures/test_subscriptions.yml",
 }
 
@@ -48,6 +49,7 @@ type SubscriptionsTestSuite struct {
 	users               []*accounts.User
 	plans               []*Plan
 	customers           []*Customer
+	cards           []*Card
 	subscriptions       []*Subscription
 	router              *mux.Router
 }
@@ -93,6 +95,14 @@ func (suite *SubscriptionsTestSuite) SetupSuite() {
 	suite.customers = make([]*Customer, 0)
 	err = suite.db.Preload("User.OauthUser").Preload("User.Role").
 		Order("id").Find(&suite.customers).Error
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Fetch test cards
+	suite.cards = make([]*Card, 0)
+	err = suite.db.Preload("Customer.User.OauthUser").
+		Order("id").Find(&suite.cards).Error
 	if err != nil {
 		log.Fatal(err)
 	}

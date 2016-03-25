@@ -124,6 +124,7 @@ go run main.go loaddata \
 	accounts/fixtures/test_users.yml \
 	subscriptions/fixtures/plans.yml \
 	subscriptions/fixtures/test_customers.yml \
+	subscriptions/fixtures/test_cards.yml \
 	subscriptions/fixtures/test_subscriptions.yml \
 	alarms/fixtures/regions.yml \
 	alarms/fixtures/alarm_states.yml \
