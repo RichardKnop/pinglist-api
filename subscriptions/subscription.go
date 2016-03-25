@@ -242,8 +242,38 @@ func (s *Service) updateSubscription(subscription *Subscription, subscriptionReq
 		plan.PlanID,
 	)
 
+	// Update the subscription
+	err = s.updateSusbcriptionCommon(tx, subscription, plan, stripeSubscription)
+	if err != nil {
+		tx.Rollback() // rollback the transaction
+		return err
+	}
+
+	// Commit the transaction
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback() // rollback the transaction
+		return err
+	}
+
+	return nil
+}
+
+// updateSusbcriptionCommon updates a subscription
+func (s *Service) updateSusbcriptionCommon(tx *gorm.DB, subscription *Subscription, plan *Plan, stripeSubscription *stripe.Sub) error {
 	// Parse subscription times
 	startedAt, cancelledAt, endedAt, periodStart, periodEnd, trialStart, trialEnd := getStripeSubscriptionTimes(stripeSubscription)
+
+	if plan.ID != subscription.Plan.ID {
+		// Plan changed (upgraded or downgraded)
+	}
+
+	if cancelledAt != nil && !subscription.CancelledAt.Valid {
+		// Subscription cancelled
+	}
+
+	if endedAt != nil && !subscription.EndedAt.Valid {
+		// Subscription ended
+	}
 
 	// Update the subscription plan
 	if err := tx.Model(subscription).UpdateColumn(Subscription{
@@ -257,16 +287,9 @@ func (s *Service) updateSubscription(subscription *Subscription, subscriptionReq
 		TrialEnd:    util.TimeOrNull(trialEnd),
 		Model:       gorm.Model{UpdatedAt: time.Now()},
 	}).Error; err != nil {
-		tx.Rollback() // rollback the transaction
 		return err
 	}
 	subscription.Plan = plan
-
-	// Commit the transaction
-	if err := tx.Commit().Error; err != nil {
-		tx.Rollback() // rollback the transaction
-		return err
-	}
 
 	return nil
 }

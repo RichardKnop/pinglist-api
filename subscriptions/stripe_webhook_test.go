@@ -3,6 +3,7 @@ package subscriptions
 import (
 	"bytes"
 	"encoding/json"
+	"log"
 	"net/http"
 	"net/http/httptest"
 
@@ -38,12 +39,9 @@ func (suite *SubscriptionsTestSuite) TestStripeWebhookNoPayload() {
 	assert.Equal(suite.T(), 400, w.Code, "Expected a 400 (Bad Request) response")
 }
 
-func (suite *SubscriptionsTestSuite) TestStripeWebhook() {
+func (suite *SubscriptionsTestSuite) TestStripeWebhookBogusEventID() {
 	// Prepare a request
-	payload, err := json.Marshal(&stripe.Event{
-		ID:   "test_event_id",
-		Type: "test_event_type",
-	})
+	payload, err := json.Marshal(&stripe.Event{ID: "bogus"})
 	assert.NoError(suite.T(), err, "JSON marshalling failed")
 	r, err := http.NewRequest(
 		"POST",
@@ -71,23 +69,13 @@ func (suite *SubscriptionsTestSuite) TestStripeWebhook() {
 	suite.oauthServiceMock.AssertExpectations(suite.T())
 	suite.accountsServiceMock.AssertExpectations(suite.T())
 
-	// // Check the status code
-	// if !assert.Equal(suite.T(), 200, w.Code) {
-	// 	log.Print(w.Body.String())
-	// }
-	//
-	// // Count after
-	// var countAfter int
-	// suite.db.Model(new(StripeEventLog)).Count(&countAfter)
-	// assert.Equal(suite.T(), countBefore+1, countAfter)
-	//
-	// // Fetch the created stripe event log record
-	// stripeEventLog := new(StripeEventLog)
-	// notFound := suite.db.Last(stripeEventLog).RecordNotFound()
-	// assert.False(suite.T(), notFound)
-	//
-	// // Check that the correct data was saved
-	// assert.Equal(suite.T(), "test_event_id", stripeEventLog.EventID)
-	// assert.Equal(suite.T(), "test_event_type", stripeEventLog.EventType)
-	// assert.True(suite.T(), stripeEventLog.Processed)
+	// Check the status code
+	if !assert.Equal(suite.T(), 404, w.Code) {
+		log.Print(w.Body.String())
+	}
+
+	// Count after
+	var countAfter int
+	suite.db.Model(new(StripeEventLog)).Count(&countAfter)
+	assert.Equal(suite.T(), countBefore, countAfter)
 }

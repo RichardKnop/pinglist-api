@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/RichardKnop/pinglist-api/response"
-	stripe "github.com/stripe/stripe-go"
 	"github.com/jinzhu/gorm"
+	stripe "github.com/stripe/stripe-go"
 )
 
 // Handles calls to Stripe webhook (POST /v1/stripe-webhook)
@@ -42,7 +42,7 @@ func (s *Service) stripeWebhookHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Log the event data in event log table
-	stripeEventLog, err := s.logStripeEvent(stripeEvent, r)
+	stripeEventLog, err := s.createStripeEventLog(stripeEvent, r)
 	if err != nil {
 		logger.Error("Failed to log the stripe event")
 		response.Error(w, err.Error(), http.StatusInternalServerError)

@@ -19,7 +19,7 @@ func (s *Service) stripeEventCustomerSubscriptionCreated(e *stripe.Event) error 
 }
 
 // customer.subscription.trial_will_end
-// // Sent 3 days before the trial period ends
+// Sent 3 days before the trial period ends.
 func (s *Service) stripeEventCustomerSubscriptionTrialWillEnd(e *stripe.Event) error {
 	return nil
 }
@@ -33,10 +33,6 @@ func (s *Service) stripeEventInvoiceCreated(e *stripe.Event) error {
 	// - charge.succeeded
 	// - invoice.payment_succeeded
 	// - customer.subscription.updated (reflecting an update from a trial to an active subscription)
-	// Customer ID:
-	// e.GetObjValue("invoice", "customer")
-	// Subscription ID:
-	// e.GetObjValue("invoice", "subscription")
 
 	return nil
 }
@@ -52,21 +48,19 @@ func (s *Service) stripeEventPaymentSucceeded(e *stripe.Event) error {
 }
 
 // customer.subscription.updated
-// Also received when subscription plan is upgraded or downgraded
+// Occurs whenever a subscription changes. Examples would include switching
+// from one plan to another, or switching status from trial to active.
 func (s *Service) stripeEventCustomerSubscriptionUpdated(e *stripe.Event) error {
 	// Fetch the subscription record from our database
-	subscriptionID := e.GetObjValue("subscription", "id")
+	subscriptionID := e.GetObjValue("id")
 	subscription, err := s.FindSubscriptionBySubscriptionID(subscriptionID)
 	if err != nil {
 		return err
 	}
 
-	// Verify the subscription by fetching it from Stripe
-	stripeSubscription, err := s.stripeAdapter.GetSubscription(
-		subscription.SubscriptionID,
-		subscription.Customer.CustomerID,
-	)
-	if err != nil {
+	// Unmarshal into Stripe subscription
+	stripeSubscription := new(stripe.Sub)
+	if err := stripeSubscription.UnmarshalJSON(e.Data.Raw); err != nil {
 		return err
 	}
 
@@ -76,55 +70,22 @@ func (s *Service) stripeEventCustomerSubscriptionUpdated(e *stripe.Event) error 
 		return err
 	}
 
-	// Parse subscription times
-	startedAt, cancelledAt, endedAt, periodStart, periodEnd, trialStart, trialEnd := getStripeSubscriptionTimes(stripeSubscription)
-
-	if plan.ID != subscription.Plan.ID {
-		// Plan changed (upgraded or downgraded)
-	}
-
-	if cancelledAt != nil && !subscription.CancelledAt.Valid {
-		// Subscription cancelled
-	}
-
-	if endedAt != nil && !subscription.EndedAt.Valid {
-		// Subscription ended
-	}
-
-	// Update the subscription
-	if err := s.db.Model(subscription).UpdateColumn(Subscription{
-		PlanID:      util.PositiveIntOrNull(int64(plan.ID)),
-		StartedAt:   util.TimeOrNull(startedAt),
-		CancelledAt: util.TimeOrNull(cancelledAt),
-		EndedAt:     util.TimeOrNull(endedAt),
-		PeriodStart: util.TimeOrNull(periodStart),
-		PeriodEnd:   util.TimeOrNull(periodEnd),
-		TrialStart:  util.TimeOrNull(trialStart),
-		TrialEnd:    util.TimeOrNull(trialEnd),
-		Model:       gorm.Model{UpdatedAt: time.Now()},
-	}).Error; err != nil {
-		return nil
-	}
-
-	return nil
+	return s.updateSusbcriptionCommon(s.db, subscription, plan, stripeSubscription)
 }
 
 // customer.subscription.deleted
-// When customer subscription is cancelled immediately
+// Occurs whenever a customer ends their subscription.
 func (s *Service) stripeEventCustomerSubscriptionDeleted(e *stripe.Event) error {
 	// Fetch the subscription record from our database
-	subscriptionID := e.GetObjValue("subscription", "id")
+	subscriptionID := e.GetObjValue("id")
 	subscription, err := s.FindSubscriptionBySubscriptionID(subscriptionID)
 	if err != nil {
 		return err
 	}
 
-	// Verify the subscription by fetching it from Stripe
-	stripeSubscription, err := s.stripeAdapter.GetSubscription(
-		subscription.SubscriptionID,
-		subscription.Customer.CustomerID,
-	)
-	if err != nil {
+	// Unmarshal into Stripe subscription
+	stripeSubscription := new(stripe.Sub)
+	if err := stripeSubscription.UnmarshalJSON(e.Data.Raw); err != nil {
 		return err
 	}
 

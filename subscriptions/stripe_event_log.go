@@ -1,13 +1,26 @@
 package subscriptions
 
 import (
+	"errors"
 	"net/http"
 	"net/http/httputil"
 
 	stripe "github.com/stripe/stripe-go"
 )
 
-func (s *Service) logStripeEvent(stripeEvent *stripe.Event, r *http.Request) (*StripeEventLog, error) {
+var (
+	// ErrStripeEventAlreadyRecevied ...
+	ErrStripeEventAlreadyRecevied = errors.New("Stripe event already received")
+)
+
+// createStripeEventLog logs a Stripe event in an idempotent way
+func (s *Service) createStripeEventLog(stripeEvent *stripe.Event, r *http.Request) (*StripeEventLog, error) {
+	// Idempotency check
+	notFound := s.db.First(new(StripeEventLog), "event_id = ?", stripeEvent.ID).RecordNotFound()
+	if !notFound {
+		return nil, ErrStripeEventAlreadyRecevied
+	}
+
 	// Get request dump including body (so we can see the payload in the event log table)
 	requestDump, err := httputil.DumpRequest(
 		r,

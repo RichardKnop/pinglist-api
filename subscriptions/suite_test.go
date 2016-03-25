@@ -137,9 +137,7 @@ func (suite *SubscriptionsTestSuite) SetupTest() {
 	}
 	for _, customer := range customersToDelete {
 		_, err := stripeCustomer.Del(customer.CustomerID)
-		if err != nil {
-			log.Fatal(err)
-		}
+		logger.Error(err)
 	}
 
 	// Delete data inserted by tests
