@@ -123,7 +123,7 @@ func (s *Service) updateTeam(team *Team, teamRequest *TeamRequest) error {
 	var teamsCount int
 	err := s.db.Model(new(Team)).Where("owner_id = ?", team.Owner.ID).Count(&teamsCount).Error
 	if err != nil {
-		return nil, err
+		return err
 	}
 	if teamsCount >= maxTeams {
 		return ErrMaxTeamsLimitReached
