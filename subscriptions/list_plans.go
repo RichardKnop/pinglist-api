@@ -3,12 +3,13 @@ package subscriptions
 import (
 	"net/http"
 
+	"github.com/AreaHQ/area-api/pagination"
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/RichardKnop/pinglist-api/response"
 	"github.com/RichardKnop/pinglist-api/util"
 )
 
-// Handles calls to list subscription plans (GET /v1/plans)
+// Handles calls to list cards plans (GET /v1/plans)
 func (s *Service) listPlansHandler(w http.ResponseWriter, r *http.Request) {
 	// Get the authenticated user from the request context
 	_, err := accounts.GetAuthenticatedUser(r)
@@ -17,17 +18,37 @@ func (s *Service) listPlansHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Fetch the plans
+	// Fetch all the plans
 	var plans []*Plan
 	if err := s.db.Order("id").Find(&plans).Error; err != nil {
 		response.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
+	// Get page and limit
+	page, limit, err := pagination.GetPageLimit(r)
+	if err != nil {
+		response.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	// Count total number of results
+	count := len(plans)
+
+	// Get pagination links
+	first, last, previous, next, err := pagination.GetPaginationLinks(
+		r.URL,
+		count,
+		page,
+		limit,
+	)
+	if err != nil {
+		response.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
 	// Create response
-	count, page := len(plans), 1
-	self, first, last := util.GetCurrentURL(r), util.GetCurrentURL(r), util.GetCurrentURL(r)
-	next, previous := "", ""
+	self := util.GetCurrentURL(r)
 	listPlansResponse, err := NewListPlansResponse(
 		count, page,
 		self, first, last, next, previous,

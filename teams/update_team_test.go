@@ -88,7 +88,78 @@ func (suite *TeamsTestSuite) TestUpdateTeamFailsWithoutPermission() {
 	}
 }
 
-func (suite *TeamsTestSuite) TestUpdateTeamMaxMemberLimitReached() {
+func (suite *TeamsTestSuite) TestUpdateTeamMaxTeamsLimitReached() {
+	// Prepare a request
+	payload, err := json.Marshal(&TeamRequest{
+		Name:    "Test Team 1",
+		Members: []*TeamMemberRequest{},
+	})
+	assert.NoError(suite.T(), err, "JSON marshalling failed")
+	r, err := http.NewRequest(
+		"PUT",
+		fmt.Sprintf("http://1.2.3.4/v1/teams/%d", suite.teams[0].ID),
+		bytes.NewBuffer(payload),
+	)
+	assert.NoError(suite.T(), err, "Request setup should not get an error")
+	r.Header.Set("Authorization", "Bearer test_token")
+
+	// Check the routing
+	match := new(mux.RouteMatch)
+	suite.router.Match(r, match)
+	if assert.NotNil(suite.T(), match.Route) {
+		assert.Equal(suite.T(), "update_team", match.Route.GetName())
+	}
+
+	// Mock authentication
+	suite.mockAuthentication(suite.users[0])
+
+	// Mock find active subscription
+	suite.mockFindActiveSubscription(
+		suite.users[0].ID,
+		&subscriptions.Subscription{
+			Plan: &subscriptions.Plan{
+				MaxTeams:          0,
+				MaxMembersPerTeam: 0,
+			},
+		},
+		nil,
+	)
+
+	// Count before
+	var countBefore int
+	suite.db.Model(new(Team)).Count(&countBefore)
+
+	// And serve the request
+	w := httptest.NewRecorder()
+	suite.router.ServeHTTP(w, r)
+
+	// Check that the mock object expectations were met
+	suite.accountsServiceMock.AssertExpectations(suite.T())
+	suite.subscriptionsServiceMock.AssertExpectations(suite.T())
+
+	// Check the status code
+	if !assert.Equal(suite.T(), 400, w.Code) {
+		log.Print(w.Body.String())
+	}
+
+	// Count after
+	var countAfter int
+	suite.db.Model(new(Team)).Count(&countAfter)
+	assert.Equal(suite.T(), countBefore, countAfter)
+
+	expectedJSON, err := json.Marshal(
+		map[string]string{"error": ErrMaxTeamsLimitReached.Error()})
+	if assert.NoError(suite.T(), err, "JSON marshalling failed") {
+		assert.Equal(
+			suite.T(),
+			string(expectedJSON),
+			strings.TrimRight(w.Body.String(), "\n"),
+			"Body should contain JSON detailing the error",
+		)
+	}
+}
+
+func (suite *TeamsTestSuite) TestUpdateTeamMaxMembersPerTeamLimitReached() {
 	// Prepare a request
 	payload, err := json.Marshal(&TeamRequest{
 		Name: "Test Team 1",
@@ -121,7 +192,8 @@ func (suite *TeamsTestSuite) TestUpdateTeamMaxMemberLimitReached() {
 		suite.users[0].ID,
 		&subscriptions.Subscription{
 			Plan: &subscriptions.Plan{
-				MaxTeamMembers: 1,
+				MaxTeams:          5,
+				MaxMembersPerTeam: 1,
 			},
 		},
 		nil,
@@ -150,7 +222,7 @@ func (suite *TeamsTestSuite) TestUpdateTeamMaxMemberLimitReached() {
 	assert.Equal(suite.T(), countBefore, countAfter)
 
 	expectedJSON, err := json.Marshal(
-		map[string]string{"error": ErrMaxTeamMembersLimitReached.Error()})
+		map[string]string{"error": ErrMaxMembersPerTeamLimitReached.Error()})
 	if assert.NoError(suite.T(), err, "JSON marshalling failed") {
 		assert.Equal(
 			suite.T(),
@@ -194,7 +266,8 @@ func (suite *TeamsTestSuite) TestUpdateTeam() {
 		suite.users[0].ID,
 		&subscriptions.Subscription{
 			Plan: &subscriptions.Plan{
-				MaxTeamMembers: 10,
+				MaxTeams:          5,
+				MaxMembersPerTeam: 10,
 			},
 		},
 		nil,
@@ -229,7 +302,7 @@ func (suite *TeamsTestSuite) TestUpdateTeam() {
 	// Fetch the created team
 	team := new(Team)
 	notFound := suite.db.Preload("Owner.OauthUser").Preload("Members.OauthUser").
-		Last(team).RecordNotFound()
+		First(team, suite.teams[0].ID).RecordNotFound()
 	assert.False(suite.T(), notFound)
 
 	// And correct data was saved
@@ -250,7 +323,7 @@ func (suite *TeamsTestSuite) TestUpdateTeam() {
 		Hal: jsonhal.Hal{
 			Links: map[string]*jsonhal.Link{
 				"self": &jsonhal.Link{
-					Href: fmt.Sprintf("/v1/accounts/teams/%d", team.ID),
+					Href: fmt.Sprintf("/v1/teams/%d", team.ID),
 				},
 			},
 			Embedded: map[string]jsonhal.Embedded{

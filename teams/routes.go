@@ -26,19 +26,19 @@ func newRoutes(service ServiceInterface) []routes.Route {
 			},
 		},
 		routes.Route{
-			Name:        "get_own_team",
-			Method:      "GET",
-			Pattern:     "/ownteam",
-			HandlerFunc: service.getOwnTeamHandler,
+			Name:        "update_team",
+			Method:      "PUT",
+			Pattern:     "/teams/{id:[0-9]+}",
+			HandlerFunc: service.updateTeamHandler,
 			Middlewares: []negroni.Handler{
 				accounts.NewUserAuthMiddleware(service.GetAccountsService()),
 			},
 		},
 		routes.Route{
-			Name:        "update_team",
-			Method:      "PUT",
-			Pattern:     "/teams/{id:[0-9]+}",
-			HandlerFunc: service.updateTeamHandler,
+			Name:        "list_teams",
+			Method:      "GET",
+			Pattern:     "/teams",
+			HandlerFunc: service.listTeamsHandler,
 			Middlewares: []negroni.Handler{
 				accounts.NewUserAuthMiddleware(service.GetAccountsService()),
 			},

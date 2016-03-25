@@ -49,29 +49,6 @@ func (_m *ServiceMock) FindTeamByID(teamID uint) (*Team, error) {
 	return r0, r1
 }
 
-// FindTeamByOwnerID ...
-func (_m *ServiceMock) FindTeamByOwnerID(ownerID uint) (*Team, error) {
-	ret := _m.Called(ownerID)
-
-	var r0 *Team
-	if rf, ok := ret.Get(0).(func(uint) *Team); ok {
-		r0 = rf(ownerID)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*Team)
-		}
-	}
-
-	var r1 error
-	if rf, ok := ret.Get(1).(func(uint) error); ok {
-		r1 = rf(ownerID)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
 // FindTeamByMemberID ...
 func (_m *ServiceMock) FindTeamByMemberID(memberID uint) (*Team, error) {
 	ret := _m.Called(memberID)
@@ -99,7 +76,7 @@ func (_m *ServiceMock) createTeamHandler(w http.ResponseWriter, r *http.Request)
 	_m.Called(w, r)
 }
 
-func (_m *ServiceMock) getOwnTeamHandler(w http.ResponseWriter, r *http.Request) {
+func (_m *ServiceMock) listTeamsHandler(w http.ResponseWriter, r *http.Request) {
 	_m.Called(w, r)
 }
 

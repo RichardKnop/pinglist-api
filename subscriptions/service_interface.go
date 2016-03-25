@@ -15,12 +15,17 @@ type ServiceInterface interface {
 	FindCustomerByID(customerID uint) (*Customer, error)
 	FindCustomerByUserID(userID uint) (*Customer, error)
 	FindCustomerByCustomerID(customerID string) (*Customer, error)
+	FindCardByID(cardID uint) (*Card, error)
+	FindCardByCardID(cardID string) (*Card, error)
 	FindSubscriptionByID(subscriptionID uint) (*Subscription, error)
 	FindSubscriptionBySubscriptionID(subscriptionID string) (*Subscription, error)
 	FindActiveUserSubscription(userID uint) (*Subscription, error)
 
 	// Needed for the newRoutes to be able to register handlers
 	listPlansHandler(w http.ResponseWriter, r *http.Request)
+	createCardHandler(w http.ResponseWriter, r *http.Request)
+	listCardsHandler(w http.ResponseWriter, r *http.Request)
+	deleteCardHandler(w http.ResponseWriter, r *http.Request)
 	createSubscriptionHandler(w http.ResponseWriter, r *http.Request)
 	listSubscriptionsHandler(w http.ResponseWriter, r *http.Request)
 	updateSubscriptionHandler(w http.ResponseWriter, r *http.Request)

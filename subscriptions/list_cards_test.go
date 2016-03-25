@@ -12,22 +12,22 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func (suite *SubscriptionsTestSuite) TestListSubscriptionsRequiresUserAuthentication() {
+func (suite *SubscriptionsTestSuite) TestListCardsRequiresUserAuthentication() {
 	r, err := http.NewRequest("", "", nil)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
 
 	w := httptest.NewRecorder()
 
-	suite.service.listSubscriptionsHandler(w, r)
+	suite.service.listCardsHandler(w, r)
 
 	assert.Equal(suite.T(), http.StatusUnauthorized, w.Code, "This requires an authenticated user")
 }
 
-func (suite *SubscriptionsTestSuite) TestListSubscriptions() {
+func (suite *SubscriptionsTestSuite) TestListCards() {
 	// Prepare a request
 	r, err := http.NewRequest(
 		"GET",
-		"http://1.2.3.4/v1/subscriptions",
+		"http://1.2.3.4/v1/cards",
 		nil,
 	)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
@@ -37,7 +37,7 @@ func (suite *SubscriptionsTestSuite) TestListSubscriptions() {
 	match := new(mux.RouteMatch)
 	suite.router.Match(r, match)
 	if assert.NotNil(suite.T(), match.Route) {
-		assert.Equal(suite.T(), "list_subscriptions", match.Route.GetName())
+		assert.Equal(suite.T(), "list_cards", match.Route.GetName())
 	}
 
 	// Mock authentication
@@ -58,35 +58,34 @@ func (suite *SubscriptionsTestSuite) TestListSubscriptions() {
 	}
 
 	// Check the response body
-	var subscriptions []*Subscription
-	err = suite.db.Preload("Customer.User").Preload("Plan").
-		Order("id").Find(&subscriptions).Error
+	var cards []*Card
+	err = suite.db.Preload("Customer.User").Order("id").Find(&cards).Error
 	assert.NoError(suite.T(), err, "Fetching data failed")
 
-	subscriptionResponses := make([]*SubscriptionResponse, len(subscriptions))
-	for i, subscription := range subscriptions {
-		subscriptionResponse, err := NewSubscriptionResponse(subscription)
+	cardResponses := make([]*CardResponse, len(cards))
+	for i, card := range cards {
+		cardResponse, err := NewCardResponse(card)
 		assert.NoError(suite.T(), err, "Creating response object failed")
-		subscriptionResponses[i] = subscriptionResponse
+		cardResponses[i] = cardResponse
 	}
 
-	expected := &ListSubscriptionsResponse{
+	expected := &ListCardsResponse{
 		Hal: jsonhal.Hal{
 			Links: map[string]*jsonhal.Link{
 				"self": &jsonhal.Link{
-					Href: "/v1/subscriptions",
+					Href: "/v1/cards",
 				},
 				"first": &jsonhal.Link{
-					Href: "/v1/subscriptions?page=1",
+					Href: "/v1/cards?page=1",
 				},
 				"last": &jsonhal.Link{
-					Href: "/v1/subscriptions?page=1",
+					Href: "/v1/cards?page=1",
 				},
 				"prev": new(jsonhal.Link),
 				"next": new(jsonhal.Link),
 			},
 			Embedded: map[string]jsonhal.Embedded{
-				"subscriptions": jsonhal.Embedded(subscriptionResponses),
+				"cards": jsonhal.Embedded(cardResponses),
 			},
 		},
 		Count: 4,

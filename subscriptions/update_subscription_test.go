@@ -29,6 +29,18 @@ func (suite *SubscriptionsTestSuite) TestUpdateSubscriptionRequiresUserAuthentic
 }
 
 func (suite *SubscriptionsTestSuite) TestUpdateSubscriptionNothingChanged() {
+	// Create a test Stripe customer
+	testStripeCustomer, err := suite.service.stripeAdapter.CreateCustomer(
+		suite.users[1].OauthUser.Username,
+		"", // token
+	)
+	assert.NoError(suite.T(), err, "Creating test Stripe customer failed")
+
+	// Create a test customer
+	testCustomer := NewCustomer(suite.users[1], testStripeCustomer.ID)
+	err = suite.db.Create(testCustomer).Error
+	assert.NoError(suite.T(), err, "Failed to insert a test customer")
+
 	// Create a test Stripe token
 	testStripeToken, err := stripeToken.New(&stripe.TokenParams{
 		Card: &stripe.CardParams{
@@ -41,13 +53,21 @@ func (suite *SubscriptionsTestSuite) TestUpdateSubscriptionNothingChanged() {
 	})
 	assert.NoError(suite.T(), err, "Creating test Stripe token failed")
 
+	// Create a test card
+	testCard, err := suite.service.createCard(
+		suite.users[1],
+		&CardRequest{
+			Token: testStripeToken.ID,
+		},
+	)
+	assert.NoError(suite.T(), err, "Creating test card failed")
+
 	// Create a test subscription
 	testSubscription, err := suite.service.createSubscription(
 		suite.users[1],
 		&SubscriptionRequest{
-			StripeToken: testStripeToken.ID,
-			StripeEmail: testStripeToken.Email,
-			PlanID:      suite.plans[0].ID,
+			PlanID: suite.plans[0].ID,
+			Token:  testCard.CardID,
 		},
 	)
 	assert.NoError(suite.T(), err, "Creating test subscription failed")
@@ -113,8 +133,8 @@ func (suite *SubscriptionsTestSuite) TestUpdateSubscriptionNothingChanged() {
 	assert.False(suite.T(), notFound)
 
 	// Check that the correct data was saved
-	assert.Equal(suite.T(), suite.users[1].ID, uint(subscription.Customer.UserID.Int64))
-	assert.Equal(suite.T(), suite.plans[0].ID, uint(subscription.PlanID.Int64))
+	assert.Equal(suite.T(), suite.users[1].ID, subscription.Customer.User.ID)
+	assert.Equal(suite.T(), suite.plans[0].ID, subscription.Plan.ID)
 	assert.True(suite.T(), subscription.StartedAt.Valid)
 	assert.False(suite.T(), subscription.CancelledAt.Valid)
 	assert.False(suite.T(), subscription.EndedAt.Valid)
@@ -158,6 +178,18 @@ func (suite *SubscriptionsTestSuite) TestUpdateSubscriptionNothingChanged() {
 }
 
 func (suite *SubscriptionsTestSuite) TestUpdateSubscriptionPlanChanged() {
+	// Create a test Stripe customer
+	testStripeCustomer, err := suite.service.stripeAdapter.CreateCustomer(
+		suite.users[1].OauthUser.Username,
+		"", // token
+	)
+	assert.NoError(suite.T(), err, "Creating test Stripe customer failed")
+
+	// Create a test customer
+	testCustomer := NewCustomer(suite.users[1], testStripeCustomer.ID)
+	err = suite.db.Create(testCustomer).Error
+	assert.NoError(suite.T(), err, "Failed to insert a test customer")
+
 	// Create a test Stripe token
 	testStripeToken, err := stripeToken.New(&stripe.TokenParams{
 		Card: &stripe.CardParams{
@@ -170,13 +202,21 @@ func (suite *SubscriptionsTestSuite) TestUpdateSubscriptionPlanChanged() {
 	})
 	assert.NoError(suite.T(), err, "Creating test Stripe token failed")
 
+	// Create a test card
+	testCard, err := suite.service.createCard(
+		suite.users[1],
+		&CardRequest{
+			Token: testStripeToken.ID,
+		},
+	)
+	assert.NoError(suite.T(), err, "Creating test card failed")
+
 	// Create a test subscription
 	testSubscription, err := suite.service.createSubscription(
 		suite.users[1],
 		&SubscriptionRequest{
-			StripeToken: testStripeToken.ID,
-			StripeEmail: testStripeToken.Email,
-			PlanID:      suite.plans[0].ID,
+			PlanID: suite.plans[0].ID,
+			Token:  testCard.CardID,
 		},
 	)
 	assert.NoError(suite.T(), err, "Creating test subscription failed")
@@ -242,8 +282,8 @@ func (suite *SubscriptionsTestSuite) TestUpdateSubscriptionPlanChanged() {
 	assert.False(suite.T(), notFound)
 
 	// Check that the correct data was saved
-	assert.Equal(suite.T(), suite.users[1].ID, uint(subscription.Customer.UserID.Int64))
-	assert.Equal(suite.T(), suite.plans[1].ID, uint(subscription.PlanID.Int64))
+	assert.Equal(suite.T(), suite.users[1].ID, subscription.Customer.User.ID)
+	assert.Equal(suite.T(), suite.plans[1].ID, subscription.Plan.ID)
 	assert.True(suite.T(), subscription.StartedAt.Valid)
 	assert.False(suite.T(), subscription.CancelledAt.Valid)
 	assert.False(suite.T(), subscription.EndedAt.Valid)

@@ -5,6 +5,7 @@ import (
 
 	"github.com/RichardKnop/pinglist-api/config"
 	stripe "github.com/stripe/stripe-go"
+	stripeCard "github.com/stripe/stripe-go/card"
 	stripeCustomer "github.com/stripe/stripe-go/customer"
 	stripeEvent "github.com/stripe/stripe-go/event"
 	stripeSubscription "github.com/stripe/stripe-go/sub"
@@ -23,12 +24,15 @@ func NewStripeAdapter(cnf *config.Config) *StripeAdapter {
 }
 
 // CreateCustomer creates a new customer
-func (a *StripeAdapter) CreateCustomer(stripeEmail, stripeToken string) (*stripe.Customer, error) {
+func (a *StripeAdapter) CreateCustomer(email, token string) (*stripe.Customer, error) {
 	params := &stripe.CustomerParams{
-		Email: stripeEmail,
-		Desc:  fmt.Sprintf("Customer for %s", stripeEmail),
+		Email: email,
+		Desc:  fmt.Sprintf("Customer for %s", email),
 	}
-	params.SetSource(stripeToken)
+	// Optionally add a payment source to the customer
+	if token != "" {
+		params.SetSource(token)
+	}
 	return stripeCustomer.New(params)
 }
 
@@ -38,7 +42,7 @@ func (a *StripeAdapter) GetCustomer(customerID string) (*stripe.Customer, error)
 }
 
 // GetOrCreateCustomer tries to retrieve a customer first, otherwise creates a new one
-func (a *StripeAdapter) GetOrCreateCustomer(customerID, stripeEmail, stripeToken string) (*stripe.Customer, bool, error) {
+func (a *StripeAdapter) GetOrCreateCustomer(customerID, email, token string) (*stripe.Customer, bool, error) {
 	var (
 		c       *stripe.Customer
 		created bool
@@ -46,17 +50,35 @@ func (a *StripeAdapter) GetOrCreateCustomer(customerID, stripeEmail, stripeToken
 	)
 	c, err = a.GetCustomer(customerID)
 	if err != nil {
-		c, err = a.CreateCustomer(stripeEmail, stripeToken)
+		c, err = a.CreateCustomer(email, token)
 		created = true
 	}
 	return c, created, err
 }
 
+// CreateCard creates a new card
+func (a *StripeAdapter) CreateCard(customerID, token string) (*stripe.Card, error) {
+	params := &stripe.CardParams{
+		Customer: customerID,
+		Token:    token,
+	}
+	return stripeCard.New(params)
+}
+
+// DeleteCard deletes a card
+func (a *StripeAdapter) DeleteCard(cardID, customerID string) (*stripe.Card, error) {
+	params := &stripe.CardParams{
+		Customer: customerID,
+	}
+	return stripeCard.Del(cardID, params)
+}
+
 // CreateSubscription creates a new subscription
-func (a *StripeAdapter) CreateSubscription(customerID, planID string) (*stripe.Sub, error) {
+func (a *StripeAdapter) CreateSubscription(customerID, planID, token string) (*stripe.Sub, error) {
 	params := &stripe.SubParams{
 		Customer: customerID,
 		Plan:     planID,
+		Token:    token,
 	}
 	return stripeSubscription.New(params)
 }

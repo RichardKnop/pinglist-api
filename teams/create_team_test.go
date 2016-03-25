@@ -28,10 +28,10 @@ func (suite *TeamsTestSuite) TestCreateTeamRequiresUserAuthentication() {
 	assert.Equal(suite.T(), http.StatusUnauthorized, w.Code, "This requires an authenticated user")
 }
 
-func (suite *TeamsTestSuite) TestCreateTeamFailsWhenUserAlreadyOwnsOne() {
+func (suite *TeamsTestSuite) TestCreateTeamMaxTeamsLimitReached() {
 	// Prepare a request
 	payload, err := json.Marshal(&TeamRequest{
-		Name:    "Test Team 2",
+		Name:    "New Test Team",
 		Members: []*TeamMemberRequest{},
 	})
 	assert.NoError(suite.T(), err, "JSON marshalling failed")
@@ -51,7 +51,19 @@ func (suite *TeamsTestSuite) TestCreateTeamFailsWhenUserAlreadyOwnsOne() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[0])
+	suite.mockAuthentication(suite.users[1])
+
+	// Mock find active subscription
+	suite.mockFindActiveSubscription(
+		suite.users[1].ID,
+		&subscriptions.Subscription{
+			Plan: &subscriptions.Plan{
+				MaxTeams:          0,
+				MaxMembersPerTeam: 0,
+			},
+		},
+		nil,
+	)
 
 	// Count before
 	var countBefore int
@@ -75,9 +87,8 @@ func (suite *TeamsTestSuite) TestCreateTeamFailsWhenUserAlreadyOwnsOne() {
 	suite.db.Model(new(Team)).Count(&countAfter)
 	assert.Equal(suite.T(), countBefore, countAfter)
 
-	// Check the response body
 	expectedJSON, err := json.Marshal(
-		map[string]string{"error": ErrUserCanOnlyCreateOneTeam.Error()})
+		map[string]string{"error": ErrMaxTeamsLimitReached.Error()})
 	if assert.NoError(suite.T(), err, "JSON marshalling failed") {
 		assert.Equal(
 			suite.T(),
@@ -88,10 +99,10 @@ func (suite *TeamsTestSuite) TestCreateTeamFailsWhenUserAlreadyOwnsOne() {
 	}
 }
 
-func (suite *TeamsTestSuite) TestCreateTeamMaxMemberLimitReached() {
+func (suite *TeamsTestSuite) TestCreateTeamMaxMembersPerTeamLimitReached() {
 	// Prepare a request
 	payload, err := json.Marshal(&TeamRequest{
-		Name: "Test Team 2",
+		Name: "New Test Team",
 		Members: []*TeamMemberRequest{
 			&TeamMemberRequest{suite.users[2].ID},
 		},
@@ -118,8 +129,13 @@ func (suite *TeamsTestSuite) TestCreateTeamMaxMemberLimitReached() {
 	// Mock find active subscription
 	suite.mockFindActiveSubscription(
 		suite.users[1].ID,
+		&subscriptions.Subscription{
+			Plan: &subscriptions.Plan{
+				MaxTeams:          5,
+				MaxMembersPerTeam: 0,
+			},
+		},
 		nil,
-		subscriptions.ErrUserHasNoActiveSubscription,
 	)
 
 	// Count before
@@ -145,7 +161,7 @@ func (suite *TeamsTestSuite) TestCreateTeamMaxMemberLimitReached() {
 	assert.Equal(suite.T(), countBefore, countAfter)
 
 	expectedJSON, err := json.Marshal(
-		map[string]string{"error": ErrMaxTeamMembersLimitReached.Error()})
+		map[string]string{"error": ErrMaxMembersPerTeamLimitReached.Error()})
 	if assert.NoError(suite.T(), err, "JSON marshalling failed") {
 		assert.Equal(
 			suite.T(),
@@ -159,7 +175,7 @@ func (suite *TeamsTestSuite) TestCreateTeamMaxMemberLimitReached() {
 func (suite *TeamsTestSuite) TestCreateTeamWithoutMembers() {
 	// Prepare a request
 	payload, err := json.Marshal(&TeamRequest{
-		Name:    "Test Team 2",
+		Name:    "New Test Team",
 		Members: []*TeamMemberRequest{},
 	})
 	assert.NoError(suite.T(), err, "JSON marshalling failed")
@@ -184,8 +200,13 @@ func (suite *TeamsTestSuite) TestCreateTeamWithoutMembers() {
 	// Mock find active subscription
 	suite.mockFindActiveSubscription(
 		suite.users[1].ID,
+		&subscriptions.Subscription{
+			Plan: &subscriptions.Plan{
+				MaxTeams:          5,
+				MaxMembersPerTeam: 10,
+			},
+		},
 		nil,
-		subscriptions.ErrUserHasNoActiveSubscription,
 	)
 
 	// Count before
@@ -218,13 +239,13 @@ func (suite *TeamsTestSuite) TestCreateTeamWithoutMembers() {
 
 	// And correct data was saved
 	assert.Equal(suite.T(), "test@user", team.Owner.OauthUser.Username)
-	assert.Equal(suite.T(), "Test Team 2", team.Name)
+	assert.Equal(suite.T(), "New Test Team", team.Name)
 	assert.Equal(suite.T(), 0, len(team.Members))
 
 	// Check the Location header
 	assert.Equal(
 		suite.T(),
-		fmt.Sprintf("/v1/accounts/teams/%d", team.ID),
+		fmt.Sprintf("/v1/teams/%d", team.ID),
 		w.Header().Get("Location"),
 	)
 
@@ -233,7 +254,7 @@ func (suite *TeamsTestSuite) TestCreateTeamWithoutMembers() {
 		Hal: jsonhal.Hal{
 			Links: map[string]*jsonhal.Link{
 				"self": &jsonhal.Link{
-					Href: fmt.Sprintf("/v1/accounts/teams/%d", team.ID),
+					Href: fmt.Sprintf("/v1/teams/%d", team.ID),
 				},
 			},
 			Embedded: map[string]jsonhal.Embedded{
@@ -241,7 +262,7 @@ func (suite *TeamsTestSuite) TestCreateTeamWithoutMembers() {
 			},
 		},
 		ID:        team.ID,
-		Name:      "Test Team 2",
+		Name:      "New Test Team",
 		CreatedAt: team.CreatedAt.UTC().Format(time.RFC3339),
 		UpdatedAt: team.CreatedAt.UTC().Format(time.RFC3339),
 	}
@@ -255,10 +276,10 @@ func (suite *TeamsTestSuite) TestCreateTeamWithoutMembers() {
 	}
 }
 
-func (suite *TeamsTestSuite) TestCreateTeam() {
+func (suite *TeamsTestSuite) TestCreateTeamWithMembers() {
 	// Prepare a request
 	payload, err := json.Marshal(&TeamRequest{
-		Name: "Test Team 2",
+		Name: "New Test Team",
 		Members: []*TeamMemberRequest{
 			&TeamMemberRequest{suite.users[2].ID},
 		},
@@ -287,7 +308,8 @@ func (suite *TeamsTestSuite) TestCreateTeam() {
 		suite.users[1].ID,
 		&subscriptions.Subscription{
 			Plan: &subscriptions.Plan{
-				MaxTeamMembers: 10,
+				MaxTeams:          5,
+				MaxMembersPerTeam: 10,
 			},
 		},
 		nil,
@@ -326,14 +348,14 @@ func (suite *TeamsTestSuite) TestCreateTeam() {
 
 	// And correct data was saved
 	assert.Equal(suite.T(), "test@user", team.Owner.OauthUser.Username)
-	assert.Equal(suite.T(), "Test Team 2", team.Name)
+	assert.Equal(suite.T(), "New Test Team", team.Name)
 	assert.Equal(suite.T(), 1, len(team.Members))
 	assert.Equal(suite.T(), "test@user2", team.Members[0].OauthUser.Username)
 
 	// Check the Location header
 	assert.Equal(
 		suite.T(),
-		fmt.Sprintf("/v1/accounts/teams/%d", team.ID),
+		fmt.Sprintf("/v1/teams/%d", team.ID),
 		w.Header().Get("Location"),
 	)
 
@@ -344,7 +366,7 @@ func (suite *TeamsTestSuite) TestCreateTeam() {
 		Hal: jsonhal.Hal{
 			Links: map[string]*jsonhal.Link{
 				"self": &jsonhal.Link{
-					Href: fmt.Sprintf("/v1/accounts/teams/%d", team.ID),
+					Href: fmt.Sprintf("/v1/teams/%d", team.ID),
 				},
 			},
 			Embedded: map[string]jsonhal.Embedded{
@@ -352,7 +374,7 @@ func (suite *TeamsTestSuite) TestCreateTeam() {
 			},
 		},
 		ID:        team.ID,
-		Name:      "Test Team 2",
+		Name:      "New Test Team",
 		CreatedAt: team.CreatedAt.UTC().Format(time.RFC3339),
 		UpdatedAt: team.UpdatedAt.UTC().Format(time.RFC3339),
 	}

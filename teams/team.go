@@ -11,10 +11,10 @@ import (
 var (
 	// ErrTeamNotFound ...
 	ErrTeamNotFound = errors.New("Team not found")
-	// ErrUserCanOnlyCreateOneTeam ...
-	ErrUserCanOnlyCreateOneTeam = errors.New("User can only create one team")
-	// ErrMaxTeamMembersLimitReached ...
-	ErrMaxTeamMembersLimitReached = errors.New("Max team members limit reached")
+	// ErrMaxTeamsLimitReached ...
+	ErrMaxTeamsLimitReached = errors.New("Max teams limit reached")
+	// ErrMaxMembersPerTeamLimitReached ...
+	ErrMaxMembersPerTeamLimitReached = errors.New("Max members per team limit reached")
 	// ErrUserCanOnlyBeMemberOfOneTeam ...
 	ErrUserCanOnlyBeMemberOfOneTeam = errors.New("User can only be member of one team")
 )
@@ -70,14 +70,21 @@ func (s *Service) FindTeamByMemberID(memberID uint) (*Team, error) {
 
 // createTeam creates a new team
 func (s *Service) createTeam(owner *accounts.User, teamRequest *TeamRequest) (*Team, error) {
-	// Users can only be owners of a single team
-	if s.userOwnsTeam(owner) {
-		return nil, ErrUserCanOnlyCreateOneTeam
+	maxTeams, maxMembersPerTeam := s.getMaxTeamLimits(owner)
+
+	// Limit teams to the max number defined as per subscription plan
+	var teamsCount int
+	err := s.db.Model(new(Team)).Where("owner_id = ?", owner.ID).Count(&teamsCount).Error
+	if err != nil {
+		return nil, err
+	}
+	if teamsCount >= maxTeams {
+		return nil, ErrMaxTeamsLimitReached
 	}
 
 	// Limit team members to the max number defined as per subscription plan
-	if len(teamRequest.Members) > s.getUserMaxTeamMembers(owner) {
-		return nil, ErrMaxTeamMembersLimitReached
+	if len(teamRequest.Members) >= maxMembersPerTeam {
+		return nil, ErrMaxMembersPerTeamLimitReached
 	}
 
 	// Members
@@ -110,9 +117,21 @@ func (s *Service) createTeam(owner *accounts.User, teamRequest *TeamRequest) (*T
 
 // updateTeam updates an existing team
 func (s *Service) updateTeam(team *Team, teamRequest *TeamRequest) error {
+	maxTeams, maxMembersPerTeam := s.getMaxTeamLimits(team.Owner)
+
+	// Limit teams to the max number defined as per subscription plan
+	var teamsCount int
+	err := s.db.Model(new(Team)).Where("owner_id = ?", team.Owner.ID).Count(&teamsCount).Error
+	if err != nil {
+		return nil, err
+	}
+	if teamsCount >= maxTeams {
+		return ErrMaxTeamsLimitReached
+	}
+
 	// Limit team members to the max number defined as per subscription plan
-	if len(teamRequest.Members) > s.getUserMaxTeamMembers(team.Owner) {
-		return ErrMaxTeamMembersLimitReached
+	if len(teamRequest.Members) >= maxMembersPerTeam {
+		return ErrMaxMembersPerTeamLimitReached
 	}
 
 	// Members
@@ -160,14 +179,54 @@ func (s *Service) updateTeam(team *Team, teamRequest *TeamRequest) error {
 	return nil
 }
 
-// userOwnsTeam returns true if the user is an owner of a team already
-func (s *Service) userOwnsTeam(user *accounts.User) bool {
-	_, err := s.FindTeamByOwnerID(user.ID)
-	return err == nil
-}
-
 // userIsMemberOfTeam returns true if the user is a member of a team already
 func (s *Service) userIsMemberOfTeam(user *accounts.User) bool {
 	_, err := s.FindTeamByMemberID(user.ID)
 	return err == nil
+}
+
+// paginatedTeamsCount returns a total count of teams
+// Can be optionally filtered by owner
+func (s *Service) paginatedTeamsCount(owner *accounts.User) (int, error) {
+	var count int
+	if err := s.paginatedTeamsQuery(owner).Count(&count).Error; err != nil {
+		return 0, err
+	}
+	return count, nil
+}
+
+// findPaginatedTeams returns paginated team records
+// Results can optionally be filtered by owner
+func (s *Service) findPaginatedTeams(offset, limit int, orderBy string, owner *accounts.User) ([]*Team, error) {
+	var teams []*Team
+
+	// Get the pagination query
+	teamsQuery := s.paginatedTeamsQuery(owner)
+
+	// Default ordering
+	if orderBy == "" {
+		orderBy = "id"
+	}
+
+	// Retrieve paginated results from the database
+	err := teamsQuery.Offset(offset).Limit(limit).Order(orderBy).
+		Preload("Owner.OauthUser").Preload("Members.OauthUser").Find(&teams).Error
+	if err != nil {
+		return teams, err
+	}
+
+	return teams, nil
+}
+
+// paginatedTeamsQuery returns a db query for paginated teams
+func (s *Service) paginatedTeamsQuery(owner *accounts.User) *gorm.DB {
+	// Basic query
+	teamsQuery := s.db.Model(new(Team))
+
+	// Optionally filter by user
+	if owner != nil {
+		teamsQuery = teamsQuery.Where("owner_id = ?", owner.ID)
+	}
+
+	return teamsQuery
 }

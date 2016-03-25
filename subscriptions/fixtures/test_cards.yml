@@ -1,0 +1,45 @@
+---
+
+- table: 'subscription_cards'
+  pk:
+    id: 1
+  fields:
+    customer_id: 1
+    card_id: "card_1"
+    brand: "Visa"
+    last_four: "4242"
+    created_at: 'ON_INSERT_NOW()'
+    updated_at: 'ON_UPDATE_NOW()'
+
+- table: 'subscription_cards'
+  pk:
+    id: 2
+  fields:
+    customer_id: 1
+    card_id: "card_2"
+    brand: "Visa"
+    last_four: "4242"
+    created_at: 'ON_INSERT_NOW()'
+    updated_at: 'ON_UPDATE_NOW()'
+
+- table: 'subscription_cards'
+  pk:
+    id: 3
+  fields:
+    customer_id: 1
+    card_id: "card_3"
+    brand: "Visa"
+    last_four: "4242"
+    created_at: 'ON_INSERT_NOW()'
+    updated_at: 'ON_UPDATE_NOW()'
+
+- table: 'subscription_cards'
+  pk:
+    id: 4
+  fields:
+    customer_id: 1
+    card_id: "card_4"
+    brand: "Visa"
+    last_four: "4242"
+    created_at: 'ON_INSERT_NOW()'
+    updated_at: 'ON_UPDATE_NOW()'

@@ -215,7 +215,7 @@ func (suite *SubscriptionsTestSuite) TestFindPaginatedSubscriptions() {
 		assert.Equal(suite.T(), suite.subscriptions[3].ID, subscriptions[3].ID)
 	}
 
-	// This should return all agencies ordered by ID desc
+	// This should return all subscriptions ordered by ID desc
 	subscriptions, err = suite.service.findPaginatedSubscriptions(0, 25, "id desc", nil)
 	if assert.Nil(suite.T(), err) {
 		assert.Equal(suite.T(), 4, len(subscriptions))

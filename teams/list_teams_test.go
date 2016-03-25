@@ -1,4 +1,4 @@
-package subscriptions
+package teams
 
 import (
 	"encoding/json"
@@ -12,22 +12,22 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func (suite *SubscriptionsTestSuite) TestListSubscriptionsRequiresUserAuthentication() {
+func (suite *TeamsTestSuite) TestListTeamsRequiresUserAuthentication() {
 	r, err := http.NewRequest("", "", nil)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
 
 	w := httptest.NewRecorder()
 
-	suite.service.listSubscriptionsHandler(w, r)
+	suite.service.listTeamsHandler(w, r)
 
 	assert.Equal(suite.T(), http.StatusUnauthorized, w.Code, "This requires an authenticated user")
 }
 
-func (suite *SubscriptionsTestSuite) TestListSubscriptions() {
+func (suite *TeamsTestSuite) TestListTeams() {
 	// Prepare a request
 	r, err := http.NewRequest(
 		"GET",
-		"http://1.2.3.4/v1/subscriptions",
+		"http://1.2.3.4/v1/teams",
 		nil,
 	)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
@@ -37,7 +37,7 @@ func (suite *SubscriptionsTestSuite) TestListSubscriptions() {
 	match := new(mux.RouteMatch)
 	suite.router.Match(r, match)
 	if assert.NotNil(suite.T(), match.Route) {
-		assert.Equal(suite.T(), "list_subscriptions", match.Route.GetName())
+		assert.Equal(suite.T(), "list_teams", match.Route.GetName())
 	}
 
 	// Mock authentication
@@ -58,35 +58,35 @@ func (suite *SubscriptionsTestSuite) TestListSubscriptions() {
 	}
 
 	// Check the response body
-	var subscriptions []*Subscription
-	err = suite.db.Preload("Customer.User").Preload("Plan").
-		Order("id").Find(&subscriptions).Error
+	var teams []*Team
+	err = suite.db.Preload("Owner.OauthUser").Preload("Members.OauthUser").
+		Order("id").Find(&teams).Error
 	assert.NoError(suite.T(), err, "Fetching data failed")
 
-	subscriptionResponses := make([]*SubscriptionResponse, len(subscriptions))
-	for i, subscription := range subscriptions {
-		subscriptionResponse, err := NewSubscriptionResponse(subscription)
+	teamResponses := make([]*TeamResponse, len(teams))
+	for i, team := range teams {
+		teamResponse, err := NewTeamResponse(team)
 		assert.NoError(suite.T(), err, "Creating response object failed")
-		subscriptionResponses[i] = subscriptionResponse
+		teamResponses[i] = teamResponse
 	}
 
-	expected := &ListSubscriptionsResponse{
+	expected := &ListTeamsResponse{
 		Hal: jsonhal.Hal{
 			Links: map[string]*jsonhal.Link{
 				"self": &jsonhal.Link{
-					Href: "/v1/subscriptions",
+					Href: "/v1/teams",
 				},
 				"first": &jsonhal.Link{
-					Href: "/v1/subscriptions?page=1",
+					Href: "/v1/teams?page=1",
 				},
 				"last": &jsonhal.Link{
-					Href: "/v1/subscriptions?page=1",
+					Href: "/v1/teams?page=1",
 				},
 				"prev": new(jsonhal.Link),
 				"next": new(jsonhal.Link),
 			},
 			Embedded: map[string]jsonhal.Embedded{
-				"subscriptions": jsonhal.Embedded(subscriptionResponses),
+				"teams": jsonhal.Embedded(teamResponses),
 			},
 		},
 		Count: 4,

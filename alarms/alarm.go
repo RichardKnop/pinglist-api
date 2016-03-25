@@ -69,13 +69,13 @@ func (s *Service) FindAlarmByID(alarmID uint) (*Alarm, error) {
 
 // createAlarm creates a new alarm
 func (s *Service) createAlarm(user *accounts.User, alarmRequest *AlarmRequest) (*Alarm, error) {
+	// Limit active alarms to the max number defined as per subscription plan
 	if alarmRequest.Active {
-		// Limit maximum number of active alarms per user
 		alarmsCount, err := s.userActiveAlarmsCount(user)
 		if err != nil {
 			return nil, err
 		}
-		if alarmsCount+1 > s.getUserMaxAlarms(user) {
+		if alarmsCount+1 > s.getMaxAlarms(user) {
 			return nil, ErrMaxAlarmsLimitReached
 		}
 	}
@@ -105,13 +105,13 @@ func (s *Service) createAlarm(user *accounts.User, alarmRequest *AlarmRequest) (
 
 // updateAlarm updates an existing alarm
 func (s *Service) updateAlarm(alarm *Alarm, alarmRequest *AlarmRequest) error {
+	// Limit active alarms to the max number defined as per subscription plan
 	if !alarm.Active && alarmRequest.Active {
-		// Limit maximum number of active alarms per user
 		alarmsCount, err := s.userActiveAlarmsCount(alarm.User)
 		if err != nil {
 			return err
 		}
-		if alarmsCount+1 > s.getUserMaxAlarms(alarm.User) {
+		if alarmsCount+1 > s.getMaxAlarms(alarm.User) {
 			return ErrMaxAlarmsLimitReached
 		}
 	}

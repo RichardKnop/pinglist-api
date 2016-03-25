@@ -21,7 +21,7 @@ func (suite *SubscriptionsTestSuite) TestFindCustomerByID() {
 		assert.Equal(suite.T(), ErrCustomerNotFound, err)
 	}
 
-	// When we try to find a plan with a valid ID
+	// When we try to find a customer with a valid ID
 	customer, err = suite.service.FindCustomerByID(suite.customers[0].ID)
 
 	// Error should be nil
@@ -51,7 +51,7 @@ func (suite *SubscriptionsTestSuite) TestFindCustomerByUserID() {
 		assert.Equal(suite.T(), ErrCustomerNotFound, err)
 	}
 
-	// When we try to find a plan with a valid customer ID
+	// When we try to find a customer with a valid customer ID
 	customer, err = suite.service.FindCustomerByUserID(suite.users[0].ID)
 
 	// Error should be nil
@@ -81,7 +81,7 @@ func (suite *SubscriptionsTestSuite) TestFindCustomerByCustomerID() {
 		assert.Equal(suite.T(), ErrCustomerNotFound, err)
 	}
 
-	// When we try to find a plan with a valid customer ID
+	// When we try to find a customer with a valid customer ID
 	customer, err = suite.service.FindCustomerByCustomerID(suite.customers[0].CustomerID)
 
 	// Error should be nil

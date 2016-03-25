@@ -13,30 +13,18 @@ import (
 	stripeToken "github.com/stripe/stripe-go/token"
 )
 
-func (suite *SubscriptionsTestSuite) TestCancelSubscriptionRequiresUserAuthentication() {
+func (suite *SubscriptionsTestSuite) TestDeleteCardRequiresUserAuthentication() {
 	r, err := http.NewRequest("", "", nil)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
 
 	w := httptest.NewRecorder()
 
-	suite.service.cancelSubscriptionHandler(w, r)
+	suite.service.deleteCardHandler(w, r)
 
 	assert.Equal(suite.T(), http.StatusUnauthorized, w.Code, "This requires an authenticated user")
 }
 
-func (suite *SubscriptionsTestSuite) TestCancelSubscription() {
-	// Create a test Stripe customer
-	testStripeCustomer, err := suite.service.stripeAdapter.CreateCustomer(
-		suite.users[1].OauthUser.Username,
-		"", // token
-	)
-	assert.NoError(suite.T(), err, "Creating test Stripe customer failed")
-
-	// Create a test customer
-	testCustomer := NewCustomer(suite.users[1], testStripeCustomer.ID)
-	err = suite.db.Create(testCustomer).Error
-	assert.NoError(suite.T(), err, "Failed to insert a test customer")
-
+func (suite *SubscriptionsTestSuite) TestDeleteCard() {
 	// Create a test Stripe token
 	testStripeToken, err := stripeToken.New(&stripe.TokenParams{
 		Card: &stripe.CardParams{
@@ -58,20 +46,10 @@ func (suite *SubscriptionsTestSuite) TestCancelSubscription() {
 	)
 	assert.NoError(suite.T(), err, "Creating test card failed")
 
-	// Create a test subscription
-	testSubscription, err := suite.service.createSubscription(
-		suite.users[1],
-		&SubscriptionRequest{
-			PlanID: suite.plans[0].ID,
-			Token:  testCard.CardID,
-		},
-	)
-	assert.NoError(suite.T(), err, "Creating test subscription failed")
-
 	// Prepare a request
 	r, err := http.NewRequest(
 		"DELETE",
-		fmt.Sprintf("http://1.2.3.4/v1/subscriptions/%d", testSubscription.ID),
+		fmt.Sprintf("http://1.2.3.4/v1/cards/%d", testCard.ID),
 		nil,
 	)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
@@ -81,7 +59,7 @@ func (suite *SubscriptionsTestSuite) TestCancelSubscription() {
 	match := new(mux.RouteMatch)
 	suite.router.Match(r, match)
 	if assert.NotNil(suite.T(), match.Route) {
-		assert.Equal(suite.T(), "cancel_subscription", match.Route.GetName())
+		assert.Equal(suite.T(), "delete_card", match.Route.GetName())
 	}
 
 	// Mock authentication
@@ -92,7 +70,7 @@ func (suite *SubscriptionsTestSuite) TestCancelSubscription() {
 		countBefore         int
 		customerCountBefore int
 	)
-	suite.db.Model(new(Subscription)).Count(&countBefore)
+	suite.db.Model(new(Card)).Count(&countBefore)
 	suite.db.Model(new(Customer)).Count(&customerCountBefore)
 
 	// And serve the request
@@ -113,28 +91,14 @@ func (suite *SubscriptionsTestSuite) TestCancelSubscription() {
 		countAfter         int
 		customerCountAfter int
 	)
-	suite.db.Model(new(Subscription)).Count(&countAfter)
+	suite.db.Model(new(Card)).Count(&countAfter)
 	suite.db.Model(new(Customer)).Count(&customerCountAfter)
-	assert.Equal(suite.T(), countBefore, countAfter)
+	assert.Equal(suite.T(), countBefore-1, countAfter)
 	assert.Equal(suite.T(), customerCountBefore, customerCountAfter)
 
-	// Fetch the cancelled subscription
-	subscription := new(Subscription)
-	notFound := suite.db.Preload("Customer.User").Preload("Plan").
-		First(subscription, testSubscription.ID).RecordNotFound()
-	assert.False(suite.T(), notFound)
-
-	// Check that the correct data was saved
-	assert.True(suite.T(), subscription.IsCancelled())
-	assert.Equal(suite.T(), testCustomer.ID, subscription.Customer.ID)
-	assert.Equal(suite.T(), suite.plans[0].ID, subscription.Plan.ID)
-	assert.True(suite.T(), subscription.StartedAt.Valid)
-	assert.True(suite.T(), subscription.CancelledAt.Valid) // this should have changed to true
-	assert.False(suite.T(), subscription.EndedAt.Valid)
-	assert.True(suite.T(), subscription.PeriodStart.Valid)
-	assert.True(suite.T(), subscription.PeriodEnd.Valid)
-	assert.True(suite.T(), subscription.TrialStart.Valid)
-	assert.True(suite.T(), subscription.TrialEnd.Valid)
+	// Try to fetch the deleted card
+	notFound := suite.db.First(new(Card), testCard.ID).RecordNotFound()
+	assert.True(suite.T(), notFound)
 
 	// Check the response body
 	assert.Equal(

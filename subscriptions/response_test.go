@@ -56,11 +56,75 @@ func TestNewListPlansResponse(t *testing.T) {
 		assert.Equal(t, "", nextLink.Href)
 	}
 
-	// Test embedded alarms
+	// Test embedded plans
 	embeddedPlans, err := response.GetEmbedded("plans")
 	if assert.Nil(t, err) {
 		reflectedValue := reflect.ValueOf(embeddedPlans)
 		expectedType := reflect.SliceOf(reflect.TypeOf(new(PlanResponse)))
+		if assert.Equal(t, expectedType, reflectedValue.Type()) {
+			assert.Equal(t, 3, reflectedValue.Len())
+		}
+	}
+
+	// Test the rest
+	assert.Equal(t, uint(3), response.Count)
+	assert.Equal(t, uint(1), response.Page)
+}
+
+func TestNewListCardsResponse(t *testing.T) {
+	// Some mock Card objects
+	cards := []*Card{new(Card), new(Card), new(Card)}
+
+	// Create list response
+	response, err := NewListCardsResponse(
+		3,           // count
+		1,           // page
+		"/v1/cards", // self
+		"/v1/cards", // first
+		"/v1/cards", // last
+		"",          // previous
+		"",          // next
+		cards,
+	)
+
+	// Error should be nil
+	assert.Nil(t, err)
+
+	// Test self link
+	selfLink, err := response.GetLink("self")
+	if assert.Nil(t, err) {
+		assert.Equal(t, "/v1/cards", selfLink.Href)
+	}
+
+	// Test first link
+	firstLink, err := response.GetLink("first")
+	if assert.Nil(t, err) {
+		assert.Equal(t, "/v1/cards", firstLink.Href)
+	}
+
+	// Test last link
+	lastLink, err := response.GetLink("last")
+	if assert.Nil(t, err) {
+		assert.Equal(t, "/v1/cards", lastLink.Href)
+	}
+
+	// Test previous link
+	previousLink, err := response.GetLink("prev")
+	if assert.Nil(t, err) {
+		assert.Equal(t, "", previousLink.Href)
+	}
+
+	// Test next link
+	nextLink, err := response.GetLink("next")
+	if assert.Nil(t, err) {
+		assert.Equal(t, "", nextLink.Href)
+	}
+
+	// Test embedded cards
+	embeddedCards, err := response.GetEmbedded("cards")
+	if assert.Nil(t, err) {
+		reflectedValue := reflect.ValueOf(embeddedCards)
+		expectedType := reflect.SliceOf(reflect.TypeOf(new(CardResponse)))
 		if assert.Equal(t, expectedType, reflectedValue.Type()) {
 			assert.Equal(t, 3, reflectedValue.Len())
 		}

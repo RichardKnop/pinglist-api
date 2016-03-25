@@ -27,15 +27,16 @@ func (l *StripeEventLog) TableName() string {
 // Plan ...
 type Plan struct {
 	gorm.Model
-	PlanID         string         `sql:"type:varchar(60);unique;not null"`
-	Name           string         `sql:"type:varchar(60);not null"`
-	Description    sql.NullString `sql:"type:text"`
-	Currency       string         `sql:"type:varchar(3);index;not null"`
-	Amount         uint
-	TrialPeriod    uint // days
-	Interval       uint // days
-	MaxAlarms      uint
-	MaxTeamMembers uint
+	PlanID            string         `sql:"type:varchar(60);unique;not null"`
+	Name              string         `sql:"type:varchar(60);not null"`
+	Description       sql.NullString `sql:"type:text"`
+	Currency          string         `sql:"type:varchar(3);index;not null"`
+	Amount            uint
+	TrialPeriod       uint // days
+	Interval          uint // days
+	MaxAlarms         uint
+	MaxTeams          uint
+	MaxMembersPerTeam uint
 }
 
 // TableName specifies table name
@@ -55,6 +56,21 @@ type Customer struct {
 // TableName specifies table name
 func (c *Customer) TableName() string {
 	return "subscription_customers"
+}
+
+// Card ...
+type Card struct {
+	gorm.Model
+	CustomerID sql.NullInt64 `sql:"index;not null"`
+	Customer   *Customer
+	CardID     string `sql:"type:varchar(60);unique;not null"`
+	Brand      string `sql:"type:varchar(20);not null"`
+	LastFour   string `sql:"type:varchar(4);not null"`
+}
+
+// TableName specifies table name
+func (c *Card) TableName() string {
+	return "subscription_cards"
 }
 
 // Subscription ...
@@ -99,6 +115,21 @@ func NewCustomer(user *accounts.User, customerID string) *Customer {
 		customer.User = user
 	}
 	return customer
+}
+
+// NewCard creates new Card instance
+func NewCard(customer *Customer, cardID, brand, lastFour string) *Card {
+	customerID := util.PositiveIntOrNull(int64(customer.ID))
+	card := &Card{
+		CustomerID: customerID,
+		CardID:     cardID,
+		Brand:      brand,
+		LastFour:   lastFour,
+	}
+	if customerID.Valid {
+		card.Customer = customer
+	}
+	return card
 }
 
 // NewSubscription creates new Subscription instance
