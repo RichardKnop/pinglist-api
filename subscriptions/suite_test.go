@@ -101,15 +101,14 @@ func (suite *SubscriptionsTestSuite) SetupSuite() {
 
 	// Fetch test cards
 	suite.cards = make([]*Card, 0)
-	err = suite.db.Preload("Customer.User.OauthUser").
-		Order("id").Find(&suite.cards).Error
+	err = suite.db.Preload("Customer.User").Order("id").Find(&suite.cards).Error
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Fetch test subscriptions
 	suite.subscriptions = make([]*Subscription, 0)
-	err = suite.db.Preload("Customer").Preload("Plan").
+	err = suite.db.Preload("Customer.User").Preload("Plan").
 		Order("id").Find(&suite.subscriptions).Error
 	if err != nil {
 		log.Fatal(err)
@@ -152,7 +151,7 @@ func (suite *SubscriptionsTestSuite) SetupTest() {
 
 	// Delete data inserted by tests
 	suite.db.Unscoped().Not("id", []int64{1, 2, 3, 4}).Delete(new(Subscription))
-	suite.db.Unscoped().Not("id", []int64{1}).Delete(new(Card))
+	suite.db.Unscoped().Not("id", []int64{1, 2, 3, 4}).Delete(new(Card))
 	suite.db.Unscoped().Not("id", []int64{1}).Delete(new(Customer))
 	suite.db.Unscoped().Not("id", []int64{1, 2, 3, 4, 5}).Delete(new(Plan))
 

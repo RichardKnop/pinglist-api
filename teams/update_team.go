@@ -18,7 +18,7 @@ var (
 	ErrUpdateTeamPermission = errors.New("Need permission to update team")
 )
 
-// Handles requests to update a team (PUT /v1/accounts/teams/{id:[0-9]+})
+// Handles requests to update a team (PUT /v1/teams/{id:[0-9]+})
 func (s *Service) updateTeamHandler(w http.ResponseWriter, r *http.Request) {
 	// Get the authenticated user from the request context
 	authenticatedUser, err := accounts.GetAuthenticatedUser(r)

@@ -12,12 +12,12 @@ import (
 )
 
 var (
-	// ErrListSubscriptionsPermission ...
-	ErrListSubscriptionsPermission = errors.New("Need permission to list subscriptions")
+	// ErrListCardsPermission ...
+	ErrListCardsPermission = errors.New("Need permission to list cards")
 )
 
-// Handles calls to list subscriptions (GET /v1/subscriptions)
-func (s *Service) listSubscriptionsHandler(w http.ResponseWriter, r *http.Request) {
+// Handles calls to list cards (GET /v1/cards)
+func (s *Service) listCardsHandler(w http.ResponseWriter, r *http.Request) {
 	// Get the authenticated user from the request context
 	authenticatedUser, err := accounts.GetAuthenticatedUser(r)
 	if err != nil {
@@ -37,7 +37,7 @@ func (s *Service) listSubscriptionsHandler(w http.ResponseWriter, r *http.Reques
 	}
 
 	// Check permissions
-	if err := checkListSubscriptionsPermissions(authenticatedUser, user); err != nil {
+	if err := checkListCardsPermissions(authenticatedUser, user); err != nil {
 		response.Error(w, err.Error(), http.StatusForbidden)
 		return
 	}
@@ -50,7 +50,7 @@ func (s *Service) listSubscriptionsHandler(w http.ResponseWriter, r *http.Reques
 	}
 
 	// Count total number of results
-	count, err := s.paginatedSubscriptionsCount(user)
+	count, err := s.paginatedCardsCount(user)
 	if err != nil {
 		response.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -69,44 +69,44 @@ func (s *Service) listSubscriptionsHandler(w http.ResponseWriter, r *http.Reques
 	}
 
 	// Get paginated results
-	subscriptions, err := s.findPaginatedSubscriptions(
+	cards, err := s.findPaginatedCards(
 		pagination.GetOffsetForPage(count, page, limit),
 		limit,
 		r.URL.Query().Get("order_by"),
 		user,
 	)
 	if err != nil {
-		logger.Errorf("Find paginated subscriptions error: %s", err)
+		logger.Errorf("Find paginated cards error: %s", err)
 		response.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	// Create response
 	self := util.GetCurrentURL(r)
-	listSubscriptionsResponse, err := NewListSubscriptionsResponse(
+	listCardsResponse, err := NewListCardsResponse(
 		count, page,
 		self, first, last, next, previous,
-		subscriptions,
+		cards,
 	)
 	if err != nil {
 		response.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	// Write JSON response
-	response.WriteJSON(w, listSubscriptionsResponse, http.StatusOK)
+	response.WriteJSON(w, listCardsResponse, http.StatusOK)
 }
 
-func checkListSubscriptionsPermissions(authenticatedUser *accounts.User, user *accounts.User) error {
-	// Superusers can list any subscriptions
+func checkListCardsPermissions(authenticatedUser *accounts.User, user *accounts.User) error {
+	// Superusers can list any cards
 	if authenticatedUser.Role.Name == roles.Superuser {
 		return nil
 	}
 
-	// Users can list their own subscriptions
+	// Users can list their own cards
 	if user != nil && authenticatedUser.ID == user.ID {
 		return nil
 	}
 
 	// The user doesn't have the permission
-	return ErrListSubscriptionsPermission
+	return ErrListCardsPermission
 }

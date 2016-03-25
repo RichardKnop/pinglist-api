@@ -141,6 +141,52 @@ func (_m *ServiceMock) FindCustomerByCustomerID(customerID string) (*Customer, e
 	return r0, r1
 }
 
+// FindCardByID ...
+func (_m *ServiceMock) FindCardByID(cardID uint) (*Card, error) {
+	ret := _m.Called(cardID)
+
+	var r0 *Card
+	if rf, ok := ret.Get(0).(func(uint) *Card); ok {
+		r0 = rf(cardID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*Card)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(uint) error); ok {
+		r1 = rf(cardID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// FindCardByCardID ...
+func (_m *ServiceMock) FindCardByCardID(cardID string) (*Card, error) {
+	ret := _m.Called(cardID)
+
+	var r0 *Card
+	if rf, ok := ret.Get(0).(func(string) *Card); ok {
+		r0 = rf(cardID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*Card)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(cardID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // FindSubscriptionByID ...
 func (_m *ServiceMock) FindSubscriptionByID(subscriptionID uint) (*Subscription, error) {
 	ret := _m.Called(subscriptionID)
@@ -211,6 +257,18 @@ func (_m *ServiceMock) FindActiveUserSubscription(userID uint) (*Subscription, e
 }
 
 func (_m *ServiceMock) listPlansHandler(w http.ResponseWriter, r *http.Request) {
+	_m.Called(w, r)
+}
+
+func (_m *ServiceMock) createCardHandler(w http.ResponseWriter, r *http.Request) {
+	_m.Called(w, r)
+}
+
+func (_m *ServiceMock) listCardsHandler(w http.ResponseWriter, r *http.Request) {
+	_m.Called(w, r)
+}
+
+func (_m *ServiceMock) deleteCardHandler(w http.ResponseWriter, r *http.Request) {
 	_m.Called(w, r)
 }
 

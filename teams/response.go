@@ -17,6 +17,13 @@ type TeamResponse struct {
 	UpdatedAt string `json:"updated_at"`
 }
 
+// ListTeamsResponse ...
+type ListTeamsResponse struct {
+	jsonhal.Hal
+	Count uint `json:"count"`
+	Page  uint `json:"page"`
+}
+
 // NewTeamResponse creates new TeamResponse instance
 func NewTeamResponse(team *Team) (*TeamResponse, error) {
 	response := &TeamResponse{
@@ -29,7 +36,7 @@ func NewTeamResponse(team *Team) (*TeamResponse, error) {
 	// Set the self link
 	response.SetLink(
 		"self", // name
-		fmt.Sprintf("/v1/accounts/teams/%d", team.ID), // href
+		fmt.Sprintf("/v1/teams/%d", team.ID), // href
 		"", // title
 	)
 
@@ -47,6 +54,47 @@ func NewTeamResponse(team *Team) (*TeamResponse, error) {
 	response.SetEmbedded(
 		"members",
 		jsonhal.Embedded(memberResponses),
+	)
+
+	return response, nil
+}
+
+// NewListTeamsResponse creates new ListTeamsResponse instance
+func NewListTeamsResponse(count, page int, self, first, last, previous, next string, teams []*Team) (*ListTeamsResponse, error) {
+	response := &ListTeamsResponse{
+		Count: uint(count),
+		Page:  uint(page),
+	}
+
+	// Set the self link
+	response.SetLink("self", self, "")
+
+	// Set the first link
+	response.SetLink("first", first, "")
+
+	// Set the last link
+	response.SetLink("last", last, "")
+
+	// Set the previous link
+	response.SetLink("prev", previous, "")
+
+	// Set the next link
+	response.SetLink("next", next, "")
+
+	// Create slice of team responses
+	teamResponses := make([]*TeamResponse, len(teams))
+	for i, team := range teams {
+		teamResponse, err := NewTeamResponse(team)
+		if err != nil {
+			return nil, err
+		}
+		teamResponses[i] = teamResponse
+	}
+
+	// Set embedded teams
+	response.SetEmbedded(
+		"teams",
+		jsonhal.Embedded(teamResponses),
 	)
 
 	return response, nil

@@ -10,7 +10,7 @@ import (
 	"github.com/RichardKnop/pinglist-api/response"
 )
 
-// Handles requests to create a new team (POST /v1/accounts/teams)
+// Handles requests to create a new team (POST /v1/teams)
 func (s *Service) createTeamHandler(w http.ResponseWriter, r *http.Request) {
 	// Get the authenticated user from the request context
 	authenticatedUser, err := accounts.GetAuthenticatedUser(r)
@@ -59,7 +59,7 @@ func (s *Service) createTeamHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Set Location header to the newly created resource
-	w.Header().Set("Location", fmt.Sprintf("/v1/accounts/teams/%d", team.ID))
+	w.Header().Set("Location", fmt.Sprintf("/v1/teams/%d", team.ID))
 	// Write JSON response
 	response.WriteJSON(w, teamResponse, http.StatusCreated)
 }

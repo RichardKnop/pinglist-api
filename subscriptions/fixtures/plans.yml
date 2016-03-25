@@ -12,7 +12,8 @@
     trial_period: 30
     interval: 30
     max_alarms: 2
-    max_team_members: 0
+    max_teams: 0
+    max_members_per_team: 0
     created_at: 'ON_INSERT_NOW()'
     updated_at: 'ON_UPDATE_NOW()'
 
@@ -28,7 +29,8 @@
     trial_period: 30
     interval: 30
     max_alarms: 10
-    max_team_members: 0
+    max_teams: 0
+    max_members_per_team: 0
     created_at: 'ON_INSERT_NOW()'
     updated_at: 'ON_UPDATE_NOW()'
 
@@ -38,13 +40,14 @@
   fields:
     plan_id: 'startup'
     name: 'Startup'
-    description: 'Create a team of 10 members with 10 alarms each.'
+    description: 'Create a team of 10 members and monitor up to 100 APIs.'
     currency: 'USD'
     amount: 7500
     trial_period: 30
     interval: 30
-    max_alarms: 10
-    max_team_members: 10
+    max_alarms: 100
+    max_teams: 1
+    max_members_per_team: 10
     created_at: 'ON_INSERT_NOW()'
     updated_at: 'ON_UPDATE_NOW()'
 
@@ -54,13 +57,14 @@
   fields:
     plan_id: 'business'
     name: 'Business'
-    description: 'Create a team of 20 members with 10 alarms each.'
+    description: 'Create 5 teams of 10 members each and monitor up to 200 APIs.'
     currency: 'USD'
     amount: 15000
     trial_period: 30
     interval: 30
-    max_alarms: 10
-    max_team_members: 20
+    max_alarms: 200
+    max_teams: 5
+    max_members_per_team: 10
     created_at: 'ON_INSERT_NOW()'
     updated_at: 'ON_UPDATE_NOW()'
 
@@ -70,12 +74,13 @@
   fields:
     plan_id: 'enterprise'
     name: 'Enterprise'
-    description: 'Create a team of 50 members with 10 alarms each.'
+    description: 'Create 10 teams of 10 members each and monitor up to 500 APIs.'
     currency: 'USD'
     amount: 35000
     trial_period: 30
     interval: 30
-    max_alarms: 10
-    max_team_members: 50
+    max_alarms: 500
+    max_teams: 10
+    max_members_per_team: 10
     created_at: 'ON_INSERT_NOW()'
     updated_at: 'ON_UPDATE_NOW()'

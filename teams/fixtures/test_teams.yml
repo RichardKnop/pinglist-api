@@ -12,3 +12,30 @@
     name: 'Test Team 1'
     created_at: 'ON_INSERT_NOW()'
     updated_at: 'ON_UPDATE_NOW()'
+
+- table: 'team_teams'
+  pk:
+    id: 2
+  fields:
+    owner_id: 1
+    name: 'Test Team 2'
+    created_at: 'ON_INSERT_NOW()'
+    updated_at: 'ON_UPDATE_NOW()'
+
+- table: 'team_teams'
+  pk:
+    id: 3
+  fields:
+    owner_id: 1
+    name: 'Test Team 3'
+    created_at: 'ON_INSERT_NOW()'
+    updated_at: 'ON_UPDATE_NOW()'
+
+- table: 'team_teams'
+  pk:
+    id: 4
+  fields:
+    owner_id: 1
+    name: 'Test Team 4'
+    created_at: 'ON_INSERT_NOW()'
+    updated_at: 'ON_UPDATE_NOW()'

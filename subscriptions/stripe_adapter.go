@@ -66,7 +66,7 @@ func (a *StripeAdapter) CreateCard(customerID, token string) (*stripe.Card, erro
 }
 
 // DeleteCard deletes a card
-func (a *StripeAdapter) DeleteCard(customerID, cardID string) (*stripe.Card, error) {
+func (a *StripeAdapter) DeleteCard(cardID, customerID string) (*stripe.Card, error) {
 	params := &stripe.CardParams{
 		Customer: customerID,
 	}

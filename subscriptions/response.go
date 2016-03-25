@@ -18,21 +18,29 @@ type CardResponse struct {
 	UpdatedAt string `json:"updated_at"`
 }
 
+// ListCardsResponse ...
+type ListCardsResponse struct {
+	jsonhal.Hal
+	Count uint `json:"count"`
+	Page  uint `json:"page"`
+}
+
 // PlanResponse ...
 type PlanResponse struct {
 	jsonhal.Hal
-	ID             uint   `json:"id"`
-	PlanID         string `json:"plan_id"`
-	Name           string `json:"name"`
-	Description    string `json:"description"`
-	Currency       string `json:"currency"`
-	Amount         uint   `json:"amount"`
-	TrialPeriod    uint   `json:"trial_period"`
-	Interval       uint   `json:"interval"`
-	MaxAlarms      uint   `json:"max_alarms"`
-	MaxTeamMembers uint   `json:"max_team_members"`
-	CreatedAt      string `json:"created_at"`
-	UpdatedAt      string `json:"updated_at"`
+	ID                uint   `json:"id"`
+	PlanID            string `json:"plan_id"`
+	Name              string `json:"name"`
+	Description       string `json:"description"`
+	Currency          string `json:"currency"`
+	Amount            uint   `json:"amount"`
+	TrialPeriod       uint   `json:"trial_period"`
+	Interval          uint   `json:"interval"`
+	MaxAlarms         uint   `json:"max_alarms"`
+	MaxTeams          uint   `json:"max_teams"`
+	MaxMembersPerTeam uint   `json:"max_members_per_team"`
+	CreatedAt         string `json:"created_at"`
+	UpdatedAt         string `json:"updated_at"`
 }
 
 // ListPlansResponse ...
@@ -86,21 +94,63 @@ func NewCardResponse(card *Card) (*CardResponse, error) {
 	return response, nil
 }
 
+// NewListCardsResponse creates new ListCardsResponse instance
+func NewListCardsResponse(count, page int, self, first, last, previous, next string, cards []*Card) (*ListCardsResponse, error) {
+	response := &ListCardsResponse{
+		Count: uint(count),
+		Page:  uint(page),
+	}
+
+	// Set the self link
+	response.SetLink("self", self, "")
+
+	// Set the first link
+	response.SetLink("first", first, "")
+
+	// Set the last link
+	response.SetLink("last", last, "")
+
+	// Set the previous link
+	response.SetLink("prev", previous, "")
+
+	// Set the next link
+	response.SetLink("next", next, "")
+
+	// Create slice of card responses
+	cardResponses := make([]*CardResponse, len(cards))
+	for i, card := range cards {
+		cardResponse, err := NewCardResponse(card)
+		if err != nil {
+			return nil, err
+		}
+		cardResponses[i] = cardResponse
+	}
+
+	// Set embedded cards
+	response.SetEmbedded(
+		"cards",
+		jsonhal.Embedded(cardResponses),
+	)
+
+	return response, nil
+}
+
 // NewPlanResponse creates new PlanResponse instance
 func NewPlanResponse(plan *Plan) (*PlanResponse, error) {
 	response := &PlanResponse{
-		ID:             plan.ID,
-		PlanID:         plan.PlanID,
-		Name:           plan.Name,
-		Description:    plan.Description.String,
-		Currency:       plan.Currency,
-		Amount:         plan.Amount,
-		TrialPeriod:    plan.TrialPeriod,
-		Interval:       plan.Interval,
-		MaxAlarms:      plan.MaxAlarms,
-		MaxTeamMembers: plan.MaxTeamMembers,
-		CreatedAt:      plan.CreatedAt.UTC().Format(time.RFC3339),
-		UpdatedAt:      plan.UpdatedAt.UTC().Format(time.RFC3339),
+		ID:                plan.ID,
+		PlanID:            plan.PlanID,
+		Name:              plan.Name,
+		Description:       plan.Description.String,
+		Currency:          plan.Currency,
+		Amount:            plan.Amount,
+		TrialPeriod:       plan.TrialPeriod,
+		Interval:          plan.Interval,
+		MaxAlarms:         plan.MaxAlarms,
+		MaxTeams:          plan.MaxTeams,
+		MaxMembersPerTeam: plan.MaxMembersPerTeam,
+		CreatedAt:         plan.CreatedAt.UTC().Format(time.RFC3339),
+		UpdatedAt:         plan.UpdatedAt.UTC().Format(time.RFC3339),
 	}
 
 	// Set the self link

@@ -77,10 +77,10 @@ func (suite *SubscriptionsTestSuite) TestListPlans() {
 					Href: "/v1/plans",
 				},
 				"first": &jsonhal.Link{
-					Href: "/v1/plans",
+					Href: "/v1/plans?page=1",
 				},
 				"last": &jsonhal.Link{
-					Href: "/v1/plans",
+					Href: "/v1/plans?page=1",
 				},
 				"prev": new(jsonhal.Link),
 				"next": new(jsonhal.Link),

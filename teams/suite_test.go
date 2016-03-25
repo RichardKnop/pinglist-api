@@ -11,6 +11,7 @@ import (
 	"github.com/RichardKnop/pinglist-api/subscriptions"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
+	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -112,7 +113,7 @@ func (suite *TeamsTestSuite) TearDownSuite() {
 // The SetupTest method will be run before every test in the suite.
 func (suite *TeamsTestSuite) SetupTest() {
 	suite.db.Exec("delete from team_team_members;")
-	suite.db.Unscoped().Not("id", []int64{1}).Delete(new(Team))
+	suite.db.Unscoped().Not("id", []int64{1, 2, 3, 4}).Delete(new(Team))
 
 	// Reset mocks
 	suite.oauthServiceMock.ExpectedCalls = suite.oauthServiceMock.ExpectedCalls[:0]
@@ -151,6 +152,14 @@ func (suite *TeamsTestSuite) mockAuthentication(user *accounts.User) {
 	// Mock FindUserByOauthUserID to return the wanted user
 	suite.accountsServiceMock.On("FindUserByOauthUserID", user.OauthUser.ID).
 		Return(user, nil)
+}
+
+// Mock user querystring filtering
+func (suite *TeamsTestSuite) mockUserFiltering(user *accounts.User) {
+	suite.accountsServiceMock.On(
+		"GetUserFromQueryString",
+		mock.AnythingOfType("*http.Request"),
+	).Return(user, nil)
 }
 
 // Mock find active subscription

@@ -27,15 +27,16 @@ func (l *StripeEventLog) TableName() string {
 // Plan ...
 type Plan struct {
 	gorm.Model
-	PlanID         string         `sql:"type:varchar(60);unique;not null"`
-	Name           string         `sql:"type:varchar(60);not null"`
-	Description    sql.NullString `sql:"type:text"`
-	Currency       string         `sql:"type:varchar(3);index;not null"`
-	Amount         uint
-	TrialPeriod    uint // days
-	Interval       uint // days
-	MaxAlarms      uint
-	MaxTeamMembers uint
+	PlanID            string         `sql:"type:varchar(60);unique;not null"`
+	Name              string         `sql:"type:varchar(60);not null"`
+	Description       sql.NullString `sql:"type:text"`
+	Currency          string         `sql:"type:varchar(3);index;not null"`
+	Amount            uint
+	TrialPeriod       uint // days
+	Interval          uint // days
+	MaxAlarms         uint
+	MaxTeams          uint
+	MaxMembersPerTeam uint
 }
 
 // TableName specifies table name

@@ -165,7 +165,7 @@ Returns `204` empty response on success.
 Example request:
 
 ```
-curl --compressed -v "localhost:8080/v1/subscriptions?page=1" \
+curl --compressed -v "localhost:8080/v1/subscriptions" \
 	-H "Authorization: Bearer 00ccd40e-72ca-4e79-a4b6-67c95e2e3f1c"
 ```
 
@@ -184,16 +184,16 @@ Example response:
 			"href": "/v1/subscriptions?page=1"
 		},
 		"last": {
-			"href": "/v1/subscriptions?page=2"
+			"href": "/v1/subscriptions?page=1"
 		},
 		"next": {
-			"href": "/v1/subscriptions?page=2"
+			"href": ""
 		},
 		"prev": {
 			"href": ""
 		},
 		"self": {
-			"href": "/v1/subscriptions?page=1"
+			"href": "/v1/subscriptions"
 		}
 	},
 	"_embedded": {
@@ -278,7 +278,7 @@ Example response:
 			}
 		]
 	},
-	"count": 1,
+	"count": 2,
 	"page": 1
 }
 ```

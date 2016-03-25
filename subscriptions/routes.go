@@ -44,6 +44,15 @@ func newRoutes(service ServiceInterface) []routes.Route {
 			},
 		},
 		routes.Route{
+			Name:        "list_cards",
+			Method:      "GET",
+			Pattern:     "/cards",
+			HandlerFunc: service.listCardsHandler,
+			Middlewares: []negroni.Handler{
+				accounts.NewUserAuthMiddleware(service.GetAccountsService()),
+			},
+		},
+		routes.Route{
 			Name:        "create_subscription",
 			Method:      "POST",
 			Pattern:     "/subscriptions",
