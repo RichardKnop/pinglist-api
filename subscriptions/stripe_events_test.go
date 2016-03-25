@@ -95,7 +95,7 @@ var customerSubscriptionUpdatedEvent = `{
   "user_id": ""
 }`
 
-var customerSubscriptionCancelledEvent = `{
+var customerSubscriptionDeletedEvent = `{
   "id": "evt_17rUbtKkL3BsdwCi5snf6sTM",
   "livemode": false,
   "created": 1458572785,
@@ -243,10 +243,10 @@ func (suite *SubscriptionsTestSuite) TestStripeEventCustomerSubscriptionUpdated(
 	assert.Equal(suite.T(), trialEnd.UTC(), subscription.TrialEnd.Time.UTC())
 }
 
-func (suite *SubscriptionsTestSuite) TestStripeEventCustomerSubscriptionCancelled() {
+func (suite *SubscriptionsTestSuite) TestStripeEventCustomerSubscriptionDeleted() {
 	// Unmarshal the JSON into a Stripe event
 	stripeEvent := new(stripe.Event)
-	err := json.Unmarshal([]byte(customerSubscriptionCancelledEvent), stripeEvent)
+	err := json.Unmarshal([]byte(customerSubscriptionDeletedEvent), stripeEvent)
 	assert.NoError(suite.T(), err, "Failed unmarshaling mock JSON into an event")
 
 	// Create a test customer
@@ -284,7 +284,7 @@ func (suite *SubscriptionsTestSuite) TestStripeEventCustomerSubscriptionCancelle
 	suite.db.Model(new(Subscription)).Count(&countBefore)
 
 	// Fire off the event processing
-	err = suite.service.stripeEventCustomerSubscriptionUpdated(stripeEvent)
+	err = suite.service.stripeEventCustomerSubscriptionDeleted(stripeEvent)
 	assert.Nil(suite.T(), err)
 
 	// Count after
@@ -292,7 +292,7 @@ func (suite *SubscriptionsTestSuite) TestStripeEventCustomerSubscriptionCancelle
 	suite.db.Model(new(Subscription)).Count(&countAfter)
 	assert.Equal(suite.T(), countBefore, countAfter)
 
-	// Fetch the updated subscription
+	// Fetch the deleted subscription
 	subscription := new(Subscription)
 	notFound := suite.db.Preload("Customer.User").Preload("Plan").Preload("Card").
 		First(subscription, testSubscription.ID).RecordNotFound()

@@ -14,9 +14,9 @@ func TestSubscriptionIsActive(t *testing.T) {
 		subscription *Subscription
 	)
 
-	// Subscription.PeriodEnd not set, therefor IsActive should return true
+	// Subscription.PeriodEnd not set, therefor IsActive should return false
 	subscription = new(Subscription)
-	assert.True(t, subscription.IsActive())
+	assert.False(t, subscription.IsActive())
 
 	// Subscription.PeriodEnd is in the future, therefor IsActive should return true
 	periodEnd = time.Now().Add(+1 * time.Hour)
@@ -55,7 +55,7 @@ func TestSubscriptionIsCancelled(t *testing.T) {
 	subscription = &Subscription{
 		CancelledAt: util.TimeOrNull(&cancelledAt),
 	}
-	assert.True(t, subscription.IsActive())
+	assert.True(t, subscription.IsCancelled())
 }
 
 func (suite *SubscriptionsTestSuite) TestFindSubscriptionByID() {

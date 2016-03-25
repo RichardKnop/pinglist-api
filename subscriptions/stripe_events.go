@@ -1,10 +1,6 @@
 package subscriptions
 
 import (
-	"time"
-
-	"github.com/RichardKnop/pinglist-api/util"
-	"github.com/jinzhu/gorm"
 	stripe "github.com/stripe/stripe-go"
 )
 
@@ -13,8 +9,7 @@ import (
 // from one plan to another, or switching status from trial to active.
 func (s *Service) stripeEventCustomerSubscriptionUpdated(e *stripe.Event) error {
 	// Fetch the subscription record from our database
-	subscriptionID := e.GetObjValue("id")
-	subscription, err := s.FindSubscriptionBySubscriptionID(subscriptionID)
+	subscription, err := s.FindSubscriptionBySubscriptionID(e.GetObjValue("id"))
 	if err != nil {
 		return err
 	}
@@ -31,6 +26,7 @@ func (s *Service) stripeEventCustomerSubscriptionUpdated(e *stripe.Event) error 
 		return err
 	}
 
+	// Update the subscription
 	return s.updateSusbcriptionCommon(
 		s.db,
 		subscription,
@@ -44,8 +40,7 @@ func (s *Service) stripeEventCustomerSubscriptionUpdated(e *stripe.Event) error 
 // Occurs whenever a customer ends their subscription.
 func (s *Service) stripeEventCustomerSubscriptionDeleted(e *stripe.Event) error {
 	// Fetch the subscription record from our database
-	subscriptionID := e.GetObjValue("id")
-	subscription, err := s.FindSubscriptionBySubscriptionID(subscriptionID)
+	subscription, err := s.FindSubscriptionBySubscriptionID(e.GetObjValue("id"))
 	if err != nil {
 		return err
 	}
@@ -56,16 +51,14 @@ func (s *Service) stripeEventCustomerSubscriptionDeleted(e *stripe.Event) error 
 		return err
 	}
 
-	// Update the subscription's cancelled_at field
-	cancelledAt := time.Unix(stripeSubscription.Canceled, 0)
-	if err := s.db.Model(subscription).UpdateColumns(Subscription{
-		CancelledAt: util.TimeOrNull(&cancelledAt),
-		Model:       gorm.Model{UpdatedAt: time.Now()},
-	}).Error; err != nil {
-		return err
-	}
-
-	return nil
+	// Update the subscription
+	return s.updateSusbcriptionCommon(
+		s.db,
+		subscription,
+		subscription.Plan,
+		subscription.Card,
+		stripeSubscription,
+	)
 }
 
 // customer.subscription.trial_will_end
