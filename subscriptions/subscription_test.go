@@ -10,25 +10,25 @@ import (
 
 func TestSubscriptionIsActive(t *testing.T) {
 	var (
-		endedAt      time.Time
+		periodEnd    time.Time
 		subscription *Subscription
 	)
 
-	// Subscription.EndedAt not set, therefor IsActive should return true
+	// Subscription.PeriodEnd not set, therefor IsActive should return true
 	subscription = new(Subscription)
 	assert.True(t, subscription.IsActive())
 
-	// Subscription.EndedAt is in the future, therefor IsActive should return true
-	endedAt = time.Now().Add(+1 * time.Hour)
+	// Subscription.PeriodEnd is in the future, therefor IsActive should return true
+	periodEnd = time.Now().Add(+1 * time.Hour)
 	subscription = &Subscription{
-		EndedAt: util.TimeOrNull(&endedAt),
+		PeriodEnd: util.TimeOrNull(&periodEnd),
 	}
 	assert.True(t, subscription.IsActive())
 
-	// Subscription.EndedAt is in the past, therefor IsActive should return false
-	endedAt = time.Now().Add(-1 * time.Hour)
+	// Subscription.PeriodEnd is in the past, therefor IsActive should return false
+	periodEnd = time.Now().Add(-1 * time.Hour)
 	subscription = &Subscription{
-		EndedAt: util.TimeOrNull(&endedAt),
+		PeriodEnd: util.TimeOrNull(&periodEnd),
 	}
 	assert.False(t, subscription.IsActive())
 }

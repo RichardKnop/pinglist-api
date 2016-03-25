@@ -50,6 +50,7 @@ type Customer struct {
 	UserID        sql.NullInt64 `sql:"index;not null"`
 	User          *accounts.User
 	CustomerID    string `sql:"type:varchar(60);unique;not null"`
+	Cards         []*Card
 	Subscriptions []*Subscription
 }
 

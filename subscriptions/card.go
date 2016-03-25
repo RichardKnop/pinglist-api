@@ -58,12 +58,6 @@ func (s *Service) createCard(user *accounts.User, cardRequest *CardRequest) (*Ca
 	tx := s.db.Begin()
 
 	if err != nil {
-		// Unexpected server error
-		if err != ErrCustomerNotFound {
-			tx.Rollback() // rollback the transaction
-			return nil, err
-		}
-
 		// Create a new Stripe customer
 		stripeCustomer, err = s.stripeAdapter.CreateCustomer(
 			user.OauthUser.Username,

@@ -21,7 +21,7 @@ var (
 
 // IsActive returns true if the subscription has not ended yet
 func (s *Subscription) IsActive() bool {
-	return !s.EndedAt.Valid || s.EndedAt.Time.After(time.Now())
+	return s.PeriodEnd.Valid && s.PeriodEnd.Time.After(time.Now())
 }
 
 // IsCancelled returns true if the subscription has been cancelled
