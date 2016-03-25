@@ -63,7 +63,7 @@ func (suite *SubscriptionsTestSuite) TestCancelSubscription() {
 		suite.users[1],
 		&SubscriptionRequest{
 			PlanID: suite.plans[0].ID,
-			Token:  testCard.CardID,
+			CardID: testCard.ID,
 		},
 	)
 	assert.NoError(suite.T(), err, "Creating test subscription failed")
@@ -120,7 +120,7 @@ func (suite *SubscriptionsTestSuite) TestCancelSubscription() {
 
 	// Fetch the cancelled subscription
 	subscription := new(Subscription)
-	notFound := suite.db.Preload("Customer.User").Preload("Plan").
+	notFound := suite.db.Preload("Customer.User").Preload("Plan").Preload("Card").
 		First(subscription, testSubscription.ID).RecordNotFound()
 	assert.False(suite.T(), notFound)
 

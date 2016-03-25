@@ -6,6 +6,7 @@
   fields:
     customer_id: 1
     plan_id: 1
+    card_id: 1
     subscription_id: 'sub_1'
     started_at: '2016-02-27T22:29:12Z'
     period_start: '2016-02-27T22:29:12Z'
@@ -19,6 +20,7 @@
   fields:
     customer_id: 1
     plan_id: 1
+    card_id: 2
     subscription_id: 'sub_2'
     started_at: '2016-01-27T22:29:12Z'
     cancelled_at: '2016-02-27T22:29:12Z'
@@ -34,6 +36,7 @@
   fields:
     customer_id: 1
     plan_id: 1
+    card_id: 3
     subscription_id: 'sub_3'
     started_at: '2016-01-27T22:29:12Z'
     cancelled_at: '2016-02-27T22:29:12Z'
@@ -49,6 +52,7 @@
   fields:
     customer_id: 1
     plan_id: 1
+    card_id: 4
     subscription_id: 'sub_4'
     started_at: '2016-01-27T22:29:12Z'
     cancelled_at: '2016-02-27T22:29:12Z'

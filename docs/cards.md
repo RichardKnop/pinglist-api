@@ -55,7 +55,6 @@ Example response:
 		}
 	},
 	"id": 1,
-	"card_id": "card_17ssTxKkL3BsdwCiJJPZQc8m",
 	"brand": "Visa",
 	"last_four": "4242",
 	"created_at": "2016-01-14T13:52:24Z",
@@ -119,7 +118,6 @@ Example response:
 					}
 				},
         "id": 1,
-      	"card_id": "card_17ssTxKkL3BsdwCiJJPZQc8m",
       	"brand": "Visa",
       	"last_four": "4242",
       	"created_at": "2016-01-14T13:52:24Z",
@@ -132,7 +130,6 @@ Example response:
 					}
 				},
         "id": 1,
-      	"card_id": "card_Jd83fsafH94dIFSF8fasf02b",
       	"brand": "Visa",
       	"last_four": "4343",
       	"created_at": "2016-01-14T13:52:24Z",

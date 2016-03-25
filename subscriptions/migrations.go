@@ -105,6 +105,18 @@ func migrate0001(db *gorm.DB) error {
 			"subscription_subscriptions.plan_id for subscription_plans(id): %s", err)
 	}
 
+	// Add foreign key on subscription_subscriptions.card_id
+	err = db.Model(new(Subscription)).AddForeignKey(
+		"card_id",
+		"subscription_cards(id)",
+		"RESTRICT",
+		"RESTRICT",
+	).Error
+	if err != nil {
+		return fmt.Errorf("Error creating foreign key on "+
+			"subscription_subscriptions.card_id for subscription_cards(id): %s", err)
+	}
+
 	// Save a record to migrations table,
 	// so we don't rerun this migration again
 	migration.Name = migrationName

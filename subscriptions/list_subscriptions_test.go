@@ -59,7 +59,7 @@ func (suite *SubscriptionsTestSuite) TestListSubscriptions() {
 
 	// Check the response body
 	var subscriptions []*Subscription
-	err = suite.db.Preload("Customer.User").Preload("Plan").
+	err = suite.db.Preload("Customer.User").Preload("Plan").Preload("Card").
 		Order("id").Find(&subscriptions).Error
 	assert.NoError(suite.T(), err, "Fetching data failed")
 

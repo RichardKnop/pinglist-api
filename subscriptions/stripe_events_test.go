@@ -187,14 +187,19 @@ func (suite *SubscriptionsTestSuite) TestStripeEventCustomerSubscriptionUpdated(
 	err = suite.db.Create(testCustomer).Error
 	assert.NoError(suite.T(), err, "Failed to insert a test customer")
 
+	// Create a test card
+	testCard := NewCard(testCustomer, "test_card_id", "Visa", "4242")
+	err = suite.db.Create(testCard).Error
+	assert.NoError(suite.T(), err, "Failed to insert a test card")
+
 	// Create a test subscription
 	startedAt := time.Unix(1458572785, 0)
 	periodStart, periodEnd := time.Unix(1458572783, 0), time.Unix(1461164783, 0)
 	trialStart, trialEnd := time.Unix(1458572783, 0), time.Unix(1461164783, 0)
-
 	testSubscription := NewSubscription(
 		testCustomer,
 		suite.plans[0],
+		testCard,
 		stripeEvent.GetObjValue("id"),
 		&startedAt,
 		nil, // cancelled at
@@ -222,13 +227,13 @@ func (suite *SubscriptionsTestSuite) TestStripeEventCustomerSubscriptionUpdated(
 
 	// Fetch the updated subscription
 	subscription := new(Subscription)
-	notFound := suite.db.Preload("Customer.User").Preload("Plan").
+	notFound := suite.db.Preload("Customer.User").Preload("Plan").Preload("Card").
 		First(subscription, testSubscription.ID).RecordNotFound()
 	assert.False(suite.T(), notFound)
 
 	// Subscription plan and timestamps should have been updated
 	assert.False(suite.T(), subscription.IsCancelled())
-	assert.Equal(suite.T(), suite.plans[1].ID, uint(subscription.PlanID.Int64))
+	assert.Equal(suite.T(), suite.plans[1].ID, subscription.Plan.ID)
 	assert.Equal(suite.T(), startedAt.UTC(), subscription.StartedAt.Time.UTC())
 	assert.False(suite.T(), subscription.CancelledAt.Valid)
 	assert.False(suite.T(), subscription.EndedAt.Valid)
@@ -249,14 +254,19 @@ func (suite *SubscriptionsTestSuite) TestStripeEventCustomerSubscriptionCancelle
 	err = suite.db.Create(testCustomer).Error
 	assert.NoError(suite.T(), err, "Failed to insert a test customer")
 
+	// Create a test card
+	testCard := NewCard(testCustomer, "test_card_id", "Visa", "4242")
+	err = suite.db.Create(testCard).Error
+	assert.NoError(suite.T(), err, "Failed to insert a test card")
+
 	// Create a test subscription
 	startedAt := time.Unix(1458572785, 0)
 	periodStart, periodEnd := time.Unix(1458572783, 0), time.Unix(1461164783, 0)
 	trialStart, trialEnd := time.Unix(1458572783, 0), time.Unix(1461164783, 0)
-
 	testSubscription := NewSubscription(
 		testCustomer,
 		suite.plans[0],
+		testCard,
 		stripeEvent.GetObjValue("id"),
 		&startedAt,
 		nil, // cancelled at
@@ -284,14 +294,14 @@ func (suite *SubscriptionsTestSuite) TestStripeEventCustomerSubscriptionCancelle
 
 	// Fetch the updated subscription
 	subscription := new(Subscription)
-	notFound := suite.db.Preload("Customer.User").Preload("Plan").
+	notFound := suite.db.Preload("Customer.User").Preload("Plan").Preload("Card").
 		First(subscription, testSubscription.ID).RecordNotFound()
 	assert.False(suite.T(), notFound)
 
 	// Subscription plan and timestamps should have been updated
 	cancelledAt := time.Unix(1458675888, 0).UTC()
 	assert.True(suite.T(), subscription.IsCancelled())
-	assert.Equal(suite.T(), suite.plans[0].ID, uint(subscription.PlanID.Int64))
+	assert.Equal(suite.T(), suite.plans[0].ID, subscription.Plan.ID)
 	assert.Equal(suite.T(), startedAt.UTC(), subscription.StartedAt.Time.UTC())
 	assert.Equal(suite.T(), cancelledAt.UTC(), subscription.CancelledAt.Time.UTC())
 	assert.False(suite.T(), subscription.EndedAt.Valid)

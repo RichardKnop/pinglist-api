@@ -11,7 +11,6 @@ import (
 type CardResponse struct {
 	jsonhal.Hal
 	ID        uint   `json:"id"`
-	CardID    string `json:"card_id"`
 	Brand     string `json:"brand"`
 	LastFour  string `json:"last_four"`
 	CreatedAt string `json:"created_at"`
@@ -77,7 +76,6 @@ type ListSubscriptionsResponse struct {
 func NewCardResponse(card *Card) (*CardResponse, error) {
 	response := &CardResponse{
 		ID:        card.ID,
-		CardID:    card.CardID,
 		Brand:     card.Brand,
 		LastFour:  card.LastFour,
 		CreatedAt: card.CreatedAt.UTC().Format(time.RFC3339),
@@ -247,6 +245,16 @@ func NewSubscriptionResponse(subscription *Subscription) (*SubscriptionResponse,
 	response.SetEmbedded(
 		"plan",
 		jsonhal.Embedded(planResponse),
+	)
+
+	// Set embedded card
+	cardResponse, err := NewCardResponse(subscription.Card)
+	if err != nil {
+		return nil, err
+	}
+	response.SetEmbedded(
+		"card",
+		jsonhal.Embedded(cardResponse),
 	)
 
 	return response, nil

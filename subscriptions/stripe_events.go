@@ -31,7 +31,13 @@ func (s *Service) stripeEventCustomerSubscriptionUpdated(e *stripe.Event) error 
 		return err
 	}
 
-	return s.updateSusbcriptionCommon(s.db, subscription, plan, stripeSubscription)
+	return s.updateSusbcriptionCommon(
+		s.db,
+		subscription,
+		plan,
+		subscription.Card,
+		stripeSubscription,
+	)
 }
 
 // customer.subscription.deleted

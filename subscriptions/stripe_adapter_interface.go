@@ -14,7 +14,7 @@ type StripeAdapterInterface interface {
 	DeleteCard(customerID, cardID string) (*stripe.Card, error)
 	CreateSubscription(customerID, planID, token string) (*stripe.Sub, error)
 	GetSubscription(subscriptionID, customerID string) (*stripe.Sub, error)
-	ChangeSubscriptionPlan(subscriptionID, customerID, planID string) (*stripe.Sub, error)
+	UpdateSubscription(subscriptionID, customerID, planID, token string) (*stripe.Sub, error)
 	CancelSubscription(subscriptionID, customerID string) (*stripe.Sub, error)
 	GetEvent(eventID string) (*stripe.Event, error)
 }
