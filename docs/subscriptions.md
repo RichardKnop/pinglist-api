@@ -42,9 +42,8 @@ curl --compressed -v localhost:8080/v1/subscriptions \
 	-H "Content-Type: application/json" \
 	-H "Authorization: Bearer 00ccd40e-72ca-4e79-a4b6-67c95e2e3f1c" \
 	-d '{
-		"stripe_token": "token",
-		"stripe_email": "test@user.com",
-		"plan_id": 1
+		"plan_id": 1,
+		"token": "tok_174VdMKkL3BsdwCin1CW5dMS"
 	}'
 ```
 
@@ -73,7 +72,8 @@ Example response:
 			"trial_period": 30,
 			"interval": 30,
 			"max_alarms": 2,
-			"max_team_members": 0,
+			"max_teams": 0,
+			"max_members_per_team": 0,
 			"created_at": "2016-01-14T13:52:24Z",
 			"updated_at": "2016-01-14T13:52:24Z"
 		}
@@ -129,8 +129,9 @@ Example response:
 			"amount": 1000,
 			"trial_period": 30,
 			"interval": 30,
-			"max_alarms": 15,
-			"max_team_members": 0,
+			"max_alarms": 10,
+			"max_teams": 0,
+			"max_members_per_team": 0,
 			"created_at": "2016-01-14T13:52:24Z",
 			"updated_at": "2016-01-14T13:52:24Z"
 		}
@@ -220,7 +221,8 @@ Example response:
 						"trial_period": 30,
 						"interval": 30,
 						"max_alarms": 10,
-						"max_team_members": 0,
+						"max_teams": 0,
+				    "max_members_per_team": 0,
 						"created_at": "2016-01-14T13:52:24Z",
 						"updated_at": "2016-01-14T13:52:24Z"
 					}
@@ -259,7 +261,8 @@ Example response:
 						"trial_period": 30,
 						"interval": 30,
 						"max_alarms": 2,
-						"max_team_members": 0,
+						"max_teams": 0,
+				    "max_members_per_team": 0,
 						"created_at": "2016-01-14T13:52:24Z",
 						"updated_at": "2016-01-14T13:52:24Z"
 					}

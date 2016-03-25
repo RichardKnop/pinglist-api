@@ -8,5 +8,6 @@ var (
 	errStatusCodeMap = map[error]int{
 		ErrUserCanOnlyHaveOneActiveSubscription: http.StatusBadRequest,
 		ErrPlanNotFound:                         http.StatusBadRequest,
+		ErrCustomerNotFound:                     http.StatusBadRequest,
 	}
 )

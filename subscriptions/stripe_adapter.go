@@ -74,10 +74,11 @@ func (a *StripeAdapter) DeleteCard(cardID, customerID string) (*stripe.Card, err
 }
 
 // CreateSubscription creates a new subscription
-func (a *StripeAdapter) CreateSubscription(customerID, planID string) (*stripe.Sub, error) {
+func (a *StripeAdapter) CreateSubscription(customerID, planID, token string) (*stripe.Sub, error) {
 	params := &stripe.SubParams{
 		Customer: customerID,
 		Plan:     planID,
+		Token:    token,
 	}
 	return stripeSubscription.New(params)
 }

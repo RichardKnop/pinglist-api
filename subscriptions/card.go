@@ -67,7 +67,7 @@ func (s *Service) createCard(user *accounts.User, cardRequest *CardRequest) (*Ca
 		// Create a new Stripe customer
 		stripeCustomer, err = s.stripeAdapter.CreateCustomer(
 			user.OauthUser.Username,
-			"",
+			"", // token
 		)
 		if err != nil {
 			tx.Rollback() // rollback the transaction
@@ -89,7 +89,7 @@ func (s *Service) createCard(user *accounts.User, cardRequest *CardRequest) (*Ca
 		stripeCustomer, created, err = s.stripeAdapter.GetOrCreateCustomer(
 			customer.CustomerID,
 			user.OauthUser.Username,
-			"",
+			"", // token
 		)
 		if err != nil {
 			tx.Rollback() // rollback the transaction

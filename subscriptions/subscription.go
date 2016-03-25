@@ -95,83 +95,23 @@ func (s *Service) createSubscription(user *accounts.User, subscriptionRequest *S
 		return nil, err
 	}
 
-	var (
-		customer       *Customer
-		stripeCustomer *stripe.Customer
-		created        bool
-	)
-
-	// Do we already store a customer recors for this user?
-	customer, err = s.FindCustomerByUserID(user.ID)
+	// Fetch the customer
+	customer, err := s.FindCustomerByUserID(user.ID)
+	if err != nil {
+		return nil, err
+	}
 
 	// Begin a transaction
 	tx := s.db.Begin()
-
-	if err != nil {
-		// Unexpected server error
-		if err != ErrCustomerNotFound {
-			tx.Rollback() // rollback the transaction
-			return nil, err
-		}
-
-		// Create a new Stripe customer
-		stripeCustomer, err = s.stripeAdapter.CreateCustomer(
-			subscriptionRequest.StripeEmail,
-			subscriptionRequest.StripeToken,
-		)
-		if err != nil {
-			tx.Rollback() // rollback the transaction
-			return nil, err
-		}
-
-		logger.Infof("Created customer: %s", stripeCustomer.ID)
-
-		// Create a new customer object
-		customer = NewCustomer(user, stripeCustomer.ID)
-
-		// Save the customer to the database
-		if err := tx.Create(customer).Error; err != nil {
-			tx.Rollback() // rollback the transaction
-			return nil, err
-		}
-	} else {
-		// Get an existing Stripe customer or create a new one
-		stripeCustomer, created, err = s.stripeAdapter.GetOrCreateCustomer(
-			customer.CustomerID,
-			subscriptionRequest.StripeEmail,
-			subscriptionRequest.StripeToken,
-		)
-		if err != nil {
-			tx.Rollback() // rollback the transaction
-			return nil, err
-		}
-
-		if created {
-			logger.Infof("Created customer: %s", stripeCustomer.ID)
-
-			// Our customer record is not valid so delete it
-			if err := tx.Delete(customer).Error; err != nil {
-				tx.Rollback() // rollback the transaction
-				return nil, err
-			}
-
-			// Create a new customer object
-			customer = NewCustomer(user, stripeCustomer.ID)
-
-			// Save the customer to the database
-			if err := tx.Create(customer).Error; err != nil {
-				tx.Rollback() // rollback the transaction
-				return nil, err
-			}
-		}
-	}
 
 	// Create a new Stripe subscription
 	stripeSubscription, err := s.stripeAdapter.CreateSubscription(
 		customer.CustomerID,
 		plan.PlanID,
+		subscriptionRequest.Token,
 	)
 	if err != nil {
+		tx.Rollback() // rollback the transaction
 		return nil, err
 	}
 
