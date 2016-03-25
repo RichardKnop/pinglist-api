@@ -74,7 +74,10 @@ func (s *Service) createTeam(owner *accounts.User, teamRequest *TeamRequest) (*T
 
 	// Limit teams to the max number defined as per subscription plan
 	var teamsCount int
-	s.db.Model(new(Team)).Where("owner_id = ?", owner.ID).Count(&teamsCount)
+	err := s.db.Model(new(Team)).Where("owner_id = ?", owner.ID).Count(&teamsCount).Error
+	if err != nil {
+		return nil, err
+	}
 	if teamsCount >= maxTeams {
 		return nil, ErrMaxTeamsLimitReached
 	}
@@ -118,7 +121,10 @@ func (s *Service) updateTeam(team *Team, teamRequest *TeamRequest) error {
 
 	// Limit teams to the max number defined as per subscription plan
 	var teamsCount int
-	s.db.Model(new(Team)).Where("owner_id = ?", team.Owner.ID).Count(&teamsCount)
+	err := s.db.Model(new(Team)).Where("owner_id = ?", team.Owner.ID).Count(&teamsCount).Error
+	if err != nil {
+		return nil, err
+	}
 	if teamsCount >= maxTeams {
 		return ErrMaxTeamsLimitReached
 	}
