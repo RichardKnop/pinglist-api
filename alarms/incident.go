@@ -121,11 +121,8 @@ func (s *Service) resolveIncidents(alarm *Alarm) error {
 		}
 	}
 
-	// Resolve incidents
-	err = tx.Model(new(Incident)).Where(map[string]interface{}{
-		"alarm_id":    alarm.ID,
-		"resolved_at": gorm.Expr("NULL"),
-	}).UpdateColumns(Incident{
+	// Resolve open incidents
+	err = tx.Model(new(Incident)).Where("resolved_at IS NULL AND alarm_id = ?", alarm.ID).UpdateColumns(Incident{
 		ResolvedAt: util.TimeOrNull(&now),
 		Model:      gorm.Model{UpdatedAt: now},
 	}).Error
