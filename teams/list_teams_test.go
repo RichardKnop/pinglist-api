@@ -23,6 +23,52 @@ func (suite *TeamsTestSuite) TestListTeamsRequiresUserAuthentication() {
 	assert.Equal(suite.T(), http.StatusUnauthorized, w.Code, "This requires an authenticated user")
 }
 
+func (suite *TeamsTestSuite) TestListTeamsWithoutPermission() {
+	// Prepare a request
+	r, err := http.NewRequest(
+		"GET",
+		"http://1.2.3.4/v1/teams",
+		nil,
+	)
+	assert.NoError(suite.T(), err, "Request setup should not get an error")
+	r.Header.Set("Authorization", "Bearer test_token")
+
+	// Check the routing
+	match := new(mux.RouteMatch)
+	suite.router.Match(r, match)
+	if assert.NotNil(suite.T(), match.Route) {
+		assert.Equal(suite.T(), "list_teams", match.Route.GetName())
+	}
+
+	// Mock authentication
+	suite.mockAuthentication(suite.users[2])
+	suite.mockUserFiltering(suite.users[1])
+
+	// And serve the request
+	w := httptest.NewRecorder()
+	suite.router.ServeHTTP(w, r)
+
+	// Check mock expectations were met
+	suite.assertMockExpectations()
+
+	// Check the status code
+	if !assert.Equal(suite.T(), 403, w.Code) {
+		log.Print(w.Body.String())
+	}
+
+	// Check the response body
+	expectedJSON, err := json.Marshal(
+		map[string]string{"error": ErrListTeamsPermission.Error()})
+	if assert.NoError(suite.T(), err, "JSON marshalling failed") {
+		assert.Equal(
+			suite.T(),
+			string(expectedJSON),
+			strings.TrimRight(w.Body.String(), "\n"),
+			"Body should contain JSON detailing the error",
+		)
+	}
+}
+
 func (suite *TeamsTestSuite) TestListTeams() {
 	// Prepare a request
 	r, err := http.NewRequest(

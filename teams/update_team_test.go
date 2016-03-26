@@ -28,7 +28,7 @@ func (suite *TeamsTestSuite) TestUpdateTeamRequiresUserAuthentication() {
 	assert.Equal(suite.T(), http.StatusUnauthorized, w.Code, "This requires an authenticated user")
 }
 
-func (suite *TeamsTestSuite) TestUpdateTeamFailsWithoutPermission() {
+func (suite *TeamsTestSuite) TestUpdateTeamWithoutPermission() {
 	// Prepare a request
 	payload, err := json.Marshal(&TeamRequest{
 		Name:    "Test Team 1",
