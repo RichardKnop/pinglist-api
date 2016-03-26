@@ -4,7 +4,8 @@ import (
 	"github.com/RichardKnop/pinglist-api/accounts"
 )
 
-// getMaxTeamLimits finds out max number of teams as well as upper limit of members per one team
+// getMaxTeamLimits finds out max number of teams as well as
+// upper limit of members per one team
 func (s *Service) getMaxTeamLimits(user *accounts.User) (int, int) {
 	var (
 		maxTeams          int
