@@ -152,7 +152,7 @@ func (s *Service) updateSubscription(subscription *Subscription, subscriptionReq
 	// Begin a transaction
 	tx := s.db.Begin()
 
-	// Change the subscription plan
+	// Change the subscription plan and card
 	stripeSubscription, err := s.stripeAdapter.UpdateSubscription(
 		subscription.SubscriptionID,
 		subscription.Customer.CustomerID,
@@ -162,14 +162,6 @@ func (s *Service) updateSubscription(subscription *Subscription, subscriptionReq
 	if err != nil {
 		tx.Rollback() // rollback the transaction
 		return err
-	}
-
-	if subscription.Plan.ID != plan.ID {
-		logger.Infof(
-			"Changed subscription plan: %s -> %s",
-			subscription.SubscriptionID,
-			plan.PlanID,
-		)
 	}
 
 	// Update the subscription
