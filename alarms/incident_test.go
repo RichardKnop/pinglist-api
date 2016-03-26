@@ -293,8 +293,9 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	// Check that the mock object expectations were met
 	suite.oauthServiceMock.AssertExpectations(suite.T())
 	suite.accountsServiceMock.AssertExpectations(suite.T())
-	suite.metricsServiceMock.AssertExpectations(suite.T())
 	suite.subscriptionsServiceMock.AssertExpectations(suite.T())
+	suite.teamsServiceMock.AssertExpectations(suite.T())
+	suite.metricsServiceMock.AssertExpectations(suite.T())
 	suite.emailServiceMock.AssertExpectations(suite.T())
 	suite.emailFactoryMock.AssertExpectations(suite.T())
 

@@ -10,6 +10,7 @@ import (
 	"github.com/RichardKnop/pinglist-api/oauth"
 	"github.com/RichardKnop/pinglist-api/scheduler"
 	"github.com/RichardKnop/pinglist-api/subscriptions"
+	"github.com/RichardKnop/pinglist-api/teams"
 )
 
 // RunScheduler runs the scheduler
@@ -35,13 +36,6 @@ func RunScheduler() error {
 		nil, // accounts.EmailFactory
 	)
 
-	// Initialise the metrics service
-	metricsService := metrics.NewService(
-		cnf,
-		db,
-		accountsService,
-	)
-
 	// Initialise the subscriptions service
 	subscriptionsService := subscriptions.NewService(
 		cnf,
@@ -50,13 +44,29 @@ func RunScheduler() error {
 		nil, // subscriptions.StripeAdapter
 	)
 
+	// Initialise the teams service
+	teamsService := teams.NewService(
+		cnf,
+		db,
+		accountsService,
+		subscriptionsService,
+	)
+
+	// Initialise the metrics service
+	metricsService := metrics.NewService(
+		cnf,
+		db,
+		accountsService,
+	)
+
 	// Initialise the alarms service
 	alarmsService := alarms.NewService(
 		cnf,
 		db,
 		accountsService,
-		metricsService,
 		subscriptionsService,
+		teamsService,
+		metricsService,
 		emailService,
 		nil, // alarms.EmailFactory
 		nil, // HTTP client

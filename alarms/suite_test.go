@@ -12,6 +12,7 @@ import (
 	"github.com/RichardKnop/pinglist-api/metrics"
 	"github.com/RichardKnop/pinglist-api/oauth"
 	"github.com/RichardKnop/pinglist-api/subscriptions"
+	"github.com/RichardKnop/pinglist-api/teams"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	"github.com/stretchr/testify/mock"
@@ -40,7 +41,6 @@ var testFixtures = []string{
 var testMigrations = []func(*gorm.DB) error{
 	oauth.MigrateAll,
 	accounts.MigrateAll,
-	metrics.MigrateAll,
 	MigrateAll,
 }
 
@@ -51,8 +51,9 @@ type AlarmsTestSuite struct {
 	db                       *gorm.DB
 	oauthServiceMock         *oauth.ServiceMock
 	accountsServiceMock      *accounts.ServiceMock
-	metricsServiceMock       *metrics.ServiceMock
 	subscriptionsServiceMock *subscriptions.ServiceMock
+	teamsServiceMock         *teams.ServiceMock
+	metricsServiceMock       *metrics.ServiceMock
 	emailServiceMock         *email.ServiceMock
 	emailFactoryMock         *EmailFactoryMock
 	service                  *Service
@@ -125,8 +126,9 @@ func (suite *AlarmsTestSuite) SetupSuite() {
 	// Initialise mocks
 	suite.oauthServiceMock = new(oauth.ServiceMock)
 	suite.accountsServiceMock = new(accounts.ServiceMock)
-	suite.metricsServiceMock = new(metrics.ServiceMock)
 	suite.subscriptionsServiceMock = new(subscriptions.ServiceMock)
+	suite.teamsServiceMock = new(teams.ServiceMock)
+	suite.metricsServiceMock = new(metrics.ServiceMock)
 	suite.emailServiceMock = new(email.ServiceMock)
 	suite.emailFactoryMock = new(EmailFactoryMock)
 
@@ -135,8 +137,9 @@ func (suite *AlarmsTestSuite) SetupSuite() {
 		suite.cnf,
 		suite.db,
 		suite.accountsServiceMock,
-		suite.metricsServiceMock,
 		suite.subscriptionsServiceMock,
+		suite.teamsServiceMock,
+		suite.metricsServiceMock,
 		suite.emailServiceMock,
 		suite.emailFactoryMock,
 		nil, // HTTP client
@@ -163,10 +166,12 @@ func (suite *AlarmsTestSuite) SetupTest() {
 	suite.oauthServiceMock.Calls = suite.oauthServiceMock.Calls[:0]
 	suite.accountsServiceMock.ExpectedCalls = suite.accountsServiceMock.ExpectedCalls[:0]
 	suite.accountsServiceMock.Calls = suite.accountsServiceMock.Calls[:0]
-	suite.metricsServiceMock.ExpectedCalls = suite.metricsServiceMock.ExpectedCalls[:0]
-	suite.metricsServiceMock.Calls = suite.metricsServiceMock.Calls[:0]
 	suite.subscriptionsServiceMock.ExpectedCalls = suite.subscriptionsServiceMock.ExpectedCalls[:0]
 	suite.subscriptionsServiceMock.Calls = suite.subscriptionsServiceMock.Calls[:0]
+	suite.teamsServiceMock.ExpectedCalls = suite.teamsServiceMock.ExpectedCalls[:0]
+	suite.teamsServiceMock.Calls = suite.teamsServiceMock.Calls[:0]
+	suite.metricsServiceMock.ExpectedCalls = suite.metricsServiceMock.ExpectedCalls[:0]
+	suite.metricsServiceMock.Calls = suite.metricsServiceMock.Calls[:0]
 	suite.emailServiceMock.ExpectedCalls = suite.emailServiceMock.ExpectedCalls[:0]
 	suite.emailServiceMock.Calls = suite.emailServiceMock.Calls[:0]
 	suite.emailFactoryMock.ExpectedCalls = suite.emailFactoryMock.ExpectedCalls[:0]

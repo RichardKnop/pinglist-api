@@ -53,13 +53,6 @@ func RunServer() error {
 		nil, // facebook.Adapter
 	)
 
-	// Initialise the metrics service
-	metricsService := metrics.NewService(
-		cnf,
-		db,
-		accountsService,
-	)
-
 	// Initialise the subscriptions service
 	subscriptionsService := subscriptions.NewService(
 		cnf,
@@ -68,24 +61,32 @@ func RunServer() error {
 		nil, // subscriptions.StripeAdapter
 	)
 
-	// Initialise the alarms service
-	alarmsService := alarms.NewService(
-		cnf,
-		db,
-		accountsService,
-		metricsService,
-		subscriptionsService,
-		emailService,
-		nil, // alarms.EmailFactory
-		nil, // HTTP client
-	)
-
 	// Initialise the teams service
 	teamsService := teams.NewService(
 		cnf,
 		db,
 		accountsService,
 		subscriptionsService,
+	)
+
+	// Initialise the metrics service
+	metricsService := metrics.NewService(
+		cnf,
+		db,
+		accountsService,
+	)
+
+	// Initialise the alarms service
+	alarmsService := alarms.NewService(
+		cnf,
+		db,
+		accountsService,
+		subscriptionsService,
+		teamsService,
+		metricsService,
+		emailService,
+		nil, // alarms.EmailFactory
+		nil, // HTTP client
 	)
 
 	// Initialise the notifications service
@@ -121,17 +122,17 @@ func RunServer() error {
 	// Register routes for the facebook service
 	facebook.RegisterRoutes(router, facebookService)
 
-	// Register routes for the metrics service
-	metrics.RegisterRoutes(router, metricsService)
-
 	// Register routes for the subscriptions service
 	subscriptions.RegisterRoutes(router, subscriptionsService)
 
-	// Register routes for the alarms service
-	alarms.RegisterRoutes(router, alarmsService)
-
 	// Register routes for the teams service
 	teams.RegisterRoutes(router, teamsService)
+
+	// Register routes for the metrics service
+	metrics.RegisterRoutes(router, metricsService)
+
+	// Register routes for the alarms service
+	alarms.RegisterRoutes(router, alarmsService)
 
 	// Register routes for the notifications service
 	notifications.RegisterRoutes(router, notificationsService)
