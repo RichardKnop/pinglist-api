@@ -208,6 +208,14 @@ func (suite *AlarmsTestSuite) mockAuthentication(user *accounts.User) {
 		Return(user, nil)
 }
 
+// Mock find team
+func (suite *AlarmsTestSuite) mockFindTeamByMemberID(userID uint, team *teams.Team, err error) {
+	suite.teamsServiceMock.On(
+		"FindTeamByMemberID",
+		userID,
+	).Return(team, err)
+}
+
 // Mock find active subscription
 func (suite *AlarmsTestSuite) mockFindActiveSubscriptionByUserID(userID uint, subscription *subscriptions.Subscription, err error) {
 	suite.subscriptionsServiceMock.On(

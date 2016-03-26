@@ -14,6 +14,7 @@ import (
 	"github.com/RichardKnop/pinglist-api/alarms/alarmstates"
 	"github.com/RichardKnop/pinglist-api/alarms/regions"
 	"github.com/RichardKnop/pinglist-api/subscriptions"
+	"github.com/RichardKnop/pinglist-api/teams"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
 )
@@ -58,6 +59,13 @@ func (suite *AlarmsTestSuite) TestCreateAlarmMaxLimitReached() {
 
 	// Mock authentication
 	suite.mockAuthentication(suite.users[1])
+
+	// Mock find team
+	suite.mockFindTeamByMemberID(
+		suite.users[1].ID,
+		nil,
+		teams.ErrTeamNotFound,
+	)
 
 	// Mock find active subscription
 	suite.mockFindActiveSubscriptionByUserID(
@@ -134,6 +142,13 @@ func (suite *AlarmsTestSuite) TestCreateAlarm() {
 
 	// Mock authentication
 	suite.mockAuthentication(suite.users[1])
+
+	// Mock find team
+	suite.mockFindTeamByMemberID(
+		suite.users[1].ID,
+		nil,
+		teams.ErrTeamNotFound,
+	)
 
 	// Mock find active subscription
 	suite.mockFindActiveSubscriptionByUserID(
