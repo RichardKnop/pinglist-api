@@ -11,8 +11,8 @@ import (
 type Service struct {
 	cnf                  *config.Config
 	db                   *gorm.DB
-	accountsService      accounts.ServiceInterface      // accounts service dependency injection
-	subscriptionsService subscriptions.ServiceInterface // accounts service dependency injection
+	accountsService      accounts.ServiceInterface
+	subscriptionsService subscriptions.ServiceInterface
 }
 
 // NewService starts a new Service instance
