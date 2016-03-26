@@ -21,7 +21,7 @@ func (suite *AlarmsTestSuite) TestGetMaxAlarmsNoSubscriptionUserInTrialPeriod() 
 		teams.ErrTeamNotFound,
 	)
 
-	// User does not have a personal subscription
+	// User does not have an active subscription
 	suite.mockFindActiveSubscriptionByUserID(
 		suite.users[1].ID,
 		nil,
@@ -50,7 +50,7 @@ func (suite *AlarmsTestSuite) TestGetMaxAlarmsNoSubscriptionUserNotInTrialPeriod
 		teams.ErrTeamNotFound,
 	)
 
-	// User does not have a personal subscription
+	// User does not have an active subscription
 	suite.mockFindActiveSubscriptionByUserID(
 		suite.users[1].ID,
 		nil,
