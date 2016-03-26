@@ -14,7 +14,7 @@ func (s *Service) getMaxAlarms(user *accounts.User) int {
 	}
 
 	// Fetch active user subscription
-	subscription, err := s.subscriptionsService.FindActiveUserSubscription(user.ID)
+	subscription, err := s.subscriptionsService.FindActiveSubscriptionByUserID(user.ID)
 
 	// If subscribed, take the max values from the subscription
 	if err == nil && subscription != nil {

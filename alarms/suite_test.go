@@ -29,9 +29,6 @@ var testFixtures = []string{
 	"../accounts/fixtures/roles.yml",
 	"../accounts/fixtures/test_accounts.yml",
 	"../accounts/fixtures/test_users.yml",
-	"../subscriptions/fixtures/plans.yml",
-	"../subscriptions/fixtures/test_customers.yml",
-	"../subscriptions/fixtures/test_subscriptions.yml",
 	"fixtures/regions.yml",
 	"fixtures/alarm_states.yml",
 	"fixtures/incident_types.yml",
@@ -44,7 +41,6 @@ var testMigrations = []func(*gorm.DB) error{
 	oauth.MigrateAll,
 	accounts.MigrateAll,
 	metrics.MigrateAll,
-	subscriptions.MigrateAll,
 	MigrateAll,
 }
 
@@ -208,9 +204,9 @@ func (suite *AlarmsTestSuite) mockAuthentication(user *accounts.User) {
 }
 
 // Mock find active subscription
-func (suite *AlarmsTestSuite) mockFindActiveSubscription(userID uint, subscription *subscriptions.Subscription, err error) {
+func (suite *AlarmsTestSuite) mockFindActiveSubscriptionByUserID(userID uint, subscription *subscriptions.Subscription, err error) {
 	suite.subscriptionsServiceMock.On(
-		"FindActiveUserSubscription",
+		"FindActiveSubscriptionByUserID",
 		userID,
 	).Return(subscription, err)
 }

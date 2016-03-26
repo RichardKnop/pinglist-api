@@ -60,7 +60,7 @@ func (suite *AlarmsTestSuite) TestUpdateAlarmMaxLimitReached() {
 	suite.mockAuthentication(suite.users[1])
 
 	// Mock find active subscription
-	suite.mockFindActiveSubscription(
+	suite.mockFindActiveSubscriptionByUserID(
 		suite.users[1].ID,
 		nil,
 		subscriptions.ErrUserHasNoActiveSubscription,
@@ -135,7 +135,7 @@ func (suite *AlarmsTestSuite) TestUpdateAlarm() {
 	suite.mockAuthentication(suite.users[1])
 
 	// Mock find active subscription
-	suite.mockFindActiveSubscription(
+	suite.mockFindActiveSubscriptionByUserID(
 		suite.users[1].ID,
 		&subscriptions.Subscription{
 			Plan: &subscriptions.Plan{

@@ -233,8 +233,8 @@ func (_m *ServiceMock) FindSubscriptionBySubscriptionID(subscriptionID string) (
 	return r0, r1
 }
 
-// FindActiveUserSubscription ...
-func (_m *ServiceMock) FindActiveUserSubscription(userID uint) (*Subscription, error) {
+// FindActiveSubscriptionByUserID ...
+func (_m *ServiceMock) FindActiveSubscriptionByUserID(userID uint) (*Subscription, error) {
 	ret := _m.Called(userID)
 
 	var r0 *Subscription

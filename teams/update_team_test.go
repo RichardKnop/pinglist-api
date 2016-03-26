@@ -114,7 +114,7 @@ func (suite *TeamsTestSuite) TestUpdateTeamMaxTeamsLimitReached() {
 	suite.mockAuthentication(suite.users[0])
 
 	// Mock find active subscription
-	suite.mockFindActiveSubscription(
+	suite.mockFindActiveSubscriptionByUserID(
 		suite.users[0].ID,
 		&subscriptions.Subscription{
 			Plan: &subscriptions.Plan{
@@ -188,7 +188,7 @@ func (suite *TeamsTestSuite) TestUpdateTeamMaxMembersPerTeamLimitReached() {
 	suite.mockAuthentication(suite.users[0])
 
 	// Mock find active subscription
-	suite.mockFindActiveSubscription(
+	suite.mockFindActiveSubscriptionByUserID(
 		suite.users[0].ID,
 		&subscriptions.Subscription{
 			Plan: &subscriptions.Plan{
@@ -262,7 +262,7 @@ func (suite *TeamsTestSuite) TestUpdateTeam() {
 	suite.mockAuthentication(suite.users[0])
 
 	// Mock find active subscription
-	suite.mockFindActiveSubscription(
+	suite.mockFindActiveSubscriptionByUserID(
 		suite.users[0].ID,
 		&subscriptions.Subscription{
 			Plan: &subscriptions.Plan{

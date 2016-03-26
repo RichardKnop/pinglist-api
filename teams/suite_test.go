@@ -163,9 +163,9 @@ func (suite *TeamsTestSuite) mockUserFiltering(user *accounts.User) {
 }
 
 // Mock find active subscription
-func (suite *TeamsTestSuite) mockFindActiveSubscription(userID uint, subscription *subscriptions.Subscription, err error) {
+func (suite *TeamsTestSuite) mockFindActiveSubscriptionByUserID(userID uint, subscription *subscriptions.Subscription, err error) {
 	suite.subscriptionsServiceMock.On(
-		"FindActiveUserSubscription",
+		"FindActiveSubscriptionByUserID",
 		userID,
 	).Return(subscription, err)
 }

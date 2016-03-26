@@ -16,7 +16,7 @@ var (
 	// ErrUserHasNoActiveSubscription ...
 	ErrUserHasNoActiveSubscription = errors.New("User has no active subscription")
 	// ErrUserCanOnlyHaveOneActiveSubscription ...
-	ErrUserCanOnlyHaveOneActiveSubscription = errors.New("User can only have one active subscriptions")
+	ErrUserCanOnlyHaveOneActiveSubscription = errors.New("User can only have one active subscription")
 )
 
 // IsActive returns true if the subscription has not ended yet
@@ -60,32 +60,31 @@ func (s *Service) FindSubscriptionBySubscriptionID(subscriptionID string) (*Subs
 	return subscription, nil
 }
 
-// FindActiveUserSubscription returns the currently active user subscription
-func (s *Service) FindActiveUserSubscription(userID uint) (*Subscription, error) {
-	// Fetch all active user subscriptions
-	activeUserSubscriptions, err := s.findActiveUserSubscriptions(userID)
-	if err != nil {
-		return nil, err
-	}
+// FindActiveSubscriptionByUserID returns the currently active user subscription
+func (s *Service) FindActiveSubscriptionByUserID(userID uint) (*Subscription, error) {
+	// Fetch the subscription from the database
+	subscription := new(Subscription)
+	notFound := s.db.Preload("Customer.User").Preload("Plan").Preload("Card").
+		Joins("inner join subscription_customers on subscription_customers.id = subscription_subscriptions.customer_id").
+		Joins("inner join account_users on account_users.id = subscription_customers.user_id").
+		Where("subscription_customers.user_id = ? AND period_end > ?", userID, time.Now()).
+		First(subscription).RecordNotFound()
 
-	// User has no active subscription
-	if len(activeUserSubscriptions) == 0 {
+	// Not found
+	if notFound {
 		return nil, ErrUserHasNoActiveSubscription
 	}
 
-	return activeUserSubscriptions[0], nil
+	return subscription, nil
 }
 
 // createSubscription creates a new Stripe user and subscribes him/her to a plan
 func (s *Service) createSubscription(user *accounts.User, subscriptionRequest *SubscriptionRequest) (*Subscription, error) {
-	// Fetch all active user subscriptions
-	activeUserSubscriptions, err := s.findActiveUserSubscriptions(user.ID)
-	if err != nil {
-		return nil, err
-	}
+	// Fetch the active user subscription
+	_, err := s.FindActiveSubscriptionByUserID(user.ID)
 
 	// User should only have one active subscription at any time
-	if len(activeUserSubscriptions) > 0 {
+	if err != ErrUserHasNoActiveSubscription {
 		return nil, ErrUserCanOnlyHaveOneActiveSubscription
 	}
 
@@ -274,35 +273,6 @@ func (s *Service) cancelSubscription(subscription *Subscription) error {
 	}
 
 	return nil
-}
-
-// findActiveUserSubscriptions returns only active subscriptions belonging to a user
-func (s *Service) findActiveUserSubscriptions(userID uint) ([]*Subscription, error) {
-	var activeUserSubscriptions []*Subscription
-
-	// Fetch all user subscriptions
-	userSubscriptions, err := s.findUserSubscriptions(userID)
-	if err != nil {
-		return activeUserSubscriptions, err
-	}
-
-	// Filter only active subscriptions
-	for _, sub := range userSubscriptions {
-		if sub.IsActive() {
-			activeUserSubscriptions = append(activeUserSubscriptions, sub)
-		}
-	}
-
-	return activeUserSubscriptions, nil
-}
-
-// findUserSubscriptions returns all subscriptions belonging to a user
-func (s *Service) findUserSubscriptions(userID uint) ([]*Subscription, error) {
-	var userSubscriptions []*Subscription
-	userObj := &accounts.User{Model: gorm.Model{ID: userID}}
-	return userSubscriptions, s.paginatedSubscriptionsQuery(userObj).
-		Preload("Customer.User").Preload("Plan").Preload("Card").
-		Order("id desc").Find(&userSubscriptions).Error
 }
 
 // paginatedSubscriptionsCount returns a total count of subscriptions

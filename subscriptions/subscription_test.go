@@ -122,14 +122,14 @@ func (suite *SubscriptionsTestSuite) TestFindSubscriptionBySubscriptionID() {
 	}
 }
 
-func (suite *SubscriptionsTestSuite) TestFindActiveUserSubscription() {
+func (suite *SubscriptionsTestSuite) TestFindActiveSubscriptionByUserID() {
 	var (
 		subscription *Subscription
 		err          error
 	)
 
 	// First, try a user with an active subscription
-	subscription, err = suite.service.FindActiveUserSubscription(suite.users[0].ID)
+	subscription, err = suite.service.FindActiveSubscriptionByUserID(suite.users[0].ID)
 
 	// Error should be nil
 	assert.Nil(suite.T(), err)
@@ -143,7 +143,7 @@ func (suite *SubscriptionsTestSuite) TestFindActiveUserSubscription() {
 	}
 
 	// Second, try a user without subscription
-	subscription, err = suite.service.FindActiveUserSubscription(suite.users[1].ID)
+	subscription, err = suite.service.FindActiveSubscriptionByUserID(suite.users[1].ID)
 
 	// Subscription object should be nil
 	assert.Nil(suite.T(), subscription)
@@ -151,29 +151,6 @@ func (suite *SubscriptionsTestSuite) TestFindActiveUserSubscription() {
 	// Correct error should be returned
 	if assert.NotNil(suite.T(), err) {
 		assert.Equal(suite.T(), ErrUserHasNoActiveSubscription, err)
-	}
-}
-
-func (suite *SubscriptionsTestSuite) TestFindUserSubscriptions() {
-	var (
-		subscriptions []*Subscription
-		err           error
-	)
-
-	// This should return 4 subscriptions, 1 active, 3 ended
-	subscriptions, err = suite.service.findUserSubscriptions(suite.users[0].ID)
-	if assert.Nil(suite.T(), err) {
-		assert.Equal(suite.T(), 4, len(subscriptions))
-		assert.False(suite.T(), subscriptions[0].IsActive())
-		assert.False(suite.T(), subscriptions[1].IsActive())
-		assert.False(suite.T(), subscriptions[2].IsActive())
-		assert.True(suite.T(), subscriptions[3].IsActive())
-	}
-
-	// This should return no subscriptions
-	subscriptions, err = suite.service.findUserSubscriptions(suite.users[1].ID)
-	if assert.Nil(suite.T(), err) {
-		assert.Equal(suite.T(), 0, len(subscriptions))
 	}
 }
 
