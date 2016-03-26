@@ -124,13 +124,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	assert.Equal(suite.T(), 0, len(alarm.Incidents))
 
 	// Check that the mock object expectations were met
-	suite.oauthServiceMock.AssertExpectations(suite.T())
-	suite.accountsServiceMock.AssertExpectations(suite.T())
-	suite.subscriptionsServiceMock.AssertExpectations(suite.T())
-	suite.teamsServiceMock.AssertExpectations(suite.T())
-	suite.metricsServiceMock.AssertExpectations(suite.T())
-	suite.emailServiceMock.AssertExpectations(suite.T())
-	suite.emailFactoryMock.AssertExpectations(suite.T())
+	suite.assertMockExpectations()
 
 	// Second, let's test a timeout
 	server, client = testServerTimeout()
@@ -147,13 +141,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	time.Sleep(5 * time.Millisecond)
 
 	// Check that the mock object expectations were met
-	suite.oauthServiceMock.AssertExpectations(suite.T())
-	suite.accountsServiceMock.AssertExpectations(suite.T())
-	suite.subscriptionsServiceMock.AssertExpectations(suite.T())
-	suite.teamsServiceMock.AssertExpectations(suite.T())
-	suite.metricsServiceMock.AssertExpectations(suite.T())
-	suite.emailServiceMock.AssertExpectations(suite.T())
-	suite.emailFactoryMock.AssertExpectations(suite.T())
+	suite.assertMockExpectations()
 
 	// Error should be nil
 	assert.Nil(suite.T(), err)
@@ -222,13 +210,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	assert.False(suite.T(), alarm.Incidents[1].ResolvedAt.Valid)
 
 	// Check that the mock object expectations were met
-	suite.oauthServiceMock.AssertExpectations(suite.T())
-	suite.accountsServiceMock.AssertExpectations(suite.T())
-	suite.subscriptionsServiceMock.AssertExpectations(suite.T())
-	suite.teamsServiceMock.AssertExpectations(suite.T())
-	suite.metricsServiceMock.AssertExpectations(suite.T())
-	suite.emailServiceMock.AssertExpectations(suite.T())
-	suite.emailFactoryMock.AssertExpectations(suite.T())
+	suite.assertMockExpectations()
 
 	// Finally, let's test a return to a successful alarm check
 	server, client = testServer(&http.Response{StatusCode: 200})
@@ -246,13 +228,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	time.Sleep(5 * time.Millisecond)
 
 	// Check that the mock object expectations were met
-	suite.oauthServiceMock.AssertExpectations(suite.T())
-	suite.accountsServiceMock.AssertExpectations(suite.T())
-	suite.subscriptionsServiceMock.AssertExpectations(suite.T())
-	suite.teamsServiceMock.AssertExpectations(suite.T())
-	suite.metricsServiceMock.AssertExpectations(suite.T())
-	suite.emailServiceMock.AssertExpectations(suite.T())
-	suite.emailFactoryMock.AssertExpectations(suite.T())
+	suite.assertMockExpectations()
 
 	// Error should be nil
 	assert.Nil(suite.T(), err)
@@ -281,13 +257,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	}
 
 	// Check that the mock object expectations were met
-	suite.oauthServiceMock.AssertExpectations(suite.T())
-	suite.accountsServiceMock.AssertExpectations(suite.T())
-	suite.subscriptionsServiceMock.AssertExpectations(suite.T())
-	suite.teamsServiceMock.AssertExpectations(suite.T())
-	suite.metricsServiceMock.AssertExpectations(suite.T())
-	suite.emailServiceMock.AssertExpectations(suite.T())
-	suite.emailFactoryMock.AssertExpectations(suite.T())
+	suite.assertMockExpectations()
 }
 
 func (suite *AlarmsTestSuite) TestAlarmCheckIdempotency() {
@@ -359,13 +329,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheckIdempotency() {
 	assert.Equal(suite.T(), 0, len(alarm.Incidents))
 
 	// Check that the mock object expectations were met
-	suite.oauthServiceMock.AssertExpectations(suite.T())
-	suite.accountsServiceMock.AssertExpectations(suite.T())
-	suite.subscriptionsServiceMock.AssertExpectations(suite.T())
-	suite.teamsServiceMock.AssertExpectations(suite.T())
-	suite.metricsServiceMock.AssertExpectations(suite.T())
-	suite.emailServiceMock.AssertExpectations(suite.T())
-	suite.emailFactoryMock.AssertExpectations(suite.T())
+	suite.assertMockExpectations()
 }
 
 func (suite *AlarmsTestSuite) alarmCheckWrapper(alarmID uint, watermark time.Time, errChan chan error) {

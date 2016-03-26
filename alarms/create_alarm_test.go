@@ -83,13 +83,7 @@ func (suite *AlarmsTestSuite) TestCreateAlarmMaxLimitReached() {
 	suite.router.ServeHTTP(w, r)
 
 	// Check that the mock object expectations were met
-	suite.oauthServiceMock.AssertExpectations(suite.T())
-	suite.accountsServiceMock.AssertExpectations(suite.T())
-	suite.subscriptionsServiceMock.AssertExpectations(suite.T())
-	suite.teamsServiceMock.AssertExpectations(suite.T())
-	suite.metricsServiceMock.AssertExpectations(suite.T())
-	suite.emailServiceMock.AssertExpectations(suite.T())
-	suite.emailFactoryMock.AssertExpectations(suite.T())
+	suite.assertMockExpectations()
 
 	// Check the status code
 	if !assert.Equal(suite.T(), 400, w.Code) {
@@ -170,13 +164,7 @@ func (suite *AlarmsTestSuite) TestCreateAlarm() {
 	suite.router.ServeHTTP(w, r)
 
 	// Check that the mock object expectations were met
-	suite.oauthServiceMock.AssertExpectations(suite.T())
-	suite.accountsServiceMock.AssertExpectations(suite.T())
-	suite.subscriptionsServiceMock.AssertExpectations(suite.T())
-	suite.teamsServiceMock.AssertExpectations(suite.T())
-	suite.metricsServiceMock.AssertExpectations(suite.T())
-	suite.emailServiceMock.AssertExpectations(suite.T())
-	suite.emailFactoryMock.AssertExpectations(suite.T())
+	suite.assertMockExpectations()
 
 	// Check the status code
 	if !assert.Equal(suite.T(), 201, w.Code) {

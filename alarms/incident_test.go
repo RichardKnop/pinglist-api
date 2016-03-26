@@ -291,13 +291,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	time.Sleep(5 * time.Millisecond)
 
 	// Check that the mock object expectations were met
-	suite.oauthServiceMock.AssertExpectations(suite.T())
-	suite.accountsServiceMock.AssertExpectations(suite.T())
-	suite.subscriptionsServiceMock.AssertExpectations(suite.T())
-	suite.teamsServiceMock.AssertExpectations(suite.T())
-	suite.metricsServiceMock.AssertExpectations(suite.T())
-	suite.emailServiceMock.AssertExpectations(suite.T())
-	suite.emailFactoryMock.AssertExpectations(suite.T())
+	suite.assertMockExpectations()
 
 	// Error should be nil, the alarm state changed, all incidents resolved
 	if assert.Nil(suite.T(), err) {

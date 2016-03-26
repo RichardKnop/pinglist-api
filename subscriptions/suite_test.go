@@ -174,6 +174,12 @@ func TestSubscriptionsTestSuite(t *testing.T) {
 	suite.Run(t, new(SubscriptionsTestSuite))
 }
 
+// Checks that the mock object expectations were met
+func (suite *SubscriptionsTestSuite) assertMockExpectations() {
+	suite.oauthServiceMock.AssertExpectations(suite.T())
+	suite.accountsServiceMock.AssertExpectations(suite.T())
+}
+
 // Mock authentication
 func (suite *SubscriptionsTestSuite) mockAuthentication(user *accounts.User) {
 	// Mock GetConfig call to return the config object

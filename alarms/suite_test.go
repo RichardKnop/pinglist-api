@@ -190,6 +190,17 @@ func TestAlarmsTestSuite(t *testing.T) {
 	suite.Run(t, new(AlarmsTestSuite))
 }
 
+// Checks that the mock object expectations were met
+func (suite *AlarmsTestSuite) assertMockExpectations() {
+	suite.oauthServiceMock.AssertExpectations(suite.T())
+	suite.accountsServiceMock.AssertExpectations(suite.T())
+	suite.subscriptionsServiceMock.AssertExpectations(suite.T())
+	suite.teamsServiceMock.AssertExpectations(suite.T())
+	suite.metricsServiceMock.AssertExpectations(suite.T())
+	suite.emailServiceMock.AssertExpectations(suite.T())
+	suite.emailFactoryMock.AssertExpectations(suite.T())
+}
+
 // Mock authentication
 func (suite *AlarmsTestSuite) mockAuthentication(user *accounts.User) {
 	// Mock GetConfig call to return the config object

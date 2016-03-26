@@ -33,8 +33,7 @@ func (suite *SubscriptionsTestSuite) TestStripeWebhookNoPayload() {
 	suite.router.ServeHTTP(w, r)
 
 	// Check that the mock object expectations were met
-	suite.oauthServiceMock.AssertExpectations(suite.T())
-	suite.accountsServiceMock.AssertExpectations(suite.T())
+	suite.assertMockExpectations()
 
 	assert.Equal(suite.T(), 400, w.Code, "Expected a 400 (Bad Request) response")
 }
@@ -66,8 +65,7 @@ func (suite *SubscriptionsTestSuite) TestStripeWebhookBogusEventID() {
 	suite.router.ServeHTTP(w, r)
 
 	// Check that the mock object expectations were met
-	suite.oauthServiceMock.AssertExpectations(suite.T())
-	suite.accountsServiceMock.AssertExpectations(suite.T())
+	suite.assertMockExpectations()
 
 	// Check the status code
 	if !assert.Equal(suite.T(), 404, w.Code) {

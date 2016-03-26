@@ -68,8 +68,7 @@ func (suite *SubscriptionsTestSuite) TestCreateSubscriptionFailsWhenUserAlreadyH
 	suite.router.ServeHTTP(w, r)
 
 	// Check that the mock object expectations were met
-	suite.oauthServiceMock.AssertExpectations(suite.T())
-	suite.accountsServiceMock.AssertExpectations(suite.T())
+	suite.assertMockExpectations()
 
 	// Check the status code
 	if !assert.Equal(suite.T(), 400, w.Code) {
@@ -141,8 +140,7 @@ func (suite *SubscriptionsTestSuite) TestCreateSubscriptionCustomerNotFound() {
 	suite.router.ServeHTTP(w, r)
 
 	// Check that the mock object expectations were met
-	suite.oauthServiceMock.AssertExpectations(suite.T())
-	suite.accountsServiceMock.AssertExpectations(suite.T())
+	suite.assertMockExpectations()
 
 	// Check the status code
 	if !assert.Equal(suite.T(), 400, w.Code) {
@@ -226,8 +224,7 @@ func (suite *SubscriptionsTestSuite) TestCreateSubscriptionPlanNotFound() {
 	suite.router.ServeHTTP(w, r)
 
 	// Check that the mock object expectations were met
-	suite.oauthServiceMock.AssertExpectations(suite.T())
-	suite.accountsServiceMock.AssertExpectations(suite.T())
+	suite.assertMockExpectations()
 
 	// Check the status code
 	if !assert.Equal(suite.T(), 400, w.Code) {
@@ -311,8 +308,7 @@ func (suite *SubscriptionsTestSuite) TestCreateSubscriptionCardNotFound() {
 	suite.router.ServeHTTP(w, r)
 
 	// Check that the mock object expectations were met
-	suite.oauthServiceMock.AssertExpectations(suite.T())
-	suite.accountsServiceMock.AssertExpectations(suite.T())
+	suite.assertMockExpectations()
 
 	// Check the status code
 	if !assert.Equal(suite.T(), 400, w.Code) {
@@ -417,8 +413,7 @@ func (suite *SubscriptionsTestSuite) TestCreateSubscription() {
 	suite.router.ServeHTTP(w, r)
 
 	// Check that the mock object expectations were met
-	suite.oauthServiceMock.AssertExpectations(suite.T())
-	suite.accountsServiceMock.AssertExpectations(suite.T())
+	suite.assertMockExpectations()
 
 	// Check the status code
 	if !assert.Equal(suite.T(), 201, w.Code) {

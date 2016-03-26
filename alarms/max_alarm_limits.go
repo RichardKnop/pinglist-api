@@ -2,22 +2,22 @@ package alarms
 
 import (
 	"github.com/RichardKnop/pinglist-api/accounts"
-	"github.com/RichardKnop/pinglist-api/teams"
 	"github.com/RichardKnop/pinglist-api/subscriptions"
+	"github.com/RichardKnop/pinglist-api/teams"
 )
 
 // getMaxAlarms finds out max number of alarms
 func (s *Service) getMaxAlarms(user *accounts.User) int {
 	var (
-		maxAlarms int
-		team *teams.Team
+		maxAlarms    int
+		team         *teams.Team
 		subscription *subscriptions.Subscription
-		err error
+		err          error
 	)
 
 	// If user is in a free trial, allow one alarm
-	if user.IsInFreeTrial() {
-		maxAlarms = 1
+	if subscriptions.IsInFreeTrial(user) {
+		maxAlarms = subscriptions.FreeTrialMaxAlarms
 	}
 
 	// Is the user member of a team?

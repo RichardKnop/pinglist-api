@@ -29,11 +29,6 @@ func (u *User) GetName() string {
 	return ""
 }
 
-// IsInFreeTrial returns true if user has registered less than 30 days ago
-func (u *User) IsInFreeTrial() bool {
-	return time.Now().Before(u.CreatedAt.Add(30 * 24 * time.Hour))
-}
-
 // FindUserByOauthUserID looks up a user by oauth user ID and returns it
 func (s *Service) FindUserByOauthUserID(oauthUserID uint) (*User, error) {
 	// Fetch the user from the database
