@@ -28,6 +28,51 @@ func (suite *SubscriptionsTestSuite) TestUpdateSubscriptionRequiresUserAuthentic
 	assert.Equal(suite.T(), http.StatusUnauthorized, w.Code, "This requires an authenticated user")
 }
 
+func (suite *SubscriptionsTestSuite) TestUpdateSubscriptionWithoutPermission() {
+	// Prepare a request
+	r, err := http.NewRequest(
+		"PUT",
+		fmt.Sprintf("http://1.2.3.4/v1/subscriptions/%d", suite.subscriptions[0].ID),
+		nil,
+	)
+	assert.NoError(suite.T(), err, "Request setup should not get an error")
+	r.Header.Set("Authorization", "Bearer test_token")
+
+	// Check the routing
+	match := new(mux.RouteMatch)
+	suite.router.Match(r, match)
+	if assert.NotNil(suite.T(), match.Route) {
+		assert.Equal(suite.T(), "update_subscription", match.Route.GetName())
+	}
+
+	// Mock authentication
+	suite.mockAuthentication(suite.users[2])
+
+	// And serve the request
+	w := httptest.NewRecorder()
+	suite.router.ServeHTTP(w, r)
+
+	// Check that the mock object expectations were met
+	suite.assertMockExpectations()
+
+	// Check the status code
+	if !assert.Equal(suite.T(), 403, w.Code) {
+		log.Print(w.Body.String())
+	}
+
+	// Check the response body
+	expectedJSON, err := json.Marshal(
+		map[string]string{"error": ErrUpdateSubscriptionPermission.Error()})
+	if assert.NoError(suite.T(), err, "JSON marshalling failed") {
+		assert.Equal(
+			suite.T(),
+			string(expectedJSON),
+			strings.TrimRight(w.Body.String(), "\n"),
+			"Body should contain JSON detailing the error",
+		)
+	}
+}
+
 func (suite *SubscriptionsTestSuite) TestUpdateSubscriptionNothingChanged() {
 	// Create a test Stripe customer
 	testStripeCustomer, err := suite.service.stripeAdapter.CreateCustomer(

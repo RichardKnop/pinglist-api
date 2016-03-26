@@ -30,15 +30,10 @@ func (suite *TeamsTestSuite) TestUpdateTeamRequiresUserAuthentication() {
 
 func (suite *TeamsTestSuite) TestUpdateTeamWithoutPermission() {
 	// Prepare a request
-	payload, err := json.Marshal(&TeamRequest{
-		Name:    "Test Team 1",
-		Members: []*TeamMemberRequest{},
-	})
-	assert.NoError(suite.T(), err, "JSON marshalling failed")
 	r, err := http.NewRequest(
 		"PUT",
 		fmt.Sprintf("http://1.2.3.4/v1/teams/%d", suite.teams[0].ID),
-		bytes.NewBuffer(payload),
+		nil,
 	)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
 	r.Header.Set("Authorization", "Bearer test_token")
@@ -53,10 +48,6 @@ func (suite *TeamsTestSuite) TestUpdateTeamWithoutPermission() {
 	// Mock authentication
 	suite.mockAuthentication(suite.users[1])
 
-	// Count before
-	var countBefore int
-	suite.db.Model(new(Team)).Count(&countBefore)
-
 	// And serve the request
 	w := httptest.NewRecorder()
 	suite.router.ServeHTTP(w, r)
@@ -68,11 +59,6 @@ func (suite *TeamsTestSuite) TestUpdateTeamWithoutPermission() {
 	if !assert.Equal(suite.T(), 403, w.Code) {
 		log.Print(w.Body.String())
 	}
-
-	// Count after
-	var countAfter int
-	suite.db.Model(new(Team)).Count(&countAfter)
-	assert.Equal(suite.T(), countBefore, countAfter)
 
 	// Check the response body
 	expectedJSON, err := json.Marshal(

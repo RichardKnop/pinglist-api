@@ -50,10 +50,6 @@ func (suite *AlarmsTestSuite) TestUpdateAlarmWithoutPermission() {
 	// Mock authentication
 	suite.mockAuthentication(suite.users[2])
 
-	// Count before
-	var countBefore int
-	suite.db.Model(new(Alarm)).Count(&countBefore)
-
 	// And serve the request
 	w := httptest.NewRecorder()
 	suite.router.ServeHTTP(w, r)
@@ -65,11 +61,6 @@ func (suite *AlarmsTestSuite) TestUpdateAlarmWithoutPermission() {
 	if !assert.Equal(suite.T(), 403, w.Code) {
 		log.Print(w.Body.String())
 	}
-
-	// Count after
-	var countAfter int
-	suite.db.Model(new(Alarm)).Count(&countAfter)
-	assert.Equal(suite.T(), countBefore, countAfter)
 
 	// Check the response body
 	expectedJSON, err := json.Marshal(

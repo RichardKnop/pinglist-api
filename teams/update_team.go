@@ -27,27 +27,6 @@ func (s *Service) updateTeamHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Request body cannot be nil
-	if r.Body == nil {
-		response.Error(w, "Request body cannot be nil", http.StatusBadRequest)
-		return
-	}
-
-	// Read the request body
-	payload, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		response.Error(w, "Error reading request body", http.StatusBadRequest)
-		return
-	}
-
-	// Unmarshal the request body into the request prototype
-	teamRequest := new(TeamRequest)
-	if err := json.Unmarshal(payload, teamRequest); err != nil {
-		logger.Errorf("Failed to unmarshal team request: %s", payload)
-		response.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
 	// Get the id from request URI and type assert it
 	vars := mux.Vars(r)
 	teamID, err := strconv.Atoi(vars["id"])
@@ -66,6 +45,27 @@ func (s *Service) updateTeamHandler(w http.ResponseWriter, r *http.Request) {
 	// Check permissions
 	if err := checkUpdateTeamPermissions(authenticatedUser, team); err != nil {
 		response.Error(w, err.Error(), http.StatusForbidden)
+		return
+	}
+
+	// Request body cannot be nil
+	if r.Body == nil {
+		response.Error(w, "Request body cannot be nil", http.StatusBadRequest)
+		return
+	}
+
+	// Read the request body
+	payload, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		response.Error(w, "Error reading request body", http.StatusBadRequest)
+		return
+	}
+
+	// Unmarshal the request body into the request prototype
+	teamRequest := new(TeamRequest)
+	if err := json.Unmarshal(payload, teamRequest); err != nil {
+		logger.Errorf("Failed to unmarshal team request: %s", payload)
+		response.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
