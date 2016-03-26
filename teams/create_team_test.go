@@ -74,8 +74,7 @@ func (suite *TeamsTestSuite) TestCreateTeamMaxTeamsLimitReached() {
 	suite.router.ServeHTTP(w, r)
 
 	// Check that the mock object expectations were met
-	suite.accountsServiceMock.AssertExpectations(suite.T())
-	suite.subscriptionsServiceMock.AssertExpectations(suite.T())
+	suite.assertMockExpectations()
 
 	// Check the status code
 	if !assert.Equal(suite.T(), 400, w.Code) {
@@ -147,8 +146,7 @@ func (suite *TeamsTestSuite) TestCreateTeamMaxMembersPerTeamLimitReached() {
 	suite.router.ServeHTTP(w, r)
 
 	// Check that the mock object expectations were met
-	suite.accountsServiceMock.AssertExpectations(suite.T())
-	suite.subscriptionsServiceMock.AssertExpectations(suite.T())
+	suite.assertMockExpectations()
 
 	// Check the status code
 	if !assert.Equal(suite.T(), 400, w.Code) {
@@ -218,8 +216,7 @@ func (suite *TeamsTestSuite) TestCreateTeamWithoutMembers() {
 	suite.router.ServeHTTP(w, r)
 
 	// Check that the mock object expectations were met
-	suite.accountsServiceMock.AssertExpectations(suite.T())
-	suite.subscriptionsServiceMock.AssertExpectations(suite.T())
+	suite.assertMockExpectations()
 
 	// Check the status code
 	if !assert.Equal(suite.T(), 201, w.Code) {
@@ -327,8 +324,7 @@ func (suite *TeamsTestSuite) TestCreateTeamWithMembers() {
 	suite.router.ServeHTTP(w, r)
 
 	// Check that the mock object expectations were met
-	suite.accountsServiceMock.AssertExpectations(suite.T())
-	suite.subscriptionsServiceMock.AssertExpectations(suite.T())
+	suite.assertMockExpectations()
 
 	// Check the status code
 	if !assert.Equal(suite.T(), 201, w.Code) {

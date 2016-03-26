@@ -49,8 +49,7 @@ func (suite *TeamsTestSuite) TestListTeams() {
 	suite.router.ServeHTTP(w, r)
 
 	// Check mock expectations were met
-	suite.oauthServiceMock.AssertExpectations(suite.T())
-	suite.accountsServiceMock.AssertExpectations(suite.T())
+	suite.assertMockExpectations()
 
 	// Check the status code
 	if !assert.Equal(suite.T(), 200, w.Code) {
