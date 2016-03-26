@@ -16,18 +16,18 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func (suite *AlarmsTestSuite) TestListAlarmResultsRequiresUserAuthentication() {
+func (suite *AlarmsTestSuite) TestListAlarmRequestTimesRequiresUserAuthentication() {
 	r, err := http.NewRequest("", "", nil)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
 
 	w := httptest.NewRecorder()
 
-	suite.service.listAlarmResultsHandler(w, r)
+	suite.service.listAlarmRequestTimesHandler(w, r)
 
 	assert.Equal(suite.T(), http.StatusUnauthorized, w.Code, "This requires an authenticated user")
 }
 
-func (suite *AlarmsTestSuite) TestListAlarmResults() {
+func (suite *AlarmsTestSuite) TestListAlarmRequestTimes() {
 	var (
 		today             = time.Date(2016, time.February, 9, 0, 0, 0, 0, time.UTC)
 		todaySubTableName = "metrics_request_times_2016_02_09"
@@ -36,7 +36,7 @@ func (suite *AlarmsTestSuite) TestListAlarmResults() {
 	// Prepare a request
 	r, err := http.NewRequest(
 		"GET",
-		fmt.Sprintf("http://1.2.3.4/v1/alarms/%d/results", suite.alarms[0].ID),
+		fmt.Sprintf("http://1.2.3.4/v1/alarms/%d/request-times", suite.alarms[0].ID),
 		nil,
 	)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
@@ -46,7 +46,7 @@ func (suite *AlarmsTestSuite) TestListAlarmResults() {
 	match := new(mux.RouteMatch)
 	suite.router.Match(r, match)
 	if assert.NotNil(suite.T(), match.Route) {
-		assert.Equal(suite.T(), "list_alarm_results", match.Route.GetName())
+		assert.Equal(suite.T(), "list_alarm_request_times", match.Route.GetName())
 	}
 
 	// Mock authentication
@@ -95,19 +95,19 @@ func (suite *AlarmsTestSuite) TestListAlarmResults() {
 		Hal: jsonhal.Hal{
 			Links: map[string]*jsonhal.Link{
 				"self": &jsonhal.Link{
-					Href: fmt.Sprintf("/v1/alarms/%d/results", suite.alarms[0].ID),
+					Href: fmt.Sprintf("/v1/alarms/%d/request-times", suite.alarms[0].ID),
 				},
 				"first": &jsonhal.Link{
-					Href: fmt.Sprintf("/v1/alarms/%d/results?page=1", suite.alarms[0].ID),
+					Href: fmt.Sprintf("/v1/alarms/%d/request-times?page=1", suite.alarms[0].ID),
 				},
 				"last": &jsonhal.Link{
-					Href: fmt.Sprintf("/v1/alarms/%d/results?page=1", suite.alarms[0].ID),
+					Href: fmt.Sprintf("/v1/alarms/%d/request-times?page=1", suite.alarms[0].ID),
 				},
 				"prev": new(jsonhal.Link),
 				"next": new(jsonhal.Link),
 			},
 			Embedded: map[string]jsonhal.Embedded{
-				"requesttimes": jsonhal.Embedded(requestTimeResponses),
+				"request_times": jsonhal.Embedded(requestTimeResponses),
 			},
 		},
 		Count: 4,

@@ -210,11 +210,11 @@ func TestNewListRequestTimesResponse(t *testing.T) {
 	response, err := NewListRequestTimesResponse(
 		10, // count
 		2,  // page
-		"/v1/alarms/1/requesttimes?page=2", // self
-		"/v1/alarms/1/requesttimes?page=1", // first
-		"/v1/alarms/1/requesttimes?page=5", // last
-		"/v1/alarms/1/requesttimes?page=1", // previous
-		"/v1/alarms/1/requesttimes?page=3", // next
+		"/v1/alarms/1/request-times?page=2", // self
+		"/v1/alarms/1/request-times?page=1", // first
+		"/v1/alarms/1/request-times?page=5", // last
+		"/v1/alarms/1/request-times?page=1", // previous
+		"/v1/alarms/1/request-times?page=3", // next
 		requestTimes,
 	)
 
@@ -224,35 +224,35 @@ func TestNewListRequestTimesResponse(t *testing.T) {
 	// Test self link
 	selfLink, err := response.GetLink("self")
 	if assert.Nil(t, err) {
-		assert.Equal(t, "/v1/alarms/1/requesttimes?page=2", selfLink.Href)
+		assert.Equal(t, "/v1/alarms/1/request-times?page=2", selfLink.Href)
 	}
 
 	// Test first link
 	firstLink, err := response.GetLink("first")
 	if assert.Nil(t, err) {
-		assert.Equal(t, "/v1/alarms/1/requesttimes?page=1", firstLink.Href)
+		assert.Equal(t, "/v1/alarms/1/request-times?page=1", firstLink.Href)
 	}
 
 	// Test last link
 	lastLink, err := response.GetLink("last")
 	if assert.Nil(t, err) {
-		assert.Equal(t, "/v1/alarms/1/requesttimes?page=5", lastLink.Href)
+		assert.Equal(t, "/v1/alarms/1/request-times?page=5", lastLink.Href)
 	}
 
 	// Test previous link
 	previousLink, err := response.GetLink("prev")
 	if assert.Nil(t, err) {
-		assert.Equal(t, "/v1/alarms/1/requesttimes?page=1", previousLink.Href)
+		assert.Equal(t, "/v1/alarms/1/request-times?page=1", previousLink.Href)
 	}
 
 	// Test next link
 	nextLink, err := response.GetLink("next")
 	if assert.Nil(t, err) {
-		assert.Equal(t, "/v1/alarms/1/requesttimes?page=3", nextLink.Href)
+		assert.Equal(t, "/v1/alarms/1/request-times?page=3", nextLink.Href)
 	}
 
 	// Test embedded request times
-	embeddedRequestTimes, err := response.GetEmbedded("requesttimes")
+	embeddedRequestTimes, err := response.GetEmbedded("request_times")
 	if assert.Nil(t, err) {
 		reflectedValue := reflect.ValueOf(embeddedRequestTimes)
 		expectedType := reflect.SliceOf(reflect.TypeOf(new(metrics.MetricResponse)))

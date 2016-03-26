@@ -67,13 +67,6 @@ type ListIncidentsResponse struct {
 	Page  uint `json:"page"`
 }
 
-// RequestTimeResponse ...
-type RequestTimeResponse struct {
-	jsonhal.Hal
-	Timestamp   string `json:"timestamp"`
-	RequestTime int64  `json:"request_time"`
-}
-
 // ListRequestTimesResponse ...
 type ListRequestTimesResponse struct {
 	jsonhal.Hal
@@ -323,9 +316,9 @@ func NewListRequestTimesResponse(count, page int, self, first, last, previous, n
 		metricResponses[i] = metricResponse
 	}
 
-	// Set embedded results
+	// Set embedded request times
 	response.SetEmbedded(
-		"requesttimes",
+		"request_times",
 		jsonhal.Embedded(metricResponses),
 	)
 

@@ -22,5 +22,5 @@ type ServiceInterface interface {
 	deleteAlarmHandler(w http.ResponseWriter, r *http.Request)
 	listAlarmsHandler(w http.ResponseWriter, r *http.Request)
 	listAlarmIncidentsHandler(w http.ResponseWriter, r *http.Request)
-	listAlarmResultsHandler(w http.ResponseWriter, r *http.Request)
+	listAlarmRequestTimesHandler(w http.ResponseWriter, r *http.Request)
 }

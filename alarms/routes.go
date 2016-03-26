@@ -71,10 +71,10 @@ func newRoutes(service ServiceInterface) []routes.Route {
 			},
 		},
 		routes.Route{
-			Name:        "list_alarm_results",
+			Name:        "list_alarm_request_times",
 			Method:      "GET",
-			Pattern:     "/alarms/{id:[0-9]+}/results",
-			HandlerFunc: service.listAlarmResultsHandler,
+			Pattern:     "/alarms/{id:[0-9]+}/request-times",
+			HandlerFunc: service.listAlarmRequestTimesHandler,
 			Middlewares: []negroni.Handler{
 				accounts.NewUserAuthMiddleware(service.GetAccountsService()),
 			},

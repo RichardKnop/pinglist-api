@@ -27,7 +27,7 @@ func (s *Service) listAlarmIncidentsHandler(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	// Get the id from request URI and type assert it
+	// Get the ID from request URI and type assert it
 	vars := mux.Vars(r)
 	alarmID, err := strconv.Atoi(vars["id"])
 	if err != nil {

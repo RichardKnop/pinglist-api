@@ -7,7 +7,7 @@
 Example request:
 
 ```
-curl --compressed -v "localhost:8080/v1/alarms/1/requesttimes" \
+curl --compressed -v "localhost:8080/v1/alarms/1/request-times" \
 	-H "Authorization: Bearer 00ccd40e-72ca-4e79-a4b6-67c95e2e3f1c"
 ```
 
@@ -21,23 +21,23 @@ Example response:
 {
 	"_links": {
 		"first": {
-			"href": "/v1/alarms/1/requesttimes?page=1"
+			"href": "/v1/alarms/1/request-times?page=1"
 		},
 		"last": {
-			"href": "/v1/alarms/1/requesttimes?page=2"
+			"href": "/v1/alarms/1/request-times?page=2"
 		},
 		"next": {
-			"href": "/v1/alarms/1/requesttimes?page=2"
+			"href": "/v1/alarms/1/request-times?page=2"
 		},
 		"prev": {
 			"href": ""
 		},
 		"self": {
-			"href": "/v1/alarms/1/requesttimes"
+			"href": "/v1/alarms/1/request-times"
 		}
 	},
 	"_embedded": {
-		"requesttimes": [
+		"request_times": [
 			{
 				"timestamp": "2016-01-14T13:52:24Z",
 				"request_time": 12345

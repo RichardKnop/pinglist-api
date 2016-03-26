@@ -14,12 +14,12 @@ import (
 )
 
 var (
-	// ErrListAlarmResultsPermission ...
-	ErrListAlarmResultsPermission = errors.New("Need permission to list alarm results")
+	// ErrListAlarmRequestTimesPermission ...
+	ErrListAlarmRequestTimesPermission = errors.New("Need permission to list alarm request times")
 )
 
-// Handles calls to list alarm results (GET /v1/alarms/{id:[0-9]+}/results)
-func (s *Service) listAlarmResultsHandler(w http.ResponseWriter, r *http.Request) {
+// Handles calls to list alarm request times (GET /v1/alarms/{id:[0-9]+}/request-times)
+func (s *Service) listAlarmRequestTimesHandler(w http.ResponseWriter, r *http.Request) {
 	// Get the authenticated user from the request context
 	authenticatedUser, err := accounts.GetAuthenticatedUser(r)
 	if err != nil {
@@ -43,7 +43,7 @@ func (s *Service) listAlarmResultsHandler(w http.ResponseWriter, r *http.Request
 	}
 
 	// Check permissions
-	if err := checkListAlarmResultsPermissions(authenticatedUser, alarm); err != nil {
+	if err := checkListAlarmRequestTimesPermissions(authenticatedUser, alarm); err != nil {
 		response.Error(w, err.Error(), http.StatusForbidden)
 		return
 	}
@@ -101,17 +101,17 @@ func (s *Service) listAlarmResultsHandler(w http.ResponseWriter, r *http.Request
 	response.WriteJSON(w, listRequestTimesResponse, http.StatusOK)
 }
 
-func checkListAlarmResultsPermissions(authenticatedUser *accounts.User, alarm *Alarm) error {
-	// Superusers can list any alarm results
+func checkListAlarmRequestTimesPermissions(authenticatedUser *accounts.User, alarm *Alarm) error {
+	// Superusers can list any alarm request times
 	if authenticatedUser.Role.Name == roles.Superuser {
 		return nil
 	}
 
-	// Users can list their own alarm results
+	// Users can list their own alarm request times
 	if authenticatedUser.ID == alarm.User.ID {
 		return nil
 	}
 
 	// The user doesn't have the permission
-	return ErrListAlarmResultsPermission
+	return ErrListAlarmRequestTimesPermission
 }
