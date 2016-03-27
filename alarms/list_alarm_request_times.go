@@ -7,6 +7,7 @@ import (
 
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/RichardKnop/pinglist-api/accounts/roles"
+	"github.com/RichardKnop/pinglist-api/metrics"
 	"github.com/RichardKnop/pinglist-api/pagination"
 	"github.com/RichardKnop/pinglist-api/response"
 	"github.com/RichardKnop/pinglist-api/util"
@@ -55,8 +56,20 @@ func (s *Service) listAlarmRequestTimesHandler(w http.ResponseWriter, r *http.Re
 		return
 	}
 
+	// Get other params
+	dateTrunc, from, to, err := metrics.GetParamsFromQueryString(r)
+	if err != nil {
+		response.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
 	// Count total number of metric records
-	count, err := s.metricsService.PaginatedRequestTimesCount(alarm.ID)
+	count, err := s.metricsService.PaginatedRequestTimesCount(
+		int(alarm.ID),
+		dateTrunc,
+		from,
+		to,
+	)
 	if err != nil {
 		response.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -79,7 +92,10 @@ func (s *Service) listAlarmRequestTimesHandler(w http.ResponseWriter, r *http.Re
 		pagination.GetOffsetForPage(count, page, limit),
 		limit,
 		r.URL.Query().Get("order_by"),
-		alarm.ID,
+		int(alarm.ID),
+		dateTrunc,
+		from,
+		to,
 	)
 	if err != nil {
 		response.Error(w, err.Error(), http.StatusInternalServerError)

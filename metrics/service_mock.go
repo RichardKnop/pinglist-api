@@ -1,9 +1,10 @@
 package metrics
 
 import (
+	"time"
+
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/stretchr/testify/mock"
-	"time"
 )
 
 // ServiceMock is a mocked object implementing ServiceInterface
@@ -68,19 +69,19 @@ func (_m *ServiceMock) LogRequestTime(timestamp time.Time, referenceID uint, val
 }
 
 // PaginatedRequestTimesCount ...
-func (_m *ServiceMock) PaginatedRequestTimesCount(referenceID uint) (int, error) {
-	ret := _m.Called(referenceID)
+func (_m *ServiceMock) PaginatedRequestTimesCount(referenceID int, dateTrunc string, from *time.Time, to *time.Time) (int, error) {
+	ret := _m.Called(referenceID, dateTrunc, from, to)
 
 	var r0 int
-	if rf, ok := ret.Get(0).(func(uint) int); ok {
-		r0 = rf(referenceID)
+	if rf, ok := ret.Get(0).(func(int, string, *time.Time, *time.Time) int); ok {
+		r0 = rf(referenceID, dateTrunc, from, to)
 	} else {
 		r0 = ret.Get(0).(int)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(uint) error); ok {
-		r1 = rf(referenceID)
+	if rf, ok := ret.Get(1).(func(int, string, *time.Time, *time.Time) error); ok {
+		r1 = rf(referenceID, dateTrunc, from, to)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -89,12 +90,12 @@ func (_m *ServiceMock) PaginatedRequestTimesCount(referenceID uint) (int, error)
 }
 
 // FindPaginatedRequestTimes ...
-func (_m *ServiceMock) FindPaginatedRequestTimes(offset int, limit int, orderBy string, referenceID uint) ([]*RequestTime, error) {
-	ret := _m.Called(offset, limit, orderBy, referenceID)
+func (_m *ServiceMock) FindPaginatedRequestTimes(offset int, limit int, orderBy string, referenceID int, dateTrunc string, from *time.Time, to *time.Time) ([]*RequestTime, error) {
+	ret := _m.Called(offset, limit, orderBy, referenceID, dateTrunc, from, to)
 
 	var r0 []*RequestTime
-	if rf, ok := ret.Get(0).(func(int, int, string, uint) []*RequestTime); ok {
-		r0 = rf(offset, limit, orderBy, referenceID)
+	if rf, ok := ret.Get(0).(func(int, int, string, int, string, *time.Time, *time.Time) []*RequestTime); ok {
+		r0 = rf(offset, limit, orderBy, referenceID, dateTrunc, from, to)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]*RequestTime)
@@ -102,8 +103,8 @@ func (_m *ServiceMock) FindPaginatedRequestTimes(offset int, limit int, orderBy 
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(int, int, string, uint) error); ok {
-		r1 = rf(offset, limit, orderBy, referenceID)
+	if rf, ok := ret.Get(1).(func(int, int, string, int, string, *time.Time, *time.Time) error); ok {
+		r1 = rf(offset, limit, orderBy, referenceID, dateTrunc, from, to)
 	} else {
 		r1 = ret.Error(1)
 	}

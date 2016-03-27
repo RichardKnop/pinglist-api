@@ -45,7 +45,7 @@ Example response:
       {
 				"timestamp": "2016-01-14T13:53:24Z",
 				"request_time": 12345
-			},
+			}
 		]
 	},
 	"count": 2,

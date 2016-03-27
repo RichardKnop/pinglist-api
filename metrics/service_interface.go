@@ -13,9 +13,6 @@ type ServiceInterface interface {
 	PartitionRequestTime(parentTableName string, now time.Time) error
 	RotateSubTables() error
 	LogRequestTime(timestamp time.Time, referenceID uint, value int64) error
-	PaginatedRequestTimesCount(referenceID uint) (int, error)
-	FindPaginatedRequestTimes(offset, limit int, orderBy string, referenceID uint) ([]*RequestTime, error)
-
-	// Needed for the newRoutes to be able to register handlers
-	// TODO
+	PaginatedRequestTimesCount(referenceID int, dateTrunc string, from, to *time.Time) (int, error)
+	FindPaginatedRequestTimes(offset, limit int, orderBy string, referenceID int, dateTrunc string, from, to *time.Time) ([]*RequestTime, error)
 }

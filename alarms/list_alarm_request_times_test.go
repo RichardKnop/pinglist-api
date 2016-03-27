@@ -98,7 +98,14 @@ func (suite *AlarmsTestSuite) TestListAlarmRequestTimes() {
 	suite.mockAuthentication(suite.users[1])
 
 	// Mock paginated request time metrics
-	suite.mockPaginatedRequestTimesCount(suite.alarms[0].ID, 4, nil)
+	suite.mockPaginatedRequestTimesCount(
+		int(suite.alarms[0].ID), // reference ID
+		"",  // date_trunc
+		nil, // from
+		nil, // to
+		4,   // returned count
+		nil, // returned error
+	)
 	testMetrics := []*metrics.RequestTime{
 		metrics.NewRequestTime(todaySubTableName, suite.alarms[0].ID, today, 123),
 		metrics.NewRequestTime(todaySubTableName, suite.alarms[0].ID, today.Add(1*time.Hour), 234),
@@ -109,9 +116,12 @@ func (suite *AlarmsTestSuite) TestListAlarmRequestTimes() {
 		0, // offset
 		pagination.DefaultLimit,
 		"", // order by
-		suite.alarms[0].ID,
-		testMetrics,
-		nil,
+		int(suite.alarms[0].ID), // reference ID
+		"",          // date_trunc
+		nil,         // from
+		nil,         // to
+		testMetrics, // returned metrics
+		nil,         // returned error
 	)
 
 	// And serve the request

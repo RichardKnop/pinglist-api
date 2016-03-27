@@ -66,6 +66,7 @@ func (suite *MetricsTestSuite) SetupSuite() {
 		log.Fatal(err)
 	}
 	suite.db = db
+	suite.db.LogMode(true)
 
 	// Fetch test accounts
 	suite.accounts = make([]*accounts.Account, 0)
