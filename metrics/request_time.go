@@ -8,8 +8,6 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-var requestTimesTableName = "metrics_request_times"
-
 // LogRequestTime logs request time metric
 func (s *Service) LogRequestTime(timestamp time.Time, referenceID uint, value int64) error {
 	requestTimeRecord := NewRequestTime(
