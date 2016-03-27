@@ -7,7 +7,7 @@
 Example request:
 
 ```
-curl --compressed -v "localhost:8080/v1/alarms/1/request-times?date_trunc=day&from=2016-02-08 00:00:00Z&to=2016-02-09 00:00:00Z" \
+curl --compressed -v "localhost:8080/v1/alarms/1/request-times?date_trunc=day&from=2016-02-08T00:00:00Z&to=2016-02-09T00:00:00Z" \
 	-H "Authorization: Bearer 00ccd40e-72ca-4e79-a4b6-67c95e2e3f1c"
 ```
 
