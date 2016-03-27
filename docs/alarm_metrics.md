@@ -50,7 +50,7 @@ Example response:
 				"timestamp": "2016-01-14T13:52:24Z",
 				"request_time": 12345
 			},
-      {
+			{
 				"timestamp": "2016-01-14T13:53:24Z",
 				"request_time": 12345
 			}
