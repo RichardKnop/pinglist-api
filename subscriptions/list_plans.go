@@ -3,8 +3,8 @@ package subscriptions
 import (
 	"net/http"
 
-	"github.com/AreaHQ/area-api/pagination"
 	"github.com/RichardKnop/pinglist-api/accounts"
+	"github.com/RichardKnop/pinglist-api/pagination"
 	"github.com/RichardKnop/pinglist-api/response"
 	"github.com/RichardKnop/pinglist-api/util"
 )
