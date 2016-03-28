@@ -14,6 +14,9 @@ import (
 var (
 	// ErrCheckAlreadyTriggered ...
 	ErrCheckAlreadyTriggered = errors.New("Alarm check has already been trigerred")
+
+	// AlarmCheckTimeout defines how long to wait before considering alarm check timed out
+	AlarmCheckTimeout = 10 * time.Second
 )
 
 // GetAlarmsToCheck returns alarms that should be checked

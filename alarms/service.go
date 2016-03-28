@@ -2,7 +2,6 @@ package alarms
 
 import (
 	"net/http"
-	"time"
 
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/RichardKnop/pinglist-api/config"
@@ -33,7 +32,7 @@ func NewService(cnf *config.Config, db *gorm.DB, accountsService accounts.Servic
 	}
 	if client == nil {
 		client = &http.Client{
-			Timeout: 10 * time.Second, // 10 seconds timeout
+			Timeout: AlarmCheckTimeout,
 		}
 	}
 	return &Service{
