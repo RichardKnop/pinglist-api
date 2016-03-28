@@ -36,6 +36,7 @@ func (suite *AlarmsTestSuite) TestCreateAlarmMaxLimitReached() {
 		Region:                 "us-west-2",
 		EndpointURL:            "http://endpoint-5",
 		ExpectedHTTPCode:       200,
+		MaxResponseTime:        1000,
 		Interval:               60,
 		EmailAlerts:            true,
 		PushNotificationAlerts: true,
@@ -113,6 +114,7 @@ func (suite *AlarmsTestSuite) TestCreateAlarm() {
 		Region:                 "us-west-2",
 		EndpointURL:            "http://endpoint-5",
 		ExpectedHTTPCode:       200,
+		MaxResponseTime:        1000,
 		Interval:               60,
 		EmailAlerts:            true,
 		PushNotificationAlerts: true,
@@ -186,6 +188,7 @@ func (suite *AlarmsTestSuite) TestCreateAlarm() {
 	assert.Equal(suite.T(), suite.users[1].ID, uint(alarm.UserID.Int64))
 	assert.Equal(suite.T(), "http://endpoint-5", alarm.EndpointURL)
 	assert.Equal(suite.T(), uint(200), alarm.ExpectedHTTPCode)
+	assert.Equal(suite.T(), uint(1000), alarm.MaxResponseTime)
 	assert.Equal(suite.T(), uint(60), alarm.Interval)
 	assert.True(suite.T(), alarm.EmailAlerts)
 	assert.True(suite.T(), alarm.PushNotificationAlerts)
@@ -213,6 +216,7 @@ func (suite *AlarmsTestSuite) TestCreateAlarm() {
 		Region:                 regions.USWest2,
 		EndpointURL:            "http://endpoint-5",
 		ExpectedHTTPCode:       uint(200),
+		MaxResponseTime:        uint(1000),
 		Interval:               uint(60),
 		EmailAlerts:            true,
 		PushNotificationAlerts: true,

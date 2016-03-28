@@ -143,6 +143,7 @@ func (s *Service) updateAlarm(alarm *Alarm, alarmRequest *AlarmRequest) error {
 		"region_id":                region.ID,
 		"endpoint_url":             alarmRequest.EndpointURL,
 		"expected_http_code":       alarmRequest.ExpectedHTTPCode,
+		"max_response_time":        alarmRequest.MaxResponseTime,
 		"interval":                 alarmRequest.Interval,
 		"email_alerts":             alarmRequest.EmailAlerts,
 		"push_notification_alerts": alarmRequest.PushNotificationAlerts,

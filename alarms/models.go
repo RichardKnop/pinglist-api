@@ -48,6 +48,7 @@ type Alarm struct {
 	Incidents              []*Incident
 	EndpointURL            string      `sql:"type:varchar(254);not null"`
 	ExpectedHTTPCode       uint        `sql:"default:200;not null"`
+	MaxResponseTime        uint        `sql:"default:60;not null"` // miliseconds
 	Interval               uint        `sql:"default:60;not null"` // seconds
 	EmailAlerts            bool        `sql:"default:false;index;not null"`
 	PushNotificationAlerts bool        `sql:"default:false;index;not null"`
@@ -103,6 +104,7 @@ func NewAlarm(user *accounts.User, region *Region, alarmState *AlarmState, alarm
 		AlarmStateID:           alarmStateID,
 		EndpointURL:            alarmRequest.EndpointURL,
 		ExpectedHTTPCode:       alarmRequest.ExpectedHTTPCode,
+		MaxResponseTime:        alarmRequest.MaxResponseTime,
 		Interval:               alarmRequest.Interval,
 		EmailAlerts:            alarmRequest.EmailAlerts,
 		PushNotificationAlerts: alarmRequest.PushNotificationAlerts,

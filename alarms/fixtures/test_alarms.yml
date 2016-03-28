@@ -12,6 +12,7 @@
     region_id: 'us-west-2'
     endpoint_url: 'http://endpoint-1'
     expected_http_code: 200
+    max_response_time: 1000
     interval: 60
     email_alerts: true
     push_notification_alerts: true
@@ -28,6 +29,7 @@
     region_id: 'us-west-2'
     endpoint_url: 'http://endpoint-2'
     expected_http_code: 200
+    max_response_time: 1000
     interval: 60
     email_alerts: true
     push_notification_alerts: true
@@ -44,6 +46,7 @@
     region_id: 'us-west-2'
     endpoint_url: 'http://endpoint-3'
     expected_http_code: 200
+    max_response_time: 1000
     interval: 60
     email_alerts: true
     push_notification_alerts: true
@@ -60,6 +63,7 @@
     region_id: 'us-west-2'
     endpoint_url: 'http://endpoint-4'
     expected_http_code: 200
+    max_response_time: 1000
     interval: 60
     email_alerts: true
     push_notification_alerts: true
