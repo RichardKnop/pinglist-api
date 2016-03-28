@@ -17,6 +17,11 @@ var (
 	ErrAlarmNotFound = errors.New("Alarm not found")
 	// ErrMaxAlarmsLimitReached ...
 	ErrMaxAlarmsLimitReached = errors.New("Max alarms limit reached")
+	// ErrMinInterval ...
+	ErrMinInterval = errors.New("Minimal interval is 60 seconds")
+
+	// MinInterval limits alarm check interval to a sensible smallest period
+	MinInterval = uint(60)
 )
 
 // HasOpenIncident returns true if the alarm already has such open incident
@@ -80,6 +85,11 @@ func (s *Service) createAlarm(user *accounts.User, alarmRequest *AlarmRequest) (
 		}
 	}
 
+	// Limit interval to a sensible smallest period (60 seconds)
+	if alarmRequest.Interval < MinInterval {
+		return nil, ErrMinInterval
+	}
+
 	// Fetch the region from the database
 	region, err := s.findRegionByID(alarmRequest.Region)
 	if err != nil {
@@ -114,6 +124,11 @@ func (s *Service) updateAlarm(alarm *Alarm, alarmRequest *AlarmRequest) error {
 		if alarmsCount+1 > s.getMaxAlarms(alarm.User) {
 			return ErrMaxAlarmsLimitReached
 		}
+	}
+
+	// Limit interval to a sensible smallest period (60 seconds)
+	if alarmRequest.Interval < MinInterval {
+		return ErrMinInterval
 	}
 
 	// Fetch the region from the database
