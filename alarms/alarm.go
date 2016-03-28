@@ -2,6 +2,7 @@ package alarms
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -13,15 +14,15 @@ import (
 )
 
 var (
+	// MinInterval limits alarm check interval to a sensible smallest period
+	MinInterval = uint(60)
+
 	// ErrAlarmNotFound ...
 	ErrAlarmNotFound = errors.New("Alarm not found")
 	// ErrMaxAlarmsLimitReached ...
 	ErrMaxAlarmsLimitReached = errors.New("Max alarms limit reached")
-	// ErrMinInterval ...
-	ErrMinInterval = errors.New("Minimal interval is 60 seconds")
-
-	// MinInterval limits alarm check interval to a sensible smallest period
-	MinInterval = uint(60)
+	// ErrIntervalTooSmall ...
+	ErrIntervalTooSmall = fmt.Errorf("Minimal interval is %d seconds", MinInterval)
 )
 
 // HasOpenIncident returns true if the alarm already has such open incident
@@ -87,7 +88,7 @@ func (s *Service) createAlarm(user *accounts.User, alarmRequest *AlarmRequest) (
 
 	// Limit interval to a sensible smallest period (60 seconds)
 	if alarmRequest.Interval < MinInterval {
-		return nil, ErrMinInterval
+		return nil, ErrIntervalTooSmall
 	}
 
 	// Fetch the region from the database
@@ -128,7 +129,7 @@ func (s *Service) updateAlarm(alarm *Alarm, alarmRequest *AlarmRequest) error {
 
 	// Limit interval to a sensible smallest period (60 seconds)
 	if alarmRequest.Interval < MinInterval {
-		return ErrMinInterval
+		return ErrIntervalTooSmall
 	}
 
 	// Fetch the region from the database

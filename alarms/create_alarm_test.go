@@ -108,6 +108,170 @@ func (suite *AlarmsTestSuite) TestCreateAlarmMaxLimitReached() {
 	}
 }
 
+func (suite *AlarmsTestSuite) TestCreateAlarmIntervalTooSmall() {
+	// Prepare a request
+	payload, err := json.Marshal(&AlarmRequest{
+		Region:                 "us-west-2",
+		EndpointURL:            "http://endpoint-5",
+		ExpectedHTTPCode:       200,
+		MaxResponseTime:        1000,
+		Interval:               5,
+		EmailAlerts:            true,
+		PushNotificationAlerts: true,
+		Active:                 true,
+	})
+	assert.NoError(suite.T(), err, "JSON marshalling failed")
+	r, err := http.NewRequest(
+		"POST",
+		"http://1.2.3.4/v1/alarms",
+		bytes.NewBuffer(payload),
+	)
+	assert.NoError(suite.T(), err, "Request setup should not get an error")
+	r.Header.Set("Authorization", "Bearer test_token")
+
+	// Check the routing
+	match := new(mux.RouteMatch)
+	suite.router.Match(r, match)
+	if assert.NotNil(suite.T(), match.Route) {
+		assert.Equal(suite.T(), "create_alarm", match.Route.GetName())
+	}
+
+	// Mock authentication
+	suite.mockAuthentication(suite.users[1])
+
+	// Mock find team
+	suite.mockFindTeamByMemberID(
+		suite.users[1].ID,
+		nil,
+		teams.ErrTeamNotFound,
+	)
+
+	// Mock find active subscription
+	suite.mockFindActiveSubscriptionByUserID(
+		suite.users[1].ID,
+		&subscriptions.Subscription{
+			Plan: &subscriptions.Plan{
+				MaxAlarms: 10,
+			},
+		},
+		nil,
+	)
+
+	// Count before
+	var countBefore int
+	suite.db.Model(new(Alarm)).Count(&countBefore)
+
+	// And serve the request
+	w := httptest.NewRecorder()
+	suite.router.ServeHTTP(w, r)
+
+	// Check that the mock object expectations were met
+	suite.assertMockExpectations()
+
+	// Check the status code
+	if !assert.Equal(suite.T(), 400, w.Code) {
+		log.Print(w.Body.String())
+	}
+
+	// Count after
+	var countAfter int
+	suite.db.Model(new(Alarm)).Count(&countAfter)
+	assert.Equal(suite.T(), countBefore, countAfter)
+
+	expectedJSON, err := json.Marshal(
+		map[string]string{"error": ErrIntervalTooSmall.Error()})
+	if assert.NoError(suite.T(), err, "JSON marshalling failed") {
+		assert.Equal(
+			suite.T(),
+			string(expectedJSON),
+			strings.TrimRight(w.Body.String(), "\n"),
+			"Body should contain JSON detailing the error",
+		)
+	}
+}
+
+func (suite *AlarmsTestSuite) TestCreateAlarmRegionNotFound() {
+	// Prepare a request
+	payload, err := json.Marshal(&AlarmRequest{
+		Region:                 "transylvania",
+		EndpointURL:            "http://endpoint-5",
+		ExpectedHTTPCode:       200,
+		MaxResponseTime:        1000,
+		Interval:               60,
+		EmailAlerts:            true,
+		PushNotificationAlerts: true,
+		Active:                 true,
+	})
+	assert.NoError(suite.T(), err, "JSON marshalling failed")
+	r, err := http.NewRequest(
+		"POST",
+		"http://1.2.3.4/v1/alarms",
+		bytes.NewBuffer(payload),
+	)
+	assert.NoError(suite.T(), err, "Request setup should not get an error")
+	r.Header.Set("Authorization", "Bearer test_token")
+
+	// Check the routing
+	match := new(mux.RouteMatch)
+	suite.router.Match(r, match)
+	if assert.NotNil(suite.T(), match.Route) {
+		assert.Equal(suite.T(), "create_alarm", match.Route.GetName())
+	}
+
+	// Mock authentication
+	suite.mockAuthentication(suite.users[1])
+
+	// Mock find team
+	suite.mockFindTeamByMemberID(
+		suite.users[1].ID,
+		nil,
+		teams.ErrTeamNotFound,
+	)
+
+	// Mock find active subscription
+	suite.mockFindActiveSubscriptionByUserID(
+		suite.users[1].ID,
+		&subscriptions.Subscription{
+			Plan: &subscriptions.Plan{
+				MaxAlarms: 10,
+			},
+		},
+		nil,
+	)
+
+	// Count before
+	var countBefore int
+	suite.db.Model(new(Alarm)).Count(&countBefore)
+
+	// And serve the request
+	w := httptest.NewRecorder()
+	suite.router.ServeHTTP(w, r)
+
+	// Check that the mock object expectations were met
+	suite.assertMockExpectations()
+
+	// Check the status code
+	if !assert.Equal(suite.T(), 400, w.Code) {
+		log.Print(w.Body.String())
+	}
+
+	// Count after
+	var countAfter int
+	suite.db.Model(new(Alarm)).Count(&countAfter)
+	assert.Equal(suite.T(), countBefore, countAfter)
+
+	expectedJSON, err := json.Marshal(
+		map[string]string{"error": ErrRegionNotFound.Error()})
+	if assert.NoError(suite.T(), err, "JSON marshalling failed") {
+		assert.Equal(
+			suite.T(),
+			string(expectedJSON),
+			strings.TrimRight(w.Body.String(), "\n"),
+			"Body should contain JSON detailing the error",
+		)
+	}
+}
+
 func (suite *AlarmsTestSuite) TestCreateAlarm() {
 	// Prepare a request
 	payload, err := json.Marshal(&AlarmRequest{
