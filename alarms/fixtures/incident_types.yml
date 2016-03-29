@@ -6,6 +6,14 @@
 
 - table: 'alarm_incident_types'
   pk:
+    id: 'slow_response'
+  fields:
+    name: 'Slow Response'
+    created_at: 'ON_INSERT_NOW()'
+    updated_at: 'ON_UPDATE_NOW()'
+
+- table: 'alarm_incident_types'
+  pk:
     id: 'timeout'
   fields:
     name: 'Timeout'

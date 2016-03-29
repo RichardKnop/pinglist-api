@@ -14,6 +14,9 @@ func TestHasOpenIncident(t *testing.T) {
 	alarm := &Alarm{
 		Incidents: []*Incident{
 			&Incident{
+				IncidentTypeID: util.StringOrNull(incidenttypes.SlowResponse),
+			},
+			&Incident{
 				IncidentTypeID: util.StringOrNull(incidenttypes.Timeout),
 				ErrorMessage:   util.StringOrNull("timeout error..."),
 			},
@@ -28,21 +31,43 @@ func TestHasOpenIncident(t *testing.T) {
 		},
 	}
 
-	assert.False(t, alarm.HasOpenIncident(incidenttypes.Timeout, nil, ""))
-	assert.True(t, alarm.HasOpenIncident(incidenttypes.Timeout, nil, "timeout error..."))
+	assert.True(t, alarm.HasOpenIncident(
+		incidenttypes.SlowResponse,
+		nil, // response
+		"",  // error message
+	))
 
-	assert.False(t, alarm.HasOpenIncident(incidenttypes.Other, nil, ""))
-	assert.True(t, alarm.HasOpenIncident(incidenttypes.Other, nil, "other error..."))
+	assert.False(t, alarm.HasOpenIncident(
+		incidenttypes.Timeout,
+		nil, // response
+		"",  // error message
+	))
+	assert.True(t, alarm.HasOpenIncident(
+		incidenttypes.Timeout,
+		nil,                // response
+		"timeout error...", // error message
+	))
+
+	assert.False(t, alarm.HasOpenIncident(
+		incidenttypes.Other,
+		nil, // response
+		"",  // error message
+	))
+	assert.True(t, alarm.HasOpenIncident(
+		incidenttypes.Other,
+		nil,              // response
+		"other error...", // error message
+	))
 
 	assert.True(t, alarm.HasOpenIncident(
 		incidenttypes.BadCode,
-		&http.Response{StatusCode: 500},
-		"",
+		&http.Response{StatusCode: 500}, // response
+		"", // error message
 	))
 	assert.False(t, alarm.HasOpenIncident(
 		incidenttypes.BadCode,
-		&http.Response{StatusCode: 404},
-		"",
+		&http.Response{StatusCode: 404}, // response
+		"", // error message
 	))
 }
 

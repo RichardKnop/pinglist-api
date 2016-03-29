@@ -318,6 +318,9 @@ func (suite *AlarmsTestSuite) TestUpdateAlarmRegionNotFound() {
 }
 
 func (suite *AlarmsTestSuite) TestUpdateAlarm() {
+	// Deactivate the alarm
+	err := suite.db.Model(suite.alarms[0]).UpdateColumn("active", false).Error
+	assert.NoError(suite.T(), err, "Deactivating alarm failed")
 	// Prepare a request
 	payload, err := json.Marshal(&AlarmRequest{
 		Region:                 "us-west-2",

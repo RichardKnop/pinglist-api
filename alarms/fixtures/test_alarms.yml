@@ -16,7 +16,7 @@
     interval: 60
     email_alerts: true
     push_notification_alerts: true
-    active: true
+    active: false
     alarm_state_id: 'ok'
     created_at: 'ON_INSERT_NOW()'
     updated_at: 'ON_UPDATE_NOW()'

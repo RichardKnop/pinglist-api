@@ -83,6 +83,7 @@ type Incident struct {
 	Alarm          *Alarm
 	IncidentType   *IncidentType
 	HTTPCode       sql.NullInt64
+	ResponseTime   sql.NullInt64  // nanoseconds
 	Response       sql.NullString `sql:"type:text"`
 	ErrorMessage   sql.NullString
 	ResolvedAt     pq.NullTime `sql:"index"`
@@ -123,7 +124,7 @@ func NewAlarm(user *accounts.User, region *Region, alarmState *AlarmState, alarm
 }
 
 // NewIncident creates new Incident instance
-func NewIncident(alarm *Alarm, incidentType *IncidentType, resp *http.Response, errMsg string) *Incident {
+func NewIncident(alarm *Alarm, incidentType *IncidentType, resp *http.Response, responseTime int64, errMsg string) *Incident {
 	alarmID := util.PositiveIntOrNull(int64(alarm.ID))
 	incidentTypeID := util.StringOrNull(incidentType.ID)
 	incident := &Incident{
@@ -143,10 +144,13 @@ func NewIncident(alarm *Alarm, incidentType *IncidentType, resp *http.Response, 
 		// Save the response status code
 		incident.HTTPCode = util.IntOrNull(int64(resp.StatusCode))
 
-		// Save the respnse dump
+		// Save the response time
+		incident.ResponseTime = util.IntOrNull(responseTime)
+
+		// Save the response dump
 		var respDump string
 		respBytes, err := httputil.DumpResponse(resp, true) // body = true
-		if err != nil {
+		if err == nil {
 			respDump = string(respBytes)
 		}
 		incident.Response = util.StringOrNull(respDump)

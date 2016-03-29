@@ -69,19 +69,54 @@ func (s *Service) CheckAlarm(alarmID uint, watermark time.Time) error {
 
 	// The request timed out
 	if e, ok := err.(net.Error); ok && e.Timeout() {
-		return s.openIncident(alarm, incidenttypes.Timeout, resp, err.Error())
+		logger.Info("AAA")
+		return s.openIncident(
+			alarm,
+			incidenttypes.Timeout,
+			nil, // response
+			0,   // response time
+			err.Error(),
+		)
 	}
 
 	// The request failed due to any other error
 	if err != nil {
-		return s.openIncident(alarm, incidenttypes.Other, resp, err.Error())
+		logger.Info("BBB")
+		return s.openIncident(
+			alarm,
+			incidenttypes.Other,
+			nil, // response
+			0,   // response time
+			err.Error(),
+		)
 	}
 
 	defer resp.Body.Close()
 
 	// The request returned a response with a bad status code
 	if resp.StatusCode != int(alarm.ExpectedHTTPCode) {
-		return s.openIncident(alarm, incidenttypes.BadCode, resp, "")
+		logger.Info("CCC")
+		return s.openIncident(
+			alarm,
+			incidenttypes.BadCode,
+			resp,
+			elapsed.Nanoseconds(),
+			"",
+		)
+	}
+
+	// The response was too slow
+	if uint(elapsed.Nanoseconds()/1000000) > alarm.MaxResponseTime {
+		logger.Info("DDD")
+		logger.Info(elapsed.Nanoseconds() / 1000000)
+		logger.Info(alarm.MaxResponseTime)
+		return s.openIncident(
+			alarm,
+			incidenttypes.SlowResponse,
+			resp,
+			elapsed.Nanoseconds(),
+			"",
+		)
 	}
 
 	// Resolve any open incidents

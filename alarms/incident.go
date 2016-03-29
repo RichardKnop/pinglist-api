@@ -10,7 +10,7 @@ import (
 )
 
 // openIncident opens a new alarm incident
-func (s *Service) openIncident(alarm *Alarm, incidentTypeID string, resp *http.Response, errMsg string) error {
+func (s *Service) openIncident(alarm *Alarm, incidentTypeID string, resp *http.Response, responseTime int64, errMsg string) error {
 	// Begin a transaction
 	tx := s.db.Begin()
 
@@ -41,8 +41,6 @@ func (s *Service) openIncident(alarm *Alarm, incidentTypeID string, resp *http.R
 		}
 	}
 
-	var incident *Incident
-
 	// If the alarm does not have an open incident of such type yet
 	if !alarm.HasOpenIncident(incidentTypeID, resp, errMsg) {
 		// Fetch the incident type from the database
@@ -53,10 +51,11 @@ func (s *Service) openIncident(alarm *Alarm, incidentTypeID string, resp *http.R
 		}
 
 		// Create a new incident object
-		incident = NewIncident(
+		incident := NewIncident(
 			alarm,
 			incidentType,
 			resp,
+			responseTime,
 			errMsg,
 		)
 
@@ -65,18 +64,14 @@ func (s *Service) openIncident(alarm *Alarm, incidentTypeID string, resp *http.R
 			tx.Rollback() // rollback the transaction
 			return err
 		}
+
+		alarm.Incidents = append(alarm.Incidents, incident)
 	}
 
 	// Commit the transaction
 	if err := tx.Commit().Error; err != nil {
 		tx.Rollback() // rollback the transaction
 		return err
-	}
-
-	// Make sure to keep the passed alarm object up-to-date
-	// if a new incident was opened
-	if incident != nil {
-		alarm.Incidents = append(alarm.Incidents, incident)
 	}
 
 	return nil

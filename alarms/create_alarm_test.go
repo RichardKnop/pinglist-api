@@ -31,10 +31,13 @@ func (suite *AlarmsTestSuite) TestCreateAlarmRequiresUserAuthentication() {
 }
 
 func (suite *AlarmsTestSuite) TestCreateAlarmMaxLimitReached() {
+	// Activete one of user alarms
+	err := suite.db.Model(suite.alarms[0]).UpdateColumn("active", true).Error
+	assert.NoError(suite.T(), err, "Activating alarm failed")
 	// Prepare a request
 	payload, err := json.Marshal(&AlarmRequest{
 		Region:                 "us-west-2",
-		EndpointURL:            "http://endpoint-5",
+		EndpointURL:            "http://new-endpoint",
 		ExpectedHTTPCode:       200,
 		MaxResponseTime:        1000,
 		Interval:               60,
@@ -112,7 +115,7 @@ func (suite *AlarmsTestSuite) TestCreateAlarmIntervalTooSmall() {
 	// Prepare a request
 	payload, err := json.Marshal(&AlarmRequest{
 		Region:                 "us-west-2",
-		EndpointURL:            "http://endpoint-5",
+		EndpointURL:            "http://new-endpoint",
 		ExpectedHTTPCode:       200,
 		MaxResponseTime:        1000,
 		Interval:               5,
@@ -194,7 +197,7 @@ func (suite *AlarmsTestSuite) TestCreateAlarmRegionNotFound() {
 	// Prepare a request
 	payload, err := json.Marshal(&AlarmRequest{
 		Region:                 "transylvania",
-		EndpointURL:            "http://endpoint-5",
+		EndpointURL:            "http://new-endpoint",
 		ExpectedHTTPCode:       200,
 		MaxResponseTime:        1000,
 		Interval:               60,
@@ -276,7 +279,7 @@ func (suite *AlarmsTestSuite) TestCreateAlarm() {
 	// Prepare a request
 	payload, err := json.Marshal(&AlarmRequest{
 		Region:                 "us-west-2",
-		EndpointURL:            "http://endpoint-5",
+		EndpointURL:            "http://new-endpoint",
 		ExpectedHTTPCode:       200,
 		MaxResponseTime:        1000,
 		Interval:               60,
@@ -350,7 +353,7 @@ func (suite *AlarmsTestSuite) TestCreateAlarm() {
 
 	// Check that the correct data was saved
 	assert.Equal(suite.T(), suite.users[1].ID, uint(alarm.UserID.Int64))
-	assert.Equal(suite.T(), "http://endpoint-5", alarm.EndpointURL)
+	assert.Equal(suite.T(), "http://new-endpoint", alarm.EndpointURL)
 	assert.Equal(suite.T(), uint(200), alarm.ExpectedHTTPCode)
 	assert.Equal(suite.T(), uint(1000), alarm.MaxResponseTime)
 	assert.Equal(suite.T(), uint(60), alarm.Interval)
@@ -378,7 +381,7 @@ func (suite *AlarmsTestSuite) TestCreateAlarm() {
 		ID:                     alarm.ID,
 		UserID:                 suite.users[1].ID,
 		Region:                 regions.USWest2,
-		EndpointURL:            "http://endpoint-5",
+		EndpointURL:            "http://new-endpoint",
 		ExpectedHTTPCode:       uint(200),
 		MaxResponseTime:        uint(1000),
 		Interval:               uint(60),
