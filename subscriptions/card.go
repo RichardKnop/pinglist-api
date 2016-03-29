@@ -121,12 +121,19 @@ func (s *Service) createCard(user *accounts.User, cardRequest *CardRequest) (*Ca
 
 	logger.Infof("Created card: %s", stripeCard.ID)
 
+	var lastFour string
+	if stripeCard.DynLastFour != "" {
+		lastFour = stripeCard.DynLastFour
+	} else {
+		lastFour = stripeCard.LastFour
+	}
+
 	// Create a new card object
 	card := NewCard(
 		customer,
 		stripeCard.ID,
 		string(stripeCard.Brand),
-		stripeCard.LastFour,
+		lastFour,
 	)
 
 	// Save the card to the database
