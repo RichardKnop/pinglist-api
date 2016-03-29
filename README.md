@@ -73,7 +73,7 @@ curl -L http://localhost:2379/v2/keys/config/pinglist.json -XPUT -d value='{
 		"HTTPOnly": true
 	},
 	"AWS": {
-		"Region": "ap-southeast-1",
+		"Region": "us-west-2",
 		"APNSPlatformApplicationARN": "apns_platform_application_arn",
 		"GCMPlatformApplicationARN":  "gcm_platform_application_arn"
 	},
