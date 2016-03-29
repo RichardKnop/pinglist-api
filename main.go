@@ -62,6 +62,15 @@ func main() {
 			},
 		},
 		{
+			Name:  "runscheduler",
+			Usage: "run scheduler",
+			Action: func(c *cli.Context) {
+				if err := commands.RunScheduler(); err != nil {
+					log.Fatal(err)
+				}
+			},
+		},
+		{
 			Name:  "runserver",
 			Usage: "run web server",
 			Action: func(c *cli.Context) {
@@ -71,10 +80,10 @@ func main() {
 			},
 		},
 		{
-			Name:  "runscheduler",
-			Usage: "run scheduler",
+			Name:  "runall",
+			Usage: "run both scheduler and web server",
 			Action: func(c *cli.Context) {
-				if err := commands.RunScheduler(); err != nil {
+				if err := commands.RunAll(); err != nil {
 					log.Fatal(err)
 				}
 			},

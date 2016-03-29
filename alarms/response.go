@@ -141,7 +141,7 @@ func NewAlarmResponse(alarm *Alarm) (*AlarmResponse, error) {
 		Region:                 alarm.RegionID.String,
 		EndpointURL:            alarm.EndpointURL,
 		ExpectedHTTPCode:       alarm.ExpectedHTTPCode,
-		MaxResponseTime: 				alarm.MaxResponseTime,
+		MaxResponseTime:        alarm.MaxResponseTime,
 		Interval:               alarm.Interval,
 		EmailAlerts:            alarm.EmailAlerts,
 		PushNotificationAlerts: alarm.PushNotificationAlerts,

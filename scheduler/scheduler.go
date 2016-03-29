@@ -25,12 +25,14 @@ func New(metricsService metrics.ServiceInterface, alarmsService alarms.ServiceIn
 // Run opens individial goroutines to:
 // - watch for scheduled alarms
 // - partition alarm_results table & rotate old sub tables
-func (s *Scheduler) Run(alarmsInterval, partitionInterval time.Duration) {
+func (s *Scheduler) Run(alarmsInterval, partitionInterval time.Duration) sync.WaitGroup {
 	var wg sync.WaitGroup
 
-	// Watch for scheduled alarms
+	// Watch for scheduled alarm checks
 	wg.Add(1)
 	go func() {
+		defer wg.Done()
+
 		for {
 			// Wait before repeating
 			time.Sleep(time.Second * alarmsInterval)
@@ -66,6 +68,8 @@ func (s *Scheduler) Run(alarmsInterval, partitionInterval time.Duration) {
 	// Partition alarm_results table and rotate old sub tables
 	wg.Add(1)
 	go func() {
+		defer wg.Done()
+
 		// Partition the request time metrics table
 		err := s.metricsService.PartitionRequestTime(
 			metrics.RequestTimeParentTableName,
@@ -84,5 +88,5 @@ func (s *Scheduler) Run(alarmsInterval, partitionInterval time.Duration) {
 		time.Sleep(time.Second * partitionInterval)
 	}()
 
-	wg.Wait()
+	return wg
 }
