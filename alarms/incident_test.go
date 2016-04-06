@@ -38,7 +38,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		First(alarm, testAlarm.ID).RecordNotFound())
 
 	// First, let's open a new slow_response incident
-	when1 := time.Now()
+	when1 := time.Now().UTC()
 	gorm.NowFunc = func() time.Time {
 		return when1
 	}
@@ -103,7 +103,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 
 	// Second, let's try opening another slow_response incident
 	// This should not create a new incident entry
-	when2 := time.Now()
+	when2 := time.Now().UTC()
 	gorm.NowFunc = func() time.Time {
 		return when2
 	}
@@ -126,7 +126,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		assert.Equal(
 			suite.T(),
 			when1.Format("2006-01-02T15:04:05Z"),
-			alarm.LastDowntimeStartedAt.Time.Format("2006-01-02T15:04:05Z"),
+			alarm.LastDowntimeStartedAt.Time.UTC().Format("2006-01-02T15:04:05Z"),
 		)
 		// LastUptimeStartedAt still nill
 		assert.False(suite.T(), alarm.LastUptimeStartedAt.Valid)
@@ -147,7 +147,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	assert.Equal(suite.T(), 1, len(alarm.Incidents))
 
 	// Third, let's open a new timeout incident
-	when3 := time.Now()
+	when3 := time.Now().UTC()
 	gorm.NowFunc = func() time.Time {
 		return when3
 	}
@@ -170,7 +170,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		assert.Equal(
 			suite.T(),
 			when1.Format("2006-01-02T15:04:05Z"),
-			alarm.LastDowntimeStartedAt.Time.Format("2006-01-02T15:04:05Z"),
+			alarm.LastDowntimeStartedAt.Time.UTC().Format("2006-01-02T15:04:05Z"),
 		)
 		// LastUptimeStartedAt should be nil
 		assert.False(suite.T(), alarm.LastUptimeStartedAt.Valid)
@@ -208,7 +208,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 
 	// Next, let's try opening another timeout incident
 	// This should not create a new incident entry
-	when4 := time.Now()
+	when4 := time.Now().UTC()
 	gorm.NowFunc = func() time.Time {
 		return when4
 	}
@@ -231,7 +231,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		assert.Equal(
 			suite.T(),
 			when1.Format("2006-01-02T15:04:05Z"),
-			alarm.LastDowntimeStartedAt.Time.Format("2006-01-02T15:04:05Z"),
+			alarm.LastDowntimeStartedAt.Time.UTC().Format("2006-01-02T15:04:05Z"),
 		)
 		// LastUptimeStartedAt still nill
 		assert.False(suite.T(), alarm.LastUptimeStartedAt.Valid)
@@ -252,7 +252,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	assert.Equal(suite.T(), 2, len(alarm.Incidents))
 
 	// Next, open a new bad code incident
-	when5 := time.Now()
+	when5 := time.Now().UTC()
 	gorm.NowFunc = func() time.Time {
 		return when5
 	}
@@ -275,7 +275,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		assert.Equal(
 			suite.T(),
 			when1.Format("2006-01-02T15:04:05Z"),
-			alarm.LastDowntimeStartedAt.Time.Format("2006-01-02T15:04:05Z"),
+			alarm.LastDowntimeStartedAt.Time.UTC().Format("2006-01-02T15:04:05Z"),
 		)
 		// LastUptimeStartedAt still nill
 		assert.False(suite.T(), alarm.LastUptimeStartedAt.Valid)
@@ -313,7 +313,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 
 	// Next, let's try opening another bad code incident with the same code
 	// This should not create a new incident entry
-	when6 := time.Now()
+	when6 := time.Now().UTC()
 	gorm.NowFunc = func() time.Time {
 		return when6
 	}
@@ -336,7 +336,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		assert.Equal(
 			suite.T(),
 			when1.Format("2006-01-02T15:04:05Z"),
-			alarm.LastDowntimeStartedAt.Time.Format("2006-01-02T15:04:05Z"),
+			alarm.LastDowntimeStartedAt.Time.UTC().Format("2006-01-02T15:04:05Z"),
 		)
 		// LastUptimeStartedAt still nill
 		assert.False(suite.T(), alarm.LastUptimeStartedAt.Valid)
@@ -357,7 +357,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	assert.Equal(suite.T(), 3, len(alarm.Incidents))
 
 	// Next, open a new bad code incident with a different code
-	when7 := time.Now()
+	when7 := time.Now().UTC()
 	gorm.NowFunc = func() time.Time {
 		return when7
 	}
@@ -380,7 +380,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		assert.Equal(
 			suite.T(),
 			when1.Format("2006-01-02T15:04:05Z"),
-			alarm.LastDowntimeStartedAt.Time.Format("2006-01-02T15:04:05Z"),
+			alarm.LastDowntimeStartedAt.Time.UTC().Format("2006-01-02T15:04:05Z"),
 		)
 		// LastUptimeStartedAt still nill
 		assert.False(suite.T(), alarm.LastUptimeStartedAt.Valid)
@@ -417,7 +417,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	assert.False(suite.T(), alarm.Incidents[3].ResolvedAt.Valid)
 
 	// Finally, resolve the incidents
-	when8 := time.Now()
+	when8 := time.Now().UTC()
 	gorm.NowFunc = func() time.Time {
 		return when8
 	}
@@ -438,13 +438,13 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		assert.Equal(
 			suite.T(),
 			when1.Format("2006-01-02T15:04:05Z"),
-			alarm.LastDowntimeStartedAt.Time.Format("2006-01-02T15:04:05Z"),
+			alarm.LastDowntimeStartedAt.Time.UTC().Format("2006-01-02T15:04:05Z"),
 		)
 		// LastUptimeStartedAt should be set
 		assert.Equal(
 			suite.T(),
 			when8.Format("2006-01-02T15:04:05Z"),
-			alarm.LastUptimeStartedAt.Time.Format("2006-01-02T15:04:05Z"),
+			alarm.LastUptimeStartedAt.Time.UTC().Format("2006-01-02T15:04:05Z"),
 		)
 
 		// 4 incidents

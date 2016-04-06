@@ -117,7 +117,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	server, client = testServer(&http.Response{StatusCode: 200})
 	defer server.Close()
 	suite.service.client = client
-	start = time.Now()
+	start = time.Now().UTC()
 	gorm.NowFunc = func() time.Time {
 		return start
 	}
@@ -139,7 +139,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	assert.Equal(
 		suite.T(),
 		start.Format("2006-01-02T15:04:05Z"),
-		alarm.Watermark.Time.Format("2006-01-02T15:04:05Z"),
+		alarm.Watermark.Time.UTC().Format("2006-01-02T15:04:05Z"),
 	)
 
 	// Status OK
@@ -152,7 +152,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	server, client = testServer(&http.Response{StatusCode: 200})
 	defer server.Close()
 	suite.service.client = client
-	start = time.Now()
+	start = time.Now().UTC()
 	gorm.NowFunc = func() time.Time {
 		return start
 	}
@@ -187,7 +187,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	assert.Equal(
 		suite.T(),
 		start.Format("2006-01-02T15:04:05Z"),
-		alarm.Watermark.Time.Format("2006-01-02T15:04:05Z"),
+		alarm.Watermark.Time.UTC().Format("2006-01-02T15:04:05Z"),
 	)
 
 	// Status changed to Alarm
@@ -208,7 +208,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	server, client = testServerTimeout()
 	defer server.Close()
 	suite.service.client = client
-	start = time.Now()
+	start = time.Now().UTC()
 	gorm.NowFunc = func() time.Time {
 		return start
 	}
@@ -229,7 +229,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	assert.Equal(
 		suite.T(),
 		start.Format("2006-01-02T15:04:05Z"),
-		alarm.Watermark.Time.Format("2006-01-02T15:04:05Z"),
+		alarm.Watermark.Time.UTC().Format("2006-01-02T15:04:05Z"),
 	)
 
 	// Status still Alarm
@@ -250,7 +250,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	server, client = testServer(&http.Response{StatusCode: 500})
 	defer server.Close()
 	suite.service.client = client
-	start = time.Now()
+	start = time.Now().UTC()
 	gorm.NowFunc = func() time.Time {
 		return start
 	}
@@ -271,7 +271,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	assert.Equal(
 		suite.T(),
 		start.Format("2006-01-02T15:04:05Z"),
-		alarm.Watermark.Time.Format("2006-01-02T15:04:05Z"),
+		alarm.Watermark.Time.UTC().Format("2006-01-02T15:04:05Z"),
 	)
 
 	// Status still Alarm
@@ -292,7 +292,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	server, client = testServer(&http.Response{StatusCode: 200})
 	defer server.Close()
 	suite.service.client = client
-	start = time.Now()
+	start = time.Now().UTC()
 	gorm.NowFunc = func() time.Time {
 		return start
 	}
@@ -318,7 +318,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	assert.Equal(
 		suite.T(),
 		start.Format("2006-01-02T15:04:05Z"),
-		alarm.Watermark.Time.Format("2006-01-02T15:04:05Z"),
+		alarm.Watermark.Time.UTC().Format("2006-01-02T15:04:05Z"),
 	)
 
 	// Status back to OK
@@ -361,7 +361,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheckIdempotency() {
 	server, client = testServer(&http.Response{StatusCode: 200})
 	defer server.Close()
 	suite.service.client = client
-	start = time.Now()
+	start = time.Now().UTC()
 	gorm.NowFunc = func() time.Time {
 		return start
 	}
@@ -411,7 +411,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheckIdempotency() {
 	assert.Equal(
 		suite.T(),
 		start.Format("2006-01-02T15:04:05Z"),
-		alarm.Watermark.Time.Format("2006-01-02T15:04:05Z"),
+		alarm.Watermark.Time.UTC().Format("2006-01-02T15:04:05Z"),
 	)
 
 	// Status OK
