@@ -123,16 +123,9 @@ go run main.go loaddata \
 	accounts/fixtures/test_accounts.yml \
 	accounts/fixtures/test_users.yml \
 	subscriptions/fixtures/plans.yml \
-	subscriptions/fixtures/test_customers.yml \
-	subscriptions/fixtures/test_cards.yml \
-	subscriptions/fixtures/test_subscriptions.yml \
 	alarms/fixtures/regions.yml \
 	alarms/fixtures/alarm_states.yml \
-	alarms/fixtures/incident_types.yml \
-	alarms/fixtures/test_alarms.yml \
-	alarms/fixtures/test_incidents.yml \
-	teams/fixtures/test_teams.yml \
-	notifications/fixtures/test_endpoints.yml
+	alarms/fixtures/incident_types.yml
 ```
 
 # Testing
