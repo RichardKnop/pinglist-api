@@ -86,7 +86,7 @@ curl -L http://localhost:2379/v2/keys/config/pinglist.json -XPUT -d value='{
 		"PublishableKey": "stripe_publishable_key"
 	},
 	"Sendgrid": {
-		"APIKey": "SG.qq6U90eETr-j47cFblecdA.ESb8Qm98jRlvayJps1eSqSaeFpw74tS-qp-7Ju684cU"
+		"APIKey": "sendgrid_api_key"
 	},
 	"Web": {
 		"Scheme": "http",
