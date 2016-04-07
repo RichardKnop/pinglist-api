@@ -238,6 +238,7 @@ func (suite *AccountsTestSuite) TestGetOrCreateFacebookUser() {
 
 	// Correct user object should be returned
 	if assert.NotNil(suite.T(), user) {
+		assert.Equal(suite.T(), user.ID, user.OauthUser.MetaUserID)
 		assert.Equal(suite.T(), "test@NewUser", user.OauthUser.Username)
 		assert.Equal(suite.T(), "NewUser_facebook_id", user.FacebookID.String)
 		assert.Equal(suite.T(), "John", user.FirstName.String)
@@ -279,6 +280,7 @@ func (suite *AccountsTestSuite) TestCreateSuperuser() {
 
 	// Correct user object should be returned
 	if assert.NotNil(suite.T(), user) {
+		assert.Equal(suite.T(), user.ID, user.OauthUser.MetaUserID)
 		assert.Equal(suite.T(), "test@newsuperuser", user.OauthUser.Username)
 		assert.False(suite.T(), user.FacebookID.Valid)
 		assert.False(suite.T(), user.FirstName.Valid)
