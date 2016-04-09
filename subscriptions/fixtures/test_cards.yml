@@ -8,6 +8,8 @@
     card_id: "card_1"
     brand: "Visa"
     last_four: "4242"
+    exp_month: 10
+    exp_year: 2020
     created_at: 'ON_INSERT_NOW()'
     updated_at: 'ON_UPDATE_NOW()'
 
@@ -19,6 +21,8 @@
     card_id: "card_2"
     brand: "Visa"
     last_four: "4242"
+    exp_month: 10
+    exp_year: 2020
     created_at: 'ON_INSERT_NOW()'
     updated_at: 'ON_UPDATE_NOW()'
 
@@ -30,6 +34,8 @@
     card_id: "card_3"
     brand: "Visa"
     last_four: "4242"
+    exp_month: 10
+    exp_year: 2020
     created_at: 'ON_INSERT_NOW()'
     updated_at: 'ON_UPDATE_NOW()'
 
@@ -41,5 +47,7 @@
     card_id: "card_4"
     brand: "Visa"
     last_four: "4242"
+    exp_month: 10
+    exp_year: 2020
     created_at: 'ON_INSERT_NOW()'
     updated_at: 'ON_UPDATE_NOW()'

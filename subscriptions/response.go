@@ -13,6 +13,8 @@ type CardResponse struct {
 	ID        uint   `json:"id"`
 	Brand     string `json:"brand"`
 	LastFour  string `json:"last_four"`
+	ExpMonth  uint   `json:"exp_month"`
+	ExpYear   uint   `json:"exp_year"`
 	CreatedAt string `json:"created_at"`
 	UpdatedAt string `json:"updated_at"`
 }
@@ -78,6 +80,8 @@ func NewCardResponse(card *Card) (*CardResponse, error) {
 		ID:        card.ID,
 		Brand:     card.Brand,
 		LastFour:  card.LastFour,
+		ExpMonth:  card.ExpMonth,
+		ExpYear:   card.ExpYear,
 		CreatedAt: card.CreatedAt.UTC().Format(time.RFC3339),
 		UpdatedAt: card.UpdatedAt.UTC().Format(time.RFC3339),
 	}

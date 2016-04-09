@@ -29,6 +29,8 @@ Example response:
 	"id": 1,
 	"brand": "Visa",
 	"last_four": "4242",
+	"exp_month": 10,
+	"exp_year": 2020,
 	"created_at": "2016-01-14T13:52:24Z",
 	"updated_at": "2016-01-14T13:52:24Z"
 }
@@ -92,6 +94,8 @@ Example response:
         "id": 1,
       	"brand": "Visa",
       	"last_four": "4242",
+				"exp_month": 10,
+				"exp_year": 2020,
       	"created_at": "2016-01-14T13:52:24Z",
       	"updated_at": "2016-01-14T13:52:24Z"
 			},
@@ -104,6 +108,8 @@ Example response:
         "id": 1,
       	"brand": "Visa",
       	"last_four": "4343",
+				"exp_month": 10,
+				"exp_year": 2020,
       	"created_at": "2016-01-14T13:52:24Z",
       	"updated_at": "2016-01-14T13:52:24Z"
 			}

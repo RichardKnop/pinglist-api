@@ -67,6 +67,8 @@ type Card struct {
 	CardID     string `sql:"type:varchar(60);unique;not null"`
 	Brand      string `sql:"type:varchar(20);not null"`
 	LastFour   string `sql:"type:varchar(4);not null"`
+	ExpMonth   uint   `sql:"not null"`
+	ExpYear    uint   `sql:"not null"`
 }
 
 // TableName specifies table name
@@ -121,13 +123,15 @@ func NewCustomer(user *accounts.User, customerID string) *Customer {
 }
 
 // NewCard creates new Card instance
-func NewCard(customer *Customer, cardID, brand, lastFour string) *Card {
+func NewCard(customer *Customer, cardID, brand, lastFour string, expMonth, expYear uint) *Card {
 	customerID := util.PositiveIntOrNull(int64(customer.ID))
 	card := &Card{
 		CustomerID: customerID,
 		CardID:     cardID,
 		Brand:      brand,
 		LastFour:   lastFour,
+		ExpMonth:   expMonth,
+		ExpYear:    expYear,
 	}
 	if customerID.Valid {
 		card.Customer = customer

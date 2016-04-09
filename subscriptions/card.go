@@ -134,6 +134,8 @@ func (s *Service) createCard(user *accounts.User, cardRequest *CardRequest) (*Ca
 		stripeCard.ID,
 		string(stripeCard.Brand),
 		lastFour,
+		uint(stripeCard.Month),
+		uint(stripeCard.Year),
 	)
 
 	// Save the card to the database
