@@ -127,6 +127,8 @@ func (suite *SubscriptionsTestSuite) TestCreateCardExistingValidCustomer() {
 	assert.Equal(suite.T(), customer.ID, card.Customer.ID)
 	assert.Equal(suite.T(), "Visa", card.Brand)
 	assert.Equal(suite.T(), "4242", card.LastFour)
+	assert.Equal(suite.T(), 10, card.ExpMonth)
+	assert.Equal(suite.T(), 2020, card.ExpYear)
 
 	// Check the Location header
 	assert.Equal(
@@ -254,6 +256,8 @@ func (suite *SubscriptionsTestSuite) TestCreateCardExistingInvalidCustomer() {
 	assert.Equal(suite.T(), customer.ID, card.Customer.ID)
 	assert.Equal(suite.T(), "Visa", card.Brand)
 	assert.Equal(suite.T(), "4242", card.LastFour)
+	assert.Equal(suite.T(), 10, card.ExpMonth)
+	assert.Equal(suite.T(), 2020, card.ExpYear)
 
 	// Check the Location header
 	assert.Equal(
@@ -376,6 +380,8 @@ func (suite *SubscriptionsTestSuite) TestCreateCardNewCustomer() {
 	assert.Equal(suite.T(), customer.ID, card.Customer.ID)
 	assert.Equal(suite.T(), "Visa", card.Brand)
 	assert.Equal(suite.T(), "4242", card.LastFour)
+	assert.Equal(suite.T(), 10, card.ExpMonth)
+	assert.Equal(suite.T(), 2020, card.ExpYear)
 
 	// Check the Location header
 	assert.Equal(
