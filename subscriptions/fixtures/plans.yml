@@ -5,7 +5,7 @@
     id: 1
   fields:
     plan_id: 'personal'
-    name: 'personal'
+    name: 'Personal'
     description: 'Personal website and/or a blog.'
     currency: 'USD'
     amount: 250
