@@ -41,7 +41,7 @@ func (suite *TeamsTestSuite) TestListTeamsWithoutPermission() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[2])
+	suite.mockUserAuth(suite.users[2])
 	suite.mockUserFiltering(suite.users[1])
 
 	// And serve the request
@@ -87,7 +87,7 @@ func (suite *TeamsTestSuite) TestListTeams() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[0])
+	suite.mockUserAuth(suite.users[0])
 	suite.mockUserFiltering(suite.users[0])
 
 	// And serve the request

@@ -46,7 +46,7 @@ func (suite *NotificationsTestSuite) TestRegisterIOSDeviceFirstTime() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[1])
+	suite.mockUserAuth(suite.users[1])
 
 	// Mock endpoint creation
 	suite.mockCreateEndpoint(
@@ -120,7 +120,7 @@ func (suite *NotificationsTestSuite) TestRegisterIOSDeviceWhenAlreadyRegisteredA
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[0])
+	suite.mockUserAuth(suite.users[0])
 
 	// Mock getting endpoint attributes
 	suite.mockGetAttributes(
@@ -187,7 +187,7 @@ func (suite *NotificationsTestSuite) TestRegisterIOSDeviceWhenAlreadyRegisteredA
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[0])
+	suite.mockUserAuth(suite.users[0])
 
 	// Mock getting endpoint attributes
 	suite.mockGetAttributes(
@@ -275,7 +275,7 @@ func (suite *NotificationsTestSuite) TestRegisterIOSDeviceWhenAlreadyRegisteredA
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[0])
+	suite.mockUserAuth(suite.users[0])
 
 	// Mock getting endpoint attributes
 	suite.mockGetAttributes(

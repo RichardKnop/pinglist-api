@@ -202,7 +202,7 @@ func (suite *AlarmsTestSuite) assertMockExpectations() {
 }
 
 // Mock authentication
-func (suite *AlarmsTestSuite) mockAuthentication(user *accounts.User) {
+func (suite *AlarmsTestSuite) mockUserAuth(user *accounts.User) {
 	// Mock GetConfig call to return the config object
 	suite.accountsServiceMock.On("GetConfig").Return(suite.cnf)
 

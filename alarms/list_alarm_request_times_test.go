@@ -45,7 +45,7 @@ func (suite *AlarmsTestSuite) TestListAlarmRequestTimesWithoutPermission() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[2])
+	suite.mockUserAuth(suite.users[2])
 
 	// And serve the request
 	w := httptest.NewRecorder()
@@ -95,7 +95,7 @@ func (suite *AlarmsTestSuite) TestListAlarmRequestTimes() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[1])
+	suite.mockUserAuth(suite.users[1])
 
 	// Mock paginated request time metrics
 	suite.mockPaginatedRequestTimesCount(

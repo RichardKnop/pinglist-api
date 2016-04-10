@@ -144,7 +144,7 @@ func (suite *TeamsTestSuite) assertMockExpectations() {
 }
 
 // Mock authentication
-func (suite *TeamsTestSuite) mockAuthentication(user *accounts.User) {
+func (suite *TeamsTestSuite) mockUserAuth(user *accounts.User) {
 	// Mock GetConfig call to return the config object
 	suite.accountsServiceMock.On("GetConfig").Return(suite.cnf)
 

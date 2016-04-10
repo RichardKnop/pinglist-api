@@ -41,7 +41,7 @@ func (suite *AlarmsTestSuite) TestListAlarmsWithoutPermission() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[1])
+	suite.mockUserAuth(suite.users[1])
 	suite.mockUserFiltering(suite.users[2])
 
 	// And serve the request
@@ -87,7 +87,7 @@ func (suite *AlarmsTestSuite) TestListAlarms() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[1])
+	suite.mockUserAuth(suite.users[1])
 	suite.mockUserFiltering(suite.users[1])
 
 	// And serve the request

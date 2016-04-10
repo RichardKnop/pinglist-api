@@ -46,7 +46,7 @@ func (suite *TeamsTestSuite) TestUpdateTeamWithoutPermission() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[1])
+	suite.mockUserAuth(suite.users[1])
 
 	// And serve the request
 	w := httptest.NewRecorder()
@@ -96,7 +96,7 @@ func (suite *TeamsTestSuite) TestUpdateTeamMaxTeamsLimitReached() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[0])
+	suite.mockUserAuth(suite.users[0])
 
 	// Mock find active subscription
 	suite.mockFindActiveSubscriptionByUserID(
@@ -169,7 +169,7 @@ func (suite *TeamsTestSuite) TestUpdateTeamMaxMembersPerTeamLimitReached() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[0])
+	suite.mockUserAuth(suite.users[0])
 
 	// Mock find active subscription
 	suite.mockFindActiveSubscriptionByUserID(
@@ -242,7 +242,7 @@ func (suite *TeamsTestSuite) TestUpdateTeam() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[0])
+	suite.mockUserAuth(suite.users[0])
 
 	// Mock find active subscription
 	suite.mockFindActiveSubscriptionByUserID(

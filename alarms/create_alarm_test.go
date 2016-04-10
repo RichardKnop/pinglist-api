@@ -62,7 +62,7 @@ func (suite *AlarmsTestSuite) TestCreateAlarmMaxLimitReached() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[1])
+	suite.mockUserAuth(suite.users[1])
 
 	// Mock find team
 	suite.mockFindTeamByMemberID(
@@ -140,7 +140,7 @@ func (suite *AlarmsTestSuite) TestCreateAlarmIntervalTooSmall() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[1])
+	suite.mockUserAuth(suite.users[1])
 
 	// Mock find team
 	suite.mockFindTeamByMemberID(
@@ -222,7 +222,7 @@ func (suite *AlarmsTestSuite) TestCreateAlarmRegionNotFound() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[1])
+	suite.mockUserAuth(suite.users[1])
 
 	// Mock find team
 	suite.mockFindTeamByMemberID(
@@ -304,7 +304,7 @@ func (suite *AlarmsTestSuite) TestCreateAlarm() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[1])
+	suite.mockUserAuth(suite.users[1])
 
 	// Mock find team
 	suite.mockFindTeamByMemberID(

@@ -51,7 +51,7 @@ func (suite *TeamsTestSuite) TestCreateTeamMaxTeamsLimitReached() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[1])
+	suite.mockUserAuth(suite.users[1])
 
 	// Mock find active subscription
 	suite.mockFindActiveSubscriptionByUserID(
@@ -123,7 +123,7 @@ func (suite *TeamsTestSuite) TestCreateTeamMaxMembersPerTeamLimitReached() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[1])
+	suite.mockUserAuth(suite.users[1])
 
 	// Mock find active subscription
 	suite.mockFindActiveSubscriptionByUserID(
@@ -193,7 +193,7 @@ func (suite *TeamsTestSuite) TestCreateTeamWithoutMembers() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[1])
+	suite.mockUserAuth(suite.users[1])
 
 	// Mock find active subscription
 	suite.mockFindActiveSubscriptionByUserID(
@@ -298,7 +298,7 @@ func (suite *TeamsTestSuite) TestCreateTeamWithMembers() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[1])
+	suite.mockUserAuth(suite.users[1])
 
 	// Mock find active subscription
 	suite.mockFindActiveSubscriptionByUserID(

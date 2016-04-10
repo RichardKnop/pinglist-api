@@ -138,21 +138,3 @@ func (suite *MetricsTestSuite) TearDownTest() {
 func TestMetricsTestSuite(t *testing.T) {
 	suite.Run(t, new(MetricsTestSuite))
 }
-
-// Mock authentication
-func (suite *MetricsTestSuite) mockAuthentication(user *accounts.User) {
-	// Mock GetConfig call to return the config object
-	suite.accountsServiceMock.On("GetConfig").Return(suite.cnf)
-
-	// Mock GetOauthService to return a mock oauth service
-	suite.accountsServiceMock.On("GetOauthService").Return(suite.oauthServiceMock)
-
-	// Mock Authenticate to return a mock access token
-	mockOauthAccessToken := &oauth.AccessToken{User: user.OauthUser}
-	suite.oauthServiceMock.On("Authenticate", "test_token").
-		Return(mockOauthAccessToken, nil)
-
-	// Mock FindUserByOauthUserID to return the wanted user
-	suite.accountsServiceMock.On("FindUserByOauthUserID", user.OauthUser.ID).
-		Return(user, nil)
-}

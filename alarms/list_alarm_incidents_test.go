@@ -42,7 +42,7 @@ func (suite *AlarmsTestSuite) TestListAlarmIncidentsWithoutPermission() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[2])
+	suite.mockUserAuth(suite.users[2])
 
 	// And serve the request
 	w := httptest.NewRecorder()
@@ -87,7 +87,7 @@ func (suite *AlarmsTestSuite) TestListAlarmIncidents() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[1])
+	suite.mockUserAuth(suite.users[1])
 
 	// And serve the request
 	w := httptest.NewRecorder()

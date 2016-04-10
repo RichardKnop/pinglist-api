@@ -54,7 +54,7 @@ func (suite *AlarmsTestSuite) TestDeleteAlarmWithoutPermission() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[2])
+	suite.mockUserAuth(suite.users[2])
 
 	// Count before
 	var countBefore int
@@ -119,7 +119,7 @@ func (suite *AlarmsTestSuite) TestDeleteAlarm() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[1])
+	suite.mockUserAuth(suite.users[1])
 
 	// Count before
 	var countBefore int

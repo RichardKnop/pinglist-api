@@ -48,7 +48,7 @@ func (suite *AlarmsTestSuite) TestUpdateAlarmWithoutPermission() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[2])
+	suite.mockUserAuth(suite.users[2])
 
 	// And serve the request
 	w := httptest.NewRecorder()
@@ -104,7 +104,7 @@ func (suite *AlarmsTestSuite) TestUpdateAlarmMaxLimitReached() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[1])
+	suite.mockUserAuth(suite.users[1])
 
 	// Mock find team
 	suite.mockFindTeamByMemberID(
@@ -182,7 +182,7 @@ func (suite *AlarmsTestSuite) TestUpdateAlarmIntervalTooSmall() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[1])
+	suite.mockUserAuth(suite.users[1])
 
 	// Mock find team
 	suite.mockFindTeamByMemberID(
@@ -264,7 +264,7 @@ func (suite *AlarmsTestSuite) TestUpdateAlarmRegionNotFound() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[1])
+	suite.mockUserAuth(suite.users[1])
 
 	// Mock find team
 	suite.mockFindTeamByMemberID(
@@ -349,7 +349,7 @@ func (suite *AlarmsTestSuite) TestUpdateAlarm() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[1])
+	suite.mockUserAuth(suite.users[1])
 
 	// Mock find team
 	suite.mockFindTeamByMemberID(
