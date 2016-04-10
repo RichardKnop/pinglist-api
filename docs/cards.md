@@ -1,6 +1,7 @@
 # Cards
 
 * [Create Card](#create-card)
+* [Get Card](#get-card)
 * [Delete Card](#delete-card)
 * [List Card](#list-cards)
 
@@ -15,6 +16,34 @@ curl --compressed -v localhost:8080/v1/cards \
 	-d '{
 		"token": "token"
 	}'
+```
+
+Example response:
+
+```json
+{
+	"_links": {
+		"self": {
+			"href": "/v1/cards/1"
+		}
+	},
+	"id": 1,
+	"brand": "Visa",
+	"last_four": "4242",
+	"exp_month": 10,
+	"exp_year": 2020,
+	"created_at": "2016-01-14T13:52:24Z",
+	"updated_at": "2016-01-14T13:52:24Z"
+}
+```
+
+## Get Card
+
+Example request:
+
+```
+curl --compressed -v localhost:8080/v1/cards/1 \
+	-H "Authorization: Bearer 00ccd40e-72ca-4e79-a4b6-67c95e2e3f1c"
 ```
 
 Example response:

@@ -149,8 +149,8 @@ func (suite *SubscriptionsTestSuite) TestCreateCardExistingValidCustomer() {
 		ID:        card.ID,
 		Brand:     card.Brand,
 		LastFour:  card.LastFour,
-		ExpMonth:  10,
-		ExpYear:   2020,
+		ExpMonth:  card.ExpMonth,
+		ExpYear:   card.ExpYear,
 		CreatedAt: card.CreatedAt.UTC().Format(time.RFC3339),
 		UpdatedAt: card.UpdatedAt.UTC().Format(time.RFC3339),
 	}
@@ -278,8 +278,8 @@ func (suite *SubscriptionsTestSuite) TestCreateCardExistingInvalidCustomer() {
 		ID:        card.ID,
 		Brand:     card.Brand,
 		LastFour:  card.LastFour,
-		ExpMonth:  10,
-		ExpYear:   2020,
+		ExpMonth:  card.ExpMonth,
+		ExpYear:   card.ExpYear,
 		CreatedAt: card.CreatedAt.UTC().Format(time.RFC3339),
 		UpdatedAt: card.UpdatedAt.UTC().Format(time.RFC3339),
 	}
@@ -402,8 +402,8 @@ func (suite *SubscriptionsTestSuite) TestCreateCardNewCustomer() {
 		ID:        card.ID,
 		Brand:     card.Brand,
 		LastFour:  card.LastFour,
-		ExpMonth:  10,
-		ExpYear:   2020,
+		ExpMonth:  card.ExpMonth,
+		ExpYear:   card.ExpYear,
 		CreatedAt: card.CreatedAt.UTC().Format(time.RFC3339),
 		UpdatedAt: card.UpdatedAt.UTC().Format(time.RFC3339),
 	}

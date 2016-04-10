@@ -35,6 +35,15 @@ func newRoutes(service ServiceInterface) []routes.Route {
 			},
 		},
 		routes.Route{
+			Name:        "get_card",
+			Method:      "GET",
+			Pattern:     "/cards/{id:[0-9]+}",
+			HandlerFunc: service.getCardHandler,
+			Middlewares: []negroni.Handler{
+				accounts.NewUserAuthMiddleware(service.GetAccountsService()),
+			},
+		},
+		routes.Route{
 			Name:        "delete_card",
 			Method:      "DELETE",
 			Pattern:     "/cards/{id:[0-9]+}",

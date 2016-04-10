@@ -264,6 +264,10 @@ func (_m *ServiceMock) createCardHandler(w http.ResponseWriter, r *http.Request)
 	_m.Called(w, r)
 }
 
+func (_m *ServiceMock) getCardHandler(w http.ResponseWriter, r *http.Request) {
+	_m.Called(w, r)
+}
+
 func (_m *ServiceMock) listCardsHandler(w http.ResponseWriter, r *http.Request) {
 	_m.Called(w, r)
 }

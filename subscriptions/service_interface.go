@@ -24,6 +24,7 @@ type ServiceInterface interface {
 	// Needed for the newRoutes to be able to register handlers
 	listPlansHandler(w http.ResponseWriter, r *http.Request)
 	createCardHandler(w http.ResponseWriter, r *http.Request)
+	getCardHandler(w http.ResponseWriter, r *http.Request)
 	listCardsHandler(w http.ResponseWriter, r *http.Request)
 	deleteCardHandler(w http.ResponseWriter, r *http.Request)
 	createSubscriptionHandler(w http.ResponseWriter, r *http.Request)
