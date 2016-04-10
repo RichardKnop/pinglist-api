@@ -77,11 +77,17 @@ func (s *Service) FindAlarmByID(alarmID uint) (*Alarm, error) {
 func (s *Service) createAlarm(user *accounts.User, alarmRequest *AlarmRequest) (*Alarm, error) {
 	// Limit active alarms to the max number defined as per subscription plan
 	if alarmRequest.Active {
-		alarmsCount, err := s.userActiveAlarmsCount(user)
-		if err != nil {
-			return nil, err
-		}
-		if alarmsCount+1 > s.getMaxAlarms(user) {
+		// Fetch the user team
+		team, _ := s.teamsService.FindTeamByMemberID(user.ID)
+
+		// Count alarms and calculate max limit
+		var (
+			alarmsCount = s.countActiveAlarms(team, user)
+			maxAlarms   = s.getMaxAlarms(team, user)
+		)
+
+		// Check the alarm limit
+		if alarmsCount+1 > maxAlarms {
 			return nil, ErrMaxAlarmsLimitReached
 		}
 	}
@@ -118,11 +124,17 @@ func (s *Service) createAlarm(user *accounts.User, alarmRequest *AlarmRequest) (
 func (s *Service) updateAlarm(alarm *Alarm, alarmRequest *AlarmRequest) error {
 	// Limit active alarms to the max number defined as per subscription plan
 	if !alarm.Active && alarmRequest.Active {
-		alarmsCount, err := s.userActiveAlarmsCount(alarm.User)
-		if err != nil {
-			return err
-		}
-		if alarmsCount+1 > s.getMaxAlarms(alarm.User) {
+		// Fetch the user team
+		team, _ := s.teamsService.FindTeamByMemberID(alarm.User.ID)
+
+		// Count alarms and calculate max limit
+		var (
+			alarmsCount = s.countActiveAlarms(team, alarm.User)
+			maxAlarms   = s.getMaxAlarms(team, alarm.User)
+		)
+
+		// Check the alarm limit
+		if alarmsCount+1 > maxAlarms {
 			return ErrMaxAlarmsLimitReached
 		}
 	}
@@ -158,17 +170,6 @@ func (s *Service) updateAlarm(alarm *Alarm, alarmRequest *AlarmRequest) error {
 	alarm.Region = region
 
 	return nil
-}
-
-// userActiveAlarmsCount counts active alarms of a user
-func (s *Service) userActiveAlarmsCount(user *accounts.User) (int, error) {
-	var count int
-	err := s.db.Model(new(Alarm)).Where("user_id = ?", user.ID).
-		Where("active = ?", true).Count(&count).Error
-	if err != nil {
-		return 0, err
-	}
-	return count, nil
 }
 
 // paginatedAlarmsCount returns a total count of alarms

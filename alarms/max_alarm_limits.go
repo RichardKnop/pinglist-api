@@ -6,13 +6,27 @@ import (
 	"github.com/RichardKnop/pinglist-api/teams"
 )
 
+// countActiveAlarms counts active alarms of the current user or his/her team
+func (s *Service) countActiveAlarms(team *teams.Team, user *accounts.User) int {
+	var (
+		userIDs = []uint{user.ID}
+		count   int
+	)
+	if team != nil {
+		for _, member := range team.Members {
+			userIDs = append(userIDs, member.ID)
+		}
+	}
+	s.db.Model(new(Alarm)).Where("user_id IN (?)", userIDs).
+		Where("active = ?", true).Count(&count)
+	return count
+}
+
 // getMaxAlarms finds out max number of alarms
-func (s *Service) getMaxAlarms(user *accounts.User) int {
+func (s *Service) getMaxAlarms(team *teams.Team, user *accounts.User) int {
 	var (
 		maxAlarms    int
-		team         *teams.Team
 		subscription *subscriptions.Subscription
-		err          error
 	)
 
 	// If user is in a free trial, allow one alarm
@@ -20,16 +34,14 @@ func (s *Service) getMaxAlarms(user *accounts.User) int {
 		maxAlarms = subscriptions.FreeTrialMaxAlarms
 	}
 
-	// Is the user member of a team?
-	team, err = s.teamsService.FindTeamByMemberID(user.ID)
-	if err == nil {
-		// User is member of a team, look for a team owner subscription
-		subscription, err = s.subscriptionsService.FindActiveSubscriptionByUserID(team.Owner.ID)
+	// If the user is member of a team, look for a team owner subscription
+	if team != nil {
+		subscription, _ = s.subscriptionsService.FindActiveSubscriptionByUserID(team.Owner.ID)
 	}
 
 	// No subscription found yet, look for this user's subscription
 	if subscription == nil {
-		subscription, err = s.subscriptionsService.FindActiveSubscriptionByUserID(user.ID)
+		subscription, _ = s.subscriptionsService.FindActiveSubscriptionByUserID(user.ID)
 	}
 
 	// If subscription found, take the max values from the subscription
