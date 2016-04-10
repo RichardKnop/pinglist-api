@@ -50,7 +50,7 @@ Example response:
 				"interval": 30,
 				"max_alarms": 2,
 				"max_teams": 0,
-		    "max_members_per_team": 0,
+		    		"max_members_per_team": 0,
 				"created_at": "2016-01-14T13:52:24Z",
 				"updated_at": "2016-01-14T13:52:24Z"
 			},
@@ -70,7 +70,7 @@ Example response:
 				"interval": 30,
 				"max_alarms": 10,
 				"max_teams": 0,
-		    "max_members_per_team": 0,
+				"max_members_per_team": 0,
 				"created_at": "2016-01-14T13:52:24Z",
 				"updated_at": "2016-01-14T13:52:24Z"
 			},
@@ -89,8 +89,8 @@ Example response:
 				"trial_period": 30,
 				"interval": 30,
 				"max_alarms": 100,
-		    "max_teams": 1,
-		    "max_members_per_team": 10,
+		    		"max_teams": 1,
+		    		"max_members_per_team": 10,
 				"created_at": "2016-01-14T13:52:24Z",
 				"updated_at": "2016-01-14T13:52:24Z"
 			},
@@ -109,8 +109,8 @@ Example response:
 				"trial_period": 30,
 				"interval": 30,
 				"max_alarms": 200,
-		    "max_teams": 5,
-		    "max_members_per_team": 10,
+		    		"max_teams": 5,
+		    		"max_members_per_team": 10,
 				"created_at": "2016-01-14T13:52:24Z",
 				"updated_at": "2016-01-14T13:52:24Z"
 			},
@@ -129,8 +129,8 @@ Example response:
 				"trial_period": 30,
 				"interval": 30,
 				"max_alarms": 500,
-		    "max_teams": 10,
-		    "max_members_per_team": 10,
+		    		"max_teams": 10,
+		    		"max_members_per_team": 10,
 				"created_at": "2016-01-14T13:52:24Z",
 				"updated_at": "2016-01-14T13:52:24Z"
 			}
