@@ -1,6 +1,7 @@
 # Alarms
 
 * [Create Alarm](#create-alarm)
+* [Get Alarm](#get-alarm)
 * [Update Alarm](#update-alarm)
 * [Delete Alarm](#delete-alarm)
 * [List Alarms](#list-alarms)
@@ -23,6 +24,40 @@ curl --compressed -v localhost:8080/v1/alarms \
 		"push_notification_alerts": true,
 		"active": false
 	}'
+```
+
+Example response:
+
+```json
+{
+	"_links": {
+		"self": {
+			"href": "/v1/alarms/1"
+		}
+	},
+	"id": 1,
+	"user_id": 1,
+	"region": "us-west-2",
+	"endpoint_url": "http://endpoint-1",
+	"expected_http_code": 200,
+	"max_response_time": 1000,
+	"interval": 60,
+	"email_alerts": true,
+	"push_notification_alerts": true,
+	"active": false,
+	"state": "insufficient_data",
+	"created_at": "2016-01-14T13:52:24Z",
+	"updated_at": "2016-01-14T13:52:24Z"
+}
+```
+
+## Get Alarm
+
+Example request:
+
+```
+curl --compressed -v localhost:8080/v1/alarms/1 \
+	-H "Authorization: Bearer 00ccd40e-72ca-4e79-a4b6-67c95e2e3f1c"
 ```
 
 Example response:

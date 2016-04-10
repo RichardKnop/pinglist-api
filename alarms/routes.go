@@ -35,6 +35,15 @@ func newRoutes(service ServiceInterface) []routes.Route {
 			},
 		},
 		routes.Route{
+			Name:        "get_alarm",
+			Method:      "GET",
+			Pattern:     "/alarms/{id:[0-9]+}",
+			HandlerFunc: service.getAlarmHandler,
+			Middlewares: []negroni.Handler{
+				accounts.NewUserAuthMiddleware(service.GetAccountsService()),
+			},
+		},
+		routes.Route{
 			Name:        "update_alarm",
 			Method:      "PUT",
 			Pattern:     "/alarms/{id:[0-9]+}",
