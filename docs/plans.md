@@ -8,7 +8,7 @@ Example request:
 
 ```
 curl --compressed -v "localhost:8080/v1/plans" \
-	-H "Authorization: Bearer 00ccd40e-72ca-4e79-a4b6-67c95e2e3f1c"
+	-u test_client_1:test_secret
 ```
 
 Example response:
