@@ -179,7 +179,7 @@ func (suite *SubscriptionsTestSuite) TestGetCard() {
 	)
 	suite.db.Model(new(Card)).Count(&countAfter)
 	suite.db.Model(new(Customer)).Count(&customerCountAfter)
-	assert.Equal(suite.T(), countBefore-1, countAfter)
+	assert.Equal(suite.T(), countBefore, countAfter)
 	assert.Equal(suite.T(), customerCountBefore, customerCountAfter)
 
 	// Check the response body
