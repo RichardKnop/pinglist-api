@@ -180,8 +180,8 @@ func (suite *SubscriptionsTestSuite) assertMockExpectations() {
 	suite.accountsServiceMock.AssertExpectations(suite.T())
 }
 
-// Mock authentication
-func (suite *SubscriptionsTestSuite) mockAuthentication(user *accounts.User) {
+// Mock resource owner credentials grant auth
+func (suite *SubscriptionsTestSuite) mockUserAuth(user *accounts.User) {
 	// Mock GetConfig call to return the config object
 	suite.accountsServiceMock.On("GetConfig").Return(suite.cnf)
 
@@ -196,6 +196,24 @@ func (suite *SubscriptionsTestSuite) mockAuthentication(user *accounts.User) {
 	// Mock FindUserByOauthUserID to return the wanted user
 	suite.accountsServiceMock.On("FindUserByOauthUserID", user.OauthUser.ID).
 		Return(user, nil)
+}
+
+// Mock client credentials grant auth
+func (suite *SubscriptionsTestSuite) mockClientAuth(account *accounts.Account) {
+	// Mock GetConfig call to return the config object
+	suite.accountsServiceMock.On("GetConfig").Return(suite.cnf)
+
+	// Mock GetOauthService to return a mock oauth service
+	suite.accountsServiceMock.On("GetOauthService").Return(suite.oauthServiceMock)
+
+	// Mock AuthClient to return a mock client
+	suite.oauthServiceMock.On("AuthClient", "test_client_1", "test_secret").
+		Return(account.OauthClient, nil)
+
+	// Mock FindAccountByOauthClientID to return the wanted account
+	suite.accountsServiceMock.
+		On("FindAccountByOauthClientID", account.OauthClient.ID).
+		Return(account, nil)
 }
 
 // Mock user querystring filtering

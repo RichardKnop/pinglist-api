@@ -1,7 +1,9 @@
 package subscriptions
 
 import (
+	b64 "encoding/base64"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -12,7 +14,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func (suite *SubscriptionsTestSuite) TestListPlansRequiresUserAuthentication() {
+func (suite *SubscriptionsTestSuite) TestListPlansRequiresAccountAuthentication() {
 	r, err := http.NewRequest("", "", nil)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
 
@@ -20,7 +22,7 @@ func (suite *SubscriptionsTestSuite) TestListPlansRequiresUserAuthentication() {
 
 	suite.service.listPlansHandler(w, r)
 
-	assert.Equal(suite.T(), http.StatusUnauthorized, w.Code, "This requires an authenticated user")
+	assert.Equal(suite.T(), http.StatusUnauthorized, w.Code, "This requires an authenticated account")
 }
 
 func (suite *SubscriptionsTestSuite) TestListPlans() {
@@ -31,7 +33,13 @@ func (suite *SubscriptionsTestSuite) TestListPlans() {
 		nil,
 	)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
-	r.Header.Set("Authorization", "Bearer test_token")
+	r.Header.Set(
+		"Authorization",
+		fmt.Sprintf(
+			"Basic %s",
+			b64.StdEncoding.EncodeToString([]byte("test_client_1:test_secret")),
+		),
+	)
 
 	// Check the routing
 	match := new(mux.RouteMatch)
@@ -41,7 +49,7 @@ func (suite *SubscriptionsTestSuite) TestListPlans() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[1])
+	suite.mockClientAuth(suite.accounts[0])
 
 	// And serve the request
 	w := httptest.NewRecorder()

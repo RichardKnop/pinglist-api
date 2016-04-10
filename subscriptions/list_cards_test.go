@@ -41,7 +41,7 @@ func (suite *SubscriptionsTestSuite) TestListCardsWithoutPermission() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[1])
+	suite.mockUserAuth(suite.users[1])
 	suite.mockUserFiltering(suite.users[2])
 
 	// And serve the request
@@ -87,7 +87,7 @@ func (suite *SubscriptionsTestSuite) TestListCards() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[0])
+	suite.mockUserAuth(suite.users[0])
 	suite.mockUserFiltering(suite.users[0])
 
 	// And serve the request

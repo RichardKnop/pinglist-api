@@ -22,7 +22,7 @@ func newRoutes(service ServiceInterface) []routes.Route {
 			Pattern:     "/plans",
 			HandlerFunc: service.listPlansHandler,
 			Middlewares: []negroni.Handler{
-				accounts.NewUserAuthMiddleware(service.GetAccountsService()),
+				accounts.NewAccountAuthMiddleware(service.GetAccountsService()),
 			},
 		},
 		routes.Route{

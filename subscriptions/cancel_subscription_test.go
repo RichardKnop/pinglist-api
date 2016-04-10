@@ -86,7 +86,7 @@ func (suite *SubscriptionsTestSuite) TestCancelSubscriptionWithoutPermission() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[2])
+	suite.mockUserAuth(suite.users[2])
 
 	// Count before
 	var (
@@ -202,7 +202,7 @@ func (suite *SubscriptionsTestSuite) TestCancelSubscription() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[1])
+	suite.mockUserAuth(suite.users[1])
 
 	// Count before
 	var (

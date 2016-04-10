@@ -64,7 +64,7 @@ func (suite *SubscriptionsTestSuite) TestDeleteCardWithoutPermission() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[2])
+	suite.mockUserAuth(suite.users[2])
 
 	// Count before
 	var (
@@ -148,7 +148,7 @@ func (suite *SubscriptionsTestSuite) TestDeleteCard() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[1])
+	suite.mockUserAuth(suite.users[1])
 
 	// Count before
 	var (

@@ -41,7 +41,7 @@ func (suite *SubscriptionsTestSuite) TestListSubscriptions() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[0])
+	suite.mockUserAuth(suite.users[0])
 	suite.mockUserFiltering(suite.users[0])
 
 	// And serve the request

@@ -46,7 +46,7 @@ func (suite *SubscriptionsTestSuite) TestUpdateSubscriptionWithoutPermission() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[2])
+	suite.mockUserAuth(suite.users[2])
 
 	// And serve the request
 	w := httptest.NewRecorder()
@@ -139,7 +139,7 @@ func (suite *SubscriptionsTestSuite) TestUpdateSubscriptionNothingChanged() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[1])
+	suite.mockUserAuth(suite.users[1])
 
 	// Count before
 	var (
@@ -299,7 +299,7 @@ func (suite *SubscriptionsTestSuite) TestUpdateSubscriptionPlanChanged() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[1])
+	suite.mockUserAuth(suite.users[1])
 
 	// Count before
 	var (

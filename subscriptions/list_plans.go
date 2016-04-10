@@ -11,8 +11,8 @@ import (
 
 // Handles calls to list cards plans (GET /v1/plans)
 func (s *Service) listPlansHandler(w http.ResponseWriter, r *http.Request) {
-	// Get the authenticated user from the request context
-	_, err := accounts.GetAuthenticatedUser(r)
+	// Get the authenticated account from the request context
+	_, err := accounts.GetAuthenticatedAccount(r)
 	if err != nil {
 		response.UnauthorizedError(w, err.Error())
 		return

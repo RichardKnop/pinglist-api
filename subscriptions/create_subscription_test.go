@@ -51,7 +51,7 @@ func (suite *SubscriptionsTestSuite) TestCreateSubscriptionFailsWhenUserAlreadyH
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[0])
+	suite.mockUserAuth(suite.users[0])
 
 	// Count before
 	var (
@@ -123,7 +123,7 @@ func (suite *SubscriptionsTestSuite) TestCreateSubscriptionCustomerNotFound() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[1])
+	suite.mockUserAuth(suite.users[1])
 
 	// Count before
 	var (
@@ -207,7 +207,7 @@ func (suite *SubscriptionsTestSuite) TestCreateSubscriptionPlanNotFound() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[1])
+	suite.mockUserAuth(suite.users[1])
 
 	// Count before
 	var (
@@ -291,7 +291,7 @@ func (suite *SubscriptionsTestSuite) TestCreateSubscriptionCardNotFound() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[1])
+	suite.mockUserAuth(suite.users[1])
 
 	// Count before
 	var (
@@ -396,7 +396,7 @@ func (suite *SubscriptionsTestSuite) TestCreateSubscription() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[1])
+	suite.mockUserAuth(suite.users[1])
 
 	// Count before
 	var (

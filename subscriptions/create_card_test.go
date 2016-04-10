@@ -74,7 +74,7 @@ func (suite *SubscriptionsTestSuite) TestCreateCardExistingValidCustomer() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[1])
+	suite.mockUserAuth(suite.users[1])
 
 	// Count before
 	var (
@@ -203,7 +203,7 @@ func (suite *SubscriptionsTestSuite) TestCreateCardExistingInvalidCustomer() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[1])
+	suite.mockUserAuth(suite.users[1])
 
 	// Count before
 	var (
@@ -327,7 +327,7 @@ func (suite *SubscriptionsTestSuite) TestCreateCardNewCustomer() {
 	}
 
 	// Mock authentication
-	suite.mockAuthentication(suite.users[1])
+	suite.mockUserAuth(suite.users[1])
 
 	// Count before
 	var (
