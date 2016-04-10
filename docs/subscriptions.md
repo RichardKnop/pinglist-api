@@ -109,7 +109,7 @@ Example response:
 Example request:
 
 ```
-curl -XPUT --compressed -v localhost:8080/v1/subscriptions \
+curl -XPUT --compressed -v localhost:8080/v1/subscriptions/1 \
 	-H "Content-Type: application/json" \
 	-H "Authorization: Bearer 00ccd40e-72ca-4e79-a4b6-67c95e2e3f1c" \
 	-d '{
