@@ -280,6 +280,10 @@ func (_m *ServiceMock) createSubscriptionHandler(w http.ResponseWriter, r *http.
 	_m.Called(w, r)
 }
 
+func (_m *ServiceMock) getSubscriptionHandler(w http.ResponseWriter, r *http.Request) {
+	_m.Called(w, r)
+}
+
 func (_m *ServiceMock) listSubscriptionsHandler(w http.ResponseWriter, r *http.Request) {
 	_m.Called(w, r)
 }

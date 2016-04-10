@@ -71,6 +71,15 @@ func newRoutes(service ServiceInterface) []routes.Route {
 			},
 		},
 		routes.Route{
+			Name:        "get_subscription",
+			Method:      "GET",
+			Pattern:     "/subscriptions/{id:[0-9]+}",
+			HandlerFunc: service.getSubscriptionHandler,
+			Middlewares: []negroni.Handler{
+				accounts.NewUserAuthMiddleware(service.GetAccountsService()),
+			},
+		},
+		routes.Route{
 			Name:        "update_subscription",
 			Method:      "PUT",
 			Pattern:     "/subscriptions/{id:[0-9]+}",

@@ -28,6 +28,7 @@ type ServiceInterface interface {
 	listCardsHandler(w http.ResponseWriter, r *http.Request)
 	deleteCardHandler(w http.ResponseWriter, r *http.Request)
 	createSubscriptionHandler(w http.ResponseWriter, r *http.Request)
+	getSubscriptionHandler(w http.ResponseWriter, r *http.Request)
 	listSubscriptionsHandler(w http.ResponseWriter, r *http.Request)
 	updateSubscriptionHandler(w http.ResponseWriter, r *http.Request)
 	cancelSubscriptionHandler(w http.ResponseWriter, r *http.Request)
