@@ -53,7 +53,7 @@ func (s *Service) getCardHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Write JSON response
-	response.WriteJSON(w, cardResponse, http.StatusCreated)
+	response.WriteJSON(w, cardResponse, http.StatusOK)
 }
 
 func checkGetCardPermissions(authenticatedUser *accounts.User, card *Card) error {
