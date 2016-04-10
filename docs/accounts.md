@@ -88,7 +88,6 @@ curl -XPUT --compressed -v localhost:8080/v1/accounts/users/1 \
 	-H "Content-Type: application/json" \
 	-H "Authorization: Bearer 00ccd40e-72ca-4e79-a4b6-67c95e2e3f1c" \
 	-d '{
-		"email": "test@user_updated",
 		"first_name": "test_first_name_updated",
 		"last_name": "test_last_name_updated",
 	}'
@@ -104,7 +103,7 @@ Example response:
 		}
 	},
 	"id": 1,
-	"email": "test@user_updated",
+	"email": "test@user",
 	"first_name": "test_first_name_updated",
 	"last_name": "test_last_name_updated",
 	"role": "user",
