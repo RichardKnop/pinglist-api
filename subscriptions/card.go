@@ -2,6 +2,7 @@ package subscriptions
 
 import (
 	"errors"
+	"time"
 
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/jinzhu/gorm"
@@ -11,6 +12,8 @@ import (
 var (
 	// ErrCardNotFound ...
 	ErrCardNotFound = errors.New("Card not found")
+	// ErrCardCanOnlyBeDeletedFromCancelledSubsription ...
+	ErrCardCanOnlyBeDeletedFromCancelledSubsription = errors.New("Card can only be deleted from cancelled subscription")
 )
 
 // FindCardByID looks up a card by an ID and returns it
@@ -155,19 +158,52 @@ func (s *Service) createCard(user *accounts.User, cardRequest *CardRequest) (*Ca
 
 // deleteCard deletes a card payment source
 func (s *Service) deleteCard(card *Card) error {
+	// Fetch subscription using this card
+	subscription, err := s.FindSubscriptionByCardID(card.ID)
+
+	// Begin a transaction
+	tx := s.db.Begin()
+
+	// There is a subscription using this card
+	if err == nil && subscription != nil {
+		// Subscription must be cancelled first before the card can be removed
+		if !subscription.IsCancelled() {
+			tx.Rollback() // rollback the transaction
+			return ErrCardCanOnlyBeDeletedFromCancelledSubsription
+		}
+
+		// Update the subscription (need to use map here because card_id field is
+		// changing to nil which would not work with struct)
+		if err := tx.Model(subscription).UpdateColumns(map[string]interface{}{
+			"card_id":    nil,
+			"updated_at": time.Now(),
+		}).Error; err != nil {
+			tx.Rollback() // rollback the transaction
+			return err
+		}
+	}
+
 	// Delete the card
 	stripeCard, err := s.stripeAdapter.DeleteCard(
 		card.CardID,
 		card.Customer.CustomerID,
 	)
 	if err != nil {
+		tx.Rollback() // rollback the transaction
 		return err
 	}
 
 	logger.Infof("Deleted card: %s", stripeCard.ID)
 
 	// Delete the record from our database
-	if err := s.db.Delete(card).Error; err != nil {
+	if err := tx.Delete(card).Error; err != nil {
+		tx.Rollback() // rollback the transaction
+		return err
+	}
+
+	// Commit the transaction
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback() // rollback the transaction
 		return err
 	}
 
