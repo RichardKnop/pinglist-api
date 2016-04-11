@@ -49,7 +49,11 @@ func (s *Service) deleteCardHandler(w http.ResponseWriter, r *http.Request) {
 	// Delete the card
 	if err := s.deleteCard(card); err != nil {
 		logger.Errorf("Delete card error: %s", err)
-		response.Error(w, err.Error(), http.StatusInternalServerError)
+		code, ok := errStatusCodeMap[err]
+		if !ok {
+			code = http.StatusInternalServerError
+		}
+		response.Error(w, err.Error(), code)
 		return
 	}
 

@@ -49,7 +49,11 @@ func (s *Service) cancelSubscriptionHandler(w http.ResponseWriter, r *http.Reque
 	// Cancel the subscription
 	if err := s.cancelSubscription(subscription); err != nil {
 		logger.Errorf("Cancel subscription error: %s", err)
-		response.Error(w, err.Error(), http.StatusInternalServerError)
+		code, ok := errStatusCodeMap[err]
+		if !ok {
+			code = http.StatusInternalServerError
+		}
+		response.Error(w, err.Error(), code)
 		return
 	}
 
