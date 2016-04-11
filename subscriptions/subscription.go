@@ -58,6 +58,22 @@ func (s *Service) FindSubscriptionBySubscriptionID(subscriptionID string) (*Subs
 	return subscription, nil
 }
 
+// FindSubscriptionByCardID looks up a subscription by a card ID and returns it
+func (s *Service) FindSubscriptionByCardID(cardID uint) (*Subscription, error) {
+	// Fetch the subscription from the database
+	subscription := new(Subscription)
+	notFound := s.db.Preload("Customer.User").Preload("Plan").Preload("Card").
+		Where("card_id = ?", cardID).
+		First(subscription).RecordNotFound()
+
+	// Not found
+	if notFound {
+		return nil, ErrSubscriptionNotFound
+	}
+
+	return subscription, nil
+}
+
 // createSubscription creates a new Stripe user and subscribes him/her to a plan
 func (s *Service) createSubscription(user *accounts.User, subscriptionRequest *SubscriptionRequest) (*Subscription, error) {
 	// Fetch the active user subscription

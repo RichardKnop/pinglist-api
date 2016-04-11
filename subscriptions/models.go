@@ -83,7 +83,7 @@ type Subscription struct {
 	Customer       *Customer
 	PlanID         sql.NullInt64 `sql:"index;not null"`
 	Plan           *Plan
-	CardID         sql.NullInt64 `sql:"index;not null"`
+	CardID         sql.NullInt64 `sql:"index"`
 	Card           *Card
 	SubscriptionID string      `sql:"type:varchar(60);unique;not null"`
 	StartedAt      pq.NullTime `sql:"index"`

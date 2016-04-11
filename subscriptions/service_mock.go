@@ -233,6 +233,29 @@ func (_m *ServiceMock) FindSubscriptionBySubscriptionID(subscriptionID string) (
 	return r0, r1
 }
 
+// FindSubscriptionByCardID ...
+func (_m *ServiceMock) FindSubscriptionByCardID(cardID uint) (*Subscription, error) {
+	ret := _m.Called(cardID)
+
+	var r0 *Subscription
+	if rf, ok := ret.Get(0).(func(uint) *Subscription); ok {
+		r0 = rf(cardID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*Subscription)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(uint) error); ok {
+		r1 = rf(cardID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // FindActiveSubscriptionByUserID ...
 func (_m *ServiceMock) FindActiveSubscriptionByUserID(userID uint) (*Subscription, error) {
 	ret := _m.Called(userID)
