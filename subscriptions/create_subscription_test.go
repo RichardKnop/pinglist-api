@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/RichardKnop/jsonhal"
+	"github.com/RichardKnop/pinglist-api/subscriptions/subscriptionstatuses"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
 	stripe "github.com/stripe/stripe-go"
@@ -305,7 +306,7 @@ func (suite *SubscriptionsTestSuite) TestCreateSubscription() {
 	assert.True(suite.T(), subscription.PeriodEnd.Valid)
 	assert.True(suite.T(), subscription.TrialStart.Valid)
 	assert.True(suite.T(), subscription.TrialEnd.Valid)
-	assert.Equal(suite.T(), "trialing", subscription.Status)
+	assert.Equal(suite.T(), subscriptionstatuses.Trialing, subscription.Status)
 
 	// Check the Location header
 	assert.Equal(
@@ -335,7 +336,7 @@ func (suite *SubscriptionsTestSuite) TestCreateSubscription() {
 		PeriodEnd:      subscription.PeriodEnd.Time.UTC().Format(time.RFC3339),
 		TrialStart:     subscription.TrialStart.Time.UTC().Format(time.RFC3339),
 		TrialEnd:       subscription.TrialEnd.Time.UTC().Format(time.RFC3339),
-		Status:         "trialing",
+		Status:         subscriptionstatuses.Trialing,
 		CreatedAt:      subscription.CreatedAt.UTC().Format(time.RFC3339),
 		UpdatedAt:      subscription.UpdatedAt.UTC().Format(time.RFC3339),
 	}
