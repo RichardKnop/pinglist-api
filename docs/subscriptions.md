@@ -85,8 +85,9 @@ Example response:
 	"ended_at": "",
 	"period_start": "2016-01-14T13:52:24Z",
 	"period_end": "2016-02-14T13:52:24Z",
-	"trial_start": "",
-	"trial_end": "",
+	"trial_start": "2016-01-14T13:52:24Z",
+	"trial_end": "2016-02-14T13:52:24Z",
+	"status": "trialing",
 	"created_at": "2016-01-14T13:52:24Z",
 	"updated_at": "2016-01-14T13:52:24Z"
 }
@@ -139,8 +140,9 @@ Example response:
 	"ended_at": "",
 	"period_start": "2016-01-14T13:52:24Z",
 	"period_end": "2016-02-14T13:52:24Z",
-	"trial_start": "",
-	"trial_end": "",
+	"trial_start": "2016-01-14T13:52:24Z",
+	"trial_end": "2016-02-14T13:52:24Z",
+	"status": "trialing",
 	"created_at": "2016-01-14T13:52:24Z",
 	"updated_at": "2016-01-14T13:52:24Z"
 }
@@ -197,8 +199,9 @@ Example response:
 	"ended_at": "",
 	"period_start": "2016-01-14T13:52:24Z",
 	"period_end": "2016-02-14T13:52:24Z",
-	"trial_start": "",
-	"trial_end": "",
+	"trial_start": "2016-01-14T13:52:24Z",
+	"trial_end": "2016-02-14T13:52:24Z",
+	"status": "trialing",
 	"created_at": "2016-01-14T13:52:24Z",
 	"updated_at": "2016-01-14T13:52:24Z"
 }
@@ -288,8 +291,9 @@ Example response:
 				"ended_at": "",
 				"period_start": "2016-02-14T13:52:24Z",
 				"period_end": "2016-03-14T13:52:24Z",
-				"trial_start": "",
-				"trial_end": "",
+				"trial_start": "2016-02-14T13:52:24Z",
+				"trial_end": "2016-03-14T13:52:24Z",
+				"status": "canceled",
 				"created_at": "2016-02-14T13:52:24Z",
 				"updated_at": "2016-02-14T13:52:24Z"
 			},
@@ -328,8 +332,9 @@ Example response:
 				"ended_at": "2016-02-14T13:52:24Z",
 				"period_start": "2016-01-14T13:52:24Z",
 				"period_end": "2016-02-14T13:52:24Z",
-				"trial_start": "",
-				"trial_end": "",
+				"trial_start": "2016-01-14T13:52:24Z",
+				"trial_end": "2016-02-14T13:52:24Z",
+				"status": "active",
 				"created_at": "2016-01-14T13:52:24Z",
 				"updated_at": "2016-01-14T13:52:24Z"
 			}
