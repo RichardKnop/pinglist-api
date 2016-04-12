@@ -186,18 +186,6 @@ func (s *Service) updateSusbcriptionCommon(tx *gorm.DB, subscription *Subscripti
 	// Parse subscription times
 	startedAt, cancelledAt, endedAt, periodStart, periodEnd, trialStart, trialEnd := getStripeSubscriptionTimes(stripeSubscription)
 
-	if plan.ID != subscription.Plan.ID {
-		// Plan changed (upgraded or downgraded)
-	}
-
-	if cancelledAt != nil && !subscription.CancelledAt.Valid {
-		// Subscription cancelled
-	}
-
-	if endedAt != nil && !subscription.EndedAt.Valid {
-		// Subscription ended
-	}
-
 	// Update the subscription plan
 	if err := tx.Model(subscription).UpdateColumn(Subscription{
 		PlanID:      util.PositiveIntOrNull(int64(plan.ID)),
@@ -219,23 +207,35 @@ func (s *Service) updateSusbcriptionCommon(tx *gorm.DB, subscription *Subscripti
 
 // cancelSubscription cancels a subscription immediatelly
 func (s *Service) cancelSubscription(subscription *Subscription) error {
+	// Begin a transaction
+	tx := s.db.Begin()
+
+	logger.Info(subscription.SubscriptionID)
+
 	// Cancel the subscription
 	stripeSubscription, err := s.stripeAdapter.CancelSubscription(
 		subscription.SubscriptionID,
 		subscription.Customer.CustomerID,
 	)
 	if err != nil {
+		tx.Rollback() // rollback the transaction
 		return err
 	}
 
+	logger.Info(stripeSubscription.ID)
+
 	logger.Infof("Cancelled subscription: %s", subscription.SubscriptionID)
 
-	// Update the subscription's cancelled_at field
-	cancelledAt := time.Unix(stripeSubscription.Canceled, 0)
-	if err := s.db.Model(subscription).UpdateColumn(Subscription{
-		CancelledAt: util.TimeOrNull(&cancelledAt),
-		Model:       gorm.Model{UpdatedAt: time.Now()},
-	}).Error; err != nil {
+	// Update the subscription
+	err = s.updateSusbcriptionCommon(tx, subscription, subscription.Plan, stripeSubscription)
+	if err != nil {
+		tx.Rollback() // rollback the transaction
+		return err
+	}
+
+	// Commit the transaction
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback() // rollback the transaction
 		return err
 	}
 

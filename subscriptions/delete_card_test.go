@@ -67,12 +67,8 @@ func (suite *SubscriptionsTestSuite) TestDeleteCardWithoutPermission() {
 	suite.mockUserAuth(suite.users[2])
 
 	// Count before
-	var (
-		countBefore         int
-		customerCountBefore int
-	)
+	var countBefore int
 	suite.db.Model(new(Card)).Count(&countBefore)
-	suite.db.Model(new(Customer)).Count(&customerCountBefore)
 
 	// And serve the request
 	w := httptest.NewRecorder()
@@ -87,14 +83,9 @@ func (suite *SubscriptionsTestSuite) TestDeleteCardWithoutPermission() {
 	}
 
 	// Count after
-	var (
-		countAfter         int
-		customerCountAfter int
-	)
+	var countAfter int
 	suite.db.Model(new(Card)).Count(&countAfter)
-	suite.db.Model(new(Customer)).Count(&customerCountAfter)
 	assert.Equal(suite.T(), countBefore, countAfter)
-	assert.Equal(suite.T(), customerCountBefore, customerCountAfter)
 
 	// Check the response body
 	expectedJSON, err := json.Marshal(

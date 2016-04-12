@@ -174,6 +174,9 @@ func (suite *SubscriptionsTestSuite) TestCancelSubscription() {
 	)
 	assert.NoError(suite.T(), err, "Creating test subscription failed")
 
+	assert.False(suite.T(), testSubscription.CancelledAt.Valid)
+	assert.False(suite.T(), testSubscription.EndedAt.Valid)
+
 	// Prepare a request
 	r, err := http.NewRequest(
 		"DELETE",
@@ -223,6 +226,7 @@ func (suite *SubscriptionsTestSuite) TestCancelSubscription() {
 	// Check that the subscription is cancelled now
 	assert.True(suite.T(), subscription.IsCancelled())
 	assert.True(suite.T(), subscription.CancelledAt.Valid)
+	assert.True(suite.T(), subscription.EndedAt.Valid)
 
 	// Check the response body
 	assert.Equal(
