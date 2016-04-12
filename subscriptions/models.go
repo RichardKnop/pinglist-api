@@ -66,6 +66,7 @@ type Card struct {
 	Customer   *Customer
 	CardID     string `sql:"type:varchar(60);unique;not null"`
 	Brand      string `sql:"type:varchar(20);not null"`
+	Funding    string `sql:"type:varchar(10);not null"`
 	LastFour   string `sql:"type:varchar(4);not null"`
 	ExpMonth   uint   `sql:"not null"`
 	ExpYear    uint   `sql:"not null"`
@@ -83,8 +84,6 @@ type Subscription struct {
 	Customer       *Customer
 	PlanID         sql.NullInt64 `sql:"index;not null"`
 	Plan           *Plan
-	CardID         sql.NullInt64 `sql:"index"`
-	Card           *Card
 	SubscriptionID string      `sql:"type:varchar(60);unique;not null"`
 	StartedAt      pq.NullTime `sql:"index"`
 	CancelledAt    pq.NullTime `sql:"index"`
@@ -123,12 +122,13 @@ func NewCustomer(user *accounts.User, customerID string) *Customer {
 }
 
 // NewCard creates new Card instance
-func NewCard(customer *Customer, cardID, brand, lastFour string, expMonth, expYear uint) *Card {
+func NewCard(customer *Customer, cardID, brand, funding, lastFour string, expMonth, expYear uint) *Card {
 	customerID := util.PositiveIntOrNull(int64(customer.ID))
 	card := &Card{
 		CustomerID: customerID,
 		CardID:     cardID,
 		Brand:      brand,
+		Funding:    funding,
 		LastFour:   lastFour,
 		ExpMonth:   expMonth,
 		ExpYear:    expYear,
@@ -140,14 +140,12 @@ func NewCard(customer *Customer, cardID, brand, lastFour string, expMonth, expYe
 }
 
 // NewSubscription creates new Subscription instance
-func NewSubscription(customer *Customer, plan *Plan, card *Card, subscriptionID string, startedAt, cancelledAt, endedAt, periodStart, periodEnd, trialStart, trialEnd *time.Time) *Subscription {
+func NewSubscription(customer *Customer, plan *Plan, subscriptionID string, startedAt, cancelledAt, endedAt, periodStart, periodEnd, trialStart, trialEnd *time.Time) *Subscription {
 	customerID := util.PositiveIntOrNull(int64(customer.ID))
 	planID := util.PositiveIntOrNull(int64(plan.ID))
-	cardID := util.PositiveIntOrNull(int64(card.ID))
 	subscription := &Subscription{
 		CustomerID:     customerID,
 		PlanID:         planID,
-		CardID:         cardID,
 		SubscriptionID: subscriptionID,
 		StartedAt:      util.TimeOrNull(startedAt),
 		CancelledAt:    util.TimeOrNull(cancelledAt),
@@ -162,9 +160,6 @@ func NewSubscription(customer *Customer, plan *Plan, card *Card, subscriptionID 
 	}
 	if planID.Valid {
 		subscription.Plan = plan
-	}
-	if cardID.Valid {
-		subscription.Card = card
 	}
 	return subscription
 }

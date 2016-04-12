@@ -43,8 +43,7 @@ curl --compressed -v localhost:8080/v1/subscriptions \
 	-H "Content-Type: application/json" \
 	-H "Authorization: Bearer 00ccd40e-72ca-4e79-a4b6-67c95e2e3f1c" \
 	-d '{
-		"plan_id": 1,
-		"card_id": 1
+		"plan_id": 1
 	}'
 ```
 
@@ -75,18 +74,6 @@ Example response:
 			"max_alarms": 2,
 			"max_teams": 0,
 			"max_members_per_team": 0,
-			"created_at": "2016-01-14T13:52:24Z",
-			"updated_at": "2016-01-14T13:52:24Z"
-		},
-		"card": {
-			"_links": {
-				"self": {
-					"href": "/v1/cards/1"
-				}
-			},
-			"id": 1,
-			"brand": "Visa",
-			"last_four": "4242",
 			"created_at": "2016-01-14T13:52:24Z",
 			"updated_at": "2016-01-14T13:52:24Z"
 		}
@@ -143,18 +130,6 @@ Example response:
 			"max_members_per_team": 0,
 			"created_at": "2016-01-14T13:52:24Z",
 			"updated_at": "2016-01-14T13:52:24Z"
-		},
-		"card": {
-			"_links": {
-				"self": {
-					"href": "/v1/cards/1"
-				}
-			},
-			"id": 1,
-			"brand": "Visa",
-			"last_four": "4242",
-			"created_at": "2016-01-14T13:52:24Z",
-			"updated_at": "2016-01-14T13:52:24Z"
 		}
 	},
 	"id": 1,
@@ -180,8 +155,7 @@ curl -XPUT --compressed -v localhost:8080/v1/subscriptions/1 \
 	-H "Content-Type: application/json" \
 	-H "Authorization: Bearer 00ccd40e-72ca-4e79-a4b6-67c95e2e3f1c" \
 	-d '{
-		"plan_id": 2,
-		"card_id": 2
+		"plan_id": 2
 	}'
 ```
 
@@ -212,18 +186,6 @@ Example response:
 			"max_alarms": 10,
 			"max_teams": 0,
 			"max_members_per_team": 0,
-			"created_at": "2016-01-14T13:52:24Z",
-			"updated_at": "2016-01-14T13:52:24Z"
-		},
-		"card": {
-			"_links": {
-				"self": {
-					"href": "/v1/cards/2"
-				}
-			},
-			"id": 1,
-			"brand": "Visa",
-			"last_four": "4343",
 			"created_at": "2016-01-14T13:52:24Z",
 			"updated_at": "2016-01-14T13:52:24Z"
 		}
@@ -317,18 +279,6 @@ Example response:
 						"max_members_per_team": 0,
 						"created_at": "2016-01-14T13:52:24Z",
 						"updated_at": "2016-01-14T13:52:24Z"
-					},
-					"card": {
-						"_links": {
-							"self": {
-								"href": "/v1/cards/1"
-							}
-						},
-						"id": 1,
-						"brand": "Visa",
-						"last_four": "4242",
-						"created_at": "2016-01-14T13:52:24Z",
-						"updated_at": "2016-01-14T13:52:24Z"
 					}
 				},
 				"id": 1,
@@ -367,18 +317,6 @@ Example response:
 						"max_alarms": 2,
 						"max_teams": 0,
 						"max_members_per_team": 0,
-						"created_at": "2016-01-14T13:52:24Z",
-						"updated_at": "2016-01-14T13:52:24Z"
-					},
-					"card": {
-						"_links": {
-							"self": {
-								"href": "/v1/cards/1"
-							}
-						},
-						"id": 1,
-						"brand": "Visa",
-						"last_four": "4242",
 						"created_at": "2016-01-14T13:52:24Z",
 						"updated_at": "2016-01-14T13:52:24Z"
 					}

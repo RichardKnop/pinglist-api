@@ -99,7 +99,7 @@ func (suite *SubscriptionsTestSuite) TestUpdateSubscriptionNothingChanged() {
 	assert.NoError(suite.T(), err, "Creating test Stripe token failed")
 
 	// Create a test card
-	testCard, err := suite.service.createCard(
+	_, err = suite.service.createCard(
 		suite.users[1],
 		&CardRequest{
 			Token: testStripeToken.ID,
@@ -112,7 +112,6 @@ func (suite *SubscriptionsTestSuite) TestUpdateSubscriptionNothingChanged() {
 		suite.users[1],
 		&SubscriptionRequest{
 			PlanID: suite.plans[0].ID,
-			CardID: testCard.ID,
 		},
 	)
 	assert.NoError(suite.T(), err, "Creating test subscription failed")
@@ -120,7 +119,6 @@ func (suite *SubscriptionsTestSuite) TestUpdateSubscriptionNothingChanged() {
 	// Prepare a request
 	payload, err := json.Marshal(&SubscriptionRequest{
 		PlanID: suite.plans[0].ID,
-		CardID: testCard.ID,
 	})
 	assert.NoError(suite.T(), err, "JSON marshalling failed")
 	r, err := http.NewRequest(
@@ -142,14 +140,8 @@ func (suite *SubscriptionsTestSuite) TestUpdateSubscriptionNothingChanged() {
 	suite.mockUserAuth(suite.users[1])
 
 	// Count before
-	var (
-		countBefore         int
-		customerCountBefore int
-		cardCountBefore     int
-	)
+	var countBefore int
 	suite.db.Model(new(Subscription)).Count(&countBefore)
-	suite.db.Model(new(Customer)).Count(&customerCountBefore)
-	suite.db.Model(new(Card)).Count(&cardCountBefore)
 
 	// And serve the request
 	w := httptest.NewRecorder()
@@ -164,28 +156,19 @@ func (suite *SubscriptionsTestSuite) TestUpdateSubscriptionNothingChanged() {
 	}
 
 	// Count after
-	var (
-		countAfter         int
-		customerCountAfter int
-		cardCountAfter     int
-	)
+	var countAfter int
 	suite.db.Model(new(Subscription)).Count(&countAfter)
-	suite.db.Model(new(Customer)).Count(&customerCountAfter)
-	suite.db.Model(new(Card)).Count(&cardCountAfter)
 	assert.Equal(suite.T(), countBefore, countAfter)
-	assert.Equal(suite.T(), customerCountBefore, customerCountAfter)
-	assert.Equal(suite.T(), cardCountBefore, cardCountAfter)
 
 	// Fetch the updated subscription
 	subscription := new(Subscription)
-	notFound := suite.db.Preload("Customer.User").Preload("Plan").Preload("Card").
+	notFound := suite.db.Preload("Customer.User").Preload("Plan").
 		First(subscription, testSubscription.ID).RecordNotFound()
 	assert.False(suite.T(), notFound)
 
 	// Check that the correct data was saved
 	assert.Equal(suite.T(), testCustomer.ID, subscription.Customer.ID)
 	assert.Equal(suite.T(), suite.plans[0].ID, subscription.Plan.ID)
-	assert.Equal(suite.T(), testCard.ID, subscription.Card.ID)
 	assert.True(suite.T(), subscription.StartedAt.Valid)
 	assert.False(suite.T(), subscription.CancelledAt.Valid)
 	assert.False(suite.T(), subscription.EndedAt.Valid)
@@ -197,10 +180,6 @@ func (suite *SubscriptionsTestSuite) TestUpdateSubscriptionNothingChanged() {
 	// Check the response body
 	planResponse, err := NewPlanResponse(subscription.Plan)
 	assert.NoError(suite.T(), err, "Creating response object failed")
-
-	cardResponse, err := NewCardResponse(subscription.Card)
-	assert.NoError(suite.T(), err, "Creating response object failed")
-
 	expected := &SubscriptionResponse{
 		Hal: jsonhal.Hal{
 			Links: map[string]*jsonhal.Link{
@@ -210,7 +189,6 @@ func (suite *SubscriptionsTestSuite) TestUpdateSubscriptionNothingChanged() {
 			},
 			Embedded: map[string]jsonhal.Embedded{
 				"plan": jsonhal.Embedded(planResponse),
-				"card": jsonhal.Embedded(cardResponse),
 			},
 		},
 		ID:             subscription.ID,
@@ -259,7 +237,7 @@ func (suite *SubscriptionsTestSuite) TestUpdateSubscriptionPlanChanged() {
 	assert.NoError(suite.T(), err, "Creating test Stripe token failed")
 
 	// Create a test card
-	testCard, err := suite.service.createCard(
+	_, err = suite.service.createCard(
 		suite.users[1],
 		&CardRequest{
 			Token: testStripeToken.ID,
@@ -272,7 +250,6 @@ func (suite *SubscriptionsTestSuite) TestUpdateSubscriptionPlanChanged() {
 		suite.users[1],
 		&SubscriptionRequest{
 			PlanID: suite.plans[0].ID,
-			CardID: testCard.ID,
 		},
 	)
 	assert.NoError(suite.T(), err, "Creating test subscription failed")
@@ -280,7 +257,6 @@ func (suite *SubscriptionsTestSuite) TestUpdateSubscriptionPlanChanged() {
 	// Prepare a request
 	payload, err := json.Marshal(&SubscriptionRequest{
 		PlanID: suite.plans[1].ID,
-		CardID: testCard.ID,
 	})
 	assert.NoError(suite.T(), err, "JSON marshalling failed")
 	r, err := http.NewRequest(
@@ -302,14 +278,8 @@ func (suite *SubscriptionsTestSuite) TestUpdateSubscriptionPlanChanged() {
 	suite.mockUserAuth(suite.users[1])
 
 	// Count before
-	var (
-		countBefore         int
-		customerCountBefore int
-		cardCountBefore     int
-	)
+	var countBefore int
 	suite.db.Model(new(Subscription)).Count(&countBefore)
-	suite.db.Model(new(Customer)).Count(&customerCountBefore)
-	suite.db.Model(new(Card)).Count(&cardCountBefore)
 
 	// And serve the request
 	w := httptest.NewRecorder()
@@ -324,28 +294,19 @@ func (suite *SubscriptionsTestSuite) TestUpdateSubscriptionPlanChanged() {
 	}
 
 	// Count after
-	var (
-		countAfter         int
-		customerCountAfter int
-		cardCountAfter     int
-	)
+	var countAfter int
 	suite.db.Model(new(Subscription)).Count(&countAfter)
-	suite.db.Model(new(Customer)).Count(&customerCountAfter)
-	suite.db.Model(new(Card)).Count(&cardCountAfter)
 	assert.Equal(suite.T(), countBefore, countAfter)
-	assert.Equal(suite.T(), customerCountBefore, customerCountAfter)
-	assert.Equal(suite.T(), cardCountBefore, cardCountAfter)
 
 	// Fetch the updated subscription
 	subscription := new(Subscription)
-	notFound := suite.db.Preload("Customer.User").Preload("Plan").Preload("Card").
+	notFound := suite.db.Preload("Customer.User").Preload("Plan").
 		First(subscription, testSubscription.ID).RecordNotFound()
 	assert.False(suite.T(), notFound)
 
 	// Check that the correct data was saved
 	assert.Equal(suite.T(), testCustomer.ID, subscription.Customer.ID)
 	assert.Equal(suite.T(), suite.plans[1].ID, subscription.Plan.ID)
-	assert.Equal(suite.T(), testCard.ID, subscription.Card.ID)
 	assert.True(suite.T(), subscription.StartedAt.Valid)
 	assert.False(suite.T(), subscription.CancelledAt.Valid)
 	assert.False(suite.T(), subscription.EndedAt.Valid)
@@ -357,10 +318,6 @@ func (suite *SubscriptionsTestSuite) TestUpdateSubscriptionPlanChanged() {
 	// Check the response body
 	planResponse, err := NewPlanResponse(subscription.Plan)
 	assert.NoError(suite.T(), err, "Creating response object failed")
-
-	cardResponse, err := NewCardResponse(subscription.Card)
-	assert.NoError(suite.T(), err, "Creating response object failed")
-
 	expected := &SubscriptionResponse{
 		Hal: jsonhal.Hal{
 			Links: map[string]*jsonhal.Link{
@@ -370,7 +327,6 @@ func (suite *SubscriptionsTestSuite) TestUpdateSubscriptionPlanChanged() {
 			},
 			Embedded: map[string]jsonhal.Embedded{
 				"plan": jsonhal.Embedded(planResponse),
-				"card": jsonhal.Embedded(cardResponse),
 			},
 		},
 		ID:             subscription.ID,

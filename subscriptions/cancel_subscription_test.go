@@ -51,7 +51,7 @@ func (suite *SubscriptionsTestSuite) TestCancelSubscriptionWithoutPermission() {
 	assert.NoError(suite.T(), err, "Creating test Stripe token failed")
 
 	// Create a test card
-	testCard, err := suite.service.createCard(
+	_, err = suite.service.createCard(
 		suite.users[1],
 		&CardRequest{
 			Token: testStripeToken.ID,
@@ -64,7 +64,6 @@ func (suite *SubscriptionsTestSuite) TestCancelSubscriptionWithoutPermission() {
 		suite.users[1],
 		&SubscriptionRequest{
 			PlanID: suite.plans[0].ID,
-			CardID: testCard.ID,
 		},
 	)
 	assert.NoError(suite.T(), err, "Creating test subscription failed")
@@ -89,12 +88,8 @@ func (suite *SubscriptionsTestSuite) TestCancelSubscriptionWithoutPermission() {
 	suite.mockUserAuth(suite.users[2])
 
 	// Count before
-	var (
-		countBefore         int
-		customerCountBefore int
-	)
+	var countBefore int
 	suite.db.Model(new(Subscription)).Count(&countBefore)
-	suite.db.Model(new(Customer)).Count(&customerCountBefore)
 
 	// And serve the request
 	w := httptest.NewRecorder()
@@ -109,18 +104,13 @@ func (suite *SubscriptionsTestSuite) TestCancelSubscriptionWithoutPermission() {
 	}
 
 	// Count after
-	var (
-		countAfter         int
-		customerCountAfter int
-	)
+	var countAfter int
 	suite.db.Model(new(Subscription)).Count(&countAfter)
-	suite.db.Model(new(Customer)).Count(&customerCountAfter)
 	assert.Equal(suite.T(), countBefore, countAfter)
-	assert.Equal(suite.T(), customerCountBefore, customerCountAfter)
 
 	// Fetch the subscription
 	subscription := new(Subscription)
-	notFound := suite.db.Preload("Customer.User").Preload("Plan").Preload("Card").
+	notFound := suite.db.Preload("Customer.User").Preload("Plan").
 		First(subscription, testSubscription.ID).RecordNotFound()
 	assert.False(suite.T(), notFound)
 
@@ -167,7 +157,7 @@ func (suite *SubscriptionsTestSuite) TestCancelSubscription() {
 	assert.NoError(suite.T(), err, "Creating test Stripe token failed")
 
 	// Create a test card
-	testCard, err := suite.service.createCard(
+	_, err = suite.service.createCard(
 		suite.users[1],
 		&CardRequest{
 			Token: testStripeToken.ID,
@@ -180,7 +170,6 @@ func (suite *SubscriptionsTestSuite) TestCancelSubscription() {
 		suite.users[1],
 		&SubscriptionRequest{
 			PlanID: suite.plans[0].ID,
-			CardID: testCard.ID,
 		},
 	)
 	assert.NoError(suite.T(), err, "Creating test subscription failed")
@@ -205,12 +194,8 @@ func (suite *SubscriptionsTestSuite) TestCancelSubscription() {
 	suite.mockUserAuth(suite.users[1])
 
 	// Count before
-	var (
-		countBefore         int
-		customerCountBefore int
-	)
+	var countBefore int
 	suite.db.Model(new(Subscription)).Count(&countBefore)
-	suite.db.Model(new(Customer)).Count(&customerCountBefore)
 
 	// And serve the request
 	w := httptest.NewRecorder()
@@ -225,18 +210,13 @@ func (suite *SubscriptionsTestSuite) TestCancelSubscription() {
 	}
 
 	// Count after
-	var (
-		countAfter         int
-		customerCountAfter int
-	)
+	var countAfter int
 	suite.db.Model(new(Subscription)).Count(&countAfter)
-	suite.db.Model(new(Customer)).Count(&customerCountAfter)
 	assert.Equal(suite.T(), countBefore, countAfter)
-	assert.Equal(suite.T(), customerCountBefore, customerCountAfter)
 
 	// Fetch the cancelled subscription
 	subscription := new(Subscription)
-	notFound := suite.db.Preload("Customer.User").Preload("Plan").Preload("Card").
+	notFound := suite.db.Preload("Customer.User").Preload("Plan").
 		First(subscription, testSubscription.ID).RecordNotFound()
 	assert.False(suite.T(), notFound)
 

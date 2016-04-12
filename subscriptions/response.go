@@ -251,16 +251,6 @@ func NewSubscriptionResponse(subscription *Subscription) (*SubscriptionResponse,
 		jsonhal.Embedded(planResponse),
 	)
 
-	// Set embedded card
-	cardResponse, err := NewCardResponse(subscription.Card)
-	if err != nil {
-		return nil, err
-	}
-	response.SetEmbedded(
-		"card",
-		jsonhal.Embedded(cardResponse),
-	)
-
 	return response, nil
 }
 

@@ -31,7 +31,7 @@ func (s *Subscription) IsCancelled() bool {
 func (s *Service) FindSubscriptionByID(subscriptionID uint) (*Subscription, error) {
 	// Fetch the subscription from the database
 	subscription := new(Subscription)
-	notFound := s.db.Preload("Customer.User").Preload("Plan").Preload("Card").
+	notFound := s.db.Preload("Customer.User").Preload("Plan").
 		First(subscription, subscriptionID).RecordNotFound()
 
 	// Not found
@@ -46,7 +46,7 @@ func (s *Service) FindSubscriptionByID(subscriptionID uint) (*Subscription, erro
 func (s *Service) FindSubscriptionBySubscriptionID(subscriptionID string) (*Subscription, error) {
 	// Fetch the subscription from the database
 	subscription := new(Subscription)
-	notFound := s.db.Preload("Customer.User").Preload("Plan").Preload("Card").
+	notFound := s.db.Preload("Customer.User").Preload("Plan").
 		Where("subscription_id = ?", subscriptionID).
 		First(subscription).RecordNotFound()
 
@@ -62,7 +62,7 @@ func (s *Service) FindSubscriptionBySubscriptionID(subscriptionID string) (*Subs
 func (s *Service) FindSubscriptionByCardID(cardID uint) (*Subscription, error) {
 	// Fetch the subscription from the database
 	subscription := new(Subscription)
-	notFound := s.db.Preload("Customer.User").Preload("Plan").Preload("Card").
+	notFound := s.db.Preload("Customer.User").Preload("Plan").
 		Where("card_id = ?", cardID).
 		First(subscription).RecordNotFound()
 
@@ -96,12 +96,6 @@ func (s *Service) createSubscription(user *accounts.User, subscriptionRequest *S
 		return nil, err
 	}
 
-	// Fetch the card
-	card, err := s.FindCardByID(subscriptionRequest.CardID)
-	if err != nil {
-		return nil, err
-	}
-
 	// Begin a transaction
 	tx := s.db.Begin()
 
@@ -109,7 +103,6 @@ func (s *Service) createSubscription(user *accounts.User, subscriptionRequest *S
 	stripeSubscription, err := s.stripeAdapter.CreateSubscription(
 		customer.CustomerID,
 		plan.PlanID,
-		card.CardID,
 	)
 	if err != nil {
 		tx.Rollback() // rollback the transaction
@@ -125,7 +118,6 @@ func (s *Service) createSubscription(user *accounts.User, subscriptionRequest *S
 	subscription := NewSubscription(
 		customer,
 		plan,
-		card,
 		stripeSubscription.ID,
 		startedAt,
 		cancelledAt,
@@ -159,12 +151,6 @@ func (s *Service) updateSubscription(subscription *Subscription, subscriptionReq
 		return err
 	}
 
-	// Fetch the card
-	card, err := s.FindCardByID(subscriptionRequest.CardID)
-	if err != nil {
-		return err
-	}
-
 	// Begin a transaction
 	tx := s.db.Begin()
 
@@ -173,7 +159,6 @@ func (s *Service) updateSubscription(subscription *Subscription, subscriptionReq
 		subscription.SubscriptionID,
 		subscription.Customer.CustomerID,
 		plan.PlanID,
-		card.CardID,
 	)
 	if err != nil {
 		tx.Rollback() // rollback the transaction
@@ -181,7 +166,7 @@ func (s *Service) updateSubscription(subscription *Subscription, subscriptionReq
 	}
 
 	// Update the subscription
-	err = s.updateSusbcriptionCommon(tx, subscription, plan, card, stripeSubscription)
+	err = s.updateSusbcriptionCommon(tx, subscription, plan, stripeSubscription)
 	if err != nil {
 		tx.Rollback() // rollback the transaction
 		return err
@@ -197,16 +182,12 @@ func (s *Service) updateSubscription(subscription *Subscription, subscriptionReq
 }
 
 // updateSusbcriptionCommon updates a subscription
-func (s *Service) updateSusbcriptionCommon(tx *gorm.DB, subscription *Subscription, plan *Plan, card *Card, stripeSubscription *stripe.Sub) error {
+func (s *Service) updateSusbcriptionCommon(tx *gorm.DB, subscription *Subscription, plan *Plan, stripeSubscription *stripe.Sub) error {
 	// Parse subscription times
 	startedAt, cancelledAt, endedAt, periodStart, periodEnd, trialStart, trialEnd := getStripeSubscriptionTimes(stripeSubscription)
 
 	if plan.ID != subscription.Plan.ID {
 		// Plan changed (upgraded or downgraded)
-	}
-
-	if card.ID != subscription.Card.ID {
-		// Card changed
 	}
 
 	if cancelledAt != nil && !subscription.CancelledAt.Valid {
@@ -220,7 +201,6 @@ func (s *Service) updateSusbcriptionCommon(tx *gorm.DB, subscription *Subscripti
 	// Update the subscription plan
 	if err := tx.Model(subscription).UpdateColumn(Subscription{
 		PlanID:      util.PositiveIntOrNull(int64(plan.ID)),
-		CardID:      util.PositiveIntOrNull(int64(card.ID)),
 		StartedAt:   util.TimeOrNull(startedAt),
 		CancelledAt: util.TimeOrNull(cancelledAt),
 		EndedAt:     util.TimeOrNull(endedAt),
@@ -233,7 +213,6 @@ func (s *Service) updateSusbcriptionCommon(tx *gorm.DB, subscription *Subscripti
 		return err
 	}
 	subscription.Plan = plan
-	subscription.Card = card
 
 	return nil
 }
@@ -288,8 +267,7 @@ func (s *Service) findPaginatedSubscriptions(offset, limit int, orderBy string, 
 
 	// Retrieve paginated results from the database
 	err := subscriptionsQuery.Offset(offset).Limit(limit).Order(orderBy).
-		Preload("Customer.User").Preload("Plan").Preload("Card").
-		Find(&subscriptions).Error
+		Preload("Customer.User").Preload("Plan").Find(&subscriptions).Error
 	if err != nil {
 		return subscriptions, err
 	}

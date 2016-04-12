@@ -7,6 +7,7 @@
     customer_id: 1
     card_id: "card_1"
     brand: "Visa"
+    funding: "credit"
     last_four: "4242"
     exp_month: 10
     exp_year: 2020
@@ -20,6 +21,7 @@
     customer_id: 1
     card_id: "card_2"
     brand: "Visa"
+    funding: "credit"
     last_four: "4242"
     exp_month: 10
     exp_year: 2020
@@ -33,6 +35,7 @@
     customer_id: 1
     card_id: "card_3"
     brand: "Visa"
+    funding: "credit"
     last_four: "4242"
     exp_month: 10
     exp_year: 2020
@@ -46,6 +49,7 @@
     customer_id: 1
     card_id: "card_4"
     brand: "Visa"
+    funding: "credit"
     last_four: "4242"
     exp_month: 10
     exp_year: 2020

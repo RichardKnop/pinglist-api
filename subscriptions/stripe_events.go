@@ -31,7 +31,6 @@ func (s *Service) stripeEventCustomerSubscriptionUpdated(e *stripe.Event) error 
 		s.db,
 		subscription,
 		plan,
-		subscription.Card, // TODO - think about this a bit more
 		stripeSubscription,
 	)
 }
@@ -56,7 +55,6 @@ func (s *Service) stripeEventCustomerSubscriptionDeleted(e *stripe.Event) error 
 		s.db,
 		subscription,
 		subscription.Plan,
-		subscription.Card,
 		stripeSubscription,
 	)
 }

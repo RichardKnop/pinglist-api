@@ -74,11 +74,10 @@ func (a *StripeAdapter) DeleteCard(cardID, customerID string) (*stripe.Card, err
 }
 
 // CreateSubscription creates a new subscription
-func (a *StripeAdapter) CreateSubscription(customerID, planID, token string) (*stripe.Sub, error) {
+func (a *StripeAdapter) CreateSubscription(customerID, planID string) (*stripe.Sub, error) {
 	params := &stripe.SubParams{
 		Customer: customerID,
 		Plan:     planID,
-		Token:    token,
 	}
 	return stripeSubscription.New(params)
 }
@@ -93,7 +92,7 @@ func (a *StripeAdapter) GetSubscription(subscriptionID, customerID string) (*str
 
 // UpdateSubscription upgrades or downgrades a subscription plan and/or
 // changes the source associated with the subscription
-func (a *StripeAdapter) UpdateSubscription(subscriptionID, customerID, planID, token string) (*stripe.Sub, error) {
+func (a *StripeAdapter) UpdateSubscription(subscriptionID, customerID, planID string) (*stripe.Sub, error) {
 	s, err := a.GetSubscription(subscriptionID, customerID)
 	if err != nil {
 		return nil, err
@@ -101,7 +100,6 @@ func (a *StripeAdapter) UpdateSubscription(subscriptionID, customerID, planID, t
 	params := &stripe.SubParams{
 		Customer: customerID,
 		Plan:     planID,
-		Token:    token,
 	}
 	return stripeSubscription.Update(s.ID, params)
 }

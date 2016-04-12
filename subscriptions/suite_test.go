@@ -108,8 +108,8 @@ func (suite *SubscriptionsTestSuite) SetupSuite() {
 
 	// Fetch test subscriptions
 	suite.subscriptions = make([]*Subscription, 0)
-	err = suite.db.Preload("Customer.User").Preload("Plan").Preload("Card").
-		Order("id").Find(&suite.subscriptions).Error
+	err = suite.db.Preload("Customer.User").Preload("Plan").Order("id").
+		Find(&suite.subscriptions).Error
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -138,8 +138,8 @@ func TestNewListCardsResponse(t *testing.T) {
 func TestNewListSubscriptionsResponse(t *testing.T) {
 	// Some mock Subscription objects
 	subscriptions := []*Subscription{
-		&Subscription{Customer: new(Customer), Plan: new(Plan), Card: new(Card)},
-		&Subscription{Customer: new(Customer), Plan: new(Plan), Card: new(Card)},
+		&Subscription{Customer: new(Customer), Plan: new(Plan)},
+		&Subscription{Customer: new(Customer), Plan: new(Plan)},
 	}
 
 	// Create list response

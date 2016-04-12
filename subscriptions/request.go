@@ -8,5 +8,4 @@ type CardRequest struct {
 // SubscriptionRequest ...
 type SubscriptionRequest struct {
 	PlanID uint `json:"plan_id"`
-	CardID uint `json:"card_id"`
 }

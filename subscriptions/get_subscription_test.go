@@ -53,7 +53,7 @@ func (suite *SubscriptionsTestSuite) TestGetSubscriptionWithoutPermission() {
 	assert.NoError(suite.T(), err, "Creating test Stripe token failed")
 
 	// Create a test card
-	testCard, err := suite.service.createCard(
+	_, err = suite.service.createCard(
 		suite.users[1],
 		&CardRequest{
 			Token: testStripeToken.ID,
@@ -66,7 +66,6 @@ func (suite *SubscriptionsTestSuite) TestGetSubscriptionWithoutPermission() {
 		suite.users[1],
 		&SubscriptionRequest{
 			PlanID: suite.plans[0].ID,
-			CardID: testCard.ID,
 		},
 	)
 	assert.NoError(suite.T(), err, "Creating test subscription failed")
@@ -91,12 +90,8 @@ func (suite *SubscriptionsTestSuite) TestGetSubscriptionWithoutPermission() {
 	suite.mockUserAuth(suite.users[2])
 
 	// Count before
-	var (
-		countBefore         int
-		customerCountBefore int
-	)
+	var countBefore int
 	suite.db.Model(new(Subscription)).Count(&countBefore)
-	suite.db.Model(new(Customer)).Count(&customerCountBefore)
 
 	// And serve the request
 	w := httptest.NewRecorder()
@@ -111,14 +106,9 @@ func (suite *SubscriptionsTestSuite) TestGetSubscriptionWithoutPermission() {
 	}
 
 	// Count after
-	var (
-		countAfter         int
-		customerCountAfter int
-	)
+	var countAfter int
 	suite.db.Model(new(Subscription)).Count(&countAfter)
-	suite.db.Model(new(Customer)).Count(&customerCountAfter)
 	assert.Equal(suite.T(), countBefore, countAfter)
-	assert.Equal(suite.T(), customerCountBefore, customerCountAfter)
 
 	// Check the response body
 	expectedJSON, err := json.Marshal(
@@ -159,7 +149,7 @@ func (suite *SubscriptionsTestSuite) TestGetSubscription() {
 	assert.NoError(suite.T(), err, "Creating test Stripe token failed")
 
 	// Create a test card
-	testCard, err := suite.service.createCard(
+	_, err = suite.service.createCard(
 		suite.users[1],
 		&CardRequest{
 			Token: testStripeToken.ID,
@@ -172,7 +162,6 @@ func (suite *SubscriptionsTestSuite) TestGetSubscription() {
 		suite.users[1],
 		&SubscriptionRequest{
 			PlanID: suite.plans[0].ID,
-			CardID: testCard.ID,
 		},
 	)
 	assert.NoError(suite.T(), err, "Creating test subscription failed")
@@ -197,12 +186,8 @@ func (suite *SubscriptionsTestSuite) TestGetSubscription() {
 	suite.mockUserAuth(suite.users[1])
 
 	// Count before
-	var (
-		countBefore         int
-		customerCountBefore int
-	)
+	var countBefore int
 	suite.db.Model(new(Subscription)).Count(&countBefore)
-	suite.db.Model(new(Customer)).Count(&customerCountBefore)
 
 	// And serve the request
 	w := httptest.NewRecorder()
@@ -217,22 +202,13 @@ func (suite *SubscriptionsTestSuite) TestGetSubscription() {
 	}
 
 	// Count after
-	var (
-		countAfter         int
-		customerCountAfter int
-	)
+	var countAfter int
 	suite.db.Model(new(Subscription)).Count(&countAfter)
-	suite.db.Model(new(Customer)).Count(&customerCountAfter)
 	assert.Equal(suite.T(), countBefore, countAfter)
-	assert.Equal(suite.T(), customerCountBefore, customerCountAfter)
 
 	// Check the response body
 	planResponse, err := NewPlanResponse(testSubscription.Plan)
 	assert.NoError(suite.T(), err, "Creating response object failed")
-
-	cardResponse, err := NewCardResponse(testSubscription.Card)
-	assert.NoError(suite.T(), err, "Creating response object failed")
-
 	expected := &SubscriptionResponse{
 		Hal: jsonhal.Hal{
 			Links: map[string]*jsonhal.Link{
@@ -242,7 +218,6 @@ func (suite *SubscriptionsTestSuite) TestGetSubscription() {
 			},
 			Embedded: map[string]jsonhal.Embedded{
 				"plan": jsonhal.Embedded(planResponse),
-				"card": jsonhal.Embedded(cardResponse),
 			},
 		},
 		ID:             testSubscription.ID,

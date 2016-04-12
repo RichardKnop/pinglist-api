@@ -188,7 +188,7 @@ func (suite *SubscriptionsTestSuite) TestStripeEventCustomerSubscriptionUpdated(
 	assert.NoError(suite.T(), err, "Failed to insert a test customer")
 
 	// Create a test card
-	testCard := NewCard(testCustomer, "test_card_id", "Visa", "4242", 10, 2020)
+	testCard := NewCard(testCustomer, "test_card_id", "Visa", "credit", "4242", 10, 2020)
 	err = suite.db.Create(testCard).Error
 	assert.NoError(suite.T(), err, "Failed to insert a test card")
 
@@ -199,7 +199,6 @@ func (suite *SubscriptionsTestSuite) TestStripeEventCustomerSubscriptionUpdated(
 	testSubscription := NewSubscription(
 		testCustomer,
 		suite.plans[0],
-		testCard,
 		stripeEvent.GetObjValue("id"),
 		&startedAt,
 		nil, // cancelled at
@@ -227,7 +226,7 @@ func (suite *SubscriptionsTestSuite) TestStripeEventCustomerSubscriptionUpdated(
 
 	// Fetch the updated subscription
 	subscription := new(Subscription)
-	notFound := suite.db.Preload("Customer.User").Preload("Plan").Preload("Card").
+	notFound := suite.db.Preload("Customer.User").Preload("Plan").
 		First(subscription, testSubscription.ID).RecordNotFound()
 	assert.False(suite.T(), notFound)
 
@@ -255,7 +254,7 @@ func (suite *SubscriptionsTestSuite) TestStripeEventCustomerSubscriptionDeleted(
 	assert.NoError(suite.T(), err, "Failed to insert a test customer")
 
 	// Create a test card
-	testCard := NewCard(testCustomer, "test_card_id", "Visa", "4242", 10, 2020)
+	testCard := NewCard(testCustomer, "test_card_id", "Visa", "credit", "4242", 10, 2020)
 	err = suite.db.Create(testCard).Error
 	assert.NoError(suite.T(), err, "Failed to insert a test card")
 
@@ -266,7 +265,6 @@ func (suite *SubscriptionsTestSuite) TestStripeEventCustomerSubscriptionDeleted(
 	testSubscription := NewSubscription(
 		testCustomer,
 		suite.plans[0],
-		testCard,
 		stripeEvent.GetObjValue("id"),
 		&startedAt,
 		nil, // cancelled at
@@ -294,7 +292,7 @@ func (suite *SubscriptionsTestSuite) TestStripeEventCustomerSubscriptionDeleted(
 
 	// Fetch the deleted subscription
 	subscription := new(Subscription)
-	notFound := suite.db.Preload("Customer.User").Preload("Plan").Preload("Card").
+	notFound := suite.db.Preload("Customer.User").Preload("Plan").
 		First(subscription, testSubscription.ID).RecordNotFound()
 	assert.False(suite.T(), notFound)
 
