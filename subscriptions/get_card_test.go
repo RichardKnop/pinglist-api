@@ -68,14 +68,6 @@ func (suite *SubscriptionsTestSuite) TestGetCardWithoutPermission() {
 	// Mock authentication
 	suite.mockUserAuth(suite.users[2])
 
-	// Count before
-	var (
-		countBefore         int
-		customerCountBefore int
-	)
-	suite.db.Model(new(Card)).Count(&countBefore)
-	suite.db.Model(new(Customer)).Count(&customerCountBefore)
-
 	// And serve the request
 	w := httptest.NewRecorder()
 	suite.router.ServeHTTP(w, r)
@@ -87,16 +79,6 @@ func (suite *SubscriptionsTestSuite) TestGetCardWithoutPermission() {
 	if !assert.Equal(suite.T(), 403, w.Code) {
 		log.Print(w.Body.String())
 	}
-
-	// Count after
-	var (
-		countAfter         int
-		customerCountAfter int
-	)
-	suite.db.Model(new(Card)).Count(&countAfter)
-	suite.db.Model(new(Customer)).Count(&customerCountAfter)
-	assert.Equal(suite.T(), countBefore, countAfter)
-	assert.Equal(suite.T(), customerCountBefore, customerCountAfter)
 
 	// Check the response body
 	expectedJSON, err := json.Marshal(
@@ -153,12 +135,8 @@ func (suite *SubscriptionsTestSuite) TestGetCard() {
 	suite.mockUserAuth(suite.users[1])
 
 	// Count before
-	var (
-		countBefore         int
-		customerCountBefore int
-	)
+	var countBefore int
 	suite.db.Model(new(Card)).Count(&countBefore)
-	suite.db.Model(new(Customer)).Count(&customerCountBefore)
 
 	// And serve the request
 	w := httptest.NewRecorder()
@@ -173,14 +151,9 @@ func (suite *SubscriptionsTestSuite) TestGetCard() {
 	}
 
 	// Count after
-	var (
-		countAfter         int
-		customerCountAfter int
-	)
+	var countAfter int
 	suite.db.Model(new(Card)).Count(&countAfter)
-	suite.db.Model(new(Customer)).Count(&customerCountAfter)
 	assert.Equal(suite.T(), countBefore, countAfter)
-	assert.Equal(suite.T(), customerCountBefore, customerCountAfter)
 
 	// Check the response body
 	expected := &CardResponse{
@@ -193,6 +166,7 @@ func (suite *SubscriptionsTestSuite) TestGetCard() {
 		},
 		ID:        testCard.ID,
 		Brand:     testCard.Brand,
+		Funding:   testCard.Funding,
 		LastFour:  testCard.LastFour,
 		ExpMonth:  testCard.ExpMonth,
 		ExpYear:   testCard.ExpYear,

@@ -126,6 +126,7 @@ func (suite *SubscriptionsTestSuite) TestCreateCardExistingValidCustomer() {
 	assert.Equal(suite.T(), testCustomer.ID, customer.ID)
 	assert.Equal(suite.T(), customer.ID, card.Customer.ID)
 	assert.Equal(suite.T(), "Visa", card.Brand)
+	assert.Equal(suite.T(), "credit", card.Funding)
 	assert.Equal(suite.T(), "4242", card.LastFour)
 	assert.Equal(suite.T(), uint(10), card.ExpMonth)
 	assert.Equal(suite.T(), uint(2020), card.ExpYear)
@@ -148,6 +149,7 @@ func (suite *SubscriptionsTestSuite) TestCreateCardExistingValidCustomer() {
 		},
 		ID:        card.ID,
 		Brand:     card.Brand,
+		Funding:   card.Funding,
 		LastFour:  card.LastFour,
 		ExpMonth:  card.ExpMonth,
 		ExpYear:   card.ExpYear,
@@ -255,6 +257,7 @@ func (suite *SubscriptionsTestSuite) TestCreateCardExistingInvalidCustomer() {
 	assert.NotEqual(suite.T(), testCustomer.ID, customer.ID)
 	assert.Equal(suite.T(), customer.ID, card.Customer.ID)
 	assert.Equal(suite.T(), "Visa", card.Brand)
+	assert.Equal(suite.T(), "credit", card.Funding)
 	assert.Equal(suite.T(), "4242", card.LastFour)
 	assert.Equal(suite.T(), uint(10), card.ExpMonth)
 	assert.Equal(suite.T(), uint(2020), card.ExpYear)
@@ -277,6 +280,7 @@ func (suite *SubscriptionsTestSuite) TestCreateCardExistingInvalidCustomer() {
 		},
 		ID:        card.ID,
 		Brand:     card.Brand,
+		Funding:   card.Funding,
 		LastFour:  card.LastFour,
 		ExpMonth:  card.ExpMonth,
 		ExpYear:   card.ExpYear,
@@ -379,6 +383,7 @@ func (suite *SubscriptionsTestSuite) TestCreateCardNewCustomer() {
 	assert.Equal(suite.T(), suite.users[1].ID, uint(customer.UserID.Int64))
 	assert.Equal(suite.T(), customer.ID, card.Customer.ID)
 	assert.Equal(suite.T(), "Visa", card.Brand)
+	assert.Equal(suite.T(), "credit", card.Funding)
 	assert.Equal(suite.T(), "4242", card.LastFour)
 	assert.Equal(suite.T(), uint(10), card.ExpMonth)
 	assert.Equal(suite.T(), uint(2020), card.ExpYear)
@@ -401,6 +406,7 @@ func (suite *SubscriptionsTestSuite) TestCreateCardNewCustomer() {
 		},
 		ID:        card.ID,
 		Brand:     card.Brand,
+		Funding:   card.Funding,
 		LastFour:  card.LastFour,
 		ExpMonth:  card.ExpMonth,
 		ExpYear:   card.ExpYear,
