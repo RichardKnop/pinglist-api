@@ -19,7 +19,6 @@ type ServiceInterface interface {
 	FindCardByCardID(cardID string) (*Card, error)
 	FindSubscriptionByID(subscriptionID uint) (*Subscription, error)
 	FindSubscriptionBySubscriptionID(subscriptionID string) (*Subscription, error)
-	FindSubscriptionByCardID(cardID uint) (*Subscription, error)
 	FindActiveSubscriptionByUserID(userID uint) (*Subscription, error)
 
 	// Needed for the newRoutes to be able to register handlers
