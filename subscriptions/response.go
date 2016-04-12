@@ -12,6 +12,7 @@ type CardResponse struct {
 	jsonhal.Hal
 	ID        uint   `json:"id"`
 	Brand     string `json:"brand"`
+	Funding   string `json:"funding"`
 	LastFour  string `json:"last_four"`
 	ExpMonth  uint   `json:"exp_month"`
 	ExpYear   uint   `json:"exp_year"`
@@ -79,6 +80,7 @@ func NewCardResponse(card *Card) (*CardResponse, error) {
 	response := &CardResponse{
 		ID:        card.ID,
 		Brand:     card.Brand,
+		Funding:   card.Funding,
 		LastFour:  card.LastFour,
 		ExpMonth:  card.ExpMonth,
 		ExpYear:   card.ExpYear,
