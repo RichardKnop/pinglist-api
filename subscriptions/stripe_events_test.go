@@ -41,7 +41,7 @@ var customerSubscriptionUpdatedEvent = `{
       },
       "quantity": 1,
       "start": 1458572785,
-      "status": "trialing",
+      "status": "active",
       "tax_percent": null,
       "trial_end": 1461164783,
       "trial_start": 1458572783
@@ -53,7 +53,7 @@ var customerSubscriptionUpdatedEvent = `{
         "id": "personal",
         "name": "Personal"
       },
-      "start": 1458572783
+			"status": "trialing"
     },
     "Obj": {
       "application_fee_percent": null,
@@ -83,7 +83,7 @@ var customerSubscriptionUpdatedEvent = `{
       },
       "quantity": 1,
       "start": 1458572785,
-      "status": "trialing",
+      "status": "active",
       "tax_percent": null,
       "trial_end": 1461164783,
       "trial_start": 1458572783
@@ -110,7 +110,7 @@ var customerSubscriptionDeletedEvent = `{
       "current_period_start": 1458572783,
       "customer": "cus_87k6TL1r0rosr5",
       "discount": null,
-      "ended_at": null,
+      "ended_at": 1458675888,
       "metadata": {},
       "plan": {
         "id": "personal",
@@ -128,13 +128,15 @@ var customerSubscriptionDeletedEvent = `{
       },
       "quantity": 1,
       "start": 1458572785,
-      "status": "trialing",
+      "status": "canceled",
       "tax_percent": null,
       "trial_end": 1461164783,
       "trial_start": 1458572783
     },
     "previous_attributes": {
-      "canceled_at": null
+      "canceled_at": null,
+			"ended_at": null,
+			"status": "trialing"
     },
     "Obj": {
       "application_fee_percent": null,
@@ -144,7 +146,7 @@ var customerSubscriptionDeletedEvent = `{
       "current_period_start": 1458572783,
       "customer": "cus_87k6TL1r0rosr5",
       "discount": null,
-      "ended_at": null,
+      "ended_at": 1458675888,
       "id": "sub_87k6Km3feYTNdZ",
       "metadata": {},
       "object": "subscription",
@@ -164,7 +166,7 @@ var customerSubscriptionDeletedEvent = `{
       },
       "quantity": 1,
       "start": 1458572785,
-      "status": "trialing",
+      "status": "canceled",
       "tax_percent": null,
       "trial_end": 1461164783,
       "trial_start": 1458572783
@@ -207,6 +209,7 @@ func (suite *SubscriptionsTestSuite) TestStripeEventCustomerSubscriptionUpdated(
 		&periodEnd,
 		&trialStart,
 		&trialEnd,
+		"trialing",
 	)
 	err = suite.db.Create(testSubscription).Error
 	assert.NoError(suite.T(), err, "Failed to insert a test subscription")
@@ -231,7 +234,6 @@ func (suite *SubscriptionsTestSuite) TestStripeEventCustomerSubscriptionUpdated(
 	assert.False(suite.T(), notFound)
 
 	// Subscription plan and timestamps should have been updated
-	assert.False(suite.T(), subscription.IsCancelled())
 	assert.Equal(suite.T(), suite.plans[1].ID, subscription.Plan.ID)
 	assert.Equal(suite.T(), startedAt.UTC(), subscription.StartedAt.Time.UTC())
 	assert.False(suite.T(), subscription.CancelledAt.Valid)
@@ -240,6 +242,7 @@ func (suite *SubscriptionsTestSuite) TestStripeEventCustomerSubscriptionUpdated(
 	assert.Equal(suite.T(), periodEnd.UTC(), subscription.PeriodEnd.Time.UTC())
 	assert.Equal(suite.T(), trialStart.UTC(), subscription.TrialStart.Time.UTC())
 	assert.Equal(suite.T(), trialEnd.UTC(), subscription.TrialEnd.Time.UTC())
+	assert.Equal(suite.T(), "active", subscription.Status)
 }
 
 func (suite *SubscriptionsTestSuite) TestStripeEventCustomerSubscriptionDeleted() {
@@ -273,6 +276,7 @@ func (suite *SubscriptionsTestSuite) TestStripeEventCustomerSubscriptionDeleted(
 		&periodEnd,
 		&trialStart,
 		&trialEnd,
+		"active",
 	)
 	err = suite.db.Create(testSubscription).Error
 	assert.NoError(suite.T(), err, "Failed to insert a test subscription")
@@ -297,14 +301,14 @@ func (suite *SubscriptionsTestSuite) TestStripeEventCustomerSubscriptionDeleted(
 	assert.False(suite.T(), notFound)
 
 	// Subscription plan and timestamps should have been updated
-	cancelledAt := time.Unix(1458675888, 0).UTC()
-	assert.True(suite.T(), subscription.IsCancelled())
+	cancelledAt, endedAt := time.Unix(1458675888, 0).UTC(), time.Unix(1458675888, 0).UTC()
 	assert.Equal(suite.T(), suite.plans[0].ID, subscription.Plan.ID)
 	assert.Equal(suite.T(), startedAt.UTC(), subscription.StartedAt.Time.UTC())
 	assert.Equal(suite.T(), cancelledAt.UTC(), subscription.CancelledAt.Time.UTC())
-	assert.False(suite.T(), subscription.EndedAt.Valid)
+	assert.Equal(suite.T(), endedAt.UTC(), subscription.EndedAt.Time.UTC())
 	assert.Equal(suite.T(), periodStart.UTC(), subscription.PeriodStart.Time.UTC())
 	assert.Equal(suite.T(), periodEnd.UTC(), subscription.PeriodEnd.Time.UTC())
 	assert.Equal(suite.T(), trialStart.UTC(), subscription.TrialStart.Time.UTC())
 	assert.Equal(suite.T(), trialEnd.UTC(), subscription.TrialEnd.Time.UTC())
+	assert.Equal(suite.T(), "canceled", subscription.Status)
 }

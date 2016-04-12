@@ -115,8 +115,9 @@ func (suite *SubscriptionsTestSuite) TestCancelSubscriptionWithoutPermission() {
 	assert.False(suite.T(), notFound)
 
 	// Check that the subscription is not cancelled
-	assert.False(suite.T(), subscription.IsCancelled())
 	assert.False(suite.T(), subscription.CancelledAt.Valid)
+	assert.False(suite.T(), subscription.EndedAt.Valid)
+	assert.NotEqual(suite.T(), "canceled", subscription.Status)
 
 	// Check the response body
 	expectedJSON, err := json.Marshal(
@@ -224,9 +225,9 @@ func (suite *SubscriptionsTestSuite) TestCancelSubscription() {
 	assert.False(suite.T(), notFound)
 
 	// Check that the subscription is cancelled now
-	assert.True(suite.T(), subscription.IsCancelled())
 	assert.True(suite.T(), subscription.CancelledAt.Valid)
 	assert.True(suite.T(), subscription.EndedAt.Valid)
+	assert.Equal(suite.T(), "canceled", subscription.Status)
 
 	// Check the response body
 	assert.Equal(

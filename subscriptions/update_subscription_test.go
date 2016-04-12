@@ -176,6 +176,7 @@ func (suite *SubscriptionsTestSuite) TestUpdateSubscriptionNothingChanged() {
 	assert.True(suite.T(), subscription.PeriodEnd.Valid)
 	assert.True(suite.T(), subscription.TrialStart.Valid)
 	assert.True(suite.T(), subscription.TrialEnd.Valid)
+	assert.Equal(suite.T(), "trialing", subscription.Status)
 
 	// Check the response body
 	planResponse, err := NewPlanResponse(subscription.Plan)
@@ -198,6 +199,7 @@ func (suite *SubscriptionsTestSuite) TestUpdateSubscriptionNothingChanged() {
 		PeriodEnd:      subscription.PeriodEnd.Time.UTC().Format(time.RFC3339),
 		TrialStart:     subscription.TrialStart.Time.UTC().Format(time.RFC3339),
 		TrialEnd:       subscription.TrialEnd.Time.UTC().Format(time.RFC3339),
+		Status:         "trialing",
 		CreatedAt:      subscription.CreatedAt.UTC().Format(time.RFC3339),
 		UpdatedAt:      subscription.UpdatedAt.UTC().Format(time.RFC3339),
 	}
@@ -314,6 +316,7 @@ func (suite *SubscriptionsTestSuite) TestUpdateSubscriptionPlanChanged() {
 	assert.True(suite.T(), subscription.PeriodEnd.Valid)
 	assert.True(suite.T(), subscription.TrialStart.Valid)
 	assert.True(suite.T(), subscription.TrialEnd.Valid)
+	assert.Equal(suite.T(), "trialing", subscription.Status)
 
 	// Check the response body
 	planResponse, err := NewPlanResponse(subscription.Plan)
@@ -336,6 +339,7 @@ func (suite *SubscriptionsTestSuite) TestUpdateSubscriptionPlanChanged() {
 		PeriodEnd:      subscription.PeriodEnd.Time.UTC().Format(time.RFC3339),
 		TrialStart:     subscription.TrialStart.Time.UTC().Format(time.RFC3339),
 		TrialEnd:       subscription.TrialEnd.Time.UTC().Format(time.RFC3339),
+		Status:         "trialing",
 		CreatedAt:      subscription.CreatedAt.UTC().Format(time.RFC3339),
 		UpdatedAt:      subscription.UpdatedAt.UTC().Format(time.RFC3339),
 	}

@@ -296,7 +296,6 @@ func (suite *SubscriptionsTestSuite) TestCreateSubscription() {
 	assert.False(suite.T(), notFound)
 
 	// Check that the correct data was saved
-	assert.True(suite.T(), subscription.IsActive())
 	assert.Equal(suite.T(), testCustomer.ID, subscription.Customer.ID)
 	assert.Equal(suite.T(), suite.plans[0].ID, subscription.Plan.ID)
 	assert.True(suite.T(), subscription.StartedAt.Valid)
@@ -306,6 +305,7 @@ func (suite *SubscriptionsTestSuite) TestCreateSubscription() {
 	assert.True(suite.T(), subscription.PeriodEnd.Valid)
 	assert.True(suite.T(), subscription.TrialStart.Valid)
 	assert.True(suite.T(), subscription.TrialEnd.Valid)
+	assert.Equal(suite.T(), "trialing", subscription.Status)
 
 	// Check the Location header
 	assert.Equal(
@@ -335,6 +335,7 @@ func (suite *SubscriptionsTestSuite) TestCreateSubscription() {
 		PeriodEnd:      subscription.PeriodEnd.Time.UTC().Format(time.RFC3339),
 		TrialStart:     subscription.TrialStart.Time.UTC().Format(time.RFC3339),
 		TrialEnd:       subscription.TrialEnd.Time.UTC().Format(time.RFC3339),
+		Status:         "trialing",
 		CreatedAt:      subscription.CreatedAt.UTC().Format(time.RFC3339),
 		UpdatedAt:      subscription.UpdatedAt.UTC().Format(time.RFC3339),
 	}

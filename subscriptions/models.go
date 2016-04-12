@@ -92,6 +92,8 @@ type Subscription struct {
 	PeriodEnd      pq.NullTime `sql:"index"`
 	TrialStart     pq.NullTime `sql:"index"`
 	TrialEnd       pq.NullTime `sql:"index"`
+	// trialing, active, past_due, canceled, or unpaid
+	Status string `sql:"type:varchar(20);index;not null"`
 }
 
 // TableName specifies table name
@@ -140,7 +142,7 @@ func NewCard(customer *Customer, cardID, brand, funding, lastFour string, expMon
 }
 
 // NewSubscription creates new Subscription instance
-func NewSubscription(customer *Customer, plan *Plan, subscriptionID string, startedAt, cancelledAt, endedAt, periodStart, periodEnd, trialStart, trialEnd *time.Time) *Subscription {
+func NewSubscription(customer *Customer, plan *Plan, subscriptionID string, startedAt, cancelledAt, endedAt, periodStart, periodEnd, trialStart, trialEnd *time.Time, status string) *Subscription {
 	customerID := util.PositiveIntOrNull(int64(customer.ID))
 	planID := util.PositiveIntOrNull(int64(plan.ID))
 	subscription := &Subscription{
@@ -154,6 +156,7 @@ func NewSubscription(customer *Customer, plan *Plan, subscriptionID string, star
 		PeriodEnd:      util.TimeOrNull(periodEnd),
 		TrialStart:     util.TimeOrNull(trialStart),
 		TrialEnd:       util.TimeOrNull(trialEnd),
+		Status:         status,
 	}
 	if customerID.Valid {
 		subscription.Customer = customer

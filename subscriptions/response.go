@@ -64,6 +64,7 @@ type SubscriptionResponse struct {
 	PeriodEnd      string `json:"period_end"`
 	TrialStart     string `json:"trial_start"`
 	TrialEnd       string `json:"trial_end"`
+	Status         string `json:"status"`
 	CreatedAt      string `json:"created_at"`
 	UpdatedAt      string `json:"updated_at"`
 }
@@ -214,6 +215,7 @@ func NewSubscriptionResponse(subscription *Subscription) (*SubscriptionResponse,
 		ID:             subscription.ID,
 		SubscriptionID: subscription.SubscriptionID,
 		StartedAt:      subscription.StartedAt.Time.UTC().Format(time.RFC3339),
+		Status:         subscription.Status,
 		CreatedAt:      subscription.CreatedAt.UTC().Format(time.RFC3339),
 		UpdatedAt:      subscription.UpdatedAt.UTC().Format(time.RFC3339),
 	}

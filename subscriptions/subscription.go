@@ -17,16 +17,6 @@ var (
 	ErrUserCanOnlyHaveOneActiveSubscription = errors.New("User can only have one active subscription")
 )
 
-// IsActive returns true if the subscription has not ended yet
-func (s *Subscription) IsActive() bool {
-	return s.PeriodEnd.Valid && s.PeriodEnd.Time.After(time.Now())
-}
-
-// IsCancelled returns true if the subscription has been cancelled
-func (s *Subscription) IsCancelled() bool {
-	return s.CancelledAt.Valid && s.CancelledAt.Time.Before(time.Now())
-}
-
 // FindSubscriptionByID looks up a subscription by an ID and returns it
 func (s *Service) FindSubscriptionByID(subscriptionID uint) (*Subscription, error) {
 	// Fetch the subscription from the database
@@ -126,6 +116,7 @@ func (s *Service) createSubscription(user *accounts.User, subscriptionRequest *S
 		periodEnd,
 		trialStart,
 		trialEnd,
+		string(stripeSubscription.Status),
 	)
 
 	// Save the subscription to the database
@@ -196,6 +187,7 @@ func (s *Service) updateSusbcriptionCommon(tx *gorm.DB, subscription *Subscripti
 		PeriodEnd:   util.TimeOrNull(periodEnd),
 		TrialStart:  util.TimeOrNull(trialStart),
 		TrialEnd:    util.TimeOrNull(trialEnd),
+		Status:      string(stripeSubscription.Status),
 		Model:       gorm.Model{UpdatedAt: time.Now()},
 	}).Error; err != nil {
 		return err

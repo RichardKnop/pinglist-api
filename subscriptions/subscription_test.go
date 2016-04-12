@@ -1,62 +1,8 @@
 package subscriptions
 
 import (
-	"testing"
-	"time"
-
-	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/stretchr/testify/assert"
 )
-
-func TestSubscriptionIsActive(t *testing.T) {
-	var (
-		periodEnd    time.Time
-		subscription *Subscription
-	)
-
-	// Subscription.PeriodEnd not set, therefor IsActive should return false
-	subscription = new(Subscription)
-	assert.False(t, subscription.IsActive())
-
-	// Subscription.PeriodEnd is in the future, therefor IsActive should return true
-	periodEnd = time.Now().Add(+1 * time.Hour)
-	subscription = &Subscription{
-		PeriodEnd: util.TimeOrNull(&periodEnd),
-	}
-	assert.True(t, subscription.IsActive())
-
-	// Subscription.PeriodEnd is in the past, therefor IsActive should return false
-	periodEnd = time.Now().Add(-1 * time.Hour)
-	subscription = &Subscription{
-		PeriodEnd: util.TimeOrNull(&periodEnd),
-	}
-	assert.False(t, subscription.IsActive())
-}
-
-func TestSubscriptionIsCancelled(t *testing.T) {
-	var (
-		cancelledAt  time.Time
-		subscription *Subscription
-	)
-
-	// Subscription.CancelledAt not set, therefor IsCancelled should return false
-	subscription = new(Subscription)
-	assert.False(t, subscription.IsCancelled())
-
-	// Subscription.CancelledAt is in the future, therefor IsCancelled should return false
-	cancelledAt = time.Now().Add(+1 * time.Hour)
-	subscription = &Subscription{
-		CancelledAt: util.TimeOrNull(&cancelledAt),
-	}
-	assert.False(t, subscription.IsCancelled())
-
-	// Subscription.CancelledAt is in thepast, therefor IsCancelled should return true
-	cancelledAt = time.Now().Add(-1 * time.Hour)
-	subscription = &Subscription{
-		CancelledAt: util.TimeOrNull(&cancelledAt),
-	}
-	assert.True(t, subscription.IsCancelled())
-}
 
 func (suite *SubscriptionsTestSuite) TestFindSubscriptionByID() {
 	var (

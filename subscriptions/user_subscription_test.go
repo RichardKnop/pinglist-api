@@ -1,6 +1,8 @@
 package subscriptions
 
-import "github.com/stretchr/testify/assert"
+import (
+	"github.com/stretchr/testify/assert"
+)
 
 func (suite *SubscriptionsTestSuite) TestFindActiveSubscriptionByUserID() {
 	var (

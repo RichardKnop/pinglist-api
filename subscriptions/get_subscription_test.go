@@ -227,6 +227,7 @@ func (suite *SubscriptionsTestSuite) TestGetSubscription() {
 		PeriodEnd:      testSubscription.PeriodEnd.Time.UTC().Format(time.RFC3339),
 		TrialStart:     testSubscription.TrialStart.Time.UTC().Format(time.RFC3339),
 		TrialEnd:       testSubscription.TrialEnd.Time.UTC().Format(time.RFC3339),
+		Status:         "trialing",
 		CreatedAt:      testSubscription.CreatedAt.UTC().Format(time.RFC3339),
 		UpdatedAt:      testSubscription.UpdatedAt.UTC().Format(time.RFC3339),
 	}
