@@ -55,8 +55,9 @@ type IncidentResponse struct {
 	Type         string  `json:"type"`
 	HTTPCode     *uint   `json:"http_code"`
 	Response     *string `json:"response"`
+	ResponseTime *uint   `json:"response_time"`
 	ErrorMessage *string `json:"error_message"`
-	ResolvedAt   *string `json:"created_at"`
+	ResolvedAt   *string `json:"resolved_at"`
 	CreatedAt    string  `json:"created_at"`
 	UpdatedAt    string  `json:"updated_at"`
 }
@@ -218,6 +219,10 @@ func NewIncidentResponse(incident *Incident) (*IncidentResponse, error) {
 	if incident.Response.Valid {
 		r := incident.Response.String
 		response.Response = &r
+	}
+	if incident.ResponseTime.Valid {
+		rt := uint(incident.ResponseTime.Int64)
+		response.ResponseTime = &rt
 	}
 	if incident.ErrorMessage.Valid {
 		e := incident.ErrorMessage.String
