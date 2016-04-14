@@ -15,6 +15,7 @@ type ServiceInterface interface {
 
 	// Needed for the newRoutes to be able to register handlers
 	createTeamHandler(w http.ResponseWriter, r *http.Request)
+	getTeamHandler(w http.ResponseWriter, r *http.Request)
 	listTeamsHandler(w http.ResponseWriter, r *http.Request)
 	updateTeamHandler(w http.ResponseWriter, r *http.Request)
 }

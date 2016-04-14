@@ -1,6 +1,7 @@
 # Teams
 
 * [Create Team](#create-team)
+* [Get Team](#get-team)
 * [Update Team](#update-team)
 * [List Teams](#list-teams)
 
@@ -20,6 +21,50 @@ curl --compressed -v localhost:8080/v1/teams \
 			}
 		]
 	}'
+```
+
+Example response:
+
+```json
+{
+	"_links": {
+		"self": {
+			"href": "/v1/teams/1"
+		}
+	},
+	"_embedded": {
+		"members": [
+			{
+				"_links": {
+					"self": {
+						"href": "/v1/accounts/users/3"
+					}
+				},
+				"id": 3,
+				"email": "john@reese",
+				"first_name": "John",
+				"last_name": "Reese",
+				"role": "user",
+				"confirmed": true,
+				"created_at": "2015-12-17T06:17:54Z",
+				"updated_at": "2015-12-17T06:17:54Z"
+			}
+		]
+	},
+	"id": 1,
+	"name": "Test Team 1",
+	"created_at": "2016-01-14T13:52:24Z",
+	"updated_at": "2016-01-14T13:52:24Z"
+}
+```
+
+## Get Team
+
+Example request:
+
+```
+curl --compressed -v localhost:8080/v1/teams/1 \
+	-H "Authorization: Bearer 00ccd40e-72ca-4e79-a4b6-67c95e2e3f1c"
 ```
 
 Example response:

@@ -76,6 +76,10 @@ func (_m *ServiceMock) createTeamHandler(w http.ResponseWriter, r *http.Request)
 	_m.Called(w, r)
 }
 
+func (_m *ServiceMock) getTeamHandler(w http.ResponseWriter, r *http.Request) {
+	_m.Called(w, r)
+}
+
 func (_m *ServiceMock) listTeamsHandler(w http.ResponseWriter, r *http.Request) {
 	_m.Called(w, r)
 }
