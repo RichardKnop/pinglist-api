@@ -11,6 +11,15 @@ import (
 	"github.com/lib/pq"
 )
 
+// ISO8601UTC ...
+const ISO8601UTC = "2006-01-02T15:04:05Z"
+
+// ParseTimestamp parses a string representation of UTC timestamp in ISO8601
+// format and returns a time.Time instance
+func ParseTimestamp(timestamp string) (time.Time, error) {
+	return time.Parse(ISO8601UTC, timestamp)
+}
+
 // IntOrNull returns properly configured sql.NullInt64
 func IntOrNull(n int64) sql.NullInt64 {
 	return sql.NullInt64{Int64: n, Valid: true}

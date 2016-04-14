@@ -4,6 +4,8 @@ import (
 	"errors"
 	"net/http"
 	"time"
+
+	"github.com/RichardKnop/pinglist-api/util"
 )
 
 // AllowedDateTruncMap ...
@@ -32,7 +34,7 @@ func GetParamsFromQueryString(r *http.Request) (string, *time.Time, *time.Time, 
 
 	// Get "from" param from the querystring
 	if r.URL.Query().Get("from") != "" {
-		t, err := time.Parse(time.RFC3339, r.URL.Query().Get("from"))
+		t, err := util.ParseTimestamp(r.URL.Query().Get("from"))
 		if err != nil {
 			return "", nil, nil, err
 		}
@@ -41,7 +43,7 @@ func GetParamsFromQueryString(r *http.Request) (string, *time.Time, *time.Time, 
 
 	// Get "to" param from the querystring
 	if r.URL.Query().Get("to") != "" {
-		t, err := time.Parse(time.RFC3339, r.URL.Query().Get("to"))
+		t, err := util.ParseTimestamp(r.URL.Query().Get("to"))
 		if err != nil {
 			return "", nil, nil, err
 		}
