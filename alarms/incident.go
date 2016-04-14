@@ -1,6 +1,7 @@
 package alarms
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/RichardKnop/pinglist-api/accounts"
@@ -27,7 +28,27 @@ func (s *Service) openIncident(alarm *Alarm, incidentTypeID string, resp *http.R
 			return err
 		}
 
-		// Send alarm down notification email
+		// Send alarm down push notification alert
+		if alarm.PushNotificationAlerts {
+			go func() {
+				endpoint, err := s.notificationsService.FindEndpointByUserIDAndApplicationARN(
+					alarm.User.ID,
+					s.cnf.AWS.APNSPlatformApplicationARN,
+				)
+				if err == nil && endpoint != nil {
+					_, err := s.notificationsService.PublishMessage(
+						endpoint.ARN,
+						fmt.Sprintf("ALERT: %s is down", alarm.EndpointURL),
+						map[string]interface{}{},
+					)
+					if err != nil {
+						logger.Errorf("Publish Message Error: %s", err.Error())
+					}
+				}
+			}()
+		}
+
+		// Send alarm down notification email alert
 		if alarm.EmailAlerts {
 			go func() {
 				alarmDownEmail := s.emailFactory.NewAlarmDownEmail(alarm)
@@ -102,8 +123,28 @@ func (s *Service) resolveIncidents(alarm *Alarm) error {
 			return err
 		}
 
+		// Send alarm up push notification alert
+		if alarm.PushNotificationAlerts && alarmInitialState != alarmstates.InsufficientData {
+			go func() {
+				endpoint, err := s.notificationsService.FindEndpointByUserIDAndApplicationARN(
+					alarm.User.ID,
+					s.cnf.AWS.APNSPlatformApplicationARN,
+				)
+				if err == nil && endpoint != nil {
+					_, err := s.notificationsService.PublishMessage(
+						endpoint.ARN,
+						fmt.Sprintf("ALERT: %s is up again", alarm.EndpointURL),
+						map[string]interface{}{},
+					)
+					if err != nil {
+						logger.Errorf("Publish Message Error: %s", err.Error())
+					}
+				}
+			}()
+		}
+
+		// Send alarm up notification email alert
 		if alarm.EmailAlerts && alarmInitialState != alarmstates.InsufficientData {
-			// Send alarm up notification email
 			go func() {
 				alarmUpEmail := s.emailFactory.NewAlarmUpEmail(alarm)
 

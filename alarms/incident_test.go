@@ -1,12 +1,14 @@
 package alarms
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
 	"github.com/RichardKnop/pinglist-api/alarms/alarmstates"
 	"github.com/RichardKnop/pinglist-api/alarms/incidenttypes"
 	"github.com/RichardKnop/pinglist-api/alarms/regions"
+	"github.com/RichardKnop/pinglist-api/notifications"
 	"github.com/jinzhu/gorm"
 	"github.com/stretchr/testify/assert"
 )
@@ -19,15 +21,16 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 
 	// Insert a test alarm
 	testAlarm = &Alarm{
-		User:             suite.users[1],
-		Region:           &Region{ID: regions.USWest2, Name: "US West (Oregon)"},
-		AlarmState:       &AlarmState{ID: alarmstates.InsufficientData},
-		EndpointURL:      "http://foobar",
-		ExpectedHTTPCode: 200,
-		MaxResponseTime:  1000,
-		Interval:         60,
-		EmailAlerts:      true,
-		Active:           true,
+		User:                   suite.users[1],
+		Region:                 &Region{ID: regions.USWest2, Name: "US West (Oregon)"},
+		AlarmState:             &AlarmState{ID: alarmstates.InsufficientData},
+		EndpointURL:            "http://foobar",
+		ExpectedHTTPCode:       200,
+		MaxResponseTime:        1000,
+		Interval:               60,
+		EmailAlerts:            true,
+		PushNotificationAlerts: true,
+		Active:                 true,
 	}
 	err = suite.db.Create(testAlarm).Error
 	assert.NoError(suite.T(), err, "Inserting test data failed")
@@ -43,6 +46,19 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		return when1
 	}
 	suite.mockAlarmDownEmail()
+	suite.mockFindEndpointByUserIDAndApplicationARN(
+		alarm.User.ID,
+		suite.service.cnf.AWS.APNSPlatformApplicationARN,
+		&notifications.Endpoint{ARN: "endpoint_arn"},
+		nil,
+	)
+	suite.mockPublishMessage(
+		"endpoint_arn",
+		fmt.Sprintf("ALERT: %s is down", alarm.EndpointURL),
+		map[string]interface{}{},
+		"message_id",
+		nil,
+	)
 	err = suite.service.openIncident(
 		alarm,
 		incidenttypes.SlowResponse,
@@ -51,7 +67,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		"",   // error message
 	)
 
-	// Sleep for the email goroutine to finish
+	// Sleep for the email and push notification goroutines to finish
 	time.Sleep(5 * time.Millisecond)
 
 	// Check that the mock object expectations were met
@@ -422,9 +438,22 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		return when8
 	}
 	suite.mockAlarmUpEmail()
+	suite.mockFindEndpointByUserIDAndApplicationARN(
+		alarm.User.ID,
+		suite.service.cnf.AWS.APNSPlatformApplicationARN,
+		&notifications.Endpoint{ARN: "endpoint_arn"},
+		nil,
+	)
+	suite.mockPublishMessage(
+		"endpoint_arn",
+		fmt.Sprintf("ALERT: %s is up again", alarm.EndpointURL),
+		map[string]interface{}{},
+		"message_id",
+		nil,
+	)
 	err = suite.service.resolveIncidents(alarm)
 
-	// Sleep for the email goroutine to finish
+	// Sleep for the email and push notification goroutines to finish
 	time.Sleep(5 * time.Millisecond)
 
 	// Check that the mock object expectations were met

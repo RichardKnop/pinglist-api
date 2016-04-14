@@ -10,6 +10,7 @@ import (
 	"github.com/RichardKnop/pinglist-api/database"
 	"github.com/RichardKnop/pinglist-api/email"
 	"github.com/RichardKnop/pinglist-api/metrics"
+	"github.com/RichardKnop/pinglist-api/notifications"
 	"github.com/RichardKnop/pinglist-api/oauth"
 	"github.com/RichardKnop/pinglist-api/subscriptions"
 	"github.com/RichardKnop/pinglist-api/teams"
@@ -54,6 +55,7 @@ type AlarmsTestSuite struct {
 	subscriptionsServiceMock *subscriptions.ServiceMock
 	teamsServiceMock         *teams.ServiceMock
 	metricsServiceMock       *metrics.ServiceMock
+	notificationsServiceMock *notifications.ServiceMock
 	emailServiceMock         *email.ServiceMock
 	emailFactoryMock         *EmailFactoryMock
 	service                  *Service
@@ -129,6 +131,7 @@ func (suite *AlarmsTestSuite) SetupSuite() {
 	suite.subscriptionsServiceMock = new(subscriptions.ServiceMock)
 	suite.teamsServiceMock = new(teams.ServiceMock)
 	suite.metricsServiceMock = new(metrics.ServiceMock)
+	suite.notificationsServiceMock = new(notifications.ServiceMock)
 	suite.emailServiceMock = new(email.ServiceMock)
 	suite.emailFactoryMock = new(EmailFactoryMock)
 
@@ -140,6 +143,7 @@ func (suite *AlarmsTestSuite) SetupSuite() {
 		suite.subscriptionsServiceMock,
 		suite.teamsServiceMock,
 		suite.metricsServiceMock,
+		suite.notificationsServiceMock,
 		suite.emailServiceMock,
 		suite.emailFactoryMock,
 		nil, // HTTP client
@@ -172,6 +176,8 @@ func (suite *AlarmsTestSuite) SetupTest() {
 	suite.teamsServiceMock.Calls = suite.teamsServiceMock.Calls[:0]
 	suite.metricsServiceMock.ExpectedCalls = suite.metricsServiceMock.ExpectedCalls[:0]
 	suite.metricsServiceMock.Calls = suite.metricsServiceMock.Calls[:0]
+	suite.notificationsServiceMock.ExpectedCalls = suite.notificationsServiceMock.ExpectedCalls[:0]
+	suite.notificationsServiceMock.Calls = suite.notificationsServiceMock.Calls[:0]
 	suite.emailServiceMock.ExpectedCalls = suite.emailServiceMock.ExpectedCalls[:0]
 	suite.emailServiceMock.Calls = suite.emailServiceMock.Calls[:0]
 	suite.emailFactoryMock.ExpectedCalls = suite.emailFactoryMock.ExpectedCalls[:0]
@@ -197,6 +203,7 @@ func (suite *AlarmsTestSuite) assertMockExpectations() {
 	suite.subscriptionsServiceMock.AssertExpectations(suite.T())
 	suite.teamsServiceMock.AssertExpectations(suite.T())
 	suite.metricsServiceMock.AssertExpectations(suite.T())
+	suite.notificationsServiceMock.AssertExpectations(suite.T())
 	suite.emailServiceMock.AssertExpectations(suite.T())
 	suite.emailFactoryMock.AssertExpectations(suite.T())
 }
@@ -261,6 +268,25 @@ func (suite *AlarmsTestSuite) mockAlarmUpEmail() {
 		mock.AnythingOfType("*alarms.Alarm"),
 	).Return(emailMock)
 	suite.emailServiceMock.On("Send", emailMock).Return(nil)
+}
+
+// Mock find endpoint
+func (suite *AlarmsTestSuite) mockFindEndpointByUserIDAndApplicationARN(userID uint, applicationARN string, endpoint *notifications.Endpoint, err error) {
+	suite.notificationsServiceMock.On(
+		"FindEndpointByUserIDAndApplicationARN",
+		userID,
+		applicationARN,
+	).Return(endpoint, err)
+}
+
+// Mock push notification
+func (suite *AlarmsTestSuite) mockPublishMessage(endpointARN string, msg string, opts map[string]interface{}, messageID string, err error) {
+	suite.notificationsServiceMock.On(
+		"PublishMessage",
+		endpointARN,
+		msg,
+		opts,
+	).Return(messageID, err)
 }
 
 // Mock logging of request time metric

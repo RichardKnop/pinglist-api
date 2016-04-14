@@ -8,10 +8,14 @@ import (
 const (
 	// MessageBodyLimit is maximum allowed message payload size
 	MessageBodyLimit = 2000
-	gcmKeyMessage    = "message"
-	apnsKeyMessage   = "alert"
-	apnsKeySound     = "sound"
-	apnsKeyBadge     = "badge"
+	// GCMKeyMessage ...
+	GCMKeyMessage = "message"
+	// APNSKeyMessage ...
+	APNSKeyMessage = "alert"
+	// APNSKeySound ...
+	APNSKeySound = "sound"
+	// APNSKeyBadge ...
+	APNSKeyBadge = "badge"
 )
 
 // Make sns message for Apple Push Notification Service
@@ -19,24 +23,24 @@ const (
 // https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/TheNotificationPayload.html#//apple_ref/doc/uid/TP40008194-CH107-SW1
 func composeMessageAPNS(msg string, opt map[string]interface{}) (string, error) {
 	aps := make(map[string]interface{})
-	aps[apnsKeyMessage] = msg
+	aps[APNSKeyMessage] = msg
 
-	aps[apnsKeySound] = "default"
-	if v, ok := opt[apnsKeySound]; ok {
-		aps[apnsKeySound] = v
+	aps[APNSKeySound] = "default"
+	if v, ok := opt[APNSKeySound]; ok {
+		aps[APNSKeySound] = v
 	}
 
-	if v, ok := opt[apnsKeyBadge]; ok {
-		aps[apnsKeyBadge] = v
+	if v, ok := opt[APNSKeyBadge]; ok {
+		aps[APNSKeyBadge] = v
 	}
 
 	message := make(map[string]interface{})
 	message["aps"] = aps
 	for k, v := range opt {
 		switch k {
-		case apnsKeySound:
+		case APNSKeySound:
 			continue
-		case apnsKeyBadge:
+		case APNSKeyBadge:
 			continue
 		default:
 			message[k] = v
@@ -54,7 +58,7 @@ func composeMessageAPNS(msg string, opt map[string]interface{}) (string, error) 
 // Make sns message for Google Cloud Messaging
 func composeMessageGCM(msg string, opt map[string]interface{}) (string, error) {
 	data := make(map[string]interface{})
-	data[gcmKeyMessage] = msg
+	data[GCMKeyMessage] = msg
 	for k, v := range opt {
 		data[k] = v
 	}

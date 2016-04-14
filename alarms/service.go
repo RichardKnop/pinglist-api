@@ -7,6 +7,7 @@ import (
 	"github.com/RichardKnop/pinglist-api/config"
 	"github.com/RichardKnop/pinglist-api/email"
 	"github.com/RichardKnop/pinglist-api/metrics"
+	"github.com/RichardKnop/pinglist-api/notifications"
 	"github.com/RichardKnop/pinglist-api/subscriptions"
 	"github.com/RichardKnop/pinglist-api/teams"
 	"github.com/jinzhu/gorm"
@@ -20,13 +21,14 @@ type Service struct {
 	subscriptionsService subscriptions.ServiceInterface
 	teamsService         teams.ServiceInterface
 	metricsService       metrics.ServiceInterface
+	notificationsService notifications.ServiceInterface
 	emailService         email.ServiceInterface
 	emailFactory         EmailFactoryInterface
 	client               *http.Client
 }
 
 // NewService starts a new Service instance
-func NewService(cnf *config.Config, db *gorm.DB, accountsService accounts.ServiceInterface, subscriptionsService subscriptions.ServiceInterface, teamsService teams.ServiceInterface, metricsService metrics.ServiceInterface, emailService email.ServiceInterface, emailFactory EmailFactoryInterface, client *http.Client) *Service {
+func NewService(cnf *config.Config, db *gorm.DB, accountsService accounts.ServiceInterface, subscriptionsService subscriptions.ServiceInterface, teamsService teams.ServiceInterface, metricsService metrics.ServiceInterface, notificationsService notifications.ServiceInterface, emailService email.ServiceInterface, emailFactory EmailFactoryInterface, client *http.Client) *Service {
 	if emailFactory == nil {
 		emailFactory = NewEmailFactory(cnf)
 	}
@@ -42,6 +44,7 @@ func NewService(cnf *config.Config, db *gorm.DB, accountsService accounts.Servic
 		subscriptionsService: subscriptionsService,
 		teamsService:         teamsService,
 		metricsService:       metricsService,
+		notificationsService: notificationsService,
 		emailService:         emailService,
 		emailFactory:         emailFactory,
 		client:               client,

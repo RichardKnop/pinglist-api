@@ -67,16 +67,13 @@ func initApp(cnf *config.Config, db *gorm.DB) (*negroni.Negroni, error) {
 		accountsService,
 		nil, // subscriptions.StripeAdapter
 	)
-	teamsService := teams.NewService(
+	teamsService := teams.NewService(cnf, db, accountsService, subscriptionsService)
+	metricsService := metrics.NewService(cnf, db, accountsService)
+	notificationsService := notifications.NewService(
 		cnf,
 		db,
 		accountsService,
-		subscriptionsService,
-	)
-	metricsService := metrics.NewService(
-		cnf,
-		db,
-		accountsService,
+		nil, // notifications.SNSAdapter
 	)
 	alarmsService := alarms.NewService(
 		cnf,
@@ -85,15 +82,10 @@ func initApp(cnf *config.Config, db *gorm.DB) (*negroni.Negroni, error) {
 		subscriptionsService,
 		teamsService,
 		metricsService,
+		notificationsService,
 		emailService,
 		nil, // alarms.EmailFactory
 		nil, // HTTP client
-	)
-	notificationsService := notifications.NewService(
-		cnf,
-		db,
-		accountsService,
-		nil, // notifications.SNSAdapter
 	)
 	webService := web.NewService(cnf, accountsService)
 
@@ -115,8 +107,8 @@ func initApp(cnf *config.Config, db *gorm.DB) (*negroni.Negroni, error) {
 	subscriptions.RegisterRoutes(router, subscriptionsService)
 	teams.RegisterRoutes(router, teamsService)
 	metrics.RegisterRoutes(router, metricsService)
-	alarms.RegisterRoutes(router, alarmsService)
 	notifications.RegisterRoutes(router, notificationsService)
+	alarms.RegisterRoutes(router, alarmsService)
 	web.RegisterRoutes(router, webService)
 
 	// Set the router
