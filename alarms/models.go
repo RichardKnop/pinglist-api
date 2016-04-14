@@ -149,7 +149,10 @@ func NewIncident(alarm *Alarm, incidentType *IncidentType, resp *http.Response, 
 
 		// Save the response dump
 		var respDump string
-		respBytes, err := httputil.DumpResponse(resp, true) // body = true
+		respBytes, err := httputil.DumpResponse(
+			resp,
+			false, // body
+		)
 		if err == nil {
 			respDump = string(respBytes)
 		}
