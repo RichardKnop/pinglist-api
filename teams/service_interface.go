@@ -18,4 +18,5 @@ type ServiceInterface interface {
 	getTeamHandler(w http.ResponseWriter, r *http.Request)
 	listTeamsHandler(w http.ResponseWriter, r *http.Request)
 	updateTeamHandler(w http.ResponseWriter, r *http.Request)
+	deleteTeamHandler(w http.ResponseWriter, r *http.Request)
 }

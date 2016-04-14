@@ -44,6 +44,15 @@ func newRoutes(service ServiceInterface) []routes.Route {
 			},
 		},
 		routes.Route{
+			Name:        "delete_team",
+			Method:      "DELETE",
+			Pattern:     "/teams/{id:[0-9]+}",
+			HandlerFunc: service.deleteTeamHandler,
+			Middlewares: []negroni.Handler{
+				accounts.NewUserAuthMiddleware(service.GetAccountsService()),
+			},
+		},
+		routes.Route{
 			Name:        "list_teams",
 			Method:      "GET",
 			Pattern:     "/teams",

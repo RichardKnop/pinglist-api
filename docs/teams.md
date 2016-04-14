@@ -3,6 +3,7 @@
 * [Create Team](#create-team)
 * [Get Team](#get-team)
 * [Update Team](#update-team)
+* [Delete Team](#delete-team)
 * [List Teams](#list-teams)
 
 ## Create Team
@@ -172,6 +173,17 @@ Example response:
 	"updated_at": "2016-01-14T13:52:24Z"
 }
 ```
+
+## Delete Team
+
+Example request:
+
+```
+curl -XDELETE --compressed -v localhost:8080/v1/teams/1 \
+	-H "Authorization: Bearer 00ccd40e-72ca-4e79-a4b6-67c95e2e3f1c"
+```
+
+Returns `204` empty response on success.
 
 ## List Teams
 
