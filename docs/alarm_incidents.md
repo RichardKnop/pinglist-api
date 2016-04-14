@@ -55,7 +55,7 @@ Example response:
 				"created_at": "2016-01-14T13:52:24Z",
 				"updated_at": "2016-01-14T13:52:24Z"
 			},
-      			{
+			{
 				"_links": {
 					"self": {
 						"href": "/v1/alarms/1/incidents/2"
