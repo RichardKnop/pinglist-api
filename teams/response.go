@@ -42,8 +42,8 @@ func NewTeamResponse(team *Team) (*TeamResponse, error) {
 
 	// Create slice of member responses
 	memberResponses := make([]*accounts.UserResponse, len(team.Members))
-	for i, user := range team.Members {
-		memberResponse, err := accounts.NewUserResponse(user)
+	for i, member := range team.Members {
+		memberResponse, err := accounts.NewUserResponse(member)
 		if err != nil {
 			return nil, err
 		}

@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/AreaHQ/area-api/accounts/roles"
+	"github.com/RichardKnop/pinglist-api/accounts/roles"
 	"github.com/RichardKnop/pinglist-api/response"
 	"github.com/gorilla/mux"
 )

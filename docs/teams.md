@@ -18,7 +18,7 @@ curl --compressed -v localhost:8080/v1/teams \
 		"name": "Test Team 1",
 		"members": [
 			{
-				"id": 3
+				"email": "john@reese"
 			}
 		]
 	}'
@@ -115,10 +115,10 @@ curl -XPUT --compressed -v localhost:8080/v1/teams/1 \
 		"name": "Test Team 1 Updated",
 		"members": [
 			{
-				"id": 3
+				"email": "john@reese"
 			},
 			{
-				"id": 4
+				"email": "harold@finch"
 			}
 		]
 	}'

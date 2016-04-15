@@ -105,7 +105,7 @@ func (s *Service) createTeam(owner *accounts.User, teamRequest *TeamRequest) (*T
 	}
 
 	// Create a new team
-	team := NewTeam(owner, members, teamRequest)
+	team := NewTeam(owner, members, teamRequest.Name)
 
 	// Save the team to the database
 	if err := s.db.Create(team).Error; err != nil {
@@ -210,7 +210,8 @@ func (s *Service) findPaginatedTeams(offset, limit int, orderBy string, owner *a
 
 	// Retrieve paginated results from the database
 	err := teamsQuery.Offset(offset).Limit(limit).Order(orderBy).
-		Preload("Owner.OauthUser").Preload("Members.OauthUser").Find(&teams).Error
+		Preload("Owner.OauthUser").Preload("Members.OauthUser").
+		Find(&teams).Error
 	if err != nil {
 		return teams, err
 	}
