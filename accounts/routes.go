@@ -34,10 +34,10 @@ func newRoutes(service ServiceInterface) []routes.Route {
 			},
 		},
 		routes.Route{
-			Name:        "user_lookup",
+			Name:        "get_user",
 			Method:      "GET",
-			Pattern:     "/user-lookup",
-			HandlerFunc: service.userLookupHandler,
+			Pattern:     "/users/{id:[0-9]+}",
+			HandlerFunc: service.getUserHandler,
 			Middlewares: []negroni.Handler{
 				NewUserAuthMiddleware(service),
 			},

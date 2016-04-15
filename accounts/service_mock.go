@@ -439,7 +439,7 @@ func (_m *ServiceMock) getMyUserHandler(w http.ResponseWriter, r *http.Request) 
 	_m.Called(w, r)
 }
 
-func (_m *ServiceMock) userLookupHandler(w http.ResponseWriter, r *http.Request) {
+func (_m *ServiceMock) getUserHandler(w http.ResponseWriter, r *http.Request) {
 	_m.Called(w, r)
 }
 

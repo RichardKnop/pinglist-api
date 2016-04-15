@@ -8,9 +8,9 @@
   * [Users](#users)
     * [Create User](#create-user)
     * [Get Me](#get-me)
+    * [Get User](#get-user)
     * [Update User](#update-user)
   * [Reset Password](#reset-password)
-  * [User Lookup](#user-lookup)
 
 # Accounts
 
@@ -57,6 +57,35 @@ Example request:
 ```
 curl --compressed -v localhost:8080/v1/accounts/me \
 	-H "Content-Type: application/json" \
+	-H "Authorization: Bearer 00ccd40e-72ca-4e79-a4b6-67c95e2e3f1c"
+```
+
+Example response:
+
+```json
+{
+	"_links": {
+		"self": {
+			"href": "/v1/accounts/users/1"
+		}
+	},
+	"id": 1,
+	"email": "test@user",
+	"first_name": "",
+	"last_name": "",
+	"role": "user",
+	"confirmed": true,
+	"created_at": "2015-12-17T06:17:54Z",
+	"updated_at": "2015-12-17T06:17:54Z"
+}
+```
+
+### Get User
+
+Example request:
+
+```
+curl --compressed -v localhost:8080/v1/accounts/users/1 \
 	-H "Authorization: Bearer 00ccd40e-72ca-4e79-a4b6-67c95e2e3f1c"
 ```
 
@@ -128,32 +157,3 @@ curl --compressed -v localhost:8080/v1/accounts/passwordreset \
 ```
 
 Returns `204` empty response on success.
-
-### User Lookup
-
-Example request:
-
-```
-curl --compressed -v localhost:8080/v1/accounts/user-lookup?email="test@user" \
-	-H "Authorization: Bearer 00ccd40e-72ca-4e79-a4b6-67c95e2e3f1c"
-```
-
-Example response:
-
-```json
-{
-	"_links": {
-		"self": {
-			"href": "/v1/accounts/users/1"
-		}
-	},
-	"id": 1,
-	"email": "test@user",
-	"first_name": "",
-	"last_name": "",
-	"role": "user",
-	"confirmed": true,
-	"created_at": "2015-12-17T06:17:54Z",
-	"updated_at": "2015-12-17T06:17:54Z"
-}
-```
