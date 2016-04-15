@@ -35,6 +35,7 @@ type ServiceInterface interface {
 	// Needed for the newRoutes to be able to register handlers
 	createUserHandler(w http.ResponseWriter, r *http.Request)
 	getMyUserHandler(w http.ResponseWriter, r *http.Request)
+	userLookupHandler(w http.ResponseWriter, r *http.Request)
 	updateUserHandler(w http.ResponseWriter, r *http.Request)
 	createPasswordResetHandler(w http.ResponseWriter, r *http.Request)
 }

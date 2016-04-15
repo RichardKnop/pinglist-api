@@ -34,6 +34,15 @@ func newRoutes(service ServiceInterface) []routes.Route {
 			},
 		},
 		routes.Route{
+			Name:        "user_lookup",
+			Method:      "GET",
+			Pattern:     "/user-lookup",
+			HandlerFunc: service.userLookupHandler,
+			Middlewares: []negroni.Handler{
+				NewUserAuthMiddleware(service),
+			},
+		},
+		routes.Route{
 			Name:        "update_user",
 			Method:      "PUT",
 			Pattern:     "/users/{id:[0-9]+}",
