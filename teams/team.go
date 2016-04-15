@@ -91,7 +91,7 @@ func (s *Service) createTeam(owner *accounts.User, teamRequest *TeamRequest) (*T
 	members := make([]*accounts.User, len(teamRequest.Members))
 	for i, teamMemberRequest := range teamRequest.Members {
 		// Fetch the member from the database
-		member, err := s.GetAccountsService().FindUserByID(teamMemberRequest.ID)
+		member, err := s.GetAccountsService().FindUserByEmail(teamMemberRequest.Email)
 		if err != nil {
 			return nil, err
 		}
@@ -138,7 +138,7 @@ func (s *Service) updateTeam(team *Team, teamRequest *TeamRequest) error {
 	members := make([]*accounts.User, len(teamRequest.Members))
 	for i, teamMemberRequest := range teamRequest.Members {
 		// Fetch the member from the database
-		member, err := s.GetAccountsService().FindUserByID(teamMemberRequest.ID)
+		member, err := s.GetAccountsService().FindUserByEmail(teamMemberRequest.Email)
 		if err != nil {
 			return err
 		}

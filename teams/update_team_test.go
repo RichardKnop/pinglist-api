@@ -148,8 +148,8 @@ func (suite *TeamsTestSuite) TestUpdateTeamMaxMembersPerTeamLimitReached() {
 	payload, err := json.Marshal(&TeamRequest{
 		Name: "Test Team 1",
 		Members: []*TeamMemberRequest{
-			&TeamMemberRequest{suite.users[1].ID},
-			&TeamMemberRequest{suite.users[2].ID},
+			&TeamMemberRequest{Email: "does@not.matter"},
+			&TeamMemberRequest{Email: "does@not.matter"},
 		},
 	})
 	assert.NoError(suite.T(), err, "JSON marshalling failed")
@@ -221,8 +221,8 @@ func (suite *TeamsTestSuite) TestUpdateTeam() {
 	payload, err := json.Marshal(&TeamRequest{
 		Name: "Test Team 1 Updated",
 		Members: []*TeamMemberRequest{
-			&TeamMemberRequest{suite.users[1].ID},
-			&TeamMemberRequest{suite.users[2].ID},
+			&TeamMemberRequest{Email: suite.users[1].OauthUser.Username},
+			&TeamMemberRequest{Email: suite.users[2].OauthUser.Username},
 		},
 	})
 	assert.NoError(suite.T(), err, "JSON marshalling failed")
@@ -257,8 +257,16 @@ func (suite *TeamsTestSuite) TestUpdateTeam() {
 	)
 
 	// Mock find users
-	suite.mockFindUser(suite.users[1].ID, suite.users[1], nil)
-	suite.mockFindUser(suite.users[2].ID, suite.users[2], nil)
+	suite.mockFindUserByEmail(
+		suite.users[1].OauthUser.Username,
+		suite.users[1],
+		nil,
+	)
+	suite.mockFindUserByEmail(
+		suite.users[2].OauthUser.Username,
+		suite.users[2],
+		nil,
+	)
 
 	// Count before
 	var countBefore int

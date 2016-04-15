@@ -2,7 +2,7 @@ package teams
 
 // TeamMemberRequest ...
 type TeamMemberRequest struct {
-	ID uint `json:"id"`
+	Email string `json:"email"`
 }
 
 // TeamRequest ...

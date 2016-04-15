@@ -177,10 +177,10 @@ func (suite *TeamsTestSuite) mockFindActiveSubscriptionByUserID(userID uint, sub
 	).Return(subscription, err)
 }
 
-// Mock find user
-func (suite *TeamsTestSuite) mockFindUser(userID uint, user *accounts.User, err error) {
+// Mock find user by email
+func (suite *TeamsTestSuite) mockFindUserByEmail(email string, user *accounts.User, err error) {
 	suite.accountsServiceMock.On(
-		"FindUserByID",
-		userID,
+		"FindUserByEmail",
+		email,
 	).Return(user, err)
 }
