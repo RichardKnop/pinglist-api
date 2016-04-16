@@ -97,7 +97,8 @@ func (s *Service) createTeam(owner *accounts.User, teamRequest *TeamRequest) (*T
 		}
 
 		// Users can only be members of a single team
-		if s.userIsMemberOfTeam(member) {
+		_, err = s.FindTeamByMemberID(member.ID)
+		if err == nil {
 			return nil, ErrUserCanOnlyBeMemberOfOneTeam
 		}
 
@@ -144,7 +145,8 @@ func (s *Service) updateTeam(team *Team, teamRequest *TeamRequest) error {
 		}
 
 		// Users can only be members of a single team
-		if s.userIsMemberOfTeam(member) {
+		memberTeam, err := s.FindTeamByMemberID(member.ID)
+		if err == nil && memberTeam.ID != team.ID {
 			return ErrUserCanOnlyBeMemberOfOneTeam
 		}
 
@@ -177,12 +179,6 @@ func (s *Service) updateTeam(team *Team, teamRequest *TeamRequest) error {
 	}
 
 	return nil
-}
-
-// userIsMemberOfTeam returns true if the user is a member of a team already
-func (s *Service) userIsMemberOfTeam(user *accounts.User) bool {
-	_, err := s.FindTeamByMemberID(user.ID)
-	return err == nil
 }
 
 // paginatedTeamsCount returns a total count of teams
