@@ -126,7 +126,7 @@ func (s *Service) updateTeam(team *Team, teamRequest *TeamRequest) error {
 	if err != nil {
 		return err
 	}
-	if teamsCount >= maxTeams {
+	if teamsCount > maxTeams {
 		return ErrMaxTeamsLimitReached
 	}
 
