@@ -152,7 +152,7 @@ func (suite *AlarmsTestSuite) TestListAlarmResponseTimes() {
 		assert.NoError(suite.T(), err, "Creating response object failed")
 		ResponseTimeResponses[i] = ResponseTimeResponse
 	}
-	expected := &ListIncidentsResponse{
+	expected := &ListResponseTimesResponse{
 		Hal: jsonhal.Hal{
 			Links: map[string]*jsonhal.Link{
 				"self": &jsonhal.Link{
@@ -171,8 +171,9 @@ func (suite *AlarmsTestSuite) TestListAlarmResponseTimes() {
 				"response_times": jsonhal.Embedded(ResponseTimeResponses),
 			},
 		},
-		Count: 4,
-		Page:  1,
+		Average: 289.5,
+		Count:   4,
+		Page:    1,
 	}
 
 	expectedJSON, err := json.Marshal(expected)

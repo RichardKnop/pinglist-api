@@ -56,6 +56,7 @@ Example response:
 			}
 		]
 	},
+	"average": 12345,
 	"count": 2,
 	"page": 1
 }

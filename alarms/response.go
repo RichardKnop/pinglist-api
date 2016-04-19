@@ -72,8 +72,9 @@ type ListIncidentsResponse struct {
 // ListResponseTimesResponse ...
 type ListResponseTimesResponse struct {
 	jsonhal.Hal
-	Count uint `json:"count"`
-	Page  uint `json:"page"`
+	Average float64 `json:"average"`
+	Count   uint    `json:"count"`
+	Page    uint    `json:"page"`
 }
 
 // NewRegionResponse creates new ResultResponse instance
@@ -289,7 +290,7 @@ func NewListIncidentsResponse(count, page int, self, first, last, previous, next
 }
 
 // NewListResponseTimesResponse creates new ListResponseTimesResponse instance
-func NewListResponseTimesResponse(count, page int, self, first, last, previous, next string, ResponseTimes []*metrics.ResponseTime) (*ListResponseTimesResponse, error) {
+func NewListResponseTimesResponse(count, page int, self, first, last, previous, next string, responseTimes []*metrics.ResponseTime) (*ListResponseTimesResponse, error) {
 	response := &ListResponseTimesResponse{
 		Count: uint(count),
 		Page:  uint(page),
@@ -311,17 +312,24 @@ func NewListResponseTimesResponse(count, page int, self, first, last, previous, 
 	response.SetLink("next", next, "")
 
 	// Create slice of metrics responses
-	metricResponses := make([]*metrics.MetricResponse, len(ResponseTimes))
-	for i, ResponseTime := range ResponseTimes {
+	metricResponses := make([]*metrics.MetricResponse, len(responseTimes))
+	for i, responseTime := range responseTimes {
 		metricResponse, err := metrics.NewMetricResponse(
-			ResponseTime.Timestamp,
-			ResponseTime.Value,
+			responseTime.Timestamp,
+			responseTime.Value,
 		)
 		if err != nil {
 			return nil, err
 		}
 		metricResponses[i] = metricResponse
 	}
+
+	// Average response time
+	var sum float64
+	for _, responseTime := range responseTimes {
+		sum += float64(responseTime.Value)
+	}
+	response.Average = sum / float64(len(responseTimes))
 
 	// Set embedded response times
 	response.SetEmbedded(
