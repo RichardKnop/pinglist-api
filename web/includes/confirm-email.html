@@ -6,11 +6,9 @@
     <h1>Success</h1>
   </div>
   {{ if .error }}
-  <div class="alert alert-danger" role="alert">{{ .error }}div>
+  <p class="text-danger">{{ .error }}</p>
   {{ else }}
-  <div class="form-group">
-    <p>Your email has been confirmed successfully.</p>
-  </div>
+  <p>Your email has been confirmed successfully.</p>
   {{ end }}
 </div>
 {{ end }}

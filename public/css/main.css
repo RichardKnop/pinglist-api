@@ -1,0 +1,277 @@
+/* General styles */
+body, html {
+    font-family: Lato, sans-serif;
+    color: #27303C;
+}
+
+body {
+    /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+    margin-top: 50px;
+    padding-bottom: 50px;
+}
+
+a {
+    color: #27303C;
+}
+
+a:hover {
+    color: #27303C;
+}
+
+.text-muted {
+    color: #B9E88A;
+}
+
+pre {
+    overflow: scroll;
+}
+
+span.label a {
+    color: white;
+}
+
+span.label a:hover {
+    color: white;
+    text-decoration: none;
+}
+
+th, td b {
+    text-transform: uppercase;
+}
+
+/* Navigation */
+
+.navbar-inverse {
+    background-color: #27303C;
+}
+
+.navbar-inverse .navbar-nav > li > a {
+    color: #B9E88A;
+    text-decoration: none;
+}
+
+.navbar-inverse .navbar-nav > li > a:hover {
+    color: #B9E88A;
+}
+
+.navbar-brand {
+    padding-top: 14px;
+    padding-bottom: 11px;
+}
+
+.navbar-brand img {
+    height: 25px;
+}
+
+.navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > a:focus,
+.navbar-inverse .navbar-nav > .active > a:hover {
+    color: #27303C;
+    background-color: #B9E88A;
+}
+
+/* Buttons */
+
+.btn-primary {
+    background-color: #B9E88A;
+    color: #27303C;
+    border-color: #B9E88A;
+}
+
+.btn-primary:hover, .btn-primary:focus,
+.btn-primary.focus, .btn-primary:active, .btn-primary.active,
+.btn-primary:active:hover,
+.btn-primary.active:hover,
+.open > .dropdown-toggle.btn-primary:hover,
+.btn-primary:active:focus,
+.btn-primary.active:focus,
+.open > .dropdown-toggle.btn-primary:focus,
+.btn-primary:active.focus,
+.btn-primary.active.focus,
+.open > .dropdown-toggle.btn-primary.focus {
+    background-color: #27303C;
+    color: #B9E88A;
+    border-color: #27303C;
+}
+
+/* Responsive media queries */
+
+.featurette-divider {
+    margin: 80px 0;
+}
+
+.featurette {
+    overflow: hidden;
+}
+
+.featurette-image.pull-left {
+    margin-right: 40px;
+}
+
+.featurette-image.pull-right {
+    margin-left: 40px;
+}
+
+.featurette-heading {
+    font-size: 50px;
+}
+
+@media (max-width: 1200px) {
+    .featurette-divider {
+        margin: 50px 0;
+    }
+
+    .featurette-image.pull-left {
+        margin-right: 20px;
+    }
+
+    .featurette-image.pull-right {
+        margin-left: 20px;
+    }
+
+    .featurette-heading {
+        font-size: 35px;
+    }
+}
+
+@media (max-width: 991px) {
+    .featurette-divider {
+        margin: 40px 0;
+    }
+
+    .featurette-image {
+        max-width: 50%;
+    }
+
+    .featurette-image.pull-left {
+        margin-right: 10px;
+    }
+
+    .featurette-image.pull-right {
+        margin-left: 10px;
+    }
+
+    .featurette-heading {
+        font-size: 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        margin: 0 15px;
+    }
+
+    .featurette-divider {
+        margin: 40px 0;
+    }
+
+    .featurette-heading {
+        font-size: 25px;
+    }
+
+    .center-to-left {
+        text-align: left;
+        float: left;
+    }
+
+    .center-to-right {
+        float: right;
+        text-align: right;
+    }
+}
+
+@media (max-width: 668px) {
+    .featurette-divider {
+        margin: 30px 0;
+    }
+}
+
+@media (max-width: 640px) {
+}
+
+@media (max-width: 375px) {
+    .featurette-divider {
+        margin: 10px 0;
+    }
+
+    .featurette-image {
+        max-width: 100%;
+    }
+
+    .featurette-image.pull-left {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .featurette-image.pull-right {
+        margin-bottom: 10px;
+        margin-left: 0;
+    }
+}
+
+/* Footer */
+
+footer {
+    margin-bottom: 30px;
+}
+
+.center-to-left {
+    margin-right: auto;
+    margin-left: auto;
+    text-align: center;
+}
+
+.center-to-right {
+    margin-right: auto;
+    margin-left: auto;
+    text-align: center;
+
+    height: 59px;
+}
+
+.comodo-site-seal:hover {
+    text-decoration: none;
+}
+
+.comodo-site-seal img {
+    width: 113px;
+    height: 59px;
+    border: 0;
+    margin-top: -15px;
+}
+
+.stripe-badge img {
+    border: 0;
+}
+
+.copyright {
+    paddin-top: 40px;
+}
+
+/* Login form */
+
+.form-signin {
+    max-width: 350px;
+    padding: 19px 29px 29px;
+    margin: 0 auto 20px;
+}
+
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+    margin-bottom: 10px;
+}
+
+.form-signin input[type="email"],
+.form-signin input[type="text"],
+.form-signin input[type="password"] {
+    font-size: 16px;
+    height: auto;
+    margin-bottom: 15px;
+    padding: 7px 9px;
+}
+
+/* Other */
+
+a.ios-download-badge img {
+    width: 170px;
+    height: 46px;
+}

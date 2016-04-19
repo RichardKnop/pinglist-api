@@ -2,18 +2,22 @@
 
 {{ define "content" }}
 <div class="container">
-
   <form class="form-signin" action="" method="post">
     <h2 class="form-signin-heading">Set Password</h2>
     {{ if .error }}
-    <div class="alert alert-danger" role="alert">{{ .error }}</div>
+    <p class="text-danger">{{ .error }}</p>
     {{ end }}
-    <label for="inputPassword1" class="sr-only">Password</label>
-    <input type="password" name="password1" id="inputPassword1" class="form-control" placeholder="Password" required>
-    <label for="inputPassword2" class="sr-only">Password</label>
-    <input type="password" name="password2" id="inputPassword2" class="form-control" placeholder="Password Again" required>
-    <button class="btn outline btn-lg btn-primary btn-block" type="submit">Save</button>
+    <div class="form-group">
+      <label for="inputPassword1" class="sr-only">Password</label>
+      <input type="password" name="password1" id="inputPassword1" class="form-control" placeholder="Password" required>
+    </div>
+    <div class="form-group">
+      <label for="inputPassword2" class="sr-only">Password</label>
+      <input type="password" name="password2" id="inputPassword2" class="form-control" placeholder="Password Again" required>
+    </div>
+    <div class="form-group">
+      <button class="btn outline btn-lg btn-primary btn-block" type="submit">Save</button>
+    </div>
   </form>
-
 </div> <!-- /container -->
 {{ end }}
