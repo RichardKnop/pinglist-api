@@ -513,6 +513,7 @@ func (suite *AlarmsTestSuite) TestIncidentsCount() {
 	count, err = suite.service.incidentsCount(
 		nil, // user
 		nil, // alarm
+		nil, // incident type
 		nil, // from
 		nil, // to
 	)
@@ -524,6 +525,7 @@ func (suite *AlarmsTestSuite) TestIncidentsCount() {
 	count, err = suite.service.incidentsCount(
 		suite.users[1],
 		nil, // alarm
+		nil, // incident type
 		nil, // from
 		nil, // to
 	)
@@ -535,6 +537,7 @@ func (suite *AlarmsTestSuite) TestIncidentsCount() {
 	count, err = suite.service.incidentsCount(
 		nil, // user
 		suite.alarms[0],
+		nil, // incident type
 		nil, // from
 		nil, // to
 	)
@@ -546,6 +549,7 @@ func (suite *AlarmsTestSuite) TestIncidentsCount() {
 	count, err = suite.service.incidentsCount(
 		suite.users[1],
 		suite.alarms[0],
+		nil, // incident type
 		nil, // from
 		nil, // to
 	)
@@ -557,6 +561,7 @@ func (suite *AlarmsTestSuite) TestIncidentsCount() {
 	count, err = suite.service.incidentsCount(
 		suite.users[0],
 		nil, // alarm
+		nil, // incident type
 		nil, // from
 		nil, // to
 	)
@@ -568,6 +573,7 @@ func (suite *AlarmsTestSuite) TestIncidentsCount() {
 	count, err = suite.service.incidentsCount(
 		nil, // user
 		suite.alarms[1],
+		nil, // incident type
 		nil, // from
 		nil, // to
 	)
@@ -579,6 +585,7 @@ func (suite *AlarmsTestSuite) TestIncidentsCount() {
 	count, err = suite.service.incidentsCount(
 		suite.users[1],
 		suite.alarms[1],
+		nil, // incident type
 		nil, // from
 		nil, // to
 	)
@@ -590,8 +597,35 @@ func (suite *AlarmsTestSuite) TestIncidentsCount() {
 	count, err = suite.service.incidentsCount(
 		suite.users[0],
 		suite.alarms[0],
+		nil, // incident type
 		nil, // from
 		nil, // to
+	)
+	if assert.Nil(suite.T(), err) {
+		assert.Equal(suite.T(), 0, count)
+	}
+
+	// Filter by incident type with 2 incidents
+	timeoutIncidentType := incidenttypes.Timeout
+	count, err = suite.service.incidentsCount(
+		nil,                  // user
+		nil,                  // alarm
+		&timeoutIncidentType, // incident type
+		nil,                  // from
+		nil,                  // to
+	)
+	if assert.Nil(suite.T(), err) {
+		assert.Equal(suite.T(), 2, count)
+	}
+
+	// Filter by incident type with 0 incidents
+	slowIncidentType := incidenttypes.SlowResponse
+	count, err = suite.service.incidentsCount(
+		nil,               // user
+		nil,               // alarm
+		&slowIncidentType, // incident type
+		nil,               // from
+		nil,               // to
 	)
 	if assert.Nil(suite.T(), err) {
 		assert.Equal(suite.T(), 0, count)
@@ -603,6 +637,7 @@ func (suite *AlarmsTestSuite) TestIncidentsCount() {
 	count, err = suite.service.incidentsCount(
 		nil, // user
 		nil, // alarm
+		nil, // incident type
 		&from,
 		nil, // to
 	)
@@ -616,6 +651,7 @@ func (suite *AlarmsTestSuite) TestIncidentsCount() {
 	count, err = suite.service.incidentsCount(
 		nil, // user
 		nil, // alarm
+		nil, // incident type
 		nil, // from
 		&to,
 	)
@@ -627,6 +663,7 @@ func (suite *AlarmsTestSuite) TestIncidentsCount() {
 	count, err = suite.service.incidentsCount(
 		nil, // user
 		nil, // alarm
+		nil, // incident type
 		&from,
 		&to,
 	)
@@ -642,7 +679,16 @@ func (suite *AlarmsTestSuite) TestFindPaginatedIncidents() {
 	)
 
 	// This should return all incidents
-	incidents, err = suite.service.findPaginatedIncidents(0, 25, "", nil, nil, nil, nil)
+	incidents, err = suite.service.findPaginatedIncidents(
+		0,   // offset
+		25,  // limit
+		"",  // order by
+		nil, // user
+		nil, // alarm
+		nil, // incident type
+		nil, // from
+		nil, // to
+	)
 	if assert.Nil(suite.T(), err) {
 		assert.Equal(suite.T(), 4, len(incidents))
 		assert.Equal(suite.T(), suite.incidents[0].ID, incidents[0].ID)
@@ -652,7 +698,16 @@ func (suite *AlarmsTestSuite) TestFindPaginatedIncidents() {
 	}
 
 	// This should return all incidents ordered by ID desc
-	incidents, err = suite.service.findPaginatedIncidents(0, 25, "id desc", nil, nil, nil, nil)
+	incidents, err = suite.service.findPaginatedIncidents(
+		0,         // offset
+		25,        // limit
+		"id desc", // order by
+		nil,       // user
+		nil,       // alarm
+		nil,       // incident type
+		nil,       // from
+		nil,       // to
+	)
 	if assert.Nil(suite.T(), err) {
 		assert.Equal(suite.T(), 4, len(incidents))
 		assert.Equal(suite.T(), suite.incidents[3].ID, incidents[0].ID)
@@ -662,7 +717,16 @@ func (suite *AlarmsTestSuite) TestFindPaginatedIncidents() {
 	}
 
 	// Test offset
-	incidents, err = suite.service.findPaginatedIncidents(2, 25, "", nil, nil, nil, nil)
+	incidents, err = suite.service.findPaginatedIncidents(
+		2,   // offset
+		25,  // limit
+		"",  // order by
+		nil, // user
+		nil, // alarm
+		nil, // incident type
+		nil, // from
+		nil, // to
+	)
 	if assert.Nil(suite.T(), err) {
 		assert.Equal(suite.T(), 2, len(incidents))
 		assert.Equal(suite.T(), suite.incidents[2].ID, incidents[0].ID)
@@ -670,7 +734,16 @@ func (suite *AlarmsTestSuite) TestFindPaginatedIncidents() {
 	}
 
 	// Test limit
-	incidents, err = suite.service.findPaginatedIncidents(2, 1, "", nil, nil, nil, nil)
+	incidents, err = suite.service.findPaginatedIncidents(
+		2,   // offset
+		1,   // limit
+		"",  // order by
+		nil, // user
+		nil, // alarm
+		nil, // incident type
+		nil, // from
+		nil, // to
+	)
 	if assert.Nil(suite.T(), err) {
 		assert.Equal(suite.T(), 1, len(incidents))
 		assert.Equal(suite.T(), suite.incidents[2].ID, incidents[0].ID)

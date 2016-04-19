@@ -183,9 +183,9 @@ func (s *Service) resolveIncidents(alarm *Alarm) error {
 }
 
 // incidentsCount returns a total count of incidents
-func (s *Service) incidentsCount(user *accounts.User, alarm *Alarm, from, to *time.Time) (int, error) {
+func (s *Service) incidentsCount(user *accounts.User, alarm *Alarm, incidentType *string, from, to *time.Time) (int, error) {
 	var count int
-	err := s.incidentsQuery(user, alarm, from, to).Count(&count).Error
+	err := s.incidentsQuery(user, alarm, incidentType, from, to).Count(&count).Error
 	if err != nil {
 		return 0, err
 	}
@@ -194,11 +194,11 @@ func (s *Service) incidentsCount(user *accounts.User, alarm *Alarm, from, to *ti
 
 // findPaginatedIncidents returns paginated incident records
 // Results can optionally be filtered by user and/or alarm
-func (s *Service) findPaginatedIncidents(offset, limit int, orderBy string, user *accounts.User, alarm *Alarm, from, to *time.Time) ([]*Incident, error) {
+func (s *Service) findPaginatedIncidents(offset, limit int, orderBy string, user *accounts.User, alarm *Alarm, incidentType *string, from, to *time.Time) ([]*Incident, error) {
 	var incidents []*Incident
 
 	// Get the pagination query
-	incidentsQuery := s.incidentsQuery(user, alarm, from, to)
+	incidentsQuery := s.incidentsQuery(user, alarm, incidentType, from, to)
 
 	// Default ordering
 	if orderBy == "" {
@@ -216,7 +216,7 @@ func (s *Service) findPaginatedIncidents(offset, limit int, orderBy string, user
 }
 
 // incidentsQuery returns a generic db query for fetching incidents
-func (s *Service) incidentsQuery(user *accounts.User, alarm *Alarm, from, to *time.Time) *gorm.DB {
+func (s *Service) incidentsQuery(user *accounts.User, alarm *Alarm, incidentType *string, from, to *time.Time) *gorm.DB {
 	// Basic query
 	incidentsQuery := s.db.Model(new(Incident))
 
@@ -231,6 +231,13 @@ func (s *Service) incidentsQuery(user *accounts.User, alarm *Alarm, from, to *ti
 	if alarm != nil {
 		incidentsQuery = incidentsQuery.Where(Incident{
 			AlarmID: util.PositiveIntOrNull(int64(alarm.ID)),
+		})
+	}
+
+	// Optionally filter by incident type
+	if incidentType != nil {
+		incidentsQuery = incidentsQuery.Where(Incident{
+			IncidentTypeID: util.StringOrNull(*incidentType),
 		})
 	}
 

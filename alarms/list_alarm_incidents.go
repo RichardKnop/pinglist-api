@@ -66,6 +66,7 @@ func (s *Service) listAlarmIncidentsHandler(w http.ResponseWriter, r *http.Reque
 	count, err := s.incidentsCount(
 		nil, // user
 		alarm,
+		nil, // incident type
 		from,
 		to,
 	)
@@ -93,6 +94,7 @@ func (s *Service) listAlarmIncidentsHandler(w http.ResponseWriter, r *http.Reque
 		r.URL.Query().Get("order_by"),
 		nil, // user
 		alarm,
+		nil, // incident type
 		nil, // from
 		nil, // to
 	)
