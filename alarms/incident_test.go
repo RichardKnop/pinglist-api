@@ -9,6 +9,7 @@ import (
 	"github.com/RichardKnop/pinglist-api/alarms/incidenttypes"
 	"github.com/RichardKnop/pinglist-api/alarms/regions"
 	"github.com/RichardKnop/pinglist-api/notifications"
+	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/jinzhu/gorm"
 	"github.com/stretchr/testify/assert"
 )
@@ -586,6 +587,40 @@ func (suite *AlarmsTestSuite) TestPaginatedIncidentsCount() {
 	)
 	if assert.Nil(suite.T(), err) {
 		assert.Equal(suite.T(), 0, count)
+	}
+
+	from, err := util.ParseTimestamp("2016-02-27T22:31:12Z")
+	assert.NoError(suite.T(), err, "Failed parsing from timestamp")
+	count, err = suite.service.paginatedIncidentsCount(
+		nil, // user
+		nil, // alarm
+		&from,
+		nil, // to
+	)
+	if assert.Nil(suite.T(), err) {
+		assert.Equal(suite.T(), 3, count)
+	}
+
+	to, err := util.ParseTimestamp("2016-02-27T22:32:12Z")
+	assert.NoError(suite.T(), err, "Failed parsing to timestamp")
+	count, err = suite.service.paginatedIncidentsCount(
+		nil, // user
+		nil, // alarm
+		nil, // from
+		&to,
+	)
+	if assert.Nil(suite.T(), err) {
+		assert.Equal(suite.T(), 3, count)
+	}
+
+	count, err = suite.service.paginatedIncidentsCount(
+		nil, // user
+		nil, // alarm
+		&from,
+		&to,
+	)
+	if assert.Nil(suite.T(), err) {
+		assert.Equal(suite.T(), 2, count)
 	}
 }
 

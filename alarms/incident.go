@@ -234,5 +234,15 @@ func (s *Service) paginatedIncidentsQuery(user *accounts.User, alarm *Alarm, fro
 		})
 	}
 
+	// Optionally filter incidents older than from
+	if from != nil {
+		incidentsQuery = incidentsQuery.Where("created_at >= ?", from)
+	}
+
+	// Optionally filter incidents younger than to
+	if to != nil {
+		incidentsQuery = incidentsQuery.Where("created_at <= ?", to)
+	}
+
 	return incidentsQuery
 }
