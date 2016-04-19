@@ -3,6 +3,7 @@ package alarms
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/RichardKnop/pinglist-api/alarms/alarmstates"
@@ -182,9 +183,10 @@ func (s *Service) resolveIncidents(alarm *Alarm) error {
 }
 
 // paginatedIncidentsCount returns a total count of incidents
-func (s *Service) paginatedIncidentsCount(user *accounts.User, alarm *Alarm) (int, error) {
+func (s *Service) paginatedIncidentsCount(user *accounts.User, alarm *Alarm, from, to *time.Time) (int, error) {
 	var count int
-	if err := s.paginatedIncidentsQuery(user, alarm).Count(&count).Error; err != nil {
+	err := s.paginatedIncidentsQuery(user, alarm, from, to).Count(&count).Error
+	if err != nil {
 		return 0, err
 	}
 	return count, nil
@@ -192,11 +194,11 @@ func (s *Service) paginatedIncidentsCount(user *accounts.User, alarm *Alarm) (in
 
 // findPaginatedIncidents returns paginated incident records
 // Results can optionally be filtered by user and/or alarm
-func (s *Service) findPaginatedIncidents(offset, limit int, orderBy string, user *accounts.User, alarm *Alarm) ([]*Incident, error) {
+func (s *Service) findPaginatedIncidents(offset, limit int, orderBy string, user *accounts.User, alarm *Alarm, from, to *time.Time) ([]*Incident, error) {
 	var incidents []*Incident
 
 	// Get the pagination query
-	incidentsQuery := s.paginatedIncidentsQuery(user, alarm)
+	incidentsQuery := s.paginatedIncidentsQuery(user, alarm, from, to)
 
 	// Default ordering
 	if orderBy == "" {
@@ -214,7 +216,7 @@ func (s *Service) findPaginatedIncidents(offset, limit int, orderBy string, user
 }
 
 // paginatedIncidentsQuery returns a db query for paginated incidents
-func (s *Service) paginatedIncidentsQuery(user *accounts.User, alarm *Alarm) *gorm.DB {
+func (s *Service) paginatedIncidentsQuery(user *accounts.User, alarm *Alarm, from, to *time.Time) *gorm.DB {
 	// Basic query
 	incidentsQuery := s.db.Model(new(Incident))
 

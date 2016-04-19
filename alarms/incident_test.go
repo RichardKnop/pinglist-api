@@ -508,42 +508,82 @@ func (suite *AlarmsTestSuite) TestPaginatedIncidentsCount() {
 		count int
 	)
 
-	count, err = suite.service.paginatedIncidentsCount(nil, nil)
+	count, err = suite.service.paginatedIncidentsCount(
+		nil, // user
+		nil, // alarm
+		nil, // from
+		nil, // to
+	)
 	if assert.Nil(suite.T(), err) {
 		assert.Equal(suite.T(), 4, count)
 	}
 
-	count, err = suite.service.paginatedIncidentsCount(suite.users[1], nil)
+	count, err = suite.service.paginatedIncidentsCount(
+		suite.users[1],
+		nil, // alarm
+		nil, // from
+		nil, // to
+	)
 	if assert.Nil(suite.T(), err) {
 		assert.Equal(suite.T(), 4, count)
 	}
 
-	count, err = suite.service.paginatedIncidentsCount(nil, suite.alarms[0])
+	count, err = suite.service.paginatedIncidentsCount(
+		nil, // user
+		suite.alarms[0],
+		nil, // from
+		nil, // to
+	)
 	if assert.Nil(suite.T(), err) {
 		assert.Equal(suite.T(), 4, count)
 	}
 
-	count, err = suite.service.paginatedIncidentsCount(suite.users[1], suite.alarms[0])
+	count, err = suite.service.paginatedIncidentsCount(
+		suite.users[1],
+		suite.alarms[0],
+		nil, // from
+		nil, // to
+	)
 	if assert.Nil(suite.T(), err) {
 		assert.Equal(suite.T(), 4, count)
 	}
 
-	count, err = suite.service.paginatedIncidentsCount(suite.users[0], nil)
+	count, err = suite.service.paginatedIncidentsCount(
+		suite.users[0],
+		nil, // alarm
+		nil, // from
+		nil, // to
+	)
 	if assert.Nil(suite.T(), err) {
 		assert.Equal(suite.T(), 0, count)
 	}
 
-	count, err = suite.service.paginatedIncidentsCount(nil, suite.alarms[1])
+	count, err = suite.service.paginatedIncidentsCount(
+		nil, // user
+		suite.alarms[1],
+		nil, // from
+		nil, // to
+	)
 	if assert.Nil(suite.T(), err) {
 		assert.Equal(suite.T(), 0, count)
 	}
 
-	count, err = suite.service.paginatedIncidentsCount(suite.users[1], suite.alarms[1])
+	count, err = suite.service.paginatedIncidentsCount(
+		suite.users[1],
+		suite.alarms[1],
+		nil, // from
+		nil, // to
+	)
 	if assert.Nil(suite.T(), err) {
 		assert.Equal(suite.T(), 0, count)
 	}
 
-	count, err = suite.service.paginatedIncidentsCount(suite.users[0], suite.alarms[0])
+	count, err = suite.service.paginatedIncidentsCount(
+		suite.users[0],
+		suite.alarms[0],
+		nil, // from
+		nil, // to
+	)
 	if assert.Nil(suite.T(), err) {
 		assert.Equal(suite.T(), 0, count)
 	}
@@ -556,7 +596,7 @@ func (suite *AlarmsTestSuite) TestFindPaginatedIncidents() {
 	)
 
 	// This should return all incidents
-	incidents, err = suite.service.findPaginatedIncidents(0, 25, "", nil, nil)
+	incidents, err = suite.service.findPaginatedIncidents(0, 25, "", nil, nil, nil, nil)
 	if assert.Nil(suite.T(), err) {
 		assert.Equal(suite.T(), 4, len(incidents))
 		assert.Equal(suite.T(), suite.incidents[0].ID, incidents[0].ID)
@@ -566,7 +606,7 @@ func (suite *AlarmsTestSuite) TestFindPaginatedIncidents() {
 	}
 
 	// This should return all incidents ordered by ID desc
-	incidents, err = suite.service.findPaginatedIncidents(0, 25, "id desc", nil, nil)
+	incidents, err = suite.service.findPaginatedIncidents(0, 25, "id desc", nil, nil, nil, nil)
 	if assert.Nil(suite.T(), err) {
 		assert.Equal(suite.T(), 4, len(incidents))
 		assert.Equal(suite.T(), suite.incidents[3].ID, incidents[0].ID)
@@ -576,7 +616,7 @@ func (suite *AlarmsTestSuite) TestFindPaginatedIncidents() {
 	}
 
 	// Test offset
-	incidents, err = suite.service.findPaginatedIncidents(2, 25, "", nil, nil)
+	incidents, err = suite.service.findPaginatedIncidents(2, 25, "", nil, nil, nil, nil)
 	if assert.Nil(suite.T(), err) {
 		assert.Equal(suite.T(), 2, len(incidents))
 		assert.Equal(suite.T(), suite.incidents[2].ID, incidents[0].ID)
@@ -584,7 +624,7 @@ func (suite *AlarmsTestSuite) TestFindPaginatedIncidents() {
 	}
 
 	// Test limit
-	incidents, err = suite.service.findPaginatedIncidents(2, 1, "", nil, nil)
+	incidents, err = suite.service.findPaginatedIncidents(2, 1, "", nil, nil, nil, nil)
 	if assert.Nil(suite.T(), err) {
 		assert.Equal(suite.T(), 1, len(incidents))
 		assert.Equal(suite.T(), suite.incidents[2].ID, incidents[0].ID)

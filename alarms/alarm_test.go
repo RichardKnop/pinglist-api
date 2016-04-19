@@ -121,9 +121,24 @@ func (suite *AlarmsTestSuite) TestFindAlarmById() {
 }
 
 func (suite *AlarmsTestSuite) TestPaginatedAlarmsCount() {
-	count, err := suite.service.paginatedAlarmsCount(nil)
+	var (
+		count int
+		err   error
+	)
+
+	count, err = suite.service.paginatedAlarmsCount(nil)
 	if assert.Nil(suite.T(), err) {
 		assert.Equal(suite.T(), 4, count)
+	}
+
+	count, err = suite.service.paginatedAlarmsCount(suite.users[1])
+	if assert.Nil(suite.T(), err) {
+		assert.Equal(suite.T(), 4, count)
+	}
+
+	count, err = suite.service.paginatedAlarmsCount(suite.users[2])
+	if assert.Nil(suite.T(), err) {
+		assert.Equal(suite.T(), 0, count)
 	}
 }
 
