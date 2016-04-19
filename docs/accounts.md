@@ -6,7 +6,7 @@
   * [Get User](#get-user)
   * [Update User](#update-user)
 * [Invitations](#invitations)
-  * [Create Invitation](#invite-user)
+  * [Create Invitation](#create-invitation)
 * [Password Reset](#password-reset)
   * [Create Password Reset](#create-password-reset)
 
