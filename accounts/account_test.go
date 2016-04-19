@@ -65,6 +65,36 @@ func (suite *AccountsTestSuite) TestFindAccountByID() {
 	}
 }
 
+func (suite *AccountsTestSuite) TestFindAccountByName() {
+	var (
+		account *Account
+		err     error
+	)
+
+	// Let's try to find an account by a bogus name
+	account, err = suite.service.FindAccountByName("bogus")
+
+	// Account should be nil
+	assert.Nil(suite.T(), account)
+
+	// Correct error should be returned
+	if assert.NotNil(suite.T(), err) {
+		assert.Equal(suite.T(), ErrAccountNotFound, err)
+	}
+
+	// Now let's pass a valid name
+	account, err = suite.service.FindAccountByName(suite.accounts[0].Name)
+
+	// Error should be nil
+	assert.Nil(suite.T(), err)
+
+	// Correct account should be returned with preloaded data
+	if assert.NotNil(suite.T(), account) {
+		assert.Equal(suite.T(), "Test Account 1", account.Name)
+		assert.Equal(suite.T(), "test_client_1", account.OauthClient.Key)
+	}
+}
+
 func (suite *AccountsTestSuite) TestCreateAccount() {
 	var (
 		account *Account

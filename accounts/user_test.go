@@ -3,8 +3,8 @@ package accounts
 import (
 	"testing"
 
-	"github.com/RichardKnop/pinglist-api/oauth"
 	"github.com/RichardKnop/pinglist-api/accounts/roles"
+	"github.com/RichardKnop/pinglist-api/oauth"
 	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/stretchr/testify/assert"
 )
