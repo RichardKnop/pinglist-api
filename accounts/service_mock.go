@@ -431,6 +431,29 @@ func (_m *ServiceMock) FindInvitationByReference(reference string) (*Invitation,
 	return r0, r1
 }
 
+// InviteUser ...
+func (_m *ServiceMock) InviteUser(invitedByUser *User, invitationRequest *InvitationRequest) (*Invitation, error) {
+	ret := _m.Called(invitedByUser, invitationRequest)
+
+	var r0 *Invitation
+	if rf, ok := ret.Get(0).(func(*User, *InvitationRequest) *Invitation); ok {
+		r0 = rf(invitedByUser, invitationRequest)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*Invitation)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(*User, *InvitationRequest) error); ok {
+		r1 = rf(invitedByUser, invitationRequest)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // ConfirmInvitation ...
 func (_m *ServiceMock) ConfirmInvitation(invitation *Invitation, password string) error {
 	ret := _m.Called(invitation, password)
