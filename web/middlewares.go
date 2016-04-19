@@ -204,6 +204,35 @@ func (m *confirmationMiddleware) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	next(w, r)
 }
 
+// invitationMiddleware takes reference variable from the URI and
+// makes a database lookup for an invitation with the same reference
+type invitationMiddleware struct {
+	service ServiceInterface
+}
+
+// newInvitationMiddleware creates a new clientMiddleware instance
+func newInvitationMiddleware(service ServiceInterface) *invitationMiddleware {
+	return &invitationMiddleware{service: service}
+}
+
+// ServeHTTP as per the negroni.Handler interface
+func (m *invitationMiddleware) ServeHTTP(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+	vars := mux.Vars(r)
+
+	// Fetch the invitation
+	invitation, err := m.service.GetAccountsService().FindInvitationByReference(
+		vars["reference"], // invite ref
+	)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	context.Set(r, invitationKey, invitation)
+
+	next(w, r)
+}
+
 // passwordResetMiddleware takes reference variable from the URI and
 // makes a database lookup for a password reset with the same reference
 type passwordResetMiddleware struct {

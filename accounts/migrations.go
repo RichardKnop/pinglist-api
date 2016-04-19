@@ -52,6 +52,11 @@ func migrate0001(db *gorm.DB) error {
 		return fmt.Errorf("Error creating account_confirmations table: %s", err)
 	}
 
+	// Create account_invitations table
+	if err := db.CreateTable(new(Invitation)).Error; err != nil {
+		return fmt.Errorf("Error creating account_invitations table: %s", err)
+	}
+
 	// Create account_password_resets table
 	if err := db.CreateTable(new(PasswordReset)).Error; err != nil {
 		return fmt.Errorf("Error creating account_password_resets table: %s", err)
@@ -117,7 +122,31 @@ func migrate0001(db *gorm.DB) error {
 			"account_confirmations.user_id for account_users(id): %s", err)
 	}
 
-	// Add foreign key on account_confirmations.user_id
+	// Add foreign key on account_invitations.invited_user_id
+	err = db.Model(new(Invitation)).AddForeignKey(
+		"invited_user_id",
+		"account_users(id)",
+		"RESTRICT",
+		"RESTRICT",
+	).Error
+	if err != nil {
+		return fmt.Errorf("Error creating foreign key on "+
+			"account_invitations.invited_user_id for account_users(id): %s", err)
+	}
+
+	// Add foreign key on account_invitations.invited_by_user_id
+	err = db.Model(new(Invitation)).AddForeignKey(
+		"invited_by_user_id",
+		"account_users(id)",
+		"RESTRICT",
+		"RESTRICT",
+	).Error
+	if err != nil {
+		return fmt.Errorf("Error creating foreign key on "+
+			"account_invitations.invited_by_user_id for account_users(id): %s", err)
+	}
+
+	// Add foreign key on account_password_resets.user_id
 	err = db.Model(new(PasswordReset)).AddForeignKey(
 		"user_id",
 		"account_users(id)",

@@ -4,30 +4,23 @@ import (
 	"net/http"
 )
 
-func (s *Service) passwordResetForm(w http.ResponseWriter, r *http.Request) {
+func (s *Service) confirmInvitationForm(w http.ResponseWriter, r *http.Request) {
 	// Get the session service from the request context
 	sessionService, err := getSessionService(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	// Get the password reset from the request context
-	_, err = getPasswordReset(r)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
 
 	// Render the template
 	errMsg, _ := sessionService.GetFlashMessage()
-	renderTemplate(w, "password-reset.html", map[string]interface{}{
+	renderTemplate(w, "confirm-invitation.html", map[string]interface{}{
 		"error":       errMsg,
 		"queryString": getQueryString(r.URL.Query()),
 	})
 }
 
-func (s *Service) passwordReset(w http.ResponseWriter, r *http.Request) {
+func (s *Service) confirmInvitation(w http.ResponseWriter, r *http.Request) {
 	// Get the session service from the request context
 	sessionService, err := getSessionService(r)
 	if err != nil {
@@ -35,28 +28,30 @@ func (s *Service) passwordReset(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Get the password reset from the request context
-	passwordReset, err := getPasswordReset(r)
+	// Get the invitation from the request context
+	invitation, err := getInvitation(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
 
-	// Check that both submitted passwords are the same
+	// Check both password fields were submitted with the same password
 	if r.Form.Get("password1") != r.Form.Get("password2") {
-		sessionService.SetFlashMessage("Passwords are not the same")
+		sessionService.SetFlashMessage("Passwords must match")
 		http.Redirect(w, r, r.RequestURI, http.StatusFound)
 		return
 	}
 
-	// Reset the password
-	err = s.GetAccountsService().ResetPassword(passwordReset, r.Form.Get("password1"))
-	if err != nil {
+	// Confirm the invitation
+	if err := s.accountsService.ConfirmInvitation(
+		invitation,
+		r.Form.Get("password1"),
+	); err != nil {
 		sessionService.SetFlashMessage(err.Error())
 		http.Redirect(w, r, r.RequestURI, http.StatusFound)
 		return
 	}
 
 	// Redirect to the success page
-	redirectWithQueryString("/web/password-reset-success", r.URL.Query(), w, r)
+	redirectWithQueryString("/web/confirm-invitation-success", r.URL.Query(), w, r)
 }

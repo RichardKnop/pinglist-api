@@ -52,6 +52,15 @@ func newRoutes(service ServiceInterface) []routes.Route {
 			},
 		},
 		routes.Route{
+			Name:        "invite_user",
+			Method:      "POST",
+			Pattern:     "/invitations",
+			HandlerFunc: service.inviteUserHandler,
+			Middlewares: []negroni.Handler{
+				NewUserAuthMiddleware(service),
+			},
+		},
+		routes.Route{
 			Name:        "create_password_reset",
 			Method:      "POST",
 			Pattern:     "/passwordreset",

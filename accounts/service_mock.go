@@ -385,6 +385,66 @@ func (_m *ServiceMock) CreateSuperuser(account *Account, email string, password 
 	return r0, r1
 }
 
+// FindInvitationByID ...
+func (_m *ServiceMock) FindInvitationByID(invitationID uint) (*Invitation, error) {
+	ret := _m.Called(invitationID)
+
+	var r0 *Invitation
+	if rf, ok := ret.Get(0).(func(uint) *Invitation); ok {
+		r0 = rf(invitationID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*Invitation)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(uint) error); ok {
+		r1 = rf(invitationID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// FindInvitationByReference ...
+func (_m *ServiceMock) FindInvitationByReference(reference string) (*Invitation, error) {
+	ret := _m.Called(reference)
+
+	var r0 *Invitation
+	if rf, ok := ret.Get(0).(func(string) *Invitation); ok {
+		r0 = rf(reference)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*Invitation)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(reference)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// ConfirmInvitation ...
+func (_m *ServiceMock) ConfirmInvitation(invitation *Invitation, password string) error {
+	ret := _m.Called(invitation, password)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(*Invitation, string) error); ok {
+		r0 = rf(invitation, password)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // GetAccountFromQueryString ...
 func (_m *ServiceMock) GetAccountFromQueryString(r *http.Request) (*Account, error) {
 	ret := _m.Called(r)
@@ -444,6 +504,10 @@ func (_m *ServiceMock) getUserHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (_m *ServiceMock) updateUserHandler(w http.ResponseWriter, r *http.Request) {
+	_m.Called(w, r)
+}
+
+func (_m *ServiceMock) inviteUserHandler(w http.ResponseWriter, r *http.Request) {
 	_m.Called(w, r)
 }
 

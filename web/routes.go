@@ -49,6 +49,38 @@ func newRoutes(service ServiceInterface) []routes.Route {
 			},
 		},
 		routes.Route{
+			Name:        "confirm_invitation_form",
+			Method:      "GET",
+			Pattern:     "/confirm-invitation/{reference}",
+			HandlerFunc: service.confirmInvitationForm,
+			Middlewares: []negroni.Handler{
+				new(parseFormMiddleware),
+				newGuestMiddleware(service),
+				newInvitationMiddleware(service),
+			},
+		},
+		routes.Route{
+			Name:        "confirm_invitation",
+			Method:      "POST",
+			Pattern:     "/confirm-invitation/{reference}",
+			HandlerFunc: service.confirmInvitation,
+			Middlewares: []negroni.Handler{
+				new(parseFormMiddleware),
+				newGuestMiddleware(service),
+				newInvitationMiddleware(service),
+			},
+		},
+		routes.Route{
+			Name:        "confirm_invitation_success",
+			Method:      "GET",
+			Pattern:     "/confirm-invitation-success",
+			HandlerFunc: service.confirmInvitationSuccess,
+			Middlewares: []negroni.Handler{
+				new(parseFormMiddleware),
+				newGuestMiddleware(service),
+			},
+		},
+		routes.Route{
 			Name:        "login_form",
 			Method:      "GET",
 			Pattern:     "/login",

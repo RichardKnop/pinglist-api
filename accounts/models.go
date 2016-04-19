@@ -72,6 +72,23 @@ func (c *Confirmation) TableName() string {
 	return "account_confirmations"
 }
 
+// Invitation ...
+type Invitation struct {
+	gorm.Model
+	InvitedUserID   sql.NullInt64 `sql:"index;not null"`
+	InvitedByUserID sql.NullInt64 `sql:"index;not null"`
+	InvitedByUser   *User
+	InvitedUser     *User
+	Reference       string `sql:"type:varchar(40);unique;not null"`
+	EmailSent       bool   `sql:"index;not null"`
+	EmailSentAt     pq.NullTime
+}
+
+// TableName specifies table name
+func (i *Invitation) TableName() string {
+	return "account_invitations"
+}
+
 // PasswordReset ...
 type PasswordReset struct {
 	gorm.Model
@@ -139,6 +156,25 @@ func NewConfirmation(user *User) *Confirmation {
 		confirmation.User = user
 	}
 	return confirmation
+}
+
+// NewInvitation creates new Invitation instance
+func NewInvitation(invitedUser, invitedByUser *User) *Invitation {
+	invitedUserID := util.PositiveIntOrNull(int64(invitedUser.ID))
+	invitedByUserID := util.PositiveIntOrNull(int64(invitedByUser.ID))
+	invitation := &Invitation{
+		InvitedUserID:   invitedUserID,
+		InvitedByUserID: invitedByUserID,
+		Reference:       uuid.New(),
+		EmailSentAt:     util.TimeOrNull(nil),
+	}
+	if invitedUserID.Valid {
+		invitation.InvitedUser = invitedUser
+	}
+	if invitedByUserID.Valid {
+		invitation.InvitedByUser = invitedByUser
+	}
+	return invitation
 }
 
 // NewPasswordReset creates new PasswordReset instance

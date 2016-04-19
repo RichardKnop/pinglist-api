@@ -25,11 +25,13 @@ func init() {
 			"web/includes/register.html",
 			"web/includes/login.html",
 			"web/includes/password-reset.html",
+			"web/includes/confirm-invitation.html",
 		},
 		"web/layouts/inside.html": []string{
 			"web/includes/authorize.html",
 			"web/includes/confirm-email.html",
 			"web/includes/password-reset-success.html",
+			"web/includes/confirm-invitation-success.html",
 		},
 	}
 
