@@ -106,7 +106,7 @@ func (suite *MetricsTestSuite) TearDownSuite() {
 
 // The SetupTest method will be run before every test in the suite.
 func (suite *MetricsTestSuite) SetupTest() {
-	suite.db.Unscoped().Delete(new(RequestTime))
+	suite.db.Unscoped().Delete(new(ResponseTime))
 
 	// Delete sub tables
 	var subTables []*SubTable

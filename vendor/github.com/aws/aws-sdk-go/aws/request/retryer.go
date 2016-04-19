@@ -27,7 +27,7 @@ func WithRetryer(cfg *aws.Config, retryer Retryer) *aws.Config {
 // without any further action.
 var retryableCodes = map[string]struct{}{
 	"RequestError":   {},
-	"RequestTimeout": {},
+	"ResponseTimeout": {},
 }
 
 var throttleCodes = map[string]struct{}{

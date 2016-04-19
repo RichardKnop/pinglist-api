@@ -5,8 +5,8 @@ import (
 	"time"
 )
 
-// PartitionRequestTime creates a new request time sub table if needed
-func (s *Service) PartitionRequestTime(parentTableName string, now time.Time) error {
+// PartitionResponseTime creates a new request time sub table if needed
+func (s *Service) PartitionResponseTime(parentTableName string, now time.Time) error {
 	var (
 		today = time.Date(
 			now.UTC().Year(), now.UTC().Month(), now.UTC().Day(),
@@ -22,7 +22,7 @@ func (s *Service) PartitionRequestTime(parentTableName string, now time.Time) er
 
 	// If a sub table for today doesn't exist, create it
 	if !s.db.HasTable(todaySubTableName) {
-		subTable, err := s.createRequestTimeSubTable(
+		subTable, err := s.createResponseTimeSubTable(
 			parentTableName,
 			todaySubTableName,
 			today,
@@ -37,7 +37,7 @@ func (s *Service) PartitionRequestTime(parentTableName string, now time.Time) er
 	// If a sub table for tomorrow doesn't exist, create it
 	if !s.db.HasTable(tomorrowSubTableName) {
 		dayAfterTomorrow := tomorrow.Add(24 * time.Hour)
-		subTable, err := s.createRequestTimeSubTable(
+		subTable, err := s.createResponseTimeSubTable(
 			parentTableName,
 			tomorrowSubTableName,
 			tomorrow,
@@ -52,16 +52,16 @@ func (s *Service) PartitionRequestTime(parentTableName string, now time.Time) er
 	return nil
 }
 
-// createRequestTimeSubTable creates a new request time sub table inheriting
+// createResponseTimeSubTable creates a new request time sub table inheriting
 // from the parent table with a check constraint to limit span of the data
 // to a period of time
-func (s *Service) createRequestTimeSubTable(parentTableName, subTableName string, from, to time.Time) (*SubTable, error) {
+func (s *Service) createResponseTimeSubTable(parentTableName, subTableName string, from, to time.Time) (*SubTable, error) {
 	// Begin a transaction
 	tx := s.db.Begin()
 
 	// Let's create a new request time sub table
-	requestTimeTable := &RequestTime{Table: subTableName}
-	if err := tx.CreateTable(requestTimeTable).Error; err != nil {
+	ResponseTimeTable := &ResponseTime{Table: subTableName}
+	if err := tx.CreateTable(ResponseTimeTable).Error; err != nil {
 		tx.Rollback() // rollback the transaction
 		return nil, err
 	}

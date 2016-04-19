@@ -26,8 +26,8 @@ func (_m *ServiceMock) GetAccountsService() accounts.ServiceInterface {
 	return r0
 }
 
-// PartitionRequestTime ...
-func (_m *ServiceMock) PartitionRequestTime(parentTableName string, now time.Time) error {
+// PartitionResponseTime ...
+func (_m *ServiceMock) PartitionResponseTime(parentTableName string, now time.Time) error {
 	ret := _m.Called(parentTableName, now)
 
 	var r0 error
@@ -54,8 +54,8 @@ func (_m *ServiceMock) RotateSubTables() error {
 	return r0
 }
 
-// LogRequestTime ...
-func (_m *ServiceMock) LogRequestTime(timestamp time.Time, referenceID uint, value int64) error {
+// LogResponseTime ...
+func (_m *ServiceMock) LogResponseTime(timestamp time.Time, referenceID uint, value int64) error {
 	ret := _m.Called(timestamp, referenceID, value)
 
 	var r0 error
@@ -68,8 +68,8 @@ func (_m *ServiceMock) LogRequestTime(timestamp time.Time, referenceID uint, val
 	return r0
 }
 
-// PaginatedRequestTimesCount ...
-func (_m *ServiceMock) PaginatedRequestTimesCount(referenceID int, dateTrunc string, from *time.Time, to *time.Time) (int, error) {
+// PaginatedResponseTimesCount ...
+func (_m *ServiceMock) PaginatedResponseTimesCount(referenceID int, dateTrunc string, from *time.Time, to *time.Time) (int, error) {
 	ret := _m.Called(referenceID, dateTrunc, from, to)
 
 	var r0 int
@@ -89,16 +89,16 @@ func (_m *ServiceMock) PaginatedRequestTimesCount(referenceID int, dateTrunc str
 	return r0, r1
 }
 
-// FindPaginatedRequestTimes ...
-func (_m *ServiceMock) FindPaginatedRequestTimes(offset int, limit int, orderBy string, referenceID int, dateTrunc string, from *time.Time, to *time.Time) ([]*RequestTime, error) {
+// FindPaginatedResponseTimes ...
+func (_m *ServiceMock) FindPaginatedResponseTimes(offset int, limit int, orderBy string, referenceID int, dateTrunc string, from *time.Time, to *time.Time) ([]*ResponseTime, error) {
 	ret := _m.Called(offset, limit, orderBy, referenceID, dateTrunc, from, to)
 
-	var r0 []*RequestTime
-	if rf, ok := ret.Get(0).(func(int, int, string, int, string, *time.Time, *time.Time) []*RequestTime); ok {
+	var r0 []*ResponseTime
+	if rf, ok := ret.Get(0).(func(int, int, string, int, string, *time.Time, *time.Time) []*ResponseTime); ok {
 		r0 = rf(offset, limit, orderBy, referenceID, dateTrunc, from, to)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*RequestTime)
+			r0 = ret.Get(0).([]*ResponseTime)
 		}
 	}
 

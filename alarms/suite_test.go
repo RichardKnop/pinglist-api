@@ -289,20 +289,20 @@ func (suite *AlarmsTestSuite) mockPublishMessage(endpointARN string, msg string,
 	).Return(messageID, err)
 }
 
-// Mock logging of request time metric
-func (suite *AlarmsTestSuite) mockLogRequestTime(timestamp time.Time, referenceID uint, err error) {
+// Mock logging of response time metric
+func (suite *AlarmsTestSuite) mockLogResponseTime(timestamp time.Time, referenceID uint, err error) {
 	suite.metricsServiceMock.On(
-		"LogRequestTime",
+		"LogResponseTime",
 		timestamp,
 		referenceID,
 		mock.AnythingOfType("int64"),
 	).Return(err)
 }
 
-// Mock counting of paginated request time metrics
-func (suite *AlarmsTestSuite) mockPaginatedRequestTimesCount(alarmID int, dateTrunc string, from, to *time.Time, count int, err error) {
+// Mock counting of paginated response time metrics
+func (suite *AlarmsTestSuite) mockPaginatedResponseTimesCount(alarmID int, dateTrunc string, from, to *time.Time, count int, err error) {
 	suite.metricsServiceMock.On(
-		"PaginatedRequestTimesCount",
+		"PaginatedResponseTimesCount",
 		alarmID,
 		dateTrunc,
 		from,
@@ -310,10 +310,10 @@ func (suite *AlarmsTestSuite) mockPaginatedRequestTimesCount(alarmID int, dateTr
 	).Return(count, err)
 }
 
-// Mock finding paginated request time metrics
-func (suite *AlarmsTestSuite) mockFindPaginatedRequestTimes(offset, limit int, orderBy string, alarmID int, dateTrunc string, from, to *time.Time, requestTimes []*metrics.RequestTime, err error) {
+// Mock finding paginated response time metrics
+func (suite *AlarmsTestSuite) mockFindPaginatedResponseTimes(offset, limit int, orderBy string, alarmID int, dateTrunc string, from, to *time.Time, ResponseTimes []*metrics.ResponseTime, err error) {
 	suite.metricsServiceMock.On(
-		"FindPaginatedRequestTimes",
+		"FindPaginatedResponseTimes",
 		offset,
 		limit,
 		orderBy,
@@ -321,5 +321,5 @@ func (suite *AlarmsTestSuite) mockFindPaginatedRequestTimes(offset, limit int, o
 		dateTrunc,
 		from,
 		to,
-	).Return(requestTimes, err)
+	).Return(ResponseTimes, err)
 }

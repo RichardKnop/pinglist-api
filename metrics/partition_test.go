@@ -6,11 +6,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func (suite *MetricsTestSuite) TestPartitionRequestTime() {
+func (suite *MetricsTestSuite) TestPartitionResponseTime() {
 	var (
 		today                = time.Date(2016, time.February, 9, 0, 0, 0, 0, time.UTC)
-		todaySubTableName    = "metrics_request_times_2016_02_09"
-		tomorrowSubTableName = "metrics_request_times_2016_02_10"
+		todaySubTableName    = "metrics_response_times_2016_02_09"
+		tomorrowSubTableName = "metrics_response_times_2016_02_10"
 		err                  error
 	)
 
@@ -19,7 +19,7 @@ func (suite *MetricsTestSuite) TestPartitionRequestTime() {
 	assert.False(suite.T(), suite.service.db.HasTable(tomorrowSubTableName))
 
 	// This should create new sub tables for today and tomorrow
-	err = suite.service.PartitionRequestTime(RequestTimeParentTableName, today)
+	err = suite.service.PartitionResponseTime(ResponseTimeParentTableName, today)
 
 	// Error should be nil and the today's sub table should have been created
 	if assert.Nil(suite.T(), err) {
@@ -28,17 +28,17 @@ func (suite *MetricsTestSuite) TestPartitionRequestTime() {
 	}
 }
 
-func (suite *MetricsTestSuite) TestCreateRequestTimeSubTable() {
+func (suite *MetricsTestSuite) TestCreateResponseTimeSubTable() {
 	var (
 		today                = time.Date(2016, time.February, 9, 0, 0, 0, 0, time.UTC)
 		tomorrow             = today.Add(24 * time.Hour)
 		dayAfterTomorrow     = tomorrow.Add(24 * time.Hour)
-		todaySubTableName    = "metrics_request_times_2016_02_09"
-		tomorrowSubTableName = "metrics_request_times_2016_02_10"
+		todaySubTableName    = "metrics_response_times_2016_02_09"
+		tomorrowSubTableName = "metrics_response_times_2016_02_10"
 		subTable             *SubTable
 		err                  error
 		subTables            []*SubTable
-		requestTimes         []*RequestTime
+		ResponseTimes        []*ResponseTime
 	)
 
 	// Sub tables should not exist yet
@@ -50,8 +50,8 @@ func (suite *MetricsTestSuite) TestCreateRequestTimeSubTable() {
 	assert.NoError(suite.T(), err, "Fetching data failed")
 	assert.Equal(suite.T(), 0, len(subTables))
 
-	subTable, err = suite.service.createRequestTimeSubTable(
-		RequestTimeParentTableName,
+	subTable, err = suite.service.createResponseTimeSubTable(
+		ResponseTimeParentTableName,
 		todaySubTableName,
 		today,
 		tomorrow,
@@ -65,7 +65,7 @@ func (suite *MetricsTestSuite) TestCreateRequestTimeSubTable() {
 
 	// Correct sub table record should be returned
 	if assert.NotNil(suite.T(), subTable) {
-		assert.Equal(suite.T(), RequestTimeParentTableName, subTable.ParentTable)
+		assert.Equal(suite.T(), ResponseTimeParentTableName, subTable.ParentTable)
 		assert.Equal(suite.T(), todaySubTableName, subTable.Name)
 	}
 
@@ -75,8 +75,8 @@ func (suite *MetricsTestSuite) TestCreateRequestTimeSubTable() {
 	assert.Equal(suite.T(), 1, len(subTables))
 	assert.Equal(suite.T(), todaySubTableName, subTables[0].Name)
 
-	subTable, err = suite.service.createRequestTimeSubTable(
-		RequestTimeParentTableName,
+	subTable, err = suite.service.createResponseTimeSubTable(
+		ResponseTimeParentTableName,
 		tomorrowSubTableName,
 		tomorrow,
 		dayAfterTomorrow,
@@ -90,7 +90,7 @@ func (suite *MetricsTestSuite) TestCreateRequestTimeSubTable() {
 
 	// Correct sub table record should be returned
 	if assert.NotNil(suite.T(), subTable) {
-		assert.Equal(suite.T(), RequestTimeParentTableName, subTable.ParentTable)
+		assert.Equal(suite.T(), ResponseTimeParentTableName, subTable.ParentTable)
 		assert.Equal(suite.T(), tomorrowSubTableName, subTable.Name)
 	}
 
@@ -101,50 +101,50 @@ func (suite *MetricsTestSuite) TestCreateRequestTimeSubTable() {
 	assert.Equal(suite.T(), tomorrowSubTableName, subTables[1].Name)
 
 	// These records should be inserted in the today's table
-	requestTimes = []*RequestTime{
-		NewRequestTime(todaySubTableName, 1, today, 123),
-		NewRequestTime(todaySubTableName, 1, today.Add(1*time.Hour), 234),
+	ResponseTimes = []*ResponseTime{
+		NewResponseTime(todaySubTableName, 1, today, 123),
+		NewResponseTime(todaySubTableName, 1, today.Add(1*time.Hour), 234),
 	}
-	for _, requestTime := range requestTimes {
-		err := suite.db.Create(requestTime).Error
+	for _, ResponseTime := range ResponseTimes {
+		err := suite.db.Create(ResponseTime).Error
 		assert.NoError(suite.T(), err, "Inserting test data failed")
 	}
 
 	// These records should be inserted in the tomorrow's table
-	requestTimes = []*RequestTime{
-		NewRequestTime(tomorrowSubTableName, 1, tomorrow, 321),
-		NewRequestTime(tomorrowSubTableName, 1, tomorrow.Add(1*time.Hour), 432),
+	ResponseTimes = []*ResponseTime{
+		NewResponseTime(tomorrowSubTableName, 1, tomorrow, 321),
+		NewResponseTime(tomorrowSubTableName, 1, tomorrow.Add(1*time.Hour), 432),
 	}
-	for _, requestTime := range requestTimes {
-		err := suite.db.Create(requestTime).Error
+	for _, ResponseTime := range ResponseTimes {
+		err := suite.db.Create(ResponseTime).Error
 		assert.NoError(suite.T(), err, "Inserting test data failed")
 	}
 
 	// Check data is being aggregated from all sub tables
-	requestTimes = make([]*RequestTime, 0)
-	err = suite.db.Order("timestamp").Find(&requestTimes).Error
+	ResponseTimes = make([]*ResponseTime, 0)
+	err = suite.db.Order("timestamp").Find(&ResponseTimes).Error
 	assert.NoError(suite.T(), err, "Fetching data failed")
-	assert.Equal(suite.T(), 4, len(requestTimes))
-	assert.Equal(suite.T(), int64(123), requestTimes[0].Value)
-	assert.Equal(suite.T(), int64(234), requestTimes[1].Value)
-	assert.Equal(suite.T(), int64(321), requestTimes[2].Value)
-	assert.Equal(suite.T(), int64(432), requestTimes[3].Value)
+	assert.Equal(suite.T(), 4, len(ResponseTimes))
+	assert.Equal(suite.T(), int64(123), ResponseTimes[0].Value)
+	assert.Equal(suite.T(), int64(234), ResponseTimes[1].Value)
+	assert.Equal(suite.T(), int64(321), ResponseTimes[2].Value)
+	assert.Equal(suite.T(), int64(432), ResponseTimes[3].Value)
 
 	// Check data is correctly distributed to the today's table
-	requestTimes = make([]*RequestTime, 0)
+	ResponseTimes = make([]*ResponseTime, 0)
 	err = suite.service.db.Table(todaySubTableName).
-		Order("timestamp").Find(&requestTimes).Error
+		Order("timestamp").Find(&ResponseTimes).Error
 	assert.NoError(suite.T(), err, "Fetching data failed")
-	assert.Equal(suite.T(), 2, len(requestTimes))
-	assert.Equal(suite.T(), int64(123), requestTimes[0].Value)
-	assert.Equal(suite.T(), int64(234), requestTimes[1].Value)
+	assert.Equal(suite.T(), 2, len(ResponseTimes))
+	assert.Equal(suite.T(), int64(123), ResponseTimes[0].Value)
+	assert.Equal(suite.T(), int64(234), ResponseTimes[1].Value)
 
 	// Check data is correctly distributed to the tomorrow's sub table
-	requestTimes = make([]*RequestTime, 0)
+	ResponseTimes = make([]*ResponseTime, 0)
 	err = suite.service.db.Table(tomorrowSubTableName).
-		Order("timestamp").Find(&requestTimes).Error
+		Order("timestamp").Find(&ResponseTimes).Error
 	assert.NoError(suite.T(), err, "Fetching data failed")
-	assert.Equal(suite.T(), 2, len(requestTimes))
-	assert.Equal(suite.T(), int64(321), requestTimes[0].Value)
-	assert.Equal(suite.T(), int64(432), requestTimes[1].Value)
+	assert.Equal(suite.T(), 2, len(ResponseTimes))
+	assert.Equal(suite.T(), int64(321), ResponseTimes[0].Value)
+	assert.Equal(suite.T(), int64(432), ResponseTimes[1].Value)
 }

@@ -67,7 +67,7 @@ func (s *Service) CheckAlarm(alarmID uint, watermark time.Time) error {
 	resp, err := s.client.Do(req)
 	elapsed := time.Since(start)
 
-	// The request timed out
+	// The response timed out
 	if e, ok := err.(net.Error); ok && e.Timeout() {
 		return s.openIncident(
 			alarm,
@@ -118,8 +118,8 @@ func (s *Service) CheckAlarm(alarmID uint, watermark time.Time) error {
 		return err
 	}
 
-	// Log the request time metric
-	err = s.metricsService.LogRequestTime(start, alarm.ID, elapsed.Nanoseconds())
+	// Log the response time metric
+	err = s.metricsService.LogResponseTime(start, alarm.ID, elapsed.Nanoseconds())
 	if err != nil {
 		return err
 	}

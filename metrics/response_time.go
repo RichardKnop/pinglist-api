@@ -8,23 +8,23 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-// LogRequestTime logs request time metric
-func (s *Service) LogRequestTime(timestamp time.Time, referenceID uint, value int64) error {
-	requestTimeRecord := NewRequestTime(
-		getSubTableName(RequestTimeParentTableName, timestamp),
+// LogResponseTime logs request time metric
+func (s *Service) LogResponseTime(timestamp time.Time, referenceID uint, value int64) error {
+	ResponseTimeRecord := NewResponseTime(
+		getSubTableName(ResponseTimeParentTableName, timestamp),
 		referenceID,
 		timestamp,
 		value,
 	)
-	return s.db.Create(requestTimeRecord).Error
+	return s.db.Create(ResponseTimeRecord).Error
 }
 
-// PaginatedRequestTimesCount returns a total count of request time records
-func (s *Service) PaginatedRequestTimesCount(referenceID int, dateTrunc string, from, to *time.Time) (int, error) {
+// PaginatedResponseTimesCount returns a total count of request time records
+func (s *Service) PaginatedResponseTimesCount(referenceID int, dateTrunc string, from, to *time.Time) (int, error) {
 	var count int
 
 	// Get the pagination query
-	query := s.paginatedRequestTimesQuery(referenceID, from, to)
+	query := s.paginatedResponseTimesQuery(referenceID, from, to)
 
 	// Are we aggregating data based on some time period (e.g. hourly / daily averages)?
 	if dateTrunc != "" {
@@ -42,17 +42,17 @@ func (s *Service) PaginatedRequestTimesCount(referenceID int, dateTrunc string, 
 	return count, nil
 }
 
-// FindPaginatedRequestTimes returns paginated request time records
+// FindPaginatedResponseTimes returns paginated request time records
 // Records can optionally be filtered by:
 // - reference_id
 // - date_trunc (day, hour etc)
 // - from
 // - to
-func (s *Service) FindPaginatedRequestTimes(offset, limit int, orderBy string, referenceID int, dateTrunc string, from, to *time.Time) ([]*RequestTime, error) {
-	var requestTimes []*RequestTime
+func (s *Service) FindPaginatedResponseTimes(offset, limit int, orderBy string, referenceID int, dateTrunc string, from, to *time.Time) ([]*ResponseTime, error) {
+	var ResponseTimes []*ResponseTime
 
 	// Get the pagination query
-	query := s.paginatedRequestTimesQuery(referenceID, from, to)
+	query := s.paginatedResponseTimesQuery(referenceID, from, to)
 
 	// Default ordering
 	if orderBy == "" {
@@ -66,7 +66,7 @@ func (s *Service) FindPaginatedRequestTimes(offset, limit int, orderBy string, r
 			Group("t")
 		// This is needed because if we use "timestamp" in ORDER BY clause,
 		// since timestamp is not present in our aggregate function there is an error:
-		// ERROR:  column "metrics_request_times.timestamp" must appear in the GROUP BY clause or be used in an aggregate function
+		// ERROR:  column "metrics_response_times.timestamp" must appear in the GROUP BY clause or be used in an aggregate function
 		orderBy = strings.Replace(orderBy, "timestamp", "t", 1)
 	}
 
@@ -75,16 +75,16 @@ func (s *Service) FindPaginatedRequestTimes(offset, limit int, orderBy string, r
 
 	// In case we are not aggregating results, we can just use query.Find
 	if dateTrunc == "" {
-		if err := query.Find(&requestTimes).Error; err != nil {
-			return requestTimes, err
+		if err := query.Find(&ResponseTimes).Error; err != nil {
+			return ResponseTimes, err
 		}
-		return requestTimes, nil
+		return ResponseTimes, nil
 	}
 
 	// We are aggregating results, therefor it gets more complicated
 	rows, err := query.Rows()
 	if err != nil {
-		return requestTimes, err
+		return ResponseTimes, err
 	}
 
 	// Iterate over *sql.Rows
@@ -97,24 +97,24 @@ func (s *Service) FindPaginatedRequestTimes(offset, limit int, orderBy string, r
 
 		// Scan the data into our vars
 		if err := rows.Scan(&timestamp, &value); err != nil {
-			return requestTimes, err
+			return ResponseTimes, err
 		}
 
 		// Append correct object to our return slice
-		requestTimes = append(requestTimes, &RequestTime{
+		ResponseTimes = append(ResponseTimes, &ResponseTime{
 			Timestamp: timestamp,
 			Value:     int64(value),
 		})
 	}
 
-	return requestTimes, nil
+	return ResponseTimes, nil
 }
 
-// paginatedRequestTimesQuery returns a common part of db query for
+// paginatedResponseTimesQuery returns a common part of db query for
 // paginated request time records
-func (s *Service) paginatedRequestTimesQuery(referenceID int, from, to *time.Time) *gorm.DB {
+func (s *Service) paginatedResponseTimesQuery(referenceID int, from, to *time.Time) *gorm.DB {
 	// Basic query
-	query := s.db.Model(new(RequestTime))
+	query := s.db.Model(new(ResponseTime))
 
 	// Optionally filter by reference ID
 	if referenceID > 0 {

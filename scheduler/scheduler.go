@@ -71,8 +71,8 @@ func (s *Scheduler) Run(alarmsInterval, partitionInterval time.Duration) sync.Wa
 		defer wg.Done()
 
 		// Partition the request time metrics table
-		err := s.metricsService.PartitionRequestTime(
-			metrics.RequestTimeParentTableName,
+		err := s.metricsService.PartitionResponseTime(
+			metrics.ResponseTimeParentTableName,
 			time.Now(),
 		)
 		if err != nil {

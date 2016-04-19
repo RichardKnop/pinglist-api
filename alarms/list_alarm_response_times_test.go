@@ -16,22 +16,25 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func (suite *AlarmsTestSuite) TestListAlarmRequestTimesRequiresUserAuthentication() {
+func (suite *AlarmsTestSuite) TestListAlarmResponseTimesRequiresUserAuthentication() {
 	r, err := http.NewRequest("", "", nil)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
 
 	w := httptest.NewRecorder()
 
-	suite.service.listAlarmRequestTimesHandler(w, r)
+	suite.service.listAlarmResponseTimesHandler(w, r)
 
 	assert.Equal(suite.T(), http.StatusUnauthorized, w.Code, "This requires an authenticated user")
 }
 
-func (suite *AlarmsTestSuite) TestListAlarmRequestTimesWithoutPermission() {
+func (suite *AlarmsTestSuite) TestListAlarmResponseTimesWithoutPermission() {
 	// Prepare a request
 	r, err := http.NewRequest(
 		"GET",
-		fmt.Sprintf("http://1.2.3.4/v1/alarms/%d/request-times", suite.alarms[0].ID),
+		fmt.Sprintf(
+			"http://1.2.3.4/v1/alarms/%d/response-times",
+			suite.alarms[0].ID,
+		),
 		nil,
 	)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
@@ -41,7 +44,7 @@ func (suite *AlarmsTestSuite) TestListAlarmRequestTimesWithoutPermission() {
 	match := new(mux.RouteMatch)
 	suite.router.Match(r, match)
 	if assert.NotNil(suite.T(), match.Route) {
-		assert.Equal(suite.T(), "list_alarm_request_times", match.Route.GetName())
+		assert.Equal(suite.T(), "list_alarm_response_times", match.Route.GetName())
 	}
 
 	// Mock authentication
@@ -61,7 +64,7 @@ func (suite *AlarmsTestSuite) TestListAlarmRequestTimesWithoutPermission() {
 
 	// Check the response body
 	expectedJSON, err := json.Marshal(
-		map[string]string{"error": ErrListAlarmRequestTimesPermission.Error()})
+		map[string]string{"error": ErrListAlarmResponseTimesPermission.Error()})
 	if assert.NoError(suite.T(), err, "JSON marshalling failed") {
 		assert.Equal(
 			suite.T(),
@@ -72,7 +75,7 @@ func (suite *AlarmsTestSuite) TestListAlarmRequestTimesWithoutPermission() {
 	}
 }
 
-func (suite *AlarmsTestSuite) TestListAlarmRequestTimes() {
+func (suite *AlarmsTestSuite) TestListAlarmResponseTimes() {
 	var (
 		today             = time.Date(2016, time.February, 9, 0, 0, 0, 0, time.UTC)
 		todaySubTableName = "metrics_request_times_2016_02_09"
@@ -81,7 +84,10 @@ func (suite *AlarmsTestSuite) TestListAlarmRequestTimes() {
 	// Prepare a request
 	r, err := http.NewRequest(
 		"GET",
-		fmt.Sprintf("http://1.2.3.4/v1/alarms/%d/request-times", suite.alarms[0].ID),
+		fmt.Sprintf(
+			"http://1.2.3.4/v1/alarms/%d/response-times",
+			suite.alarms[0].ID,
+		),
 		nil,
 	)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
@@ -91,14 +97,14 @@ func (suite *AlarmsTestSuite) TestListAlarmRequestTimes() {
 	match := new(mux.RouteMatch)
 	suite.router.Match(r, match)
 	if assert.NotNil(suite.T(), match.Route) {
-		assert.Equal(suite.T(), "list_alarm_request_times", match.Route.GetName())
+		assert.Equal(suite.T(), "list_alarm_response_times", match.Route.GetName())
 	}
 
 	// Mock authentication
 	suite.mockUserAuth(suite.users[1])
 
-	// Mock paginated request time metrics
-	suite.mockPaginatedRequestTimesCount(
+	// Mock paginated response time metrics
+	suite.mockPaginatedResponseTimesCount(
 		int(suite.alarms[0].ID), // reference ID
 		"",  // date_trunc
 		nil, // from
@@ -106,13 +112,13 @@ func (suite *AlarmsTestSuite) TestListAlarmRequestTimes() {
 		4,   // returned count
 		nil, // returned error
 	)
-	testMetrics := []*metrics.RequestTime{
-		metrics.NewRequestTime(todaySubTableName, suite.alarms[0].ID, today, 123),
-		metrics.NewRequestTime(todaySubTableName, suite.alarms[0].ID, today.Add(1*time.Hour), 234),
-		metrics.NewRequestTime(todaySubTableName, suite.alarms[0].ID, today.Add(2*time.Hour), 345),
-		metrics.NewRequestTime(todaySubTableName, suite.alarms[0].ID, today.Add(3*time.Hour), 456),
+	testMetrics := []*metrics.ResponseTime{
+		metrics.NewResponseTime(todaySubTableName, suite.alarms[0].ID, today, 123),
+		metrics.NewResponseTime(todaySubTableName, suite.alarms[0].ID, today.Add(1*time.Hour), 234),
+		metrics.NewResponseTime(todaySubTableName, suite.alarms[0].ID, today.Add(2*time.Hour), 345),
+		metrics.NewResponseTime(todaySubTableName, suite.alarms[0].ID, today.Add(3*time.Hour), 456),
 	}
-	suite.mockFindPaginatedRequestTimes(
+	suite.mockFindPaginatedResponseTimes(
 		0, // offset
 		pagination.DefaultLimit,
 		"", // order by
@@ -137,32 +143,32 @@ func (suite *AlarmsTestSuite) TestListAlarmRequestTimes() {
 	}
 
 	// Check the response body
-	requestTimeResponses := make([]*metrics.MetricResponse, len(testMetrics))
+	ResponseTimeResponses := make([]*metrics.MetricResponse, len(testMetrics))
 	for i, testMetric := range testMetrics {
-		requestTimeResponse, err := metrics.NewMetricResponse(
+		ResponseTimeResponse, err := metrics.NewMetricResponse(
 			testMetric.Timestamp,
 			testMetric.Value,
 		)
 		assert.NoError(suite.T(), err, "Creating response object failed")
-		requestTimeResponses[i] = requestTimeResponse
+		ResponseTimeResponses[i] = ResponseTimeResponse
 	}
 	expected := &ListIncidentsResponse{
 		Hal: jsonhal.Hal{
 			Links: map[string]*jsonhal.Link{
 				"self": &jsonhal.Link{
-					Href: fmt.Sprintf("/v1/alarms/%d/request-times", suite.alarms[0].ID),
+					Href: fmt.Sprintf("/v1/alarms/%d/response-times", suite.alarms[0].ID),
 				},
 				"first": &jsonhal.Link{
-					Href: fmt.Sprintf("/v1/alarms/%d/request-times?page=1", suite.alarms[0].ID),
+					Href: fmt.Sprintf("/v1/alarms/%d/response-times?page=1", suite.alarms[0].ID),
 				},
 				"last": &jsonhal.Link{
-					Href: fmt.Sprintf("/v1/alarms/%d/request-times?page=1", suite.alarms[0].ID),
+					Href: fmt.Sprintf("/v1/alarms/%d/response-times?page=1", suite.alarms[0].ID),
 				},
 				"prev": new(jsonhal.Link),
 				"next": new(jsonhal.Link),
 			},
 			Embedded: map[string]jsonhal.Embedded{
-				"request_times": jsonhal.Embedded(requestTimeResponses),
+				"response_times": jsonhal.Embedded(ResponseTimeResponses),
 			},
 		},
 		Count: 4,

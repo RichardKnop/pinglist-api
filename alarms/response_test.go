@@ -199,23 +199,23 @@ func TestNewListIncidentsResponse(t *testing.T) {
 	assert.Equal(t, uint(2), response.Page)
 }
 
-func TestNewListRequestTimesResponse(t *testing.T) {
-	// Some mock metrics.RequestTime objects
-	requestTimes := []*metrics.RequestTime{
-		new(metrics.RequestTime),
-		new(metrics.RequestTime),
+func TestNewListResponseTimesResponse(t *testing.T) {
+	// Some mock metrics.ResponseTime objects
+	ResponseTimes := []*metrics.ResponseTime{
+		new(metrics.ResponseTime),
+		new(metrics.ResponseTime),
 	}
 
 	// Create list response
-	response, err := NewListRequestTimesResponse(
+	response, err := NewListResponseTimesResponse(
 		10, // count
 		2,  // page
-		"/v1/alarms/1/request-times?page=2", // self
-		"/v1/alarms/1/request-times?page=1", // first
-		"/v1/alarms/1/request-times?page=5", // last
-		"/v1/alarms/1/request-times?page=1", // previous
-		"/v1/alarms/1/request-times?page=3", // next
-		requestTimes,
+		"/v1/alarms/1/response-times?page=2", // self
+		"/v1/alarms/1/response-times?page=1", // first
+		"/v1/alarms/1/response-times?page=5", // last
+		"/v1/alarms/1/response-times?page=1", // previous
+		"/v1/alarms/1/response-times?page=3", // next
+		ResponseTimes,
 	)
 
 	// Error should be nil
@@ -224,37 +224,37 @@ func TestNewListRequestTimesResponse(t *testing.T) {
 	// Test self link
 	selfLink, err := response.GetLink("self")
 	if assert.Nil(t, err) {
-		assert.Equal(t, "/v1/alarms/1/request-times?page=2", selfLink.Href)
+		assert.Equal(t, "/v1/alarms/1/response-times?page=2", selfLink.Href)
 	}
 
 	// Test first link
 	firstLink, err := response.GetLink("first")
 	if assert.Nil(t, err) {
-		assert.Equal(t, "/v1/alarms/1/request-times?page=1", firstLink.Href)
+		assert.Equal(t, "/v1/alarms/1/response-times?page=1", firstLink.Href)
 	}
 
 	// Test last link
 	lastLink, err := response.GetLink("last")
 	if assert.Nil(t, err) {
-		assert.Equal(t, "/v1/alarms/1/request-times?page=5", lastLink.Href)
+		assert.Equal(t, "/v1/alarms/1/response-times?page=5", lastLink.Href)
 	}
 
 	// Test previous link
 	previousLink, err := response.GetLink("prev")
 	if assert.Nil(t, err) {
-		assert.Equal(t, "/v1/alarms/1/request-times?page=1", previousLink.Href)
+		assert.Equal(t, "/v1/alarms/1/response-times?page=1", previousLink.Href)
 	}
 
 	// Test next link
 	nextLink, err := response.GetLink("next")
 	if assert.Nil(t, err) {
-		assert.Equal(t, "/v1/alarms/1/request-times?page=3", nextLink.Href)
+		assert.Equal(t, "/v1/alarms/1/response-times?page=3", nextLink.Href)
 	}
 
-	// Test embedded request times
-	embeddedRequestTimes, err := response.GetEmbedded("request_times")
+	// Test embedded response times
+	embeddedResponseTimes, err := response.GetEmbedded("response_times")
 	if assert.Nil(t, err) {
-		reflectedValue := reflect.ValueOf(embeddedRequestTimes)
+		reflectedValue := reflect.ValueOf(embeddedResponseTimes)
 		expectedType := reflect.SliceOf(reflect.TypeOf(new(metrics.MetricResponse)))
 		if assert.Equal(t, expectedType, reflectedValue.Type()) {
 			assert.Equal(t, 2, reflectedValue.Len())

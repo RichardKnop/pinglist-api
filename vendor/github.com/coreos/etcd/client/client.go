@@ -39,7 +39,7 @@ var (
 	errTooManyRedirectChecks = errors.New("client: too many redirect checks")
 )
 
-var DefaultRequestTimeout = 5 * time.Second
+var DefaultResponseTimeout = 5 * time.Second
 
 var DefaultTransport CancelableTransport = &http.Transport{
 	Proxy: http.ProxyFromEnvironment,

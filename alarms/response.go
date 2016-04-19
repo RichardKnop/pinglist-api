@@ -69,8 +69,8 @@ type ListIncidentsResponse struct {
 	Page  uint `json:"page"`
 }
 
-// ListRequestTimesResponse ...
-type ListRequestTimesResponse struct {
+// ListResponseTimesResponse ...
+type ListResponseTimesResponse struct {
 	jsonhal.Hal
 	Count uint `json:"count"`
 	Page  uint `json:"page"`
@@ -288,9 +288,9 @@ func NewListIncidentsResponse(count, page int, self, first, last, previous, next
 	return response, nil
 }
 
-// NewListRequestTimesResponse creates new ListRequestTimesResponse instance
-func NewListRequestTimesResponse(count, page int, self, first, last, previous, next string, requestTimes []*metrics.RequestTime) (*ListRequestTimesResponse, error) {
-	response := &ListRequestTimesResponse{
+// NewListResponseTimesResponse creates new ListResponseTimesResponse instance
+func NewListResponseTimesResponse(count, page int, self, first, last, previous, next string, ResponseTimes []*metrics.ResponseTime) (*ListResponseTimesResponse, error) {
+	response := &ListResponseTimesResponse{
 		Count: uint(count),
 		Page:  uint(page),
 	}
@@ -311,11 +311,11 @@ func NewListRequestTimesResponse(count, page int, self, first, last, previous, n
 	response.SetLink("next", next, "")
 
 	// Create slice of metrics responses
-	metricResponses := make([]*metrics.MetricResponse, len(requestTimes))
-	for i, requestTime := range requestTimes {
+	metricResponses := make([]*metrics.MetricResponse, len(ResponseTimes))
+	for i, ResponseTime := range ResponseTimes {
 		metricResponse, err := metrics.NewMetricResponse(
-			requestTime.Timestamp,
-			requestTime.Value,
+			ResponseTime.Timestamp,
+			ResponseTime.Value,
 		)
 		if err != nil {
 			return nil, err
@@ -323,9 +323,9 @@ func NewListRequestTimesResponse(count, page int, self, first, last, previous, n
 		metricResponses[i] = metricResponse
 	}
 
-	// Set embedded request times
+	// Set embedded response times
 	response.SetEmbedded(
-		"request_times",
+		"response_times",
 		jsonhal.Embedded(metricResponses),
 	)
 

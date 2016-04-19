@@ -124,7 +124,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	gorm.NowFunc = func() time.Time {
 		return start
 	}
-	suite.mockLogRequestTime(start, alarm.ID, nil)
+	suite.mockLogResponseTime(start, alarm.ID, nil)
 	err = suite.service.CheckAlarm(alarm.ID, alarm.Watermark.Time)
 
 	// Check that the mock object expectations were met
@@ -326,7 +326,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 		"message_id",
 		nil,
 	)
-	suite.mockLogRequestTime(start, alarm.ID, nil)
+	suite.mockLogResponseTime(start, alarm.ID, nil)
 	err = suite.service.CheckAlarm(alarm.ID, alarm.Watermark.Time)
 
 	// Sleep for the email & push notification goroutines to finish
@@ -395,8 +395,8 @@ func (suite *AlarmsTestSuite) TestAlarmCheckIdempotency() {
 		return start
 	}
 
-	// Just one request time metric will be logged
-	suite.mockLogRequestTime(start, testAlarm.ID, nil)
+	// Just one response time metric will be logged
+	suite.mockLogResponseTime(start, testAlarm.ID, nil)
 
 	// Trigger multiple parallel alarm checks with the same watermark
 	var (

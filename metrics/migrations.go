@@ -35,9 +35,9 @@ func migrate0001(db *gorm.DB) error {
 		return fmt.Errorf("Error creating metrics_sub_tables table: %s", err)
 	}
 
-	// Create metrics_request_times table
-	if err := db.CreateTable(new(RequestTime)).Error; err != nil {
-		return fmt.Errorf("Error creating metrics_request_times table: %s", err)
+	// Create metrics_response_times table
+	if err := db.CreateTable(new(ResponseTime)).Error; err != nil {
+		return fmt.Errorf("Error creating metrics_response_times table: %s", err)
 	}
 
 	// Save a record to migrations table,

@@ -21,9 +21,9 @@ func (suite *MetricsTestSuite) TestRotateSubTables() {
 		to = from.Add(time.Duration(RotateAfterHours) * time.Hour)
 
 		// Create a new sub table
-		subTable, err = suite.service.createRequestTimeSubTable(
-			RequestTimeParentTableName,
-			getSubTableName(RequestTimeParentTableName, from),
+		subTable, err = suite.service.createResponseTimeSubTable(
+			ResponseTimeParentTableName,
+			getSubTableName(ResponseTimeParentTableName, from),
 			from,
 			to,
 		)

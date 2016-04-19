@@ -15,12 +15,12 @@ import (
 )
 
 var (
-	// ErrListAlarmRequestTimesPermission ...
-	ErrListAlarmRequestTimesPermission = errors.New("Need permission to list alarm request times")
+	// ErrListAlarmResponseTimesPermission ...
+	ErrListAlarmResponseTimesPermission = errors.New("Need permission to list alarm response times")
 )
 
-// Handles calls to list alarm request times (GET /v1/alarms/{id:[0-9]+}/request-times)
-func (s *Service) listAlarmRequestTimesHandler(w http.ResponseWriter, r *http.Request) {
+// Handles calls to list alarm response times (GET /v1/alarms/{id:[0-9]+}/response-times)
+func (s *Service) listAlarmResponseTimesHandler(w http.ResponseWriter, r *http.Request) {
 	// Get the authenticated user from the request context
 	authenticatedUser, err := accounts.GetAuthenticatedUser(r)
 	if err != nil {
@@ -44,7 +44,7 @@ func (s *Service) listAlarmRequestTimesHandler(w http.ResponseWriter, r *http.Re
 	}
 
 	// Check permissions
-	if err := checkListAlarmRequestTimesPermissions(authenticatedUser, alarm); err != nil {
+	if err := checkListAlarmResponseTimesPermissions(authenticatedUser, alarm); err != nil {
 		response.Error(w, err.Error(), http.StatusForbidden)
 		return
 	}
@@ -64,7 +64,7 @@ func (s *Service) listAlarmRequestTimesHandler(w http.ResponseWriter, r *http.Re
 	}
 
 	// Count total number of metric records
-	count, err := s.metricsService.PaginatedRequestTimesCount(
+	count, err := s.metricsService.PaginatedResponseTimesCount(
 		int(alarm.ID),
 		dateTrunc,
 		from,
@@ -88,7 +88,7 @@ func (s *Service) listAlarmRequestTimesHandler(w http.ResponseWriter, r *http.Re
 	}
 
 	// Get paginated metric records
-	requestTimes, err := s.metricsService.FindPaginatedRequestTimes(
+	ResponseTimes, err := s.metricsService.FindPaginatedResponseTimes(
 		pagination.GetOffsetForPage(count, page, limit),
 		limit,
 		r.URL.Query().Get("order_by"),
@@ -104,30 +104,30 @@ func (s *Service) listAlarmRequestTimesHandler(w http.ResponseWriter, r *http.Re
 
 	// Create response
 	self := util.GetCurrentURL(r)
-	listRequestTimesResponse, err := NewListRequestTimesResponse(
+	listResponseTimesResponse, err := NewListResponseTimesResponse(
 		count, page,
 		self, first, last, next, previous,
-		requestTimes,
+		ResponseTimes,
 	)
 	if err != nil {
 		response.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	// Write JSON response
-	response.WriteJSON(w, listRequestTimesResponse, http.StatusOK)
+	response.WriteJSON(w, listResponseTimesResponse, http.StatusOK)
 }
 
-func checkListAlarmRequestTimesPermissions(authenticatedUser *accounts.User, alarm *Alarm) error {
-	// Superusers can list any alarm request times
+func checkListAlarmResponseTimesPermissions(authenticatedUser *accounts.User, alarm *Alarm) error {
+	// Superusers can list any alarm response times
 	if authenticatedUser.Role.Name == roles.Superuser {
 		return nil
 	}
 
-	// Users can list their own alarm request times
+	// Users can list their own alarm response times
 	if authenticatedUser.ID == alarm.User.ID {
 		return nil
 	}
 
 	// The user doesn't have the permission
-	return ErrListAlarmRequestTimesPermission
+	return ErrListAlarmResponseTimesPermission
 }

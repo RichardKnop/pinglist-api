@@ -10,9 +10,9 @@ import (
 type ServiceInterface interface {
 	// Exported methods
 	GetAccountsService() accounts.ServiceInterface
-	PartitionRequestTime(parentTableName string, now time.Time) error
+	PartitionResponseTime(parentTableName string, now time.Time) error
 	RotateSubTables() error
-	LogRequestTime(timestamp time.Time, referenceID uint, value int64) error
-	PaginatedRequestTimesCount(referenceID int, dateTrunc string, from, to *time.Time) (int, error)
-	FindPaginatedRequestTimes(offset, limit int, orderBy string, referenceID int, dateTrunc string, from, to *time.Time) ([]*RequestTime, error)
+	LogResponseTime(timestamp time.Time, referenceID uint, value int64) error
+	PaginatedResponseTimesCount(referenceID int, dateTrunc string, from, to *time.Time) (int, error)
+	FindPaginatedResponseTimes(offset, limit int, orderBy string, referenceID int, dateTrunc string, from, to *time.Time) ([]*ResponseTime, error)
 }
