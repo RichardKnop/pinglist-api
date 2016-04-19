@@ -68,8 +68,8 @@ func (_m *ServiceMock) LogResponseTime(timestamp time.Time, referenceID uint, va
 	return r0
 }
 
-// PaginatedResponseTimesCount ...
-func (_m *ServiceMock) PaginatedResponseTimesCount(referenceID int, dateTrunc string, from *time.Time, to *time.Time) (int, error) {
+// ResponseTimesCount ...
+func (_m *ServiceMock) ResponseTimesCount(referenceID int, dateTrunc string, from *time.Time, to *time.Time) (int, error) {
 	ret := _m.Called(referenceID, dateTrunc, from, to)
 
 	var r0 int

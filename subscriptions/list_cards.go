@@ -50,7 +50,7 @@ func (s *Service) listCardsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Count total number of results
-	count, err := s.paginatedCardsCount(user)
+	count, err := s.cardsCount(user)
 	if err != nil {
 		response.Error(w, err.Error(), http.StatusInternalServerError)
 		return

@@ -234,11 +234,11 @@ func (s *Service) cancelSubscription(subscription *Subscription) error {
 	return nil
 }
 
-// paginatedSubscriptionsCount returns a total count of subscriptions
+// subscriptionsCount returns a total count of subscriptions
 // Can be optionally filtered by user
-func (s *Service) paginatedSubscriptionsCount(user *accounts.User) (int, error) {
+func (s *Service) subscriptionsCount(user *accounts.User) (int, error) {
 	var count int
-	if err := s.paginatedSubscriptionsQuery(user).Count(&count).Error; err != nil {
+	if err := s.subscriptionsQuery(user).Count(&count).Error; err != nil {
 		return 0, err
 	}
 	return count, nil
@@ -250,7 +250,7 @@ func (s *Service) findPaginatedSubscriptions(offset, limit int, orderBy string, 
 	var subscriptions []*Subscription
 
 	// Get the pagination query
-	subscriptionsQuery := s.paginatedSubscriptionsQuery(user)
+	subscriptionsQuery := s.subscriptionsQuery(user)
 
 	// Default ordering
 	if orderBy == "" {
@@ -267,8 +267,8 @@ func (s *Service) findPaginatedSubscriptions(offset, limit int, orderBy string, 
 	return subscriptions, nil
 }
 
-// paginatedSubscriptionsQuery returns a db query for paginated subscriptions
-func (s *Service) paginatedSubscriptionsQuery(user *accounts.User) *gorm.DB {
+// subscriptionsQuery returns a generic db query for fetching subscriptions
+func (s *Service) subscriptionsQuery(user *accounts.User) *gorm.DB {
 	// Basic query
 	subscriptionsQuery := s.db.Model(new(Subscription))
 

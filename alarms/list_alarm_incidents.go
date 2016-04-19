@@ -63,7 +63,7 @@ func (s *Service) listAlarmIncidentsHandler(w http.ResponseWriter, r *http.Reque
 	}
 
 	// Count total number of results
-	count, err := s.paginatedIncidentsCount(
+	count, err := s.incidentsCount(
 		nil, // user
 		alarm,
 		from,

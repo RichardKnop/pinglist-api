@@ -50,7 +50,7 @@ func (s *Service) listAlarmsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Count total number of results
-	count, err := s.paginatedAlarmsCount(user)
+	count, err := s.alarmsCount(user)
 	if err != nil {
 		response.Error(w, err.Error(), http.StatusInternalServerError)
 		return

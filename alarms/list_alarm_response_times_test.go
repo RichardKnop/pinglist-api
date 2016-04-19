@@ -104,7 +104,7 @@ func (suite *AlarmsTestSuite) TestListAlarmResponseTimes() {
 	suite.mockUserAuth(suite.users[1])
 
 	// Mock paginated response time metrics
-	suite.mockPaginatedResponseTimesCount(
+	suite.mockResponseTimesCount(
 		int(suite.alarms[0].ID), // reference ID
 		"",  // date_trunc
 		nil, // from

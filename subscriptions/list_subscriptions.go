@@ -50,7 +50,7 @@ func (s *Service) listSubscriptionsHandler(w http.ResponseWriter, r *http.Reques
 	}
 
 	// Count total number of results
-	count, err := s.paginatedSubscriptionsCount(user)
+	count, err := s.subscriptionsCount(user)
 	if err != nil {
 		response.Error(w, err.Error(), http.StatusInternalServerError)
 		return

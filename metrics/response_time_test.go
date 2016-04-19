@@ -38,7 +38,7 @@ func (suite *MetricsTestSuite) TestPaginatedResponseTimesCount() {
 	}
 
 	// No filtering at all
-	count, err = suite.service.PaginatedResponseTimesCount(
+	count, err = suite.service.ResponseTimesCount(
 		0,   // reference ID
 		"",  // date trunc
 		nil, // from
@@ -49,7 +49,7 @@ func (suite *MetricsTestSuite) TestPaginatedResponseTimesCount() {
 	}
 
 	// Filter by a valid reference ID
-	count, err = suite.service.PaginatedResponseTimesCount(
+	count, err = suite.service.ResponseTimesCount(
 		1,   // reference ID
 		"",  // date trunc
 		nil, // from
@@ -60,7 +60,7 @@ func (suite *MetricsTestSuite) TestPaginatedResponseTimesCount() {
 	}
 
 	// Filter by a valid reference ID
-	count, err = suite.service.PaginatedResponseTimesCount(
+	count, err = suite.service.ResponseTimesCount(
 		2,   // reference ID
 		"",  // date trunc
 		nil, // from
@@ -71,7 +71,7 @@ func (suite *MetricsTestSuite) TestPaginatedResponseTimesCount() {
 	}
 
 	// Filter by a bogus reference ID
-	count, err = suite.service.PaginatedResponseTimesCount(
+	count, err = suite.service.ResponseTimesCount(
 		3,   // reference ID
 		"",  // date trunc
 		nil, // from
@@ -84,7 +84,7 @@ func (suite *MetricsTestSuite) TestPaginatedResponseTimesCount() {
 	// Filter by "from" and "to" timestamp
 	from = yesterday.Add(2 * time.Hour)
 	to = today
-	count, err = suite.service.PaginatedResponseTimesCount(
+	count, err = suite.service.ResponseTimesCount(
 		0,     // reference ID
 		"",    // date trunc
 		&from, // from
@@ -95,7 +95,7 @@ func (suite *MetricsTestSuite) TestPaginatedResponseTimesCount() {
 	}
 
 	// Filter by "date_trunc" timestamp
-	count, err = suite.service.PaginatedResponseTimesCount(
+	count, err = suite.service.ResponseTimesCount(
 		0,     // reference ID
 		"day", // date trunc
 		nil,   // from

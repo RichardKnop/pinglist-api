@@ -120,23 +120,26 @@ func (suite *AlarmsTestSuite) TestFindAlarmById() {
 	}
 }
 
-func (suite *AlarmsTestSuite) TestPaginatedAlarmsCount() {
+func (suite *AlarmsTestSuite) TestAlarmsCount() {
 	var (
 		count int
 		err   error
 	)
 
-	count, err = suite.service.paginatedAlarmsCount(nil)
+	// Without filtering
+	count, err = suite.service.alarmsCount(nil)
 	if assert.Nil(suite.T(), err) {
 		assert.Equal(suite.T(), 4, count)
 	}
 
-	count, err = suite.service.paginatedAlarmsCount(suite.users[1])
+	// Filter by user with 4 alarms
+	count, err = suite.service.alarmsCount(suite.users[1])
 	if assert.Nil(suite.T(), err) {
 		assert.Equal(suite.T(), 4, count)
 	}
 
-	count, err = suite.service.paginatedAlarmsCount(suite.users[2])
+	// Filter by user without alarms
+	count, err = suite.service.alarmsCount(suite.users[2])
 	if assert.Nil(suite.T(), err) {
 		assert.Equal(suite.T(), 0, count)
 	}

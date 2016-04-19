@@ -182,10 +182,10 @@ func (s *Service) resolveIncidents(alarm *Alarm) error {
 	return nil
 }
 
-// paginatedIncidentsCount returns a total count of incidents
-func (s *Service) paginatedIncidentsCount(user *accounts.User, alarm *Alarm, from, to *time.Time) (int, error) {
+// incidentsCount returns a total count of incidents
+func (s *Service) incidentsCount(user *accounts.User, alarm *Alarm, from, to *time.Time) (int, error) {
 	var count int
-	err := s.paginatedIncidentsQuery(user, alarm, from, to).Count(&count).Error
+	err := s.incidentsQuery(user, alarm, from, to).Count(&count).Error
 	if err != nil {
 		return 0, err
 	}
@@ -198,7 +198,7 @@ func (s *Service) findPaginatedIncidents(offset, limit int, orderBy string, user
 	var incidents []*Incident
 
 	// Get the pagination query
-	incidentsQuery := s.paginatedIncidentsQuery(user, alarm, from, to)
+	incidentsQuery := s.incidentsQuery(user, alarm, from, to)
 
 	// Default ordering
 	if orderBy == "" {
@@ -215,8 +215,8 @@ func (s *Service) findPaginatedIncidents(offset, limit int, orderBy string, user
 	return incidents, nil
 }
 
-// paginatedIncidentsQuery returns a db query for paginated incidents
-func (s *Service) paginatedIncidentsQuery(user *accounts.User, alarm *Alarm, from, to *time.Time) *gorm.DB {
+// incidentsQuery returns a generic db query for fetching incidents
+func (s *Service) incidentsQuery(user *accounts.User, alarm *Alarm, from, to *time.Time) *gorm.DB {
 	// Basic query
 	incidentsQuery := s.db.Model(new(Incident))
 

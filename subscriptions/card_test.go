@@ -70,17 +70,20 @@ func (suite *SubscriptionsTestSuite) TestPaginatedCardsCount() {
 		err   error
 	)
 
-	count, err = suite.service.paginatedCardsCount(nil)
+	// Without any filtering
+	count, err = suite.service.cardsCount(nil)
 	if assert.Nil(suite.T(), err) {
 		assert.Equal(suite.T(), 4, count)
 	}
 
-	count, err = suite.service.paginatedCardsCount(suite.users[0])
+	// Filter by user with 4 cards
+	count, err = suite.service.cardsCount(suite.users[0])
 	if assert.Nil(suite.T(), err) {
 		assert.Equal(suite.T(), 4, count)
 	}
 
-	count, err = suite.service.paginatedCardsCount(suite.users[1])
+	// Filter by user without cards
+	count, err = suite.service.cardsCount(suite.users[1])
 	if assert.Nil(suite.T(), err) {
 		assert.Equal(suite.T(), 0, count)
 	}

@@ -186,11 +186,11 @@ func (s *Service) deleteCard(card *Card) error {
 	return nil
 }
 
-// paginatedCardsCount returns a total count of cards
+// cardsCount returns a total count of cards
 // Can be optionally filtered by user
-func (s *Service) paginatedCardsCount(user *accounts.User) (int, error) {
+func (s *Service) cardsCount(user *accounts.User) (int, error) {
 	var count int
-	if err := s.paginatedCardsQuery(user).Count(&count).Error; err != nil {
+	if err := s.cardsQuery(user).Count(&count).Error; err != nil {
 		return 0, err
 	}
 	return count, nil
@@ -202,7 +202,7 @@ func (s *Service) findPaginatedCards(offset, limit int, orderBy string, user *ac
 	var cards []*Card
 
 	// Get the pagination query
-	cardsQuery := s.paginatedCardsQuery(user)
+	cardsQuery := s.cardsQuery(user)
 
 	// Default ordering
 	if orderBy == "" {
@@ -219,8 +219,8 @@ func (s *Service) findPaginatedCards(offset, limit int, orderBy string, user *ac
 	return cards, nil
 }
 
-// paginatedCardsQuery returns a db query for paginated cards
-func (s *Service) paginatedCardsQuery(user *accounts.User) *gorm.DB {
+// cardsQuery returns a generic db query for fetching cards
+func (s *Service) cardsQuery(user *accounts.User) *gorm.DB {
 	// Basic query
 	cardsQuery := s.db.Model(new(Card))
 

@@ -503,13 +503,14 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	}
 }
 
-func (suite *AlarmsTestSuite) TestPaginatedIncidentsCount() {
+func (suite *AlarmsTestSuite) TestIncidentsCount() {
 	var (
 		err   error
 		count int
 	)
 
-	count, err = suite.service.paginatedIncidentsCount(
+	// Without any filtering
+	count, err = suite.service.incidentsCount(
 		nil, // user
 		nil, // alarm
 		nil, // from
@@ -519,7 +520,8 @@ func (suite *AlarmsTestSuite) TestPaginatedIncidentsCount() {
 		assert.Equal(suite.T(), 4, count)
 	}
 
-	count, err = suite.service.paginatedIncidentsCount(
+	// Filter by user with 4 incidents
+	count, err = suite.service.incidentsCount(
 		suite.users[1],
 		nil, // alarm
 		nil, // from
@@ -529,7 +531,8 @@ func (suite *AlarmsTestSuite) TestPaginatedIncidentsCount() {
 		assert.Equal(suite.T(), 4, count)
 	}
 
-	count, err = suite.service.paginatedIncidentsCount(
+	// Filter by alarm with 4 incidents
+	count, err = suite.service.incidentsCount(
 		nil, // user
 		suite.alarms[0],
 		nil, // from
@@ -539,7 +542,8 @@ func (suite *AlarmsTestSuite) TestPaginatedIncidentsCount() {
 		assert.Equal(suite.T(), 4, count)
 	}
 
-	count, err = suite.service.paginatedIncidentsCount(
+	// Filter by user and alarm with 4 incidents
+	count, err = suite.service.incidentsCount(
 		suite.users[1],
 		suite.alarms[0],
 		nil, // from
@@ -549,7 +553,8 @@ func (suite *AlarmsTestSuite) TestPaginatedIncidentsCount() {
 		assert.Equal(suite.T(), 4, count)
 	}
 
-	count, err = suite.service.paginatedIncidentsCount(
+	// Filter by user without incidents
+	count, err = suite.service.incidentsCount(
 		suite.users[0],
 		nil, // alarm
 		nil, // from
@@ -559,7 +564,8 @@ func (suite *AlarmsTestSuite) TestPaginatedIncidentsCount() {
 		assert.Equal(suite.T(), 0, count)
 	}
 
-	count, err = suite.service.paginatedIncidentsCount(
+	// Filter by alarm without incidents
+	count, err = suite.service.incidentsCount(
 		nil, // user
 		suite.alarms[1],
 		nil, // from
@@ -569,7 +575,8 @@ func (suite *AlarmsTestSuite) TestPaginatedIncidentsCount() {
 		assert.Equal(suite.T(), 0, count)
 	}
 
-	count, err = suite.service.paginatedIncidentsCount(
+	// Filter by user without incidents and alarm with incidents
+	count, err = suite.service.incidentsCount(
 		suite.users[1],
 		suite.alarms[1],
 		nil, // from
@@ -579,7 +586,8 @@ func (suite *AlarmsTestSuite) TestPaginatedIncidentsCount() {
 		assert.Equal(suite.T(), 0, count)
 	}
 
-	count, err = suite.service.paginatedIncidentsCount(
+	// Filter by user with incidents and alarm without incidents
+	count, err = suite.service.incidentsCount(
 		suite.users[0],
 		suite.alarms[0],
 		nil, // from
@@ -589,9 +597,10 @@ func (suite *AlarmsTestSuite) TestPaginatedIncidentsCount() {
 		assert.Equal(suite.T(), 0, count)
 	}
 
+	// Filter by >= from
 	from, err := util.ParseTimestamp("2016-02-27T22:31:12Z")
 	assert.NoError(suite.T(), err, "Failed parsing from timestamp")
-	count, err = suite.service.paginatedIncidentsCount(
+	count, err = suite.service.incidentsCount(
 		nil, // user
 		nil, // alarm
 		&from,
@@ -601,9 +610,10 @@ func (suite *AlarmsTestSuite) TestPaginatedIncidentsCount() {
 		assert.Equal(suite.T(), 3, count)
 	}
 
+	// Filter by <= to
 	to, err := util.ParseTimestamp("2016-02-27T22:32:12Z")
 	assert.NoError(suite.T(), err, "Failed parsing to timestamp")
-	count, err = suite.service.paginatedIncidentsCount(
+	count, err = suite.service.incidentsCount(
 		nil, // user
 		nil, // alarm
 		nil, // from
@@ -613,7 +623,8 @@ func (suite *AlarmsTestSuite) TestPaginatedIncidentsCount() {
 		assert.Equal(suite.T(), 3, count)
 	}
 
-	count, err = suite.service.paginatedIncidentsCount(
+	// Filter by from >= to
+	count, err = suite.service.incidentsCount(
 		nil, // user
 		nil, // alarm
 		&from,

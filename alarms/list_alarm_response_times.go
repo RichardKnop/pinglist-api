@@ -64,7 +64,7 @@ func (s *Service) listAlarmResponseTimesHandler(w http.ResponseWriter, r *http.R
 	}
 
 	// Count total number of metric records
-	count, err := s.metricsService.PaginatedResponseTimesCount(
+	count, err := s.metricsService.ResponseTimesCount(
 		int(alarm.ID),
 		dateTrunc,
 		from,

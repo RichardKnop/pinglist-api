@@ -74,17 +74,20 @@ func (suite *SubscriptionsTestSuite) TestPaginatedSubscriptionsCount() {
 		err   error
 	)
 
-	count, err = suite.service.paginatedSubscriptionsCount(nil)
+	// Without any filtering
+	count, err = suite.service.subscriptionsCount(nil)
 	if assert.Nil(suite.T(), err) {
 		assert.Equal(suite.T(), 4, count)
 	}
 
-	count, err = suite.service.paginatedSubscriptionsCount(suite.users[0])
+	// Filter by user with 4 subscriptions
+	count, err = suite.service.subscriptionsCount(suite.users[0])
 	if assert.Nil(suite.T(), err) {
 		assert.Equal(suite.T(), 4, count)
 	}
 
-	count, err = suite.service.paginatedSubscriptionsCount(suite.users[1])
+	// Filter by user without subscriptions
+	count, err = suite.service.subscriptionsCount(suite.users[1])
 	if assert.Nil(suite.T(), err) {
 		assert.Equal(suite.T(), 0, count)
 	}

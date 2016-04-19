@@ -299,10 +299,10 @@ func (suite *AlarmsTestSuite) mockLogResponseTime(timestamp time.Time, reference
 	).Return(err)
 }
 
-// Mock counting of paginated response time metrics
-func (suite *AlarmsTestSuite) mockPaginatedResponseTimesCount(alarmID int, dateTrunc string, from, to *time.Time, count int, err error) {
+// Mock counting of response time metrics
+func (suite *AlarmsTestSuite) mockResponseTimesCount(alarmID int, dateTrunc string, from, to *time.Time, count int, err error) {
 	suite.metricsServiceMock.On(
-		"PaginatedResponseTimesCount",
+		"ResponseTimesCount",
 		alarmID,
 		dateTrunc,
 		from,

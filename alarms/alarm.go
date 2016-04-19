@@ -172,11 +172,11 @@ func (s *Service) updateAlarm(alarm *Alarm, alarmRequest *AlarmRequest) error {
 	return nil
 }
 
-// paginatedAlarmsCount returns a total count of alarms
+// alarmsCount returns a total count of alarms
 // Can be optionally filtered by user
-func (s *Service) paginatedAlarmsCount(user *accounts.User) (int, error) {
+func (s *Service) alarmsCount(user *accounts.User) (int, error) {
 	var count int
-	if err := s.paginatedAlarmsQuery(user).Count(&count).Error; err != nil {
+	if err := s.alarmsQuery(user).Count(&count).Error; err != nil {
 		return 0, err
 	}
 	return count, nil
@@ -188,7 +188,7 @@ func (s *Service) findPaginatedAlarms(offset, limit int, orderBy string, user *a
 	var alarms []*Alarm
 
 	// Get the pagination query
-	alarmsQuery := s.paginatedAlarmsQuery(user)
+	alarmsQuery := s.alarmsQuery(user)
 
 	// Default ordering
 	if orderBy == "" {
@@ -205,8 +205,8 @@ func (s *Service) findPaginatedAlarms(offset, limit int, orderBy string, user *a
 	return alarms, nil
 }
 
-// paginatedAlarmsQuery returns a db query for paginated alarms
-func (s *Service) paginatedAlarmsQuery(user *accounts.User) *gorm.DB {
+// alarmsQuery returns a generic db query for fetching alarms
+func (s *Service) alarmsQuery(user *accounts.User) *gorm.DB {
 	// Basic query
 	alarmsQuery := s.db.Model(new(Alarm))
 
