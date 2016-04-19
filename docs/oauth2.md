@@ -1,7 +1,3 @@
-[1]: ../../../../assets/blob/master/ping/login_screenshot.png
-[2]: ../../../../assets/blob/master/ping/authorization_code_screenshot.png
-[3]: ../../../../assets/blob/master/ping/implicit_screenshot.png
-
 # OAuth 2.0
 
 # Index
@@ -67,11 +63,7 @@ http://localhost:8080/web/authorize?client_id=test_client_1&redirect_uri=https%3
 
 The authorization server authenticates the resource owner (via the user-agent).
 
-![Log In page screenshot][1]
-
 The authorization server then establishes whether the resource owner grants or denies the client's access request.
-
-![Authorize page screenshot][2]
 
 If the request fails due to a missing, invalid, or mismatching redirection URI, or if the client identifier is missing or invalid, the authorization server SHOULD inform the resource owner of the error and MUST NOT automatically redirect the user-agent to the invalid redirection URI.
 
@@ -165,11 +157,7 @@ http://localhost:8080/web/authorize?client_id=test_client_1&redirect_uri=https%3
 
 The authorization server authenticates the resource owner (via the user-agent).
 
-![Log In page screenshot][1]
-
 The authorization server then establishes whether the resource owner grants or denies the client's access request.
-
-![Authorize page screenshot][3]
 
 If the request fails due to a missing, invalid, or mismatching redirection URI, or if the client identifier is missing or invalid, the authorization server SHOULD inform the resource owner of the error and MUST NOT automatically redirect the user-agent to the invalid redirection URI.
 
