@@ -51,7 +51,7 @@ func (s *Service) FindInvitationByReference(reference string) (*Invitation, erro
 func (s *Service) InviteUser(invitedByUser *User, invitationRequest *InvitationRequest) (*Invitation, error) {
 	// Check if oauth user exists
 	if s.GetOauthService().UserExists(invitationRequest.Email) {
-		return nil, ErrEmailTaken
+		return nil, oauth.ErrUsernameTaken
 	}
 
 	// Fetch the user from the database

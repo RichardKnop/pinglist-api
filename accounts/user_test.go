@@ -3,6 +3,7 @@ package accounts
 import (
 	"testing"
 
+	"github.com/RichardKnop/pinglist-api/oauth"
 	"github.com/RichardKnop/pinglist-api/accounts/roles"
 	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/stretchr/testify/assert"
@@ -265,7 +266,7 @@ func (suite *AccountsTestSuite) TestCreateSuperuser() {
 
 	// Correct error should be returned
 	if assert.NotNil(suite.T(), err) {
-		assert.Equal(suite.T(), ErrEmailTaken, err)
+		assert.Equal(suite.T(), oauth.ErrUsernameTaken, err)
 	}
 
 	// We try to insert a unique superuser
