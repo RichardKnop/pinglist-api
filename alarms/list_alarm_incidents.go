@@ -55,12 +55,19 @@ func (s *Service) listAlarmIncidentsHandler(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
+	// Get from / to
+	from, to, err := GetTimeRangeParamsFromQueryString(r)
+	if err != nil {
+		response.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
 	// Count total number of results
 	count, err := s.paginatedIncidentsCount(
 		nil, // user
 		alarm,
-		nil, // from
-		nil, // to
+		from,
+		to,
 	)
 	if err != nil {
 		response.Error(w, err.Error(), http.StatusInternalServerError)

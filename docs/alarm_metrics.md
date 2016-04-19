@@ -19,7 +19,7 @@ Use `date_trunc` to query for average hourly/daily results:
 - `day`: aggregated daily results
 - etc
 
-Use `from` and `to` parameters to query a specific time range. Pass timestamps formatted accordig to `RFC3339`.
+Use `from` and `to` parameters to query a specific time range. Pass timestamps formatted according to `RFC3339`.
 
 Notice the ampersand is escaped as `\u0026` in the `_links` section.
 

@@ -13,6 +13,8 @@ curl --compressed -v "localhost:8080/v1/alarms/1/incidents" \
 
 Use `offset` and `limit` query string parameters to paginate and `order_by` to order the results.
 
+Use `from` and `to` parameters to query a specific time range. Pass timestamps formatted according to `RFC3339`.
+
 Notice the ampersand is escaped as `\u0026` in the `_links` section.
 
 Example response:
