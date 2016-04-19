@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/RichardKnop/jsonhal"
+	"github.com/RichardKnop/pinglist-api/alarms/incidenttypes"
 	"github.com/RichardKnop/pinglist-api/metrics"
 	"github.com/RichardKnop/pinglist-api/pagination"
 	"github.com/gorilla/mux"
@@ -172,8 +173,14 @@ func (suite *AlarmsTestSuite) TestListAlarmResponseTimes() {
 			},
 		},
 		Average: 289.5,
-		Count:   4,
-		Page:    1,
+		IncidentTypeCounts: map[string]int{
+			incidenttypes.SlowResponse: 0,
+			incidenttypes.Timeout:      2,
+			incidenttypes.BadCode:      1,
+			incidenttypes.Other:        1,
+		},
+		Count: 4,
+		Page:  1,
 	}
 
 	expectedJSON, err := json.Marshal(expected)

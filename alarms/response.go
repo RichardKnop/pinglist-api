@@ -72,9 +72,10 @@ type ListIncidentsResponse struct {
 // ListResponseTimesResponse ...
 type ListResponseTimesResponse struct {
 	jsonhal.Hal
-	Average float64 `json:"average"`
-	Count   uint    `json:"count"`
-	Page    uint    `json:"page"`
+	Average            float64        `json:"average"`
+	IncidentTypeCounts map[string]int `json:"incident_type_counts"`
+	Count              uint           `json:"count"`
+	Page               uint           `json:"page"`
 }
 
 // NewRegionResponse creates new ResultResponse instance
@@ -290,7 +291,7 @@ func NewListIncidentsResponse(count, page int, self, first, last, previous, next
 }
 
 // NewListResponseTimesResponse creates new ListResponseTimesResponse instance
-func NewListResponseTimesResponse(count, page int, self, first, last, previous, next string, responseTimes []*metrics.ResponseTime) (*ListResponseTimesResponse, error) {
+func NewListResponseTimesResponse(count, page int, self, first, last, previous, next string, responseTimes []*metrics.ResponseTime, incidentTypeCount map[string]int) (*ListResponseTimesResponse, error) {
 	response := &ListResponseTimesResponse{
 		Count: uint(count),
 		Page:  uint(page),
@@ -330,6 +331,9 @@ func NewListResponseTimesResponse(count, page int, self, first, last, previous, 
 		sum += float64(responseTime.Value)
 	}
 	response.Average = sum / float64(len(responseTimes))
+
+	// Aggregate incident counts based on type
+	response.IncidentTypeCounts = incidentTypeCount
 
 	// Set embedded response times
 	response.SetEmbedded(

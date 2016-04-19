@@ -4,6 +4,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/RichardKnop/pinglist-api/alarms/incidenttypes"
 	"github.com/RichardKnop/pinglist-api/metrics"
 	"github.com/stretchr/testify/assert"
 )
@@ -201,9 +202,17 @@ func TestNewListIncidentsResponse(t *testing.T) {
 
 func TestNewListResponseTimesResponse(t *testing.T) {
 	// Some mock metrics.ResponseTime objects
-	ResponseTimes := []*metrics.ResponseTime{
+	responseTimes := []*metrics.ResponseTime{
 		new(metrics.ResponseTime),
 		new(metrics.ResponseTime),
+	}
+
+	// Mock aggregate incident type counts
+	incidentTypeCounts := map[string]int{
+		incidenttypes.SlowResponse: 0,
+		incidenttypes.Timeout:      1,
+		incidenttypes.BadCode:      2,
+		incidenttypes.Other:        3,
 	}
 
 	// Create list response
@@ -215,7 +224,8 @@ func TestNewListResponseTimesResponse(t *testing.T) {
 		"/v1/alarms/1/response-times?page=5", // last
 		"/v1/alarms/1/response-times?page=1", // previous
 		"/v1/alarms/1/response-times?page=3", // next
-		ResponseTimes,
+		responseTimes,
+		incidentTypeCounts,
 	)
 
 	// Error should be nil

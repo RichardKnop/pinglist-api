@@ -49,7 +49,7 @@ func (s *Service) ResponseTimesCount(referenceID int, dateTrunc string, from, to
 // - from
 // - to
 func (s *Service) FindPaginatedResponseTimes(offset, limit int, orderBy string, referenceID int, dateTrunc string, from, to *time.Time) ([]*ResponseTime, error) {
-	var ResponseTimes []*ResponseTime
+	var responseTimes []*ResponseTime
 
 	// Get the pagination query
 	query := s.responseTimesQuery(referenceID, from, to)
@@ -62,7 +62,7 @@ func (s *Service) FindPaginatedResponseTimes(offset, limit int, orderBy string, 
 	// Are we aggregating data based on some time period (e.g. hourly / daily averages)?
 	if dateTrunc != "" {
 		query = query.
-			Select("date_trunc(?, timestamp at time zone 'Z') t, AVG(value) avg", dateTrunc).
+			Select("DATE_TRUNC(?, timestamp at time zone 'Z') t, AVG(value) avg", dateTrunc).
 			Group("t")
 		// This is needed because if we use "timestamp" in ORDER BY clause,
 		// since timestamp is not present in our aggregate function there is an error:
@@ -75,16 +75,16 @@ func (s *Service) FindPaginatedResponseTimes(offset, limit int, orderBy string, 
 
 	// In case we are not aggregating results, we can just use query.Find
 	if dateTrunc == "" {
-		if err := query.Find(&ResponseTimes).Error; err != nil {
-			return ResponseTimes, err
+		if err := query.Find(&responseTimes).Error; err != nil {
+			return responseTimes, err
 		}
-		return ResponseTimes, nil
+		return responseTimes, nil
 	}
 
 	// We are aggregating results, therefor it gets more complicated
 	rows, err := query.Rows()
 	if err != nil {
-		return ResponseTimes, err
+		return responseTimes, err
 	}
 
 	// Iterate over *sql.Rows
@@ -97,17 +97,17 @@ func (s *Service) FindPaginatedResponseTimes(offset, limit int, orderBy string, 
 
 		// Scan the data into our vars
 		if err := rows.Scan(&timestamp, &value); err != nil {
-			return ResponseTimes, err
+			return responseTimes, err
 		}
 
 		// Append correct object to our return slice
-		ResponseTimes = append(ResponseTimes, &ResponseTime{
+		responseTimes = append(responseTimes, &ResponseTime{
 			Timestamp: timestamp,
 			Value:     int64(value),
 		})
 	}
 
-	return ResponseTimes, nil
+	return responseTimes, nil
 }
 
 // responseTimesQuery returns a common part of db query for

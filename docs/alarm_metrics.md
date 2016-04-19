@@ -57,6 +57,12 @@ Example response:
 		]
 	},
 	"average": 12345,
+	"incident_type_counts": {
+		"slow_response": 0,
+		"timeout": 2,
+		"bad_code": 1,
+		"other": 1,
+	},
 	"count": 2,
 	"page": 1
 }

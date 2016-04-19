@@ -88,7 +88,7 @@ func (s *Service) listAlarmResponseTimesHandler(w http.ResponseWriter, r *http.R
 	}
 
 	// Get paginated metric records
-	ResponseTimes, err := s.metricsService.FindPaginatedResponseTimes(
+	responseTimes, err := s.metricsService.FindPaginatedResponseTimes(
 		pagination.GetOffsetForPage(count, page, limit),
 		limit,
 		r.URL.Query().Get("order_by"),
@@ -102,12 +102,24 @@ func (s *Service) listAlarmResponseTimesHandler(w http.ResponseWriter, r *http.R
 		return
 	}
 
+	// Get aggregate incident counts based on type
+	incidentTypeCounts, err := s.incidentTypeCounts(
+		nil, // user
+		alarm,
+		from,
+		to,
+	)
+	if err != nil {
+		response.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	// Create response
 	self := util.GetCurrentURL(r)
 	listResponseTimesResponse, err := NewListResponseTimesResponse(
 		count, page,
 		self, first, last, next, previous,
-		ResponseTimes,
+		responseTimes, incidentTypeCounts,
 	)
 	if err != nil {
 		response.Error(w, err.Error(), http.StatusInternalServerError)

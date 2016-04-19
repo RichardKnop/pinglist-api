@@ -503,6 +503,21 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	}
 }
 
+func (suite *AlarmsTestSuite) TestIncidentTypeCounts() {
+	incidentTypeCounts, err := suite.service.incidentTypeCounts(
+		nil, // user
+		nil, // alarm
+		nil, // from
+		nil, // to
+	)
+	if assert.Nil(suite.T(), err) {
+		assert.Equal(suite.T(), 0, incidentTypeCounts[incidenttypes.SlowResponse])
+		assert.Equal(suite.T(), 2, incidentTypeCounts[incidenttypes.Timeout])
+		assert.Equal(suite.T(), 1, incidentTypeCounts[incidenttypes.BadCode])
+		assert.Equal(suite.T(), 1, incidentTypeCounts[incidenttypes.Other])
+	}
+}
+
 func (suite *AlarmsTestSuite) TestIncidentsCount() {
 	var (
 		err   error

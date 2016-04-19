@@ -7,6 +7,7 @@ import (
 
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/RichardKnop/pinglist-api/alarms/alarmstates"
+	"github.com/RichardKnop/pinglist-api/alarms/incidenttypes"
 	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/jinzhu/gorm"
 )
@@ -180,6 +181,40 @@ func (s *Service) resolveIncidents(alarm *Alarm) error {
 	}
 
 	return nil
+}
+
+// incidentTypeCount returns aggregated count of incidents types
+func (s *Service) incidentTypeCounts(user *accounts.User, alarm *Alarm, from, to *time.Time) (map[string]int, error) {
+	var incitentTypeCounts = map[string]int{
+		incidenttypes.SlowResponse: 0,
+		incidenttypes.Timeout:      0,
+		incidenttypes.BadCode:      0,
+		incidenttypes.Other:        0,
+	}
+
+	// Run aggregate count query grouped by incident type
+	rows, err := s.incidentsQuery(user, alarm, nil, from, to).
+		Select("incident_type_id, COUNT(*)").Group("incident_type_id").Rows()
+	if err != nil {
+		return incitentTypeCounts, err
+	}
+
+	// Iterate over *sql.Rows
+	for rows.Next() {
+		// Declare vars for copying the data from the row
+		var (
+			incidentTypeID string
+			count          int
+		)
+
+		// Scan the data into our vars
+		if err := rows.Scan(&incidentTypeID, &count); err != nil {
+			return incitentTypeCounts, err
+		}
+		incitentTypeCounts[incidentTypeID] = count
+	}
+
+	return incitentTypeCounts, nil
 }
 
 // incidentsCount returns a total count of incidents
