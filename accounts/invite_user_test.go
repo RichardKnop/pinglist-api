@@ -56,8 +56,7 @@ func (suite *AccountsTestSuite) TestInviteUser() {
 	time.Sleep(5 * time.Millisecond)
 
 	// Check that the mock object expectations were met
-	suite.emailServiceMock.AssertExpectations(suite.T())
-	suite.emailFactoryMock.AssertExpectations(suite.T())
+	suite.assertMockExpectations()
 
 	// Check the status code
 	if !assert.Equal(suite.T(), 201, w.Code) {
@@ -104,7 +103,7 @@ func (suite *AccountsTestSuite) TestInviteUser() {
 		InvitedUserID:   invitation.InvitedUser.ID,
 		InvitedByUserID: invitation.InvitedByUser.ID,
 		CreatedAt:       invitation.CreatedAt.UTC().Format(time.RFC3339),
-		UpdatedAt:       invitation.CreatedAt.UTC().Format(time.RFC3339),
+		UpdatedAt:       invitation.UpdatedAt.UTC().Format(time.RFC3339),
 	}
 	expectedJSON, err := json.Marshal(expected)
 	if assert.NoError(suite.T(), err, "JSON marshalling failed") {

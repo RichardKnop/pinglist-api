@@ -129,6 +129,12 @@ func TestAccountsTestSuite(t *testing.T) {
 	suite.Run(t, new(AccountsTestSuite))
 }
 
+// Checks that the mock object expectations were met
+func (suite *AccountsTestSuite) assertMockExpectations() {
+	suite.emailServiceMock.AssertExpectations(suite.T())
+	suite.emailFactoryMock.AssertExpectations(suite.T())
+}
+
 // Mock sending confirmation email
 func (suite *AccountsTestSuite) mockConfirmationEmail() {
 	emailMock := new(email.Email)

@@ -102,7 +102,7 @@ func (s *Service) inviteUserCommon(db *gorm.DB, invitedByUser *User, invitationR
 	oauthUser, err := s.GetOauthService().CreateUserTx(
 		db,
 		invitationRequest.Email,
-		"",
+		"", // password
 	)
 	if err != nil {
 		return nil, err
