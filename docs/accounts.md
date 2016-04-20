@@ -1,18 +1,13 @@
 # Accounts
 
-* [Users](#users)
-  * [Create User](#create-user)
-  * [Get Me](#get-me)
-  * [Get User](#get-user)
-  * [Update User](#update-user)
-* [Invitations](#invitations)
-  * [Create Invitation](#create-invitation)
-* [Password Reset](#password-reset)
-  * [Create Password Reset](#create-password-reset)
+* [Create User](#create-user)
+* [Get Me](#get-me)
+* [Get User](#get-user)
+* [Update User](#update-user)
+* [Invite User](#invite-user)
+* [Reset Password](#reset-password)
 
-## Users
-
-### Create User
+## Create User
 
 Example request:
 
@@ -46,7 +41,7 @@ Example response:
 }
 ```
 
-### Get Me
+## Get Me
 
 Example request:
 
@@ -76,7 +71,7 @@ Example response:
 }
 ```
 
-### Get User
+## Get User
 
 Example request:
 
@@ -105,7 +100,7 @@ Example response:
 }
 ```
 
-### Update User
+## Update User
 
 Example request:
 
@@ -139,9 +134,7 @@ Example response:
 }
 ```
 
-## Invitations
-
-### Create Invitation
+## Invite User
 
 Example request:
 
@@ -150,8 +143,7 @@ curl --compressed -v localhost:8080/v1/accounts/invitations \
 	-H "Content-Type: application/json" \
 	-H "Authorization: Bearer 00ccd40e-72ca-4e79-a4b6-67c95e2e3f1c" \
 	-d '{
-		"email": "john@reese",
-		"role": "user"
+		"email": "john@reese"
 	}'
 ```
 
@@ -175,14 +167,12 @@ Example response:
 
 The invited user should receive an email with a link to a web page where he/she can set a password and therefor activate the account.
 
-## Password Reset
-
-### Create Password Reset
+## Reset Password
 
 Example request:
 
 ```
-curl --compressed -v localhost:8080/v1/accounts/passwordreset \
+curl --compressed -v localhost:8080/v1/accounts/password-reset \
 	-H "Content-Type: application/json" \
 	-u test_client_1:test_secret \
 	-d '{

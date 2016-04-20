@@ -21,7 +21,7 @@ func (suite *AccountsTestSuite) TestCreatePasswordReset() {
 	assert.NoError(suite.T(), err, "JSON marshalling failed")
 	r, err := http.NewRequest(
 		"POST",
-		"http://1.2.3.4/v1/accounts/passwordreset",
+		"http://1.2.3.4/v1/accounts/password-reset",
 		bytes.NewBuffer(payload),
 	)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
