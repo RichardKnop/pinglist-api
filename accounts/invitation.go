@@ -49,6 +49,44 @@ func (s *Service) FindInvitationByReference(reference string) (*Invitation, erro
 
 // InviteUser invites a new user and sends an invitation email
 func (s *Service) InviteUser(invitedByUser *User, invitationRequest *InvitationRequest) (*Invitation, error) {
+	// Begin a transaction
+	tx := s.db.Begin()
+
+	invitation, err := s.inviteUserCommon(tx, invitedByUser, invitationRequest)
+	if err != nil {
+		tx.Rollback() // rollback the transaction
+		return nil, err
+	}
+
+	// Commit the transaction
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback() // rollback the transaction
+		return nil, err
+	}
+
+	return invitation, nil
+}
+
+// InviteUserTx invites a new user and sends an invitation email in a transaction
+func (s *Service) InviteUserTx(tx *gorm.DB, invitedByUser *User, invitationRequest *InvitationRequest) (*Invitation, error) {
+	return s.inviteUserCommon(tx, invitedByUser, invitationRequest)
+}
+
+// ConfirmInvitation sets password on the oauth user object and deletes the invitation
+func (s *Service) ConfirmInvitation(invitation *Invitation, password string) error {
+	// Set the password on oauth user object
+	if err := s.GetOauthService().SetPassword(
+		invitation.InvitedUser.OauthUser,
+		password,
+	); err != nil {
+		return err
+	}
+
+	// Delete the Invitation
+	return s.db.Delete(invitation).Error
+}
+
+func (s *Service) inviteUserCommon(db *gorm.DB, invitedByUser *User, invitationRequest *InvitationRequest) (*Invitation, error) {
 	// Check if oauth user exists
 	if s.GetOauthService().UserExists(invitationRequest.Email) {
 		return nil, oauth.ErrUsernameTaken
@@ -60,17 +98,13 @@ func (s *Service) InviteUser(invitedByUser *User, invitationRequest *InvitationR
 		return nil, err
 	}
 
-	// Begin transaction
-	tx := s.db.Begin()
-
 	// Create a new oauth user without a password
 	oauthUser, err := s.GetOauthService().CreateUserTx(
-		tx,
+		db,
 		invitationRequest.Email,
 		"",
 	)
 	if err != nil {
-		tx.Rollback() // rollback the transaction
 		return nil, err
 	}
 
@@ -86,28 +120,19 @@ func (s *Service) InviteUser(invitedByUser *User, invitationRequest *InvitationR
 	)
 
 	// Save the user to the database
-	if err := tx.Create(invitedUser).Error; err != nil {
-		tx.Rollback() // rollback the transaction
+	if err := db.Create(invitedUser).Error; err != nil {
 		return nil, err
 	}
 
 	// Update the meta user ID field
-	err = tx.Model(oauthUser).UpdateColumn(oauth.User{MetaUserID: invitedUser.ID}).Error
+	err = db.Model(oauthUser).UpdateColumn(oauth.User{MetaUserID: invitedUser.ID}).Error
 	if err != nil {
-		tx.Rollback() // rollback the transaction
 		return nil, err
 	}
 
 	// Create a new invitation
 	invitation := NewInvitation(invitedUser, invitedByUser)
-	if err := tx.Create(invitation).Error; err != nil {
-		tx.Rollback() // rollback the transaction
-		return nil, err
-	}
-
-	// Commit the transaction
-	if err := tx.Commit().Error; err != nil {
-		tx.Rollback() // rollback the transaction
+	if err := db.Create(invitation).Error; err != nil {
 		return nil, err
 	}
 
@@ -123,7 +148,7 @@ func (s *Service) InviteUser(invitedByUser *User, invitationRequest *InvitationR
 
 		// If the email was sent successfully, update the email_sent flag
 		now := time.Now()
-		s.db.Model(invitation).UpdateColumns(Invitation{
+		db.Model(invitation).UpdateColumns(Invitation{
 			EmailSent:   true,
 			EmailSentAt: util.TimeOrNull(&now),
 			Model:       gorm.Model{UpdatedAt: time.Now()},
@@ -131,18 +156,4 @@ func (s *Service) InviteUser(invitedByUser *User, invitationRequest *InvitationR
 	}()
 
 	return invitation, nil
-}
-
-// ConfirmInvitation sets password on the oauth user object and deletes the invitation
-func (s *Service) ConfirmInvitation(invitation *Invitation, password string) error {
-	// Set the password on oauth user object
-	if err := s.GetOauthService().SetPassword(
-		invitation.InvitedUser.OauthUser,
-		password,
-	); err != nil {
-		return err
-	}
-
-	// Delete the Invitation
-	return s.db.Delete(invitation).Error
 }

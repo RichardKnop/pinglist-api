@@ -33,6 +33,7 @@ type ServiceInterface interface {
 	FindInvitationByID(invitationID uint) (*Invitation, error)
 	FindInvitationByReference(reference string) (*Invitation, error)
 	InviteUser(invitedByUser *User, invitationRequest *InvitationRequest) (*Invitation, error)
+	InviteUserTx(tx *gorm.DB, invitedByUser *User, invitationRequest *InvitationRequest) (*Invitation, error)
 	ConfirmInvitation(invitation *Invitation, password string) error
 	GetAccountFromQueryString(r *http.Request) (*Account, error)
 	GetUserFromQueryString(r *http.Request) (*User, error)

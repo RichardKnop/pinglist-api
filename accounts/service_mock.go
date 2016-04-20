@@ -477,6 +477,29 @@ func (_m *ServiceMock) InviteUser(invitedByUser *User, invitationRequest *Invita
 	return r0, r1
 }
 
+// InviteUserTx ...
+func (_m *ServiceMock) InviteUserTx(tx *gorm.DB, invitedByUser *User, invitationRequest *InvitationRequest) (*Invitation, error) {
+	ret := _m.Called(tx, invitedByUser, invitationRequest)
+
+	var r0 *Invitation
+	if rf, ok := ret.Get(0).(func(*gorm.DB, *User, *InvitationRequest) *Invitation); ok {
+		r0 = rf(tx, invitedByUser, invitationRequest)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*Invitation)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(*gorm.DB, *User, *InvitationRequest) error); ok {
+		r1 = rf(tx, invitedByUser, invitationRequest)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // ConfirmInvitation ...
 func (_m *ServiceMock) ConfirmInvitation(invitation *Invitation, password string) error {
 	ret := _m.Called(invitation, password)
