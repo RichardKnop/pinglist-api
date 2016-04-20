@@ -91,3 +91,7 @@ func (_m *ServiceMock) updateTeamHandler(w http.ResponseWriter, r *http.Request)
 func (_m *ServiceMock) deleteTeamHandler(w http.ResponseWriter, r *http.Request) {
 	_m.Called(w, r)
 }
+
+func (_m *ServiceMock) inviteUserHandler(w http.ResponseWriter, r *http.Request) {
+	_m.Called(w, r)
+}

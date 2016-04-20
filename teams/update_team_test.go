@@ -386,7 +386,7 @@ func (suite *TeamsTestSuite) TestUpdateTeam() {
 	suite.db.Model(new(Team)).Count(&countAfter)
 	assert.Equal(suite.T(), countBefore, countAfter)
 
-	// Fetch the created team
+	// Fetch the updated team
 	team := new(Team)
 	notFound := suite.db.Preload("Owner.OauthUser").Preload("Members.OauthUser").
 		First(team, testTeam.ID).RecordNotFound()

@@ -112,7 +112,7 @@ func (suite *TeamsTestSuite) TearDownSuite() {
 
 // The SetupTest method will be run before every test in the suite.
 func (suite *TeamsTestSuite) SetupTest() {
-	suite.db.Exec("delete from team_team_members;")
+	suite.db.Exec("DELETE FROM team_team_members;")
 	suite.db.Unscoped().Not("id", []int64{1, 2, 3, 4}).Delete(new(Team))
 
 	// Reset mocks
@@ -183,4 +183,14 @@ func (suite *TeamsTestSuite) mockFindUserByEmail(email string, user *accounts.Us
 		"FindUserByEmail",
 		email,
 	).Return(user, err)
+}
+
+// Mock invite user call to accounts service
+func (suite *TeamsTestSuite) mockInviteUserTx(invitedByUser *accounts.User, invitationRequest *accounts.InvitationRequest, invitation *accounts.Invitation, err error) {
+	suite.accountsServiceMock.On(
+		"InviteUserTx",
+		mock.AnythingOfType("*gorm.DB"),
+		invitedByUser,
+		invitationRequest,
+	).Return(invitation, err)
 }

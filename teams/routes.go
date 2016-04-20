@@ -61,5 +61,14 @@ func newRoutes(service ServiceInterface) []routes.Route {
 				accounts.NewUserAuthMiddleware(service.GetAccountsService()),
 			},
 		},
+		routes.Route{
+			Name:        "invite_user",
+			Method:      "POST",
+			Pattern:     "/teams/{id:[0-9]+}/invitations",
+			HandlerFunc: service.inviteUserHandler,
+			Middlewares: []negroni.Handler{
+				accounts.NewUserAuthMiddleware(service.GetAccountsService()),
+			},
+		},
 	}
 }
