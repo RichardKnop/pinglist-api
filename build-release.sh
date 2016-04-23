@@ -35,7 +35,7 @@ function main() {
   fi
 
   read -p "Container name (default: pinglist): " container_name
-  [ -z "$container_name" ] && container_name="pinglist"
+  [ -z "$container_name" ] && container_name="pinglist-api"
 
   read -p "S3 bucket (default: pinglist.releases): " s3_bucket
   [ -z "$s3_bucket" ] && s3_bucket="pinglist.releases"
