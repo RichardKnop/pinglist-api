@@ -14,15 +14,19 @@ import (
 )
 
 var (
-	// MinInterval limits alarm check interval to a sensible smallest period
-	MinInterval = uint(60)
+	// MinIntervalLimit limits alarm check interval to a sensible smallest period
+	MinIntervalLimit = uint(60)
+	// MaxResponseTimeLimit limits max response time to a sensible biggest value
+	MaxResponseTimeLimit = uint(10000)
 
 	// ErrAlarmNotFound ...
 	ErrAlarmNotFound = errors.New("Alarm not found")
 	// ErrMaxAlarmsLimitReached ...
 	ErrMaxAlarmsLimitReached = errors.New("Max alarms limit reached")
 	// ErrIntervalTooSmall ...
-	ErrIntervalTooSmall = fmt.Errorf("Minimal interval is %d seconds", MinInterval)
+	ErrIntervalTooSmall = fmt.Errorf("Minimal interval is %d seconds", MinIntervalLimit)
+	// ErrMaxResponseTimeTooBig ...
+	ErrMaxResponseTimeTooBig = fmt.Errorf("Max response time cannot be greater than %d ms", MaxResponseTimeLimit)
 )
 
 // HasOpenIncident returns true if the alarm already has such open incident
@@ -92,9 +96,14 @@ func (s *Service) createAlarm(user *accounts.User, alarmRequest *AlarmRequest) (
 		}
 	}
 
-	// Limit interval to a sensible smallest period (60 seconds)
-	if alarmRequest.Interval < MinInterval {
+	// Limit interval to a sensible smallest period (MinInterval constant)
+	if alarmRequest.Interval < MinIntervalLimit {
 		return nil, ErrIntervalTooSmall
+	}
+
+	// Limit max response time to a sensible biggest value (ErrTimeoutTooBig constact)
+	if alarmRequest.MaxResponseTime > MaxResponseTimeLimit {
+		return nil, ErrMaxResponseTimeTooBig
 	}
 
 	// Fetch the region from the database
@@ -139,9 +148,14 @@ func (s *Service) updateAlarm(alarm *Alarm, alarmRequest *AlarmRequest) error {
 		}
 	}
 
-	// Limit interval to a sensible smallest period (60 seconds)
-	if alarmRequest.Interval < MinInterval {
+	// Limit interval to a sensible smallest period (MinInterval constant)
+	if alarmRequest.Interval < MinIntervalLimit {
 		return ErrIntervalTooSmall
+	}
+
+	// Limit max response time to a sensible biggest value (ErrTimeoutTooBig constact)
+	if alarmRequest.MaxResponseTime > MaxResponseTimeLimit {
+		return ErrMaxResponseTimeTooBig
 	}
 
 	// Fetch the region from the database
