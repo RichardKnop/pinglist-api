@@ -2,8 +2,12 @@ package alarms
 
 import (
 	"errors"
+	"fmt"
 	"net"
 	"net/http"
+	"net/http/httptest"
+	"net/http/httputil"
+	"net/url"
 	"time"
 
 	"github.com/RichardKnop/pinglist-api/alarms/incidenttypes"
@@ -46,8 +50,31 @@ func (s *Service) CheckAlarm(alarmID uint, watermark time.Time) error {
 		return ErrCheckAlreadyTriggered
 	}
 
+	// Start with the default request URL
+	var requestURL = alarm.EndpointURL
+
+	// If we are going to proxy the request through a remote server
+	if alarm.Region.ID != s.cnf.AWS.Region {
+		// Parse the proxy URL
+		proxyURL, err := url.ParseRequestURI(alarm.Region.ProxyURL.String)
+		if err != nil {
+			return err
+		}
+
+		// Create a proxy server
+		frontendProxy := httptest.NewServer(httputil.NewSingleHostReverseProxy(proxyURL))
+		defer frontendProxy.Close()
+
+		// Set the request URL to use the proxy server
+		requestURL = fmt.Sprintf(
+			"%s?request_url=%s",
+			frontendProxy.URL,
+			alarm.EndpointURL,
+		)
+	}
+
 	// Prepare a request
-	req, err := http.NewRequest("GET", alarm.EndpointURL, nil)
+	req, err := http.NewRequest("GET", requestURL, nil)
 	if err != nil {
 		return err
 	}

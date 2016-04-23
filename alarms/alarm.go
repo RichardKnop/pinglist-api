@@ -67,7 +67,7 @@ func (s *Service) FindAlarmByID(alarmID uint) (*Alarm, error) {
 	// Fetch the alarm from the database
 	alarm := new(Alarm)
 	notFound := s.db.Preload("User.OauthUser").Preload("Incidents", "resolved_at IS NULL").
-		First(alarm, alarmID).RecordNotFound()
+		Preload("Region").First(alarm, alarmID).RecordNotFound()
 
 	// Not found
 	if notFound {

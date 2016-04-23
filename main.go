@@ -15,8 +15,8 @@ var (
 func init() {
 	// Initialise a CLI app
 	cliApp = cli.NewApp()
-	cliApp.Name = "Ping"
-	cliApp.Usage = "ping"
+	cliApp.Name = "Pinglist"
+	cliApp.Usage = "pinglist-api"
 	cliApp.Author = "Richard Knop"
 	cliApp.Email = "risoknop@gmail.com"
 	cliApp.Version = "0.0.0"

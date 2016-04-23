@@ -15,8 +15,9 @@ import (
 // Region is a region from where alarm checks will be run
 type Region struct {
 	database.TimestampModel
-	ID   string `gorm:"primary_key" sql:"type:varchar(20)"`
-	Name string `sql:"type:varchar(50);unique;not null"`
+	ID       string         `gorm:"primary_key" sql:"type:varchar(20)"`
+	Name     string         `sql:"type:varchar(50);unique;not null"`
+	ProxyURL sql.NullString `sql:"type:varchar(200)"`
 }
 
 // TableName specifies table name

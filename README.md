@@ -1,12 +1,12 @@
-[![Codeship Status for RichardKnop/ping](https://codeship.com/projects/fb4fa9f0-c2bb-0133-461d-4e6bd7c806c7/status?branch=master)](https://codeship.com/projects/137882)
+[![Codeship Status for RichardKnop/pinglist-api](https://codeship.com/projects/fb4fa9f0-c2bb-0133-461d-4e6bd7c806c7/status?branch=master)](https://codeship.com/projects/137882)
 
-# Ping List
+# Pinglist API
 
 API / website uptime & performance monitoring platform.
 
 # Index
 
-* [Ping List](#ping-list)
+* [Pinglist API](#pinglist-api)
 * [Index](#index)
 * [Docs](../../../ping-list/blob/master/docs/)
 * [Dependencies](#dependencies)
