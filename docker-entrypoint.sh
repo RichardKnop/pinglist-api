@@ -12,5 +12,5 @@
   alarms/fixtures/alarm_states.yml \
   alarms/fixtures/incident_types.yml
 
-# Finally, run the server
-/go/bin/pinglist-api runserver
+# Finally, run the web server and scheduler
+/go/bin/pinglist-api runall
