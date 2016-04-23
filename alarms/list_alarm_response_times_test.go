@@ -172,6 +172,7 @@ func (suite *AlarmsTestSuite) TestListAlarmResponseTimes() {
 				"response_times": jsonhal.Embedded(ResponseTimeResponses),
 			},
 		},
+		Uptime: 100.0, // TODO
 		Average: 289.5,
 		IncidentTypeCounts: map[string]int{
 			incidenttypes.SlowResponse: 0,

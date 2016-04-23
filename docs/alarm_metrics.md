@@ -56,7 +56,8 @@ Example response:
 			}
 		]
 	},
-	"average": 12345,
+	"uptime": 100.0,
+	"average": 12345.0,
 	"incident_type_counts": {
 		"slow_response": 0,
 		"timeout": 2,

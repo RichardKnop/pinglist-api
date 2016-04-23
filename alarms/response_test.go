@@ -203,8 +203,8 @@ func TestNewListIncidentsResponse(t *testing.T) {
 func TestNewListResponseTimesResponse(t *testing.T) {
 	// Some mock metrics.ResponseTime objects
 	responseTimes := []*metrics.ResponseTime{
-		new(metrics.ResponseTime),
-		new(metrics.ResponseTime),
+		&metrics.ResponseTime{Value: 2},
+		&metrics.ResponseTime{Value: 3},
 	}
 
 	// Mock aggregate incident type counts
@@ -272,6 +272,8 @@ func TestNewListResponseTimesResponse(t *testing.T) {
 	}
 
 	// Test the rest
+	assert.Equal(t, 100.0, response.Uptime) // TODO
+	assert.Equal(t, 2.5, response.Average)
 	assert.Equal(t, uint(10), response.Count)
 	assert.Equal(t, uint(2), response.Page)
 }

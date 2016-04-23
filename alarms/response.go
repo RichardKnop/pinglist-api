@@ -72,6 +72,7 @@ type ListIncidentsResponse struct {
 // ListResponseTimesResponse ...
 type ListResponseTimesResponse struct {
 	jsonhal.Hal
+	Uptime             float64        `json:"uptime"`
 	Average            float64        `json:"average"`
 	IncidentTypeCounts map[string]int `json:"incident_type_counts"`
 	Count              uint           `json:"count"`
@@ -324,6 +325,9 @@ func NewListResponseTimesResponse(count, page int, self, first, last, previous, 
 		}
 		metricResponses[i] = metricResponse
 	}
+
+	// Uptime
+	response.Uptime = 100.0 // TODO!
 
 	// Average response time
 	var sum float64
