@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/RichardKnop/pinglist-api/util"
+	"github.com/RichardKnop/pinglist-api/pagination"
 )
 
 // AllowedDateTruncMap ...
@@ -24,30 +24,18 @@ func GetParamsFromQueryString(r *http.Request) (string, *time.Time, *time.Time, 
 		from, to  *time.Time
 	)
 
+	// Get from / to time range params
+	from, to, err := pagination.GetFromTo(r)
+	if err != nil {
+		return "", nil, nil, err
+	}
+
 	// Get "date_trunc" param from the querystring
 	if r.URL.Query().Get("date_trunc") != "" {
 		dateTrunc = r.URL.Query().Get("date_trunc")
 		if ok, _ := AllowedDateTruncMap[dateTrunc]; !ok {
 			return "", nil, nil, ErrInvalidDateTrunc
 		}
-	}
-
-	// Get "from" param from the querystring
-	if r.URL.Query().Get("from") != "" {
-		t, err := util.ParseTimestamp(r.URL.Query().Get("from"))
-		if err != nil {
-			return "", nil, nil, err
-		}
-		from = &t
-	}
-
-	// Get "to" param from the querystring
-	if r.URL.Query().Get("to") != "" {
-		t, err := util.ParseTimestamp(r.URL.Query().Get("to"))
-		if err != nil {
-			return "", nil, nil, err
-		}
-		to = &t
 	}
 
 	return dateTrunc, from, to, nil

@@ -56,7 +56,7 @@ func (s *Service) listAlarmIncidentsHandler(w http.ResponseWriter, r *http.Reque
 	}
 
 	// Get from / to
-	from, to, err := GetTimeRangeParamsFromQueryString(r)
+	from, to, err := pagination.GetFromTo(r)
 	if err != nil {
 		response.Error(w, err.Error(), http.StatusBadRequest)
 		return

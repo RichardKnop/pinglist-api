@@ -7,6 +7,9 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"time"
+
+	"github.com/RichardKnop/pinglist-api/util"
 )
 
 var (
@@ -121,4 +124,31 @@ func GetPaginationLinks(urlObject *url.URL, count, page, limit int) (string, str
 // GetOffsetForPage returns an offset for a page
 func GetOffsetForPage(count, page, limit int) int {
 	return limit * (page - 1)
+}
+
+// GetFromTo parses querystring and returns from / to time range params
+func GetFromTo(r *http.Request) (*time.Time, *time.Time, error) {
+	var (
+		from, to *time.Time
+	)
+
+	// Get "from" param from the querystring
+	if r.URL.Query().Get("from") != "" {
+		t, err := util.ParseTimestamp(r.URL.Query().Get("from"))
+		if err != nil {
+			return nil, nil, err
+		}
+		from = &t
+	}
+
+	// Get "to" param from the querystring
+	if r.URL.Query().Get("to") != "" {
+		t, err := util.ParseTimestamp(r.URL.Query().Get("to"))
+		if err != nil {
+			return nil, nil, err
+		}
+		to = &t
+	}
+
+	return from, to, nil
 }
