@@ -49,6 +49,7 @@ func (a *Adapter) GetMe(accessToken string) (fb.Result, error) {
 	return fb.Get("/me", fb.Params{
 		"fields": []string{
 			"id",
+			"name",
 			"first_name",
 			"last_name",
 			"email",

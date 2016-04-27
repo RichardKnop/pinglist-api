@@ -148,20 +148,31 @@ func (s *Service) UpdateUser(user *User, userRequest *UserRequest) error {
 // GetOrCreateFacebookUser either returns an existing user
 // or updates an existing email user with facebook ID or creates a new user
 func (s *Service) GetOrCreateFacebookUser(account *Account, facebookID string, userRequest *UserRequest) (*User, error) {
-	// Does a user with this facebook ID already exist?
-	user, err := s.FindUserByFacebookID(facebookID)
+	var (
+		user       *User
+		err        error
+		userExists bool
+	)
 
-	// User with this facebook ID alraedy exists, return
+	// Does a user with this facebook ID already exist?
+	user, err = s.FindUserByFacebookID(facebookID)
+	// User with this facebook ID alraedy exists
 	if err == nil {
-		return user, nil
+		userExists = true
 	}
 
-	// Does a user with this email already exist?
-	user, err = s.FindUserByEmail(userRequest.Email)
+	if userExists == false {
+		// Does a user with this email already exist?
+		user, err = s.FindUserByEmail(userRequest.Email)
+		// User with this email already exists
+		if err == nil {
+			userExists = true
+		}
+	}
 
-	// User with this email already exists, update the record and return
-	if err == nil {
-		// Set the facebook ID and first / last name
+	// User already exists, update the record and return
+	if userExists {
+		// Set the facebook ID, first name,  last name
 		err = s.db.Model(user).UpdateColumns(User{
 			FacebookID: util.StringOrNull(facebookID),
 			FirstName:  util.StringOrNull(userRequest.FirstName),
