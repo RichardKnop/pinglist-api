@@ -85,7 +85,7 @@ func (s *Service) listTeamsHandler(w http.ResponseWriter, r *http.Request) {
 	self := util.GetCurrentURL(r)
 	listTeamsResponse, err := NewListTeamsResponse(
 		count, page,
-		self, first, last, next, previous,
+		self, first, last, previous, next,
 		teams,
 	)
 	if err != nil {

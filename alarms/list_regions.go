@@ -30,7 +30,7 @@ func (s *Service) listRegionsHandler(w http.ResponseWriter, r *http.Request) {
 	next, previous := "", ""
 	listRegionsResponse, err := NewListRegionsResponse(
 		count, page,
-		self, first, last, next, previous,
+		self, first, last, previous, next,
 		regions,
 	)
 	if err != nil {

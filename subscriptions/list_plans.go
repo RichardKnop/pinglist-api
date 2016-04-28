@@ -51,7 +51,7 @@ func (s *Service) listPlansHandler(w http.ResponseWriter, r *http.Request) {
 	self := util.GetCurrentURL(r)
 	listPlansResponse, err := NewListPlansResponse(
 		count, page,
-		self, first, last, next, previous,
+		self, first, last, previous, next,
 		plans,
 	)
 	if err != nil {

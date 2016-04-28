@@ -85,7 +85,7 @@ func (s *Service) listAlarmsHandler(w http.ResponseWriter, r *http.Request) {
 	self := util.GetCurrentURL(r)
 	listAlarmsResponse, err := NewListAlarmsResponse(
 		count, page,
-		self, first, last, next, previous,
+		self, first, last, previous, next,
 		alarms,
 	)
 	if err != nil {

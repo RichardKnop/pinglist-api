@@ -118,7 +118,7 @@ func (s *Service) listAlarmResponseTimesHandler(w http.ResponseWriter, r *http.R
 	self := util.GetCurrentURL(r)
 	listResponseTimesResponse, err := NewListResponseTimesResponse(
 		count, page,
-		self, first, last, next, previous,
+		self, first, last, previous, next,
 		responseTimes, incidentTypeCounts,
 	)
 	if err != nil {

@@ -85,7 +85,7 @@ func (s *Service) listCardsHandler(w http.ResponseWriter, r *http.Request) {
 	self := util.GetCurrentURL(r)
 	listCardsResponse, err := NewListCardsResponse(
 		count, page,
-		self, first, last, next, previous,
+		self, first, last, previous, next,
 		cards,
 	)
 	if err != nil {

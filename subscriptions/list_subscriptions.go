@@ -85,7 +85,7 @@ func (s *Service) listSubscriptionsHandler(w http.ResponseWriter, r *http.Reques
 	self := util.GetCurrentURL(r)
 	listSubscriptionsResponse, err := NewListSubscriptionsResponse(
 		count, page,
-		self, first, last, next, previous,
+		self, first, last, previous, next,
 		subscriptions,
 	)
 	if err != nil {

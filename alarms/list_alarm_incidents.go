@@ -107,7 +107,7 @@ func (s *Service) listAlarmIncidentsHandler(w http.ResponseWriter, r *http.Reque
 	self := util.GetCurrentURL(r)
 	listIncidentsResponse, err := NewListIncidentsResponse(
 		count, page,
-		self, first, last, next, previous,
+		self, first, last, previous, next,
 		incidents,
 	)
 	if err != nil {
