@@ -11,7 +11,7 @@ curl --compressed -v "localhost:8080/v1/alarms/1/response-times?date_trunc=day&f
 	-H "Authorization: Bearer 00ccd40e-72ca-4e79-a4b6-67c95e2e3f1c"
 ```
 
-Use `offset` and `limit` query string parameters to paginate and `order_by` to order the results.
+Use `page` and `limit` query string parameters to paginate and `order_by` to order the results.
 
 Use `date_trunc` to query for average hourly/daily results:
 

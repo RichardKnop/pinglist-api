@@ -227,7 +227,7 @@ curl --compressed -v "localhost:8080/v1/subscriptions" \
 	-H "Authorization: Bearer 00ccd40e-72ca-4e79-a4b6-67c95e2e3f1c"
 ```
 
-Use `offset` and `limit` query string parameters to paginate and `order_by` to order the results.
+Use `page` and `limit` query string parameters to paginate and `order_by` to order the results.
 
 Optionally filter results with `user_id` query string parameter.
 
