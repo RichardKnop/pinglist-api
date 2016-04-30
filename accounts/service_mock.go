@@ -583,3 +583,7 @@ func (_m *ServiceMock) inviteUserHandler(w http.ResponseWriter, r *http.Request)
 func (_m *ServiceMock) createPasswordResetHandler(w http.ResponseWriter, r *http.Request) {
 	_m.Called(w, r)
 }
+
+func (_m *ServiceMock) contactHandler(w http.ResponseWriter, r *http.Request) {
+	_m.Called(w, r)
+}

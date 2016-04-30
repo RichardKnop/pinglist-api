@@ -6,12 +6,12 @@
   fields:
     plan_id: 'personal'
     name: 'Personal'
-    description: 'Personal website and/or a blog.'
+    description: 'Monitor 5 websites or APIs.'
     currency: 'USD'
-    amount: 250
-    trial_period: 30
+    amount: 500
+    trial_period: 15
     interval: 30
-    max_alarms: 2
+    max_alarms: 5
     max_teams: 0
     max_members_per_team: 0
     created_at: 'ON_INSERT_NOW()'
@@ -23,12 +23,12 @@
   fields:
     plan_id: 'professional'
     name: 'Professional'
-    description: 'Monitor up to 10 different websites or APIs.'
+    description: 'Monitor 15 websites or APIs.'
     currency: 'USD'
-    amount: 1000
-    trial_period: 30
+    amount: 1250
+    trial_period: 15
     interval: 30
-    max_alarms: 10
+    max_alarms: 15
     max_teams: 0
     max_members_per_team: 0
     created_at: 'ON_INSERT_NOW()'
@@ -40,12 +40,12 @@
   fields:
     plan_id: 'startup'
     name: 'Startup'
-    description: 'Create a team of 10 members and monitor up to 100 APIs.'
+    description: 'Monitor 75 websites or APIs. Create a team with up to 10 members.'
     currency: 'USD'
-    amount: 7500
-    trial_period: 30
+    amount: 5000
+    trial_period: 15
     interval: 30
-    max_alarms: 100
+    max_alarms: 75
     max_teams: 1
     max_members_per_team: 10
     created_at: 'ON_INSERT_NOW()'
@@ -57,30 +57,13 @@
   fields:
     plan_id: 'business'
     name: 'Business'
-    description: 'Create 5 teams of 10 members each and monitor up to 200 APIs.'
+    description: 'Monitor 200 websites or APIs. Create 10 teams with up to 20 members each.'
     currency: 'USD'
     amount: 15000
-    trial_period: 30
+    trial_period: 15
     interval: 30
-    max_alarms: 200
-    max_teams: 5
-    max_members_per_team: 10
-    created_at: 'ON_INSERT_NOW()'
-    updated_at: 'ON_UPDATE_NOW()'
-
-- table: 'subscription_plans'
-  pk:
-    id: 5
-  fields:
-    plan_id: 'enterprise'
-    name: 'Enterprise'
-    description: 'Create 10 teams of 10 members each and monitor up to 500 APIs.'
-    currency: 'USD'
-    amount: 35000
-    trial_period: 30
-    interval: 30
-    max_alarms: 500
+    max_alarms: 300
     max_teams: 10
-    max_members_per_team: 10
+    max_members_per_team: 20
     created_at: 'ON_INSERT_NOW()'
     updated_at: 'ON_UPDATE_NOW()'
