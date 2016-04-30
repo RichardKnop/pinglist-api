@@ -87,7 +87,7 @@ func (s *Service) createSubscription(user *accounts.User, subscriptionRequest *S
 	}
 
 	// Calculate trial end
-	trialWillEndAt, err := s.calculateTrialEnd(customer, plan)
+	trialPeriodDuration, err := s.calculateTrialPeriodDuration(customer, plan)
 	if err != nil {
 		return nil, err
 	}
@@ -99,7 +99,7 @@ func (s *Service) createSubscription(user *accounts.User, subscriptionRequest *S
 	stripeSubscription, err := s.stripeAdapter.CreateSubscription(
 		customer.CustomerID,
 		plan.PlanID,
-		trialWillEndAt.Unix(),
+		time.Now().Add(trialPeriodDuration).Unix(),
 	)
 	if err != nil {
 		tx.Rollback() // rollback the transaction

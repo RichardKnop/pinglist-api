@@ -28,17 +28,17 @@ func (s *Service) FindActiveSubscriptionByUserID(userID uint) (*Subscription, er
 	return subscription, nil
 }
 
-// calculateTrialEnd calculates when the trial period should end
-// If the user has been subscribed to the same plane before,
-// decrease the trial period by the time already spent
-func (s *Service) calculateTrialEnd(customer *Customer, plan *Plan) (*time.Time, error) {
+// calculateTrialPeriodDuration calculates duration of a trial period
+// If the user has been subscribed to the same plan before, the trial period
+// gets decreased by the time already spent in the trialing mode
+func (s *Service) calculateTrialPeriodDuration(customer *Customer, plan *Plan) (time.Duration, error) {
 	trialPeriodDurarion := time.Duration(plan.TrialPeriod) * time.Hour * 24
 	var prevSubscriptions []*Subscription
 	if err := s.db.Where("cancelled_at IS NOT NULL").Where(map[string]interface{}{
 		"plan_id":     plan.ID,
 		"customer_id": customer.ID,
 	}).Find(&prevSubscriptions).Error; err != nil {
-		return nil, err
+		return 0, err
 	}
 	for _, prevSubscription := range prevSubscriptions {
 		delta := prevSubscription.CancelledAt.Time.Sub(prevSubscription.StartedAt.Time)
@@ -47,6 +47,5 @@ func (s *Service) calculateTrialEnd(customer *Customer, plan *Plan) (*time.Time,
 	if trialPeriodDurarion < 0 {
 		trialPeriodDurarion = 0
 	}
-	trialEnd := time.Now().Add(trialPeriodDurarion)
-	return &trialEnd, nil
+	return trialPeriodDurarion, nil
 }
