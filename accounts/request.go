@@ -20,3 +20,11 @@ type InvitationRequest struct {
 type PasswordResetRequest struct {
 	Email string `json:"email"`
 }
+
+// ContactRequest ...
+type ContactRequest struct {
+	Name    string `json:"name"`
+	Email   string `json:"email"`
+	Subject string `json:"subject"`
+	Message string `json:"message"`
+}

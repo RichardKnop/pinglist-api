@@ -93,6 +93,7 @@ curl -L http://localhost:2379/v2/keys/config/pinglist.json -XPUT -d value='{
 		"Scheme": "http",
 		"Host": "localhost:8080"
 	},
+	"ContactEmail": "contact@pingli.st",
 	"IsDevelopment": true
 }'
 ```

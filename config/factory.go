@@ -60,6 +60,7 @@ var cnf = &Config{
 		Scheme: "http",
 		Host:   "localhost:8080",
 	},
+	ContactEmail:  "contact@pingli.st",
 	IsDevelopment: true,
 }
 

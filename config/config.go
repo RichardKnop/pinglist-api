@@ -73,5 +73,6 @@ type Config struct {
 	Sendgrid      SendgridConfig
 	Stripe        StripeConfig
 	Web           WebConfig
+	ContactEmail  string
 	IsDevelopment bool
 }

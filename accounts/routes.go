@@ -69,5 +69,14 @@ func newRoutes(service ServiceInterface) []routes.Route {
 				NewAccountAuthMiddleware(service),
 			},
 		},
+		routes.Route{
+			Name:        "contact",
+			Method:      "POST",
+			Pattern:     "/contact",
+			HandlerFunc: service.contactHandler,
+			Middlewares: []negroni.Handler{
+				NewAccountAuthMiddleware(service),
+			},
+		},
 	}
 }
