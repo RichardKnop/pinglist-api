@@ -3,8 +3,6 @@ package subscriptions
 import (
 	"errors"
 	"time"
-
-	stripeSub "github.com/stripe/stripe-go/sub"
 )
 
 var (
@@ -16,11 +14,11 @@ var (
 func (s *Service) FindActiveSubscriptionByUserID(userID uint) (*Subscription, error) {
 	// Fetch the subscription from the database
 	subscription := new(Subscription)
-	where := "subscription_customers.user_id = ? AND status != ? AND cancelled_at IS NULL"
+	where := "subscription_customers.user_id = ? AND ended_at IS NULL"
 	notFound := s.db.Preload("Customer.User").Preload("Plan").
 		Joins("inner join subscription_customers on subscription_customers.id = subscription_subscriptions.customer_id").
 		Joins("inner join account_users on account_users.id = subscription_customers.user_id").
-		Where(where, userID, string(stripeSub.Canceled)).Last(subscription).RecordNotFound()
+		Where(where, userID).Last(subscription).RecordNotFound()
 
 	// Not found
 	if notFound {
