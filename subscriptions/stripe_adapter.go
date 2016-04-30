@@ -108,7 +108,10 @@ func (a *StripeAdapter) UpdateSubscription(subscriptionID, customerID, planID st
 func (a *StripeAdapter) CancelSubscription(subscriptionID, customerID string) (*stripe.Sub, error) {
 	return stripeSubscription.Cancel(
 		subscriptionID,
-		&stripe.SubParams{Customer: customerID},
+		&stripe.SubParams{
+			Customer:  customerID,
+			EndCancel: true, // sets at_period_end parameter to true
+		},
 	)
 }
 
