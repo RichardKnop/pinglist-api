@@ -8,7 +8,7 @@ import (
 	stripeCard "github.com/stripe/stripe-go/card"
 	stripeCustomer "github.com/stripe/stripe-go/customer"
 	stripeEvent "github.com/stripe/stripe-go/event"
-	stripeSubscription "github.com/stripe/stripe-go/sub"
+	stripeSub "github.com/stripe/stripe-go/sub"
 )
 
 // StripeAdapter ...
@@ -74,12 +74,13 @@ func (a *StripeAdapter) DeleteCard(cardID, customerID string) (*stripe.Card, err
 }
 
 // CreateSubscription creates a new subscription
-func (a *StripeAdapter) CreateSubscription(customerID, planID string) (*stripe.Sub, error) {
+func (a *StripeAdapter) CreateSubscription(customerID, planID string, trialEnd int64) (*stripe.Sub, error) {
 	params := &stripe.SubParams{
 		Customer: customerID,
 		Plan:     planID,
+		TrialEnd: trialEnd,
 	}
-	return stripeSubscription.New(params)
+	return stripeSub.New(params)
 }
 
 // GetSubscription retrieves a subscription
@@ -87,7 +88,7 @@ func (a *StripeAdapter) GetSubscription(subscriptionID, customerID string) (*str
 	params := &stripe.SubParams{
 		Customer: customerID,
 	}
-	return stripeSubscription.Get(subscriptionID, params)
+	return stripeSub.Get(subscriptionID, params)
 }
 
 // UpdateSubscription upgrades or downgrades a subscription plan and/or
@@ -101,12 +102,12 @@ func (a *StripeAdapter) UpdateSubscription(subscriptionID, customerID, planID st
 		Customer: customerID,
 		Plan:     planID,
 	}
-	return stripeSubscription.Update(s.ID, params)
+	return stripeSub.Update(s.ID, params)
 }
 
 // CancelSubscription cancels a subscription
 func (a *StripeAdapter) CancelSubscription(subscriptionID, customerID string) (*stripe.Sub, error) {
-	return stripeSubscription.Cancel(
+	return stripeSub.Cancel(
 		subscriptionID,
 		&stripe.SubParams{
 			Customer:  customerID,

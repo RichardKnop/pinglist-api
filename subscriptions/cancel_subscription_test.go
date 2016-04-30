@@ -11,6 +11,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
 	stripe "github.com/stripe/stripe-go"
+	stripeSub "github.com/stripe/stripe-go/sub"
 	stripeToken "github.com/stripe/stripe-go/token"
 )
 
@@ -114,10 +115,10 @@ func (suite *SubscriptionsTestSuite) TestCancelSubscriptionWithoutPermission() {
 		First(subscription, testSubscription.ID).RecordNotFound()
 	assert.False(suite.T(), notFound)
 
-	// Check that the subscription is not cancelled
+	// Check that the subscription has not been cancelled
 	assert.False(suite.T(), subscription.CancelledAt.Valid)
 	assert.False(suite.T(), subscription.EndedAt.Valid)
-	assert.NotEqual(suite.T(), "canceled", subscription.Status)
+	assert.Equal(suite.T(), string(stripeSub.Trialing), subscription.Status)
 
 	// Check the response body
 	expectedJSON, err := json.Marshal(
@@ -224,10 +225,12 @@ func (suite *SubscriptionsTestSuite) TestCancelSubscription() {
 		First(subscription, testSubscription.ID).RecordNotFound()
 	assert.False(suite.T(), notFound)
 
-	// Check that the subscription is cancelled now
+	// Check that the subscription has been cancelled
+	// Cancelled at should be set, ended at should still be null
+	// Status should remain trialing as subscription will run until the period end
 	assert.True(suite.T(), subscription.CancelledAt.Valid)
-	assert.True(suite.T(), subscription.EndedAt.Valid)
-	assert.Equal(suite.T(), "canceled", subscription.Status)
+	assert.False(suite.T(), subscription.EndedAt.Valid)
+	assert.Equal(suite.T(), string(stripeSub.Trialing), subscription.Status)
 
 	// Check the response body
 	assert.Equal(

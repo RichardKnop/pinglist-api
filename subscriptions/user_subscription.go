@@ -2,8 +2,9 @@ package subscriptions
 
 import (
 	"errors"
+	"time"
 
-	"github.com/RichardKnop/pinglist-api/subscriptions/subscriptionstatuses"
+	stripeSub "github.com/stripe/stripe-go/sub"
 )
 
 var (
@@ -20,7 +21,7 @@ func (s *Service) FindActiveSubscriptionByUserID(userID uint) (*Subscription, er
 	notFound := s.db.Preload("Customer.User").Preload("Plan").
 		Joins("inner join subscription_customers on subscription_customers.id = subscription_subscriptions.customer_id").
 		Joins("inner join account_users on account_users.id = subscription_customers.user_id").
-		Where(where, userID, subscriptionstatuses.Cancelled).First(subscription).RecordNotFound()
+		Where(where, userID, string(stripeSub.Canceled)).First(subscription).RecordNotFound()
 
 	// Not found
 	if notFound {
@@ -28,4 +29,27 @@ func (s *Service) FindActiveSubscriptionByUserID(userID uint) (*Subscription, er
 	}
 
 	return subscription, nil
+}
+
+// calculateTrialEnd calculates when the trial period should end
+// If the user has been subscribed to the same plane before,
+// decrease the trial period by the time already spent
+func (s *Service) calculateTrialEnd(customer *Customer, plan *Plan) (*time.Time, error) {
+	trialPeriodDurarion := time.Duration(plan.TrialPeriod) * time.Hour * 24
+	var prevSubscriptions []*Subscription
+	if err := s.db.Where("cancelled_at IS NOT NULL").Where(map[string]interface{}{
+		"plan_id":     plan.ID,
+		"customer_id": customer.ID,
+	}).Find(&prevSubscriptions).Error; err != nil {
+		return nil, err
+	}
+	for _, prevSubscription := range prevSubscriptions {
+		delta := prevSubscription.CancelledAt.Time.Sub(prevSubscription.StartedAt.Time)
+		trialPeriodDurarion -= delta
+	}
+	if trialPeriodDurarion < 0 {
+		trialPeriodDurarion = 0
+	}
+	trialEnd := time.Now().Add(trialPeriodDurarion)
+	return &trialEnd, nil
 }

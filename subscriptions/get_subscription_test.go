@@ -10,10 +10,10 @@ import (
 	"time"
 
 	"github.com/RichardKnop/jsonhal"
-	"github.com/RichardKnop/pinglist-api/subscriptions/subscriptionstatuses"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
 	stripe "github.com/stripe/stripe-go"
+	stripeSub "github.com/stripe/stripe-go/sub"
 	stripeToken "github.com/stripe/stripe-go/token"
 )
 
@@ -228,7 +228,7 @@ func (suite *SubscriptionsTestSuite) TestGetSubscription() {
 		PeriodEnd:      testSubscription.PeriodEnd.Time.UTC().Format(time.RFC3339),
 		TrialStart:     testSubscription.TrialStart.Time.UTC().Format(time.RFC3339),
 		TrialEnd:       testSubscription.TrialEnd.Time.UTC().Format(time.RFC3339),
-		Status:         subscriptionstatuses.Trialing,
+		Status:         string(stripeSub.Trialing),
 		CreatedAt:      testSubscription.CreatedAt.UTC().Format(time.RFC3339),
 		UpdatedAt:      testSubscription.UpdatedAt.UTC().Format(time.RFC3339),
 	}

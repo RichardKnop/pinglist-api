@@ -86,6 +86,12 @@ func (s *Service) createSubscription(user *accounts.User, subscriptionRequest *S
 		return nil, err
 	}
 
+	// Calculate trial end
+	trialWillEndAt, err := s.calculateTrialEnd(customer, plan)
+	if err != nil {
+		return nil, err
+	}
+
 	// Begin a transaction
 	tx := s.db.Begin()
 
@@ -93,6 +99,7 @@ func (s *Service) createSubscription(user *accounts.User, subscriptionRequest *S
 	stripeSubscription, err := s.stripeAdapter.CreateSubscription(
 		customer.CustomerID,
 		plan.PlanID,
+		trialWillEndAt.Unix(),
 	)
 	if err != nil {
 		tx.Rollback() // rollback the transaction
@@ -172,6 +179,41 @@ func (s *Service) updateSubscription(subscription *Subscription, subscriptionReq
 	return nil
 }
 
+// cancelSubscription cancels a subscription immediatelly
+func (s *Service) cancelSubscription(subscription *Subscription) error {
+	// Begin a transaction
+	tx := s.db.Begin()
+
+	logger.Info(subscription.SubscriptionID)
+
+	// Cancel the subscription
+	stripeSubscription, err := s.stripeAdapter.CancelSubscription(
+		subscription.SubscriptionID,
+		subscription.Customer.CustomerID,
+	)
+	if err != nil {
+		tx.Rollback() // rollback the transaction
+		return err
+	}
+
+	logger.Infof("Cancelled subscription: %s", subscription.SubscriptionID)
+
+	// Update the subscription
+	err = s.updateSusbcriptionCommon(tx, subscription, subscription.Plan, stripeSubscription)
+	if err != nil {
+		tx.Rollback() // rollback the transaction
+		return err
+	}
+
+	// Commit the transaction
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback() // rollback the transaction
+		return err
+	}
+
+	return nil
+}
+
 // updateSusbcriptionCommon updates a subscription
 func (s *Service) updateSusbcriptionCommon(tx *gorm.DB, subscription *Subscription, plan *Plan, stripeSubscription *stripe.Sub) error {
 	// Parse subscription times
@@ -193,43 +235,6 @@ func (s *Service) updateSusbcriptionCommon(tx *gorm.DB, subscription *Subscripti
 		return err
 	}
 	subscription.Plan = plan
-
-	return nil
-}
-
-// cancelSubscription cancels a subscription immediatelly
-func (s *Service) cancelSubscription(subscription *Subscription) error {
-	// Begin a transaction
-	tx := s.db.Begin()
-
-	logger.Info(subscription.SubscriptionID)
-
-	// Cancel the subscription
-	stripeSubscription, err := s.stripeAdapter.CancelSubscription(
-		subscription.SubscriptionID,
-		subscription.Customer.CustomerID,
-	)
-	if err != nil {
-		tx.Rollback() // rollback the transaction
-		return err
-	}
-
-	logger.Info(stripeSubscription.ID)
-
-	logger.Infof("Cancelled subscription: %s", subscription.SubscriptionID)
-
-	// Update the subscription
-	err = s.updateSusbcriptionCommon(tx, subscription, subscription.Plan, stripeSubscription)
-	if err != nil {
-		tx.Rollback() // rollback the transaction
-		return err
-	}
-
-	// Commit the transaction
-	if err := tx.Commit().Error; err != nil {
-		tx.Rollback() // rollback the transaction
-		return err
-	}
 
 	return nil
 }
