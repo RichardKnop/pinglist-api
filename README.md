@@ -91,7 +91,9 @@ curl -L http://localhost:2379/v2/keys/config/pinglist.json -XPUT -d value='{
 	},
 	"Web": {
 		"Scheme": "http",
-		"Host": "localhost:8080"
+		"Host": "localhost:8080",
+		"AppScheme": "http",
+		"AppHost": "localhost:8000",
 	},
 	"ContactEmail": "contact@pingli.st",
 	"IsDevelopment": true

@@ -57,8 +57,10 @@ var cnf = &Config{
 		PublishableKey: "stripe_publishable_key",
 	},
 	Web: WebConfig{
-		Scheme: "http",
-		Host:   "localhost:8080",
+		Scheme:    "http",
+		Host:      "localhost:8080",
+		AppScheme: "http",
+		AppHost:   "localhost:8000",
 	},
 	ContactEmail:  "contact@pingli.st",
 	IsDevelopment: true,
