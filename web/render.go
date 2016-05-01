@@ -44,7 +44,7 @@ func init() {
 // renderTemplate is a wrapper around template.ExecuteTemplate.
 // It writes into a bytes.Buffer before writing to the http.ResponseWriter to catch
 // any errors resulting from populating the template.
-func renderTemplate(w http.ResponseWriter, name string, data map[string]interface{}) error {
+func (s *Service) renderTemplate(w http.ResponseWriter, name string, data map[string]interface{}) error {
 	// Ensure the template exists in the map.
 	tmpl, ok := templates[name]
 	if !ok {
@@ -55,6 +55,14 @@ func renderTemplate(w http.ResponseWriter, name string, data map[string]interfac
 	buf := bufpool.Get()
 	defer bufpool.Put(buf)
 
+	// Add app link to the data
+	data["appLink"] = fmt.Sprintf(
+		"%s://%s",
+		s.cnf.Web.AppScheme,
+		s.cnf.Web.AppHost,
+	)
+
+	// Execute the template
 	err := tmpl.ExecuteTemplate(buf, "base", data)
 	if err != nil {
 		return err

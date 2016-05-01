@@ -16,7 +16,7 @@ func (s *Service) loginForm(w http.ResponseWriter, r *http.Request) {
 
 	// Render the template
 	errMsg, _ := sessionService.GetFlashMessage()
-	renderTemplate(w, "login.html", map[string]interface{}{
+	s.renderTemplate(w, "login.html", map[string]interface{}{
 		"error":       errMsg,
 		"queryString": getQueryString(r.URL.Query()),
 	})

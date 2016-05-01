@@ -19,7 +19,7 @@ func (s *Service) confirmEmail(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Render the template
-	renderTemplate(w, "confirm-email.html", map[string]interface{}{
+	s.renderTemplate(w, "confirm-email.html", map[string]interface{}{
 		"error":      confirmationErr,
 		"hideLogout": true,
 	})

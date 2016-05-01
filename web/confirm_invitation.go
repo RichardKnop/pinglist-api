@@ -14,7 +14,7 @@ func (s *Service) confirmInvitationForm(w http.ResponseWriter, r *http.Request) 
 
 	// Render the template
 	errMsg, _ := sessionService.GetFlashMessage()
-	renderTemplate(w, "confirm-invitation.html", map[string]interface{}{
+	s.renderTemplate(w, "confirm-invitation.html", map[string]interface{}{
 		"error":       errMsg,
 		"queryString": getQueryString(r.URL.Query()),
 	})

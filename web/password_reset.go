@@ -21,7 +21,7 @@ func (s *Service) passwordResetForm(w http.ResponseWriter, r *http.Request) {
 
 	// Render the template
 	errMsg, _ := sessionService.GetFlashMessage()
-	renderTemplate(w, "password-reset.html", map[string]interface{}{
+	s.renderTemplate(w, "password-reset.html", map[string]interface{}{
 		"error":       errMsg,
 		"queryString": getQueryString(r.URL.Query()),
 	})

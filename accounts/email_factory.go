@@ -7,8 +7,6 @@ import (
 	"github.com/RichardKnop/pinglist-api/email"
 )
 
-var theDomain = "www.pingli.st"
-
 var confirmationEmailTemplate = `
 Hello %s,
 
@@ -63,6 +61,13 @@ func (f *EmailFactory) NewConfirmationEmail(confirmation *Confirmation) *email.E
 		name = "friend"
 	}
 
+	// App link
+	appLink := fmt.Sprintf(
+		"%s://%s",
+		f.cnf.Web.AppScheme,
+		f.cnf.Web.AppHost,
+	)
+
 	// Confirmation link where the user can confirm his/her email
 	link := fmt.Sprintf(
 		"%s://%s/web/confirm-email/%s",
@@ -78,9 +83,9 @@ func (f *EmailFactory) NewConfirmationEmail(confirmation *Confirmation) *email.E
 	emailText := fmt.Sprintf(
 		confirmationEmailTemplate,
 		name,
-		theDomain,
+		appLink,
 		link,
-		theDomain,
+		appLink,
 	)
 
 	return &email.Email{
@@ -108,6 +113,13 @@ func (f *EmailFactory) NewInvitationEmail(invitation *Invitation) *email.Email {
 		invitedBy = invitation.InvitedByUser.OauthUser.Username
 	}
 
+	// App link
+	appLink := fmt.Sprintf(
+		"%s://%s",
+		f.cnf.Web.AppScheme,
+		f.cnf.Web.AppHost,
+	)
+
 	// Confirmation link where the invited user can set his/her password
 	link := fmt.Sprintf(
 		"%s://%s/web/confirm-invitation/%s",
@@ -123,10 +135,10 @@ func (f *EmailFactory) NewInvitationEmail(invitation *Invitation) *email.Email {
 	emailText := fmt.Sprintf(
 		invitationEmailTemplate,
 		name,
-		theDomain,
+		appLink,
 		invitedBy,
 		link,
-		theDomain,
+		appLink,
 	)
 
 	return &email.Email{
@@ -148,6 +160,13 @@ func (f *EmailFactory) NewPasswordResetEmail(passwordReset *PasswordReset) *emai
 		name = "friend"
 	}
 
+	// App link
+	appLink := fmt.Sprintf(
+		"%s://%s",
+		f.cnf.Web.AppScheme,
+		f.cnf.Web.AppHost,
+	)
+
 	// Password reset link where the user can set a new password
 	link := fmt.Sprintf(
 		"%s://%s/web/password-reset/%s",
@@ -164,7 +183,7 @@ func (f *EmailFactory) NewPasswordResetEmail(passwordReset *PasswordReset) *emai
 		passwordResetEmailTemplate,
 		name,
 		link,
-		theDomain,
+		appLink,
 	)
 
 	return &email.Email{
