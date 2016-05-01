@@ -7,6 +7,8 @@ import (
 	"github.com/RichardKnop/pinglist-api/email"
 )
 
+var theDomain = "www.pingli.st"
+
 var confirmationEmailTemplate = `
 Hello %s,
 
@@ -76,9 +78,9 @@ func (f *EmailFactory) NewConfirmationEmail(confirmation *Confirmation) *email.E
 	emailText := fmt.Sprintf(
 		confirmationEmailTemplate,
 		name,
-		f.cnf.Web.Host,
+		theDomain,
 		link,
-		f.cnf.Web.Host,
+		theDomain,
 	)
 
 	return &email.Email{
@@ -121,10 +123,10 @@ func (f *EmailFactory) NewInvitationEmail(invitation *Invitation) *email.Email {
 	emailText := fmt.Sprintf(
 		invitationEmailTemplate,
 		name,
-		f.cnf.Web.Host,
+		theDomain,
 		invitedBy,
 		link,
-		f.cnf.Web.Host,
+		theDomain,
 	)
 
 	return &email.Email{
@@ -162,7 +164,7 @@ func (f *EmailFactory) NewPasswordResetEmail(passwordReset *PasswordReset) *emai
 		passwordResetEmailTemplate,
 		name,
 		link,
-		f.cnf.Web.Host,
+		theDomain,
 	)
 
 	return &email.Email{
