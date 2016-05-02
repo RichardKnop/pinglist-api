@@ -2,13 +2,18 @@
 
 {{ define "content" }}
 <div class="container">
+  
   <div class="page-header">
     <h1>Success</h1>
   </div>
+
   {{ if .error }}
   <p class="text-danger">{{ .error }}</p>
   {{ else }}
   <p>Your password has been set successfully.</p>
   {{ end }}
+
+  <hr class="featurette-divider">
+
 </div>
 {{ end }}

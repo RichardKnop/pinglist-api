@@ -2,13 +2,17 @@
 
 {{ define "content" }}
 <div class="container">
+
   <div class="page-header">
     <h1>Authorize</h1>
   </div>
+
   {{ if .error }}
   <p class="text-danger">{{ .error }}</p>
   {{ else }}
+
   <form action="" method="post">
+
     <div class="form-group">
       <p><b>{{ .clientID }}</b> would like to perform actions on your behalf.</p>
       {{ if .token }}
@@ -26,6 +30,7 @@
       </div>
       {{ end }}
     </div>
+
     <div class="row">
       <div class="col-md-3 col-sm-4 col-xs-6">
         <input type="submit" class="btn btn-lg btn-block btn-primary" name="allow" value="Allow">
@@ -34,7 +39,12 @@
         <input type="submit" class="btn btn-lg btn-block btn-default" name="deny" value="Deny">
       </div>
     </div>
+
   </form>
+
   {{ end }}
+
+  <hr class="featurette-divider">
+
 </div>
 {{ end }}

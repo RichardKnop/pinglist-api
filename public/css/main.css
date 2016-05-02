@@ -1,4 +1,5 @@
 /* General styles */
+
 body, html {
     font-family: Lato, sans-serif;
     color: #27303C;
@@ -7,7 +8,6 @@ body, html {
 body {
     /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
     margin-top: 50px;
-    padding-bottom: 50px;
 }
 
 a {
@@ -37,6 +37,39 @@ span.label a:hover {
 
 th, td b {
     text-transform: uppercase;
+}
+
+/* Tables */
+.table-container {
+    overflow-x: scroll;
+}
+
+.table {
+    min-width: 940px;
+}
+
+.table-container .table {
+    margin-bottom: 0;
+}
+
+/* Labels */
+
+span.label.subscription-status, span.label.alarm-status, span.label.alarm-active, span.label.incident-type, span.label.action-button {
+    display: inline-block;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+span.label.subscription-status, span.label.alarm-status, span.label.incident-type {
+    width: 75px;
+}
+
+span.label.action-button {
+    cursor: pointer;
+}
+
+span.label.alarm-active {
+    width: 40px;
 }
 
 /* Other */
@@ -100,11 +133,58 @@ a.ios-download-badge img {
     border-color: #27303C;
 }
 
+/* Landing page header image */
+
+.jumbotron {
+    padding: 0;
+}
+
+.jumbotron .alert {
+    margin-bottom: 0;
+    border-radius: 0;
+}
+
+.header-image {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background: linear-gradient(
+            rgba(0, 0, 0, 0.6),
+            rgba(0, 0, 0, 0.6)
+    ), url('/images/bg.jpg') no-repeat center center scroll;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    color: white;
+    font-family: Lato, sans-serif;
+}
+
+.header-image h1 {
+    letter-spacing: 2px;
+    font-family: Lato, sans-serif;
+}
+
+.header-image p {
+    font-size: 1.25em;
+}
+
+.header-image .headline {
+    padding: 148px 0;
+}
+
+.header-image .headline h1 {
+    font-size: 3em;
+}
+
+.header-image .headline a {
+    color: #B9E88A;
+}
+
 /* Login form */
 
 .form-signin {
-    max-width: 350px;
-    padding: 19px 29px 29px;
+    max-width: 300px;
+    padding: 0 29px 29px;
     margin: 0 auto 20px;
 }
 
@@ -131,14 +211,12 @@ footer {
 .center-to-left {
     margin-right: auto;
     margin-left: auto;
-    text-align: center;
 }
 
 .center-to-right {
     margin-right: auto;
     margin-left: auto;
-    text-align: center;
-
+    text-align: right;
     height: 59px;
 }
 
@@ -160,7 +238,6 @@ footer {
 .copyright {
     paddin-top: 40px;
 }
-
 
 /* Responsive media queries */
 
@@ -255,6 +332,9 @@ footer {
 }
 
 @media (max-width: 640px) {
+    .header-image .headline {
+        padding: 96px 0;
+    }
 }
 
 @media (max-width: 375px) {
@@ -274,5 +354,9 @@ footer {
     .featurette-image.pull-right {
         margin-bottom: 10px;
         margin-left: 0;
+    }
+
+    .header-image .headline {
+        padding: 48px 0;
     }
 }

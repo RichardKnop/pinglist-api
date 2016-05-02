@@ -1,24 +1,40 @@
 {{ define "title"}}Register{{ end }}
 
 {{ define "content" }}
-<div class="container">
+<header class="header-image jumbotron hero-spacer">
+
+  {{ if .error }}
+    <div class="alert alert-danger" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      {{ .error }}
+    </div>
+  {{ end }}
+
+  <div class="headline">
+
   <form class="form-signin" action="" method="post">
-    <h2 class="form-signin-heading">Register</h2>
-    {{ if .error }}
-    <p class="text-danger">{{ .error }}</p>
-    {{ end }}
-    <div class="form-group">
-      <label for="inputEmail" class="sr-only">Email address</label>
-      <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
-    </div>
-    <div class="form-group">
-      <label for="inputPassword" class="sr-only">Password</label>
-      <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
-    </div>
-    <div class="form-group">
-      <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
-    </div>
-    <p>Already registered? <a href="/web/login{{ .queryString }}">Log in</a>
-  </form>
-</div> <!-- /container -->
+
+      <div class="form-group">
+        <label for="inputEmail" class="sr-only">Email address</label>
+        <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+      </div>
+
+      <div class="form-group">
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
+      </div>
+
+      <div class="form-group">
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+      </div>
+
+      <p>Already registered? <a href="/web/login{{ .queryString }}">Log in</a>
+
+    </form>
+
+  </div>
+
+</header>
 {{ end }}
