@@ -39,6 +39,13 @@ th, td b {
     text-transform: uppercase;
 }
 
+/* Other */
+
+a.ios-download-badge img {
+    width: 170px;
+    height: 46px;
+}
+
 /* Navigation */
 
 .navbar-inverse {
@@ -92,6 +99,68 @@ th, td b {
     color: #B9E88A;
     border-color: #27303C;
 }
+
+/* Login form */
+
+.form-signin {
+    max-width: 350px;
+    padding: 19px 29px 29px;
+    margin: 0 auto 20px;
+}
+
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+    margin-bottom: 10px;
+}
+
+.form-signin input[type="email"],
+.form-signin input[type="text"],
+.form-signin input[type="password"] {
+    font-size: 16px;
+    height: auto;
+    margin-bottom: 15px;
+    padding: 7px 9px;
+}
+
+/* Footer */
+
+footer {
+    margin-bottom: 30px;
+}
+
+.center-to-left {
+    margin-right: auto;
+    margin-left: auto;
+    text-align: center;
+}
+
+.center-to-right {
+    margin-right: auto;
+    margin-left: auto;
+    text-align: center;
+
+    height: 59px;
+}
+
+.comodo-site-seal:hover {
+    text-decoration: none;
+}
+
+.comodo-site-seal img {
+    width: 113px;
+    height: 59px;
+    border: 0;
+    margin-top: -15px;
+}
+
+.stripe-badge img {
+    border: 0;
+}
+
+.copyright {
+    paddin-top: 40px;
+}
+
 
 /* Responsive media queries */
 
@@ -206,72 +275,4 @@ th, td b {
         margin-bottom: 10px;
         margin-left: 0;
     }
-}
-
-/* Footer */
-
-footer {
-    margin-bottom: 30px;
-}
-
-.center-to-left {
-    margin-right: auto;
-    margin-left: auto;
-    text-align: center;
-}
-
-.center-to-right {
-    margin-right: auto;
-    margin-left: auto;
-    text-align: center;
-
-    height: 59px;
-}
-
-.comodo-site-seal:hover {
-    text-decoration: none;
-}
-
-.comodo-site-seal img {
-    width: 113px;
-    height: 59px;
-    border: 0;
-    margin-top: -15px;
-}
-
-.stripe-badge img {
-    border: 0;
-}
-
-.copyright {
-    paddin-top: 40px;
-}
-
-/* Login form */
-
-.form-signin {
-    max-width: 350px;
-    padding: 19px 29px 29px;
-    margin: 0 auto 20px;
-}
-
-.form-signin .form-signin-heading,
-.form-signin .checkbox {
-    margin-bottom: 10px;
-}
-
-.form-signin input[type="email"],
-.form-signin input[type="text"],
-.form-signin input[type="password"] {
-    font-size: 16px;
-    height: auto;
-    margin-bottom: 15px;
-    padding: 7px 9px;
-}
-
-/* Other */
-
-a.ios-download-badge img {
-    width: 170px;
-    height: 46px;
 }
