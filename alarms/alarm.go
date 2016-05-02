@@ -211,7 +211,8 @@ func (s *Service) findPaginatedAlarms(offset, limit int, orderBy string, user *a
 
 	// Retrieve paginated results from the database
 	err := alarmsQuery.Offset(offset).Limit(limit).Order(orderBy).
-		Preload("User").Preload("Incidents").Find(&alarms).Error
+		Preload("User").Preload("Incidents", "resolved_at IS NULL").
+		Find(&alarms).Error
 	if err != nil {
 		return alarms, err
 	}
