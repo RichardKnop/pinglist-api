@@ -186,7 +186,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	)
 
 	// Sleep for the email and push notification goroutines to finish
-	time.Sleep(10 * time.Millisecond)
+	time.Sleep(5 * time.Millisecond)
 
 	// Check that the mock object expectations were met
 	suite.assertMockExpectations()
@@ -330,7 +330,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	err = suite.service.CheckAlarm(alarm.ID, alarm.Watermark.Time)
 
 	// Sleep for the email & push notification goroutines to finish
-	time.Sleep(10 * time.Millisecond)
+	time.Sleep(5 * time.Millisecond)
 
 	// Check that the mock object expectations were met
 	suite.assertMockExpectations()
@@ -405,7 +405,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheckIdempotency() {
 	)
 	for i := 0; i < concurrency; i++ {
 		go suite.alarmCheckWrapper(testAlarm.ID, testAlarm.Watermark.Time, errChan)
-		time.Sleep(10 * time.Millisecond)
+		time.Sleep(5 * time.Millisecond)
 	}
 
 	// Receive start times and errors from goroutines
