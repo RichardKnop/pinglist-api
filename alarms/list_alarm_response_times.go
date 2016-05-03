@@ -114,12 +114,19 @@ func (s *Service) listAlarmResponseTimesHandler(w http.ResponseWriter, r *http.R
 		return
 	}
 
+	// Calculate uptime
+	uptime, _, err := s.getUptimeDowntime(alarm)
+	if err != nil {
+		response.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	// Create response
 	self := util.GetCurrentURL(r)
 	listResponseTimesResponse, err := NewListResponseTimesResponse(
 		count, page,
 		self, first, last, previous, next,
-		responseTimes, incidentTypeCounts,
+		responseTimes, uptime, incidentTypeCounts,
 	)
 	if err != nil {
 		response.Error(w, err.Error(), http.StatusInternalServerError)

@@ -10,9 +10,9 @@
   fields:
     alarm_id: 1
     incident_type_id: 'timeout'
-    resolved_at: '2016-02-27T22:30:12Z'
-    created_at: '2016-02-27T22:29:12Z'
-    updated_at: '2016-02-27T22:30:12Z'
+    resolved_at: '2016-02-10T22:30:12Z'
+    created_at: '2016-02-10T22:29:12Z'
+    updated_at: '2016-02-10T22:30:12Z'
 
 - table: 'alarm_incidents'
   pk:
@@ -20,25 +20,28 @@
   fields:
     alarm_id: 1
     incident_type_id: 'timeout'
-    created_at: '2016-02-27T22:31:12Z'
-    updated_at: '2016-02-27T22:31:12Z'
+    resolved_at: '2016-02-15T22:30:12Z'
+    created_at: '2016-02-15T22:29:12Z'
+    updated_at: '2016-02-15T22:30:12Z'
 
 - table: 'alarm_incidents'
   pk:
     id: 3
   fields:
     alarm_id: 1
-    incident_type_id: 'bad_code'
-    http_code: 500
-    response: 'Internal Server Error'
-    created_at: '2016-02-27T22:32:12Z'
-    updated_at: '2016-02-27T22:32:12Z'
+    incident_type_id: 'other'
+    error_message: 'Something else went wrong'
+    resolved_at: '2016-02-20T22:30:12Z'
+    created_at: '2016-02-20T22:29:12Z'
+    updated_at: '2016-02-20T22:30:12Z'
 
 - table: 'alarm_incidents'
   pk:
     id: 4
   fields:
     alarm_id: 1
-    incident_type_id: 'other'
-    created_at: '2016-02-27T22:33:12Z'
-    updated_at: '2016-02-27T22:33:12Z'
+    incident_type_id: 'bad_code'
+    http_code: 500
+    response: 'Internal Server Error'
+    created_at: '2016-02-25T22:32:12Z'
+    updated_at: '2016-02-25T22:32:12Z'

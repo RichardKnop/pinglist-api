@@ -18,7 +18,7 @@
     push_notification_alerts: true
     active: false
     alarm_state_id: 'ok'
-    created_at: 'ON_INSERT_NOW()'
+    created_at: '2016-02-01T22:29:12Z'
     updated_at: 'ON_UPDATE_NOW()'
 
 - table: 'alarm_alarms'

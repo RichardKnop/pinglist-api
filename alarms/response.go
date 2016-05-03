@@ -2,6 +2,7 @@ package alarms
 
 import (
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/RichardKnop/jsonhal"
@@ -292,10 +293,17 @@ func NewListIncidentsResponse(count, page int, self, first, last, previous, next
 }
 
 // NewListResponseTimesResponse creates new ListResponseTimesResponse instance
-func NewListResponseTimesResponse(count, page int, self, first, last, previous, next string, responseTimes []*metrics.ResponseTime, incidentTypeCount map[string]int) (*ListResponseTimesResponse, error) {
+func NewListResponseTimesResponse(count, page int, self, first, last, previous, next string, responseTimes []*metrics.ResponseTime, uptime float64, incidentTypeCount map[string]int) (*ListResponseTimesResponse, error) {
+	// Format uptime to 4 decimal numbers
+	uptime, err := strconv.ParseFloat(fmt.Sprintf("%.4f", uptime), 64)
+	if err != nil {
+		return nil, err
+	}
+
 	response := &ListResponseTimesResponse{
-		Count: uint(count),
-		Page:  uint(page),
+		Uptime: uptime,
+		Count:  uint(count),
+		Page:   uint(page),
 	}
 
 	// Set the self link
@@ -325,9 +333,6 @@ func NewListResponseTimesResponse(count, page int, self, first, last, previous, 
 		}
 		metricResponses[i] = metricResponse
 	}
-
-	// Uptime
-	response.Uptime = 100.0 // TODO!
 
 	// Average response time
 	var sum float64

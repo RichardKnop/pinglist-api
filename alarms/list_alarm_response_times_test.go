@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"net/http/httptest"
+	"strconv"
 	"strings"
 	"time"
 
@@ -144,15 +145,23 @@ func (suite *AlarmsTestSuite) TestListAlarmResponseTimes() {
 	}
 
 	// Check the response body
-	ResponseTimeResponses := make([]*metrics.MetricResponse, len(testMetrics))
+	uptime, _, err := suite.service.getUptimeDowntime(suite.alarms[0])
+	assert.NoError(suite.T(), err, "Failed to fetch uptime")
+	expectedUptime, err := strconv.ParseFloat(fmt.Sprintf("%.4f", uptime), 64)
+	assert.NoError(suite.T(), err, "Failed formatting uptime to 4 decimals")
+
+	expectedAverage := 289.5
+
+	responseTimeResponses := make([]*metrics.MetricResponse, len(testMetrics))
 	for i, testMetric := range testMetrics {
-		ResponseTimeResponse, err := metrics.NewMetricResponse(
+		responseTimeResponse, err := metrics.NewMetricResponse(
 			testMetric.Timestamp,
 			testMetric.Value,
 		)
 		assert.NoError(suite.T(), err, "Creating response object failed")
-		ResponseTimeResponses[i] = ResponseTimeResponse
+		responseTimeResponses[i] = responseTimeResponse
 	}
+	
 	expected := &ListResponseTimesResponse{
 		Hal: jsonhal.Hal{
 			Links: map[string]*jsonhal.Link{
@@ -169,11 +178,11 @@ func (suite *AlarmsTestSuite) TestListAlarmResponseTimes() {
 				"next": new(jsonhal.Link),
 			},
 			Embedded: map[string]jsonhal.Embedded{
-				"response_times": jsonhal.Embedded(ResponseTimeResponses),
+				"response_times": jsonhal.Embedded(responseTimeResponses),
 			},
 		},
-		Uptime: 100.0, // TODO
-		Average: 289.5,
+		Uptime:  expectedUptime,
+		Average: expectedAverage,
 		IncidentTypeCounts: map[string]int{
 			incidenttypes.SlowResponse: 0,
 			incidenttypes.Timeout:      2,

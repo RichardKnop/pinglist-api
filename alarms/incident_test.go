@@ -596,8 +596,8 @@ func (suite *AlarmsTestSuite) TestGetUptimeDowntime() {
 	// Now fetch uptime and downtime values
 	uptime, downtime, err = suite.service.getUptimeDowntime(testAlarm)
 	if assert.Nil(suite.T(), err) {
-		assert.Equal(suite.T(), "850.0", fmt.Sprintf("%.1f", uptime))
-		assert.Equal(suite.T(), "150.0", fmt.Sprintf("%.1f", downtime))
+		assert.Equal(suite.T(), "85.00", fmt.Sprintf("%.2f", uptime))
+		assert.Equal(suite.T(), "15.00", fmt.Sprintf("%.2f", downtime))
 	}
 }
 
@@ -730,7 +730,7 @@ func (suite *AlarmsTestSuite) TestIncidentsCount() {
 	}
 
 	// Filter by >= from
-	from, err := util.ParseTimestamp("2016-02-27T22:31:12Z")
+	from, err := util.ParseTimestamp("2016-02-12T22:31:12Z")
 	assert.NoError(suite.T(), err, "Failed parsing from timestamp")
 	count, err = suite.service.incidentsCount(
 		nil, // user
@@ -744,7 +744,7 @@ func (suite *AlarmsTestSuite) TestIncidentsCount() {
 	}
 
 	// Filter by <= to
-	to, err := util.ParseTimestamp("2016-02-27T22:32:12Z")
+	to, err := util.ParseTimestamp("2016-02-22T22:32:12Z")
 	assert.NoError(suite.T(), err, "Failed parsing to timestamp")
 	count, err = suite.service.incidentsCount(
 		nil, // user

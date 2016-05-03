@@ -225,6 +225,7 @@ func TestNewListResponseTimesResponse(t *testing.T) {
 		"/v1/alarms/1/response-times?page=1", // previous
 		"/v1/alarms/1/response-times?page=3", // next
 		responseTimes,
+		99.99, // uptime
 		incidentTypeCounts,
 	)
 
@@ -272,7 +273,7 @@ func TestNewListResponseTimesResponse(t *testing.T) {
 	}
 
 	// Test the rest
-	assert.Equal(t, 100.0, response.Uptime) // TODO
+	assert.Equal(t, 99.99, response.Uptime)
 	assert.Equal(t, 2.5, response.Average)
 	assert.Equal(t, uint(10), response.Count)
 	assert.Equal(t, uint(2), response.Page)
