@@ -76,7 +76,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 
 	// Error should be nil, the alarm state changed, a new incident created
 	if assert.Nil(suite.T(), err) {
-		// Status changed to Alarm
+		// State changed to Alarm
 		assert.Equal(suite.T(), alarmstates.Alarm, alarm.AlarmStateID.String)
 		// LastDowntimeStartedAt should be set
 		assert.Equal(
@@ -137,7 +137,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 
 	// Error should be nil, the alarm state unchanged, no new incidents created
 	if assert.Nil(suite.T(), err) {
-		// Status still Alarm
+		// State still Alarm
 		assert.Equal(suite.T(), alarmstates.Alarm, alarm.AlarmStateID.String)
 		// LastDowntimeStartedAt unchanged
 		assert.Equal(
@@ -157,7 +157,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	assert.False(suite.T(), suite.service.db.Preload("User").Preload("Incidents").
 		First(alarm, testAlarm.ID).RecordNotFound())
 
-	// Status still Alarm
+	// State still Alarm
 	assert.Equal(suite.T(), alarmstates.Alarm, alarm.AlarmStateID.String)
 
 	// 1 incident
@@ -179,9 +179,10 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	// Check that the mock object expectations were met
 	suite.assertMockExpectations()
 
-	// Error should be nil, the alarm state changed, a new incident created
+	// Error should be nil, the alarm state unchanged,
+	// a new incident created and previous incidents resolved
 	if assert.Nil(suite.T(), err) {
-		// Status changed to Alarm
+		// State still alarm
 		assert.Equal(suite.T(), alarmstates.Alarm, alarm.AlarmStateID.String)
 		// LastDowntimeStartedAt should be set
 		assert.Equal(
@@ -194,6 +195,9 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 
 		// 2 incidents
 		assert.Equal(suite.T(), 2, len(alarm.Incidents))
+
+		// Previous incident resolved
+		assert.True(suite.T(), alarm.Incidents[0].ResolvedAt.Valid)
 
 		// New incident
 		assert.Equal(suite.T(), incidenttypes.Timeout, alarm.Incidents[1].IncidentTypeID.String)
@@ -209,11 +213,14 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	assert.False(suite.T(), suite.service.db.Preload("User").Preload("Incidents").
 		First(alarm, testAlarm.ID).RecordNotFound())
 
-	// Status changed to Alarm
+	// State still Alarm
 	assert.Equal(suite.T(), alarmstates.Alarm, alarm.AlarmStateID.String)
 
 	// 2 incidents
 	assert.Equal(suite.T(), 2, len(alarm.Incidents))
+
+	// Previous incident resolved
+	assert.True(suite.T(), alarm.Incidents[0].ResolvedAt.Valid)
 
 	// New incident
 	assert.Equal(suite.T(), incidenttypes.Timeout, alarm.Incidents[1].IncidentTypeID.String)
@@ -242,7 +249,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 
 	// Error should be nil, the alarm state unchanged, no new incidents created
 	if assert.Nil(suite.T(), err) {
-		// Status still Alarm
+		// State still Alarm
 		assert.Equal(suite.T(), alarmstates.Alarm, alarm.AlarmStateID.String)
 		// LastDowntimeStartedAt unchanged
 		assert.Equal(
@@ -262,7 +269,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	assert.False(suite.T(), suite.service.db.Preload("User").Preload("Incidents").
 		First(alarm, testAlarm.ID).RecordNotFound())
 
-	// Status still Alarm
+	// State still Alarm
 	assert.Equal(suite.T(), alarmstates.Alarm, alarm.AlarmStateID.String)
 
 	// 2 incidents
@@ -284,9 +291,10 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	// Check that the mock object expectations were met
 	suite.assertMockExpectations()
 
-	// Error should be nil, the alarm state unchanged, a new incident created
+	// Error should be nil, the alarm state unchanged,
+	// a new incident created and previous incidents resolved
 	if assert.Nil(suite.T(), err) {
-		// Status still Alarm
+		// State still Alarm
 		assert.Equal(suite.T(), alarmstates.Alarm, alarm.AlarmStateID.String)
 		// LastDowntimeStartedAt unchanged
 		assert.Equal(
@@ -299,6 +307,9 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 
 		// 3 incidents
 		assert.Equal(suite.T(), 3, len(alarm.Incidents))
+
+		// Previous incident resolved
+		assert.True(suite.T(), alarm.Incidents[1].ResolvedAt.Valid)
 
 		// New incident
 		assert.Equal(suite.T(), incidenttypes.BadCode, alarm.Incidents[2].IncidentTypeID.String)
@@ -314,11 +325,14 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	assert.False(suite.T(), suite.service.db.Preload("User").Preload("Incidents").
 		First(alarm, testAlarm.ID).RecordNotFound())
 
-	// Status still Alarm
+	// State still Alarm
 	assert.Equal(suite.T(), alarmstates.Alarm, alarm.AlarmStateID.String)
 
 	// 3 incidents
 	assert.Equal(suite.T(), 3, len(alarm.Incidents))
+
+	// Previous incident resolved
+	assert.True(suite.T(), alarm.Incidents[1].ResolvedAt.Valid)
 
 	// New incident
 	assert.Equal(suite.T(), incidenttypes.BadCode, alarm.Incidents[2].IncidentTypeID.String)
@@ -347,7 +361,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 
 	// Error should be nil, the alarm state unchanged, no new incidents created
 	if assert.Nil(suite.T(), err) {
-		// Status still Alarm
+		// State still Alarm
 		assert.Equal(suite.T(), alarmstates.Alarm, alarm.AlarmStateID.String)
 		// LastDowntimeStartedAt unchanged
 		assert.Equal(
@@ -367,7 +381,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	assert.False(suite.T(), suite.service.db.Preload("User").Preload("Incidents").
 		First(alarm, testAlarm.ID).RecordNotFound())
 
-	// Status still Alarm
+	// State still Alarm
 	assert.Equal(suite.T(), alarmstates.Alarm, alarm.AlarmStateID.String)
 
 	// 3 incidents
@@ -389,9 +403,10 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	// Check that the mock object expectations were met
 	suite.assertMockExpectations()
 
-	// Error should be nil, the alarm state unchanged, a new incident created
+	// Error should be nil, the alarm state unchanged,
+	// a new incident created and previous incidents resolved
 	if assert.Nil(suite.T(), err) {
-		// Status still Alarm
+		// State still Alarm
 		assert.Equal(suite.T(), alarmstates.Alarm, alarm.AlarmStateID.String)
 		// LastDowntimeStartedAt unchanged
 		assert.Equal(
@@ -404,6 +419,9 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 
 		// 4 incidents
 		assert.Equal(suite.T(), 4, len(alarm.Incidents))
+
+		// Previous incident resolved
+		assert.True(suite.T(), alarm.Incidents[2].ResolvedAt.Valid)
 
 		// New incident
 		assert.Equal(suite.T(), incidenttypes.BadCode, alarm.Incidents[3].IncidentTypeID.String)
@@ -419,11 +437,14 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	assert.False(suite.T(), suite.service.db.Preload("User").Preload("Incidents").
 		First(alarm, testAlarm.ID).RecordNotFound())
 
-	// Status still Alarm
+	// State still Alarm
 	assert.Equal(suite.T(), alarmstates.Alarm, alarm.AlarmStateID.String)
 
 	// 4 incidents
 	assert.Equal(suite.T(), 4, len(alarm.Incidents))
+
+	// Previous incident resolved
+	assert.True(suite.T(), alarm.Incidents[2].ResolvedAt.Valid)
 
 	// New incident
 	assert.Equal(suite.T(), incidenttypes.BadCode, alarm.Incidents[3].IncidentTypeID.String)

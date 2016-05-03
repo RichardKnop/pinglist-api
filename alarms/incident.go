@@ -17,6 +17,8 @@ func (s *Service) openIncident(alarm *Alarm, incidentTypeID string, resp *http.R
 	// Begin a transaction
 	tx := s.db.Begin()
 
+	now := gorm.NowFunc()
+
 	// Change the alarm state to alarmstates.Alarm if it isn't already
 	if alarm.AlarmStateID.String != alarmstates.Alarm {
 		now := gorm.NowFunc()
@@ -88,6 +90,26 @@ func (s *Service) openIncident(alarm *Alarm, incidentTypeID string, resp *http.R
 			return err
 		}
 
+		// There should be only one open incident per alarm at any time
+		err = tx.Model(new(Incident)).Where(
+			"resolved_at IS NULL AND alarm_id = ? AND id != ?",
+			alarm.ID,
+			incident.ID,
+		).UpdateColumns(Incident{
+			ResolvedAt: util.TimeOrNull(&now),
+			Model:      gorm.Model{UpdatedAt: now},
+		}).Error
+		if err != nil {
+			tx.Rollback() // rollback the transaction
+			return err
+		}
+
+		// Keep incidents slice up-to-date
+		for i := range alarm.Incidents {
+			if !alarm.Incidents[i].ResolvedAt.Valid {
+				alarm.Incidents[i].ResolvedAt = util.TimeOrNull(&now)
+			}
+		}
 		alarm.Incidents = append(alarm.Incidents, incident)
 	}
 
