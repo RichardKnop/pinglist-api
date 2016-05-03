@@ -160,7 +160,9 @@ func (s *Service) resolveIncidents(alarm *Alarm) error {
 	}
 
 	// Resolve open incidents
-	err = tx.Model(new(Incident)).Where("resolved_at IS NULL AND alarm_id = ?", alarm.ID).UpdateColumns(Incident{
+	err = tx.Model(new(Incident)).Where(
+		"resolved_at IS NULL AND alarm_id = ?", alarm.ID,
+	).UpdateColumns(Incident{
 		ResolvedAt: util.TimeOrNull(&now),
 		Model:      gorm.Model{UpdatedAt: now},
 	}).Error
@@ -215,6 +217,22 @@ func (s *Service) incidentTypeCounts(user *accounts.User, alarm *Alarm, from, to
 	}
 
 	return incitentTypeCounts, nil
+}
+
+// getUptimeDowntime returns uptime and downtime in seconds
+func (s *Service) getUptimeDowntime(alarm *Alarm) (float64, float64, error) {
+	query := `SELECT
+		EXTRACT(EPOCH FROM (SELECT NOW() - created_at FROM alarm_alarms WHERE id = ?)) - EXTRACT(EPOCH FROM (SUM(resolved_at - created_at))) as uptime,
+		EXTRACT(EPOCH FROM (SUM(COALESCE(resolved_at, NOW()) - created_at))) AS downtime
+	FROM alarm_incidents WHERE alarm_id = ? AND resolved_at IS NOT NULL;`
+	row := s.db.Raw(query, alarm.ID, alarm.ID).Row()
+
+	var uptime, downtime float64
+	if err := row.Scan(&uptime, &downtime); err != nil {
+		return 0, 0, err
+	}
+
+	return uptime, downtime, nil
 }
 
 // incidentsCount returns a total count of incidents

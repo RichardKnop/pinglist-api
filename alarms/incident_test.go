@@ -518,6 +518,89 @@ func (suite *AlarmsTestSuite) TestIncidentTypeCounts() {
 	}
 }
 
+func (suite *AlarmsTestSuite) TestGetUptimeDowntime() {
+	var (
+		okAlarmState             *AlarmState
+		slowResponseIncidentType *IncidentType
+		testAlarm                *Alarm
+		testIncidents            []*Incident
+		now                      = time.Now()
+		uptime, downtime         float64
+		err                      error
+	)
+
+	okAlarmState, err = suite.service.findAlarmStateByID(alarmstates.OK)
+	assert.NoError(suite.T(), err, "Failed to fetch OK alarm state")
+
+	slowResponseIncidentType, err = suite.service.findIncidentTypeByID(incidenttypes.SlowResponse)
+	assert.NoError(suite.T(), err, "Failed to fetch slow_response incident type")
+
+	// Insert a test alarm
+	testAlarm = NewAlarm(
+		suite.users[1],
+		suite.regions[0],
+		okAlarmState,
+		&AlarmRequest{
+			Region:                 "us-west-2",
+			EndpointURL:            "http://new-endpoint",
+			ExpectedHTTPCode:       200,
+			MaxResponseTime:        1000,
+			Interval:               60,
+			EmailAlerts:            true,
+			PushNotificationAlerts: true,
+			Active:                 true,
+		},
+	)
+	err = suite.db.Create(testAlarm).Error
+	assert.NoError(suite.T(), err, "Failed to insert a test alarm")
+
+	// Insert test incidents
+	testIncidents = []*Incident{
+		NewIncident(
+			testAlarm,
+			slowResponseIncidentType,
+			nil, // response
+			123, // response time
+			"",  // error message,
+		),
+		NewIncident(
+			testAlarm,
+			slowResponseIncidentType,
+			nil, // response
+			123, // response time
+			"",  // error message,
+		),
+	}
+	for _, testIncident := range testIncidents {
+		err = suite.db.Create(testIncident).Error
+		assert.NoError(suite.T(), err, "Failed to insert a test incident")
+	}
+
+	// Edit alarm's created_at and incidents' created_at and  resolved_at
+	// timestamps so we can check correct uptime and downtime values are returned
+	err = suite.db.Model(testAlarm).UpdateColumn(
+		"created_at", now.Add(-1000*time.Second),
+	).Error
+	assert.NoError(suite.T(), err, "Failed to update the test alarm")
+	err = suite.db.Model(testIncidents[0]).UpdateColumns(map[string]interface{}{
+		"created_at":  now.Add(-900 * time.Second),
+		"resolved_at": now.Add(-800 * time.Second),
+	}).Error
+	assert.NoError(suite.T(), err, "Failed to update the test incident")
+	err = suite.db.Model(testIncidents[1]).UpdateColumns(map[string]interface{}{
+		"created_at":  now.Add(-500 * time.Second),
+		"resolved_at": now.Add(-450 * time.Second),
+	}).Error
+	assert.NoError(suite.T(), err, "Failed to update the test incident")
+
+	// Now fetch uptime and downtime values
+	uptime, downtime, err = suite.service.getUptimeDowntime(testAlarm)
+	if assert.Nil(suite.T(), err) {
+		assert.Equal(suite.T(), "850.0", fmt.Sprintf("%.1f", uptime))
+		assert.Equal(suite.T(), "150.0", fmt.Sprintf("%.1f", downtime))
+	}
+}
+
 func (suite *AlarmsTestSuite) TestIncidentsCount() {
 	var (
 		err   error
