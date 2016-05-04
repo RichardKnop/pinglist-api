@@ -92,64 +92,49 @@ func (s *Service) CheckAlarm(alarmID uint, watermark time.Time) error {
 	// Make the request
 	start := gorm.NowFunc()
 	resp, err := s.client.Do(req)
+	if resp != nil {
+		defer resp.Body.Close()
+	}
 	elapsed := time.Since(start)
 
-	// The response timed out
+	var (
+		incidentType string
+		errMsg       string
+	)
 	if e, ok := err.(net.Error); ok && e.Timeout() {
-		return s.openIncident(
-			alarm,
-			incidenttypes.Timeout,
-			nil, // response
-			0,   // response time
-			err.Error(),
-		)
+		// The response timed out
+		incidentType = incidenttypes.Timeout
+		errMsg = err.Error()
+	} else if err != nil {
+		// The request failed due to any other error
+		incidentType = incidenttypes.Other
+		errMsg = err.Error()
+	} else if resp.StatusCode != int(alarm.ExpectedHTTPCode) {
+		// The request returned a response with a bad status code
+		incidentType = incidenttypes.BadCode
+	} else if uint(elapsed.Nanoseconds()/1000000) > alarm.MaxResponseTime {
+		// The response was too slow
+		incidentType = incidenttypes.SlowResponse
 	}
 
-	// The request failed due to any other error
-	if err != nil {
-		return s.openIncident(
+	if incidentType != "" {
+		// Open a new incident
+		if err := s.openIncident(
 			alarm,
-			incidenttypes.Other,
-			nil, // response
-			0,   // response time
-			err.Error(),
-		)
-	}
-
-	defer resp.Body.Close()
-
-	// The request returned a response with a bad status code
-	if resp.StatusCode != int(alarm.ExpectedHTTPCode) {
-		return s.openIncident(
-			alarm,
-			incidenttypes.BadCode,
+			incidentType,
 			resp,
 			elapsed.Nanoseconds(),
-			"",
-		)
-	}
-
-	// The response was too slow
-	if uint(elapsed.Nanoseconds()/1000000) > alarm.MaxResponseTime {
-		return s.openIncident(
-			alarm,
-			incidenttypes.SlowResponse,
-			resp,
-			elapsed.Nanoseconds(),
-			"",
-		)
-	}
-
-	// Resolve any open incidents
-	if err := s.resolveIncidents(alarm); err != nil {
-		return err
+			errMsg,
+		); err != nil {
+			return err
+		}
+	} else {
+		// Resolve any open incidents
+		if err := s.resolveIncidents(alarm); err != nil {
+			return err
+		}
 	}
 
 	// Log the response time metric
-	err = s.metricsService.LogResponseTime(start, alarm.ID, elapsed.Nanoseconds())
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return s.metricsService.LogResponseTime(start, alarm.ID, elapsed.Nanoseconds())
 }

@@ -178,6 +178,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 		"message_id",
 		nil,
 	)
+	suite.mockLogResponseTime(start, alarm.ID, nil)
 	err = suite.service.CheckAlarm(alarm.ID, alarm.Watermark.Time)
 	assert.NoError(
 		suite.T(),
@@ -228,6 +229,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	gorm.NowFunc = func() time.Time {
 		return start
 	}
+	suite.mockLogResponseTime(start, alarm.ID, nil)
 	err = suite.service.CheckAlarm(alarm.ID, alarm.Watermark.Time)
 
 	// Check that the mock object expectations were met
@@ -270,6 +272,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	gorm.NowFunc = func() time.Time {
 		return start
 	}
+	suite.mockLogResponseTime(start, alarm.ID, nil)
 	err = suite.service.CheckAlarm(alarm.ID, alarm.Watermark.Time)
 
 	// Check that the mock object expectations were met
