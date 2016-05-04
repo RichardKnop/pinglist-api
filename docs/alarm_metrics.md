@@ -45,7 +45,7 @@ Example response:
 		}
 	},
 	"_embedded": {
-		"request_times": [
+		"response_times": [
 			{
 				"timestamp": "2016-01-14T13:52:24Z",
 				"value": 12345
