@@ -244,8 +244,15 @@ func (s *Service) incidentTypeCounts(user *accounts.User, alarm *Alarm, from, to
 // getUptimeDowntime returns uptime and downtime percentages
 func (s *Service) getUptimeDowntime(alarm *Alarm) (float64, float64, error) {
 	query := `SELECT
-		EXTRACT(EPOCH FROM (SELECT NOW() - created_at FROM alarm_alarms WHERE id = ?)) - EXTRACT(EPOCH FROM (SUM(resolved_at - created_at))) as uptime,
-		EXTRACT(EPOCH FROM (SUM(COALESCE(resolved_at, NOW()) - created_at))) AS downtime
+		COALESCE(
+			EXTRACT(EPOCH FROM (SELECT NOW() - created_at FROM alarm_alarms WHERE id = ?))
+				- EXTRACT(EPOCH FROM (SUM(resolved_at - created_at))),
+			0
+		) as uptime,
+		COALESCE(
+			EXTRACT(EPOCH FROM (SUM(COALESCE(resolved_at, NOW()) - created_at))),
+			0
+		) AS downtime
 	FROM alarm_incidents WHERE alarm_id = ? AND resolved_at IS NOT NULL;`
 	row := s.db.Raw(query, alarm.ID, alarm.ID).Row()
 
@@ -256,8 +263,12 @@ func (s *Service) getUptimeDowntime(alarm *Alarm) (float64, float64, error) {
 
 	// Calculate percentages
 	total := uptime + downtime
-	uptime = uptime / total * 100
-	downtime = 100 - uptime
+	if uptime > 0 {
+		uptime = uptime / total * 100
+	}
+	if downtime > 0 {
+		downtime = 100 - uptime
+	}
 
 	return uptime, downtime, nil
 }

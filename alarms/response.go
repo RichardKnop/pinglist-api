@@ -335,11 +335,13 @@ func NewListResponseTimesResponse(count, page int, self, first, last, previous, 
 	}
 
 	// Average response time
-	var sum float64
-	for _, responseTime := range responseTimes {
-		sum += float64(responseTime.Value)
+	if len(responseTimes) > 0 {
+		var sum float64
+		for _, responseTime := range responseTimes {
+			sum += float64(responseTime.Value)
+		}
+		response.Average = sum / float64(len(responseTimes))
 	}
-	response.Average = sum / float64(len(responseTimes))
 
 	// Aggregate incident counts based on type
 	response.IncidentTypeCounts = incidentTypeCount

@@ -132,6 +132,7 @@ func (s *Service) listAlarmResponseTimesHandler(w http.ResponseWriter, r *http.R
 		response.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	logger.Infof("%v", listResponseTimesResponse)
 	// Write JSON response
 	response.WriteJSON(w, listResponseTimesResponse, http.StatusOK)
 }
