@@ -11,6 +11,23 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+//2016-05-04T12:08:35Z
+
+func TestParseTimestamp(t *testing.T) {
+	var (
+		parsedTimestamp time.Time
+		err             error
+	)
+
+	parsedTimestamp, err = ParseTimestamp("bogus")
+	assert.NotNil(t, err)
+
+	parsedTimestamp, err = ParseTimestamp("2016-05-04T12:08:35Z")
+	assert.Nil(t, err)
+	expected := time.Date(2016, time.May, 4, 12, 8, 35, 0, time.UTC)
+	assert.Equal(t, expected, parsedTimestamp)
+}
+
 func TestIntOrNull(t *testing.T) {
 	nullInt := PositiveIntOrNull(1)
 	assert.True(t, nullInt.Valid)
