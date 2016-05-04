@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 	"strconv"
+	"sync"
 
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/RichardKnop/pinglist-api/accounts/roles"
@@ -75,6 +76,90 @@ func (s *Service) listAlarmResponseTimesHandler(w http.ResponseWriter, r *http.R
 		return
 	}
 
+	var (
+		wg                     sync.WaitGroup
+		responseTimesChan      = make(chan []*metrics.ResponseTime)
+		incidentTypeCountsChan = make(chan map[string]int)
+		uptimeChan             = make(chan float64)
+		errChan                = make(chan error)
+	)
+
+	wg.Add(1)
+	go func() {
+		// Get paginated metric records
+		responseTimes, err := s.metricsService.FindPaginatedResponseTimes(
+			pagination.GetOffsetForPage(count, page, limit),
+			limit,
+			r.URL.Query().Get("order_by"),
+			int(alarm.ID),
+			dateTrunc,
+			from,
+			to,
+		)
+		if err != nil {
+			errChan <- err
+			return
+		}
+		responseTimesChan <- responseTimes
+	}()
+
+	wg.Add(1)
+	go func() {
+		// Get aggregate incident counts based on type
+		incidentTypeCounts, err := s.incidentTypeCounts(
+			nil, // user
+			alarm,
+			from,
+			to,
+		)
+		if err != nil {
+			errChan <- err
+			return
+		}
+		incidentTypeCountsChan <- incidentTypeCounts
+	}()
+
+	wg.Add(1)
+	go func() {
+		// Calculate uptime
+		uptime, _, err := s.getUptimeDowntime(alarm)
+		if err != nil {
+			errChan <- err
+			return
+		}
+		uptimeChan <- uptime
+	}()
+
+	var (
+		responseTimes      []*metrics.ResponseTime
+		incidentTypeCounts map[string]int
+		uptime             float64
+		errs               []error
+	)
+
+	for i := 0; i < 3; i++ {
+		select {
+		case responseTimes = <-responseTimesChan:
+		case incidentTypeCounts = <-incidentTypeCountsChan:
+		case uptime = <-uptimeChan:
+		case err := <-errChan:
+			errs = append(errs, err)
+		}
+	}
+
+	// If one of the goroutines failed
+	if len(errs) > 0 {
+		for _, err := range errs {
+			logger.Error(err)
+		}
+		response.Error(
+			w,
+			"Something went wrong while fetching metrics data",
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
 	// Get pagination links
 	first, last, previous, next, err := pagination.GetPaginationLinks(
 		r.URL,
@@ -84,40 +169,6 @@ func (s *Service) listAlarmResponseTimesHandler(w http.ResponseWriter, r *http.R
 	)
 	if err != nil {
 		response.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	// Get paginated metric records
-	responseTimes, err := s.metricsService.FindPaginatedResponseTimes(
-		pagination.GetOffsetForPage(count, page, limit),
-		limit,
-		r.URL.Query().Get("order_by"),
-		int(alarm.ID),
-		dateTrunc,
-		from,
-		to,
-	)
-	if err != nil {
-		response.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	// Get aggregate incident counts based on type
-	incidentTypeCounts, err := s.incidentTypeCounts(
-		nil, // user
-		alarm,
-		from,
-		to,
-	)
-	if err != nil {
-		response.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	// Calculate uptime
-	uptime, _, err := s.getUptimeDowntime(alarm)
-	if err != nil {
-		response.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
