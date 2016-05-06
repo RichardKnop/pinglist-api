@@ -4,6 +4,7 @@ import (
 	"log"
 	"testing"
 
+	"github.com/RichardKnop/pinglist-api/accounts/roles"
 	"github.com/RichardKnop/pinglist-api/config"
 	"github.com/RichardKnop/pinglist-api/database"
 	"github.com/RichardKnop/pinglist-api/email"
@@ -41,6 +42,8 @@ type AccountsTestSuite struct {
 	service          *Service
 	accounts         []*Account
 	users            []*User
+	superuserRole    *Role
+	userRole         *Role
 	router           *mux.Router
 }
 
@@ -69,6 +72,18 @@ func (suite *AccountsTestSuite) SetupSuite() {
 	suite.users = make([]*User, 0)
 	err = suite.db.Preload("Account").Preload("OauthUser").Preload("Role").
 		Order("id").Find(&suite.users).Error
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Fetch test roles
+	suite.superuserRole = new(Role)
+	err = suite.db.Where("id = ?", roles.Superuser).First(&suite.superuserRole).Error
+	if err != nil {
+		log.Fatal(err)
+	}
+	suite.userRole = new(Role)
+	err = suite.db.Where("id = ?", roles.User).First(&suite.userRole).Error
 	if err != nil {
 		log.Fatal(err)
 	}
