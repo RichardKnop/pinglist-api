@@ -145,7 +145,7 @@ curl -XPUT --compressed -v localhost:8080/v1/accounts/users/1 \
 	-H "Authorization: Bearer 00ccd40e-72ca-4e79-a4b6-67c95e2e3f1c" \
 	-d '{
 		"password": "test_password",
-		"last_name": "some_new_password",
+		"new_password": "some_new_password",
 	}'
 ```
 
