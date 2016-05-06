@@ -44,6 +44,7 @@ func (s *Service) stripeWebhookHandler(w http.ResponseWriter, r *http.Request) {
 	stripeEventLog, err := s.createStripeEventLog(stripeEvent, r)
 	if err != nil {
 		logger.Error("Failed to log the stripe event")
+		logger.Error(err)
 		response.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -60,6 +61,7 @@ func (s *Service) stripeWebhookHandler(w http.ResponseWriter, r *http.Request) {
 	if ok {
 		if err := stripeEventHandler(stripeEvent); err != nil {
 			logger.Errorf("Failed to process stripe event: %v", stripeEvent)
+			logger.Error(err)
 			response.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
