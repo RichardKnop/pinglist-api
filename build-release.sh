@@ -121,6 +121,9 @@ function docker-cleanup() {
     echo "Dry run: would have done docker rmi ${tag}"
   else
     docker rmi "${tag}"
+    # Delete all stopped containers (including data-only containers)
+    docker rm $(docker ps -a -q) || true
+    # docker rmi $(docker images -q -f dangling=true)
     docker rmi $(docker images -q -f "dangling=true") || true
   fi
 }
