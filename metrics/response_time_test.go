@@ -113,7 +113,7 @@ func (suite *MetricsTestSuite) TestFindPaginatedResponseTimes() {
 		yesterday             = time.Date(2016, time.February, 8, 0, 0, 0, 0, time.UTC)
 		yesterdaySubTableName = "metrics_response_times_2016_02_08"
 		from, to              time.Time
-		ResponseTimes         []*ResponseTime
+		responseTimes         []*ResponseTime
 		err                   error
 	)
 
@@ -138,7 +138,7 @@ func (suite *MetricsTestSuite) TestFindPaginatedResponseTimes() {
 	}
 
 	// No filtering at all
-	ResponseTimes, err = suite.service.FindPaginatedResponseTimes(
+	responseTimes, err = suite.service.FindPaginatedResponseTimes(
 		0,   // offset
 		25,  // limit
 		"",  // order by
@@ -148,11 +148,11 @@ func (suite *MetricsTestSuite) TestFindPaginatedResponseTimes() {
 		nil, // to
 	)
 	if assert.Nil(suite.T(), err) {
-		assert.Equal(suite.T(), 6, len(ResponseTimes))
+		assert.Equal(suite.T(), 6, len(responseTimes))
 	}
 
 	// Filter by a valid reference ID
-	ResponseTimes, err = suite.service.FindPaginatedResponseTimes(
+	responseTimes, err = suite.service.FindPaginatedResponseTimes(
 		0,   // offset
 		25,  // limit
 		"",  // order by
@@ -162,15 +162,15 @@ func (suite *MetricsTestSuite) TestFindPaginatedResponseTimes() {
 		nil, // to
 	)
 	if assert.Nil(suite.T(), err) {
-		assert.Equal(suite.T(), 4, len(ResponseTimes))
-		assert.Equal(suite.T(), testRecords[0].Timestamp.Unix(), ResponseTimes[0].Timestamp.Unix())
-		assert.Equal(suite.T(), testRecords[1].Timestamp.Unix(), ResponseTimes[1].Timestamp.Unix())
-		assert.Equal(suite.T(), testRecords[3].Timestamp.Unix(), ResponseTimes[2].Timestamp.Unix())
-		assert.Equal(suite.T(), testRecords[4].Timestamp.Unix(), ResponseTimes[3].Timestamp.Unix())
+		assert.Equal(suite.T(), 4, len(responseTimes))
+		assert.Equal(suite.T(), testRecords[0].Timestamp.Unix(), responseTimes[0].Timestamp.Unix())
+		assert.Equal(suite.T(), testRecords[1].Timestamp.Unix(), responseTimes[1].Timestamp.Unix())
+		assert.Equal(suite.T(), testRecords[3].Timestamp.Unix(), responseTimes[2].Timestamp.Unix())
+		assert.Equal(suite.T(), testRecords[4].Timestamp.Unix(), responseTimes[3].Timestamp.Unix())
 	}
 
 	// Filter by a valid reference ID
-	ResponseTimes, err = suite.service.FindPaginatedResponseTimes(
+	responseTimes, err = suite.service.FindPaginatedResponseTimes(
 		0,   // offset
 		25,  // limit
 		"",  // order by
@@ -180,13 +180,13 @@ func (suite *MetricsTestSuite) TestFindPaginatedResponseTimes() {
 		nil, // to
 	)
 	if assert.Nil(suite.T(), err) {
-		assert.Equal(suite.T(), 2, len(ResponseTimes))
-		assert.Equal(suite.T(), testRecords[2].Timestamp.Unix(), ResponseTimes[0].Timestamp.Unix())
-		assert.Equal(suite.T(), testRecords[5].Timestamp.Unix(), ResponseTimes[1].Timestamp.Unix())
+		assert.Equal(suite.T(), 2, len(responseTimes))
+		assert.Equal(suite.T(), testRecords[2].Timestamp.Unix(), responseTimes[0].Timestamp.Unix())
+		assert.Equal(suite.T(), testRecords[5].Timestamp.Unix(), responseTimes[1].Timestamp.Unix())
 	}
 
 	// Filter by a bogus reference ID
-	ResponseTimes, err = suite.service.FindPaginatedResponseTimes(
+	responseTimes, err = suite.service.FindPaginatedResponseTimes(
 		0,   // offset
 		25,  // limit
 		"",  // order by
@@ -196,13 +196,13 @@ func (suite *MetricsTestSuite) TestFindPaginatedResponseTimes() {
 		nil, // to
 	)
 	if assert.Nil(suite.T(), err) {
-		assert.Equal(suite.T(), 0, len(ResponseTimes))
+		assert.Equal(suite.T(), 0, len(responseTimes))
 	}
 
 	// Filter by "from" and "to" timestamp
 	from = yesterday.Add(2 * time.Hour)
 	to = today
-	ResponseTimes, err = suite.service.FindPaginatedResponseTimes(
+	responseTimes, err = suite.service.FindPaginatedResponseTimes(
 		0,     // offset
 		25,    // limit
 		"",    // order by
@@ -212,14 +212,14 @@ func (suite *MetricsTestSuite) TestFindPaginatedResponseTimes() {
 		&to,   // to
 	)
 	if assert.Nil(suite.T(), err) {
-		assert.Equal(suite.T(), 2, len(ResponseTimes))
-		assert.Equal(suite.T(), 2, len(ResponseTimes))
-		assert.Equal(suite.T(), testRecords[2].Timestamp.Unix(), ResponseTimes[0].Timestamp.Unix())
-		assert.Equal(suite.T(), testRecords[3].Timestamp.Unix(), ResponseTimes[1].Timestamp.Unix())
+		assert.Equal(suite.T(), 2, len(responseTimes))
+		assert.Equal(suite.T(), 2, len(responseTimes))
+		assert.Equal(suite.T(), testRecords[2].Timestamp.Unix(), responseTimes[0].Timestamp.Unix())
+		assert.Equal(suite.T(), testRecords[3].Timestamp.Unix(), responseTimes[1].Timestamp.Unix())
 	}
 
 	// Filter by "date_trunc" timestamp
-	ResponseTimes, err = suite.service.FindPaginatedResponseTimes(
+	responseTimes, err = suite.service.FindPaginatedResponseTimes(
 		0,     // offset
 		25,    // limit
 		"",    // order by
@@ -229,23 +229,23 @@ func (suite *MetricsTestSuite) TestFindPaginatedResponseTimes() {
 		nil,   // to
 	)
 	if assert.Nil(suite.T(), err) {
-		assert.Equal(suite.T(), 2, len(ResponseTimes))
+		assert.Equal(suite.T(), 2, len(responseTimes))
 		assert.Equal(
 			suite.T(),
 			yesterday.UTC().Format(time.RFC3339),
-			ResponseTimes[0].Timestamp.UTC().Format(time.RFC3339),
+			responseTimes[0].Timestamp.UTC().Format(time.RFC3339),
 		)
 		assert.Equal(
 			suite.T(),
 			today.UTC().Format(time.RFC3339),
-			ResponseTimes[1].Timestamp.UTC().Format(time.RFC3339),
+			responseTimes[1].Timestamp.UTC().Format(time.RFC3339),
 		)
-		assert.Equal(suite.T(), int64(234), ResponseTimes[0].Value) // (123 + 234 + 345) / 3
-		assert.Equal(suite.T(), int64(567), ResponseTimes[1].Value) // (456 + 567 + 678) / 3
+		assert.Equal(suite.T(), int64(234), responseTimes[0].Value) // (123 + 234 + 345) / 3
+		assert.Equal(suite.T(), int64(567), responseTimes[1].Value) // (456 + 567 + 678) / 3
 	}
 
 	// This should return all records
-	ResponseTimes, err = suite.service.FindPaginatedResponseTimes(
+	responseTimes, err = suite.service.FindPaginatedResponseTimes(
 		0,   // offset
 		25,  // limit
 		"",  // order by
@@ -255,17 +255,17 @@ func (suite *MetricsTestSuite) TestFindPaginatedResponseTimes() {
 		nil, // to
 	)
 	if assert.Nil(suite.T(), err) {
-		assert.Equal(suite.T(), 6, len(ResponseTimes))
-		assert.Equal(suite.T(), testRecords[0].Timestamp.Unix(), ResponseTimes[0].Timestamp.Unix())
-		assert.Equal(suite.T(), testRecords[1].Timestamp.Unix(), ResponseTimes[1].Timestamp.Unix())
-		assert.Equal(suite.T(), testRecords[2].Timestamp.Unix(), ResponseTimes[2].Timestamp.Unix())
-		assert.Equal(suite.T(), testRecords[3].Timestamp.Unix(), ResponseTimes[3].Timestamp.Unix())
-		assert.Equal(suite.T(), testRecords[4].Timestamp.Unix(), ResponseTimes[4].Timestamp.Unix())
-		assert.Equal(suite.T(), testRecords[5].Timestamp.Unix(), ResponseTimes[5].Timestamp.Unix())
+		assert.Equal(suite.T(), 6, len(responseTimes))
+		assert.Equal(suite.T(), testRecords[0].Timestamp.Unix(), responseTimes[0].Timestamp.Unix())
+		assert.Equal(suite.T(), testRecords[1].Timestamp.Unix(), responseTimes[1].Timestamp.Unix())
+		assert.Equal(suite.T(), testRecords[2].Timestamp.Unix(), responseTimes[2].Timestamp.Unix())
+		assert.Equal(suite.T(), testRecords[3].Timestamp.Unix(), responseTimes[3].Timestamp.Unix())
+		assert.Equal(suite.T(), testRecords[4].Timestamp.Unix(), responseTimes[4].Timestamp.Unix())
+		assert.Equal(suite.T(), testRecords[5].Timestamp.Unix(), responseTimes[5].Timestamp.Unix())
 	}
 
 	// This should return all records ordered by timestamp desc
-	ResponseTimes, err = suite.service.FindPaginatedResponseTimes(
+	responseTimes, err = suite.service.FindPaginatedResponseTimes(
 		0,                // offset
 		25,               // limit
 		"timestamp desc", // order by
@@ -275,17 +275,17 @@ func (suite *MetricsTestSuite) TestFindPaginatedResponseTimes() {
 		nil,              // to
 	)
 	if assert.Nil(suite.T(), err) {
-		assert.Equal(suite.T(), 6, len(ResponseTimes))
-		assert.Equal(suite.T(), testRecords[5].Timestamp.Unix(), ResponseTimes[0].Timestamp.Unix())
-		assert.Equal(suite.T(), testRecords[4].Timestamp.Unix(), ResponseTimes[1].Timestamp.Unix())
-		assert.Equal(suite.T(), testRecords[3].Timestamp.Unix(), ResponseTimes[2].Timestamp.Unix())
-		assert.Equal(suite.T(), testRecords[2].Timestamp.Unix(), ResponseTimes[3].Timestamp.Unix())
-		assert.Equal(suite.T(), testRecords[1].Timestamp.Unix(), ResponseTimes[4].Timestamp.Unix())
-		assert.Equal(suite.T(), testRecords[0].Timestamp.Unix(), ResponseTimes[5].Timestamp.Unix())
+		assert.Equal(suite.T(), 6, len(responseTimes))
+		assert.Equal(suite.T(), testRecords[5].Timestamp.Unix(), responseTimes[0].Timestamp.Unix())
+		assert.Equal(suite.T(), testRecords[4].Timestamp.Unix(), responseTimes[1].Timestamp.Unix())
+		assert.Equal(suite.T(), testRecords[3].Timestamp.Unix(), responseTimes[2].Timestamp.Unix())
+		assert.Equal(suite.T(), testRecords[2].Timestamp.Unix(), responseTimes[3].Timestamp.Unix())
+		assert.Equal(suite.T(), testRecords[1].Timestamp.Unix(), responseTimes[4].Timestamp.Unix())
+		assert.Equal(suite.T(), testRecords[0].Timestamp.Unix(), responseTimes[5].Timestamp.Unix())
 	}
 
 	// Test offset
-	ResponseTimes, err = suite.service.FindPaginatedResponseTimes(
+	responseTimes, err = suite.service.FindPaginatedResponseTimes(
 		3,   // offset
 		25,  // limit
 		"",  // order by
@@ -295,14 +295,14 @@ func (suite *MetricsTestSuite) TestFindPaginatedResponseTimes() {
 		nil, // to
 	)
 	if assert.Nil(suite.T(), err) {
-		assert.Equal(suite.T(), 3, len(ResponseTimes))
-		assert.Equal(suite.T(), testRecords[3].Timestamp.Unix(), ResponseTimes[0].Timestamp.Unix())
-		assert.Equal(suite.T(), testRecords[4].Timestamp.Unix(), ResponseTimes[1].Timestamp.Unix())
-		assert.Equal(suite.T(), testRecords[5].Timestamp.Unix(), ResponseTimes[2].Timestamp.Unix())
+		assert.Equal(suite.T(), 3, len(responseTimes))
+		assert.Equal(suite.T(), testRecords[3].Timestamp.Unix(), responseTimes[0].Timestamp.Unix())
+		assert.Equal(suite.T(), testRecords[4].Timestamp.Unix(), responseTimes[1].Timestamp.Unix())
+		assert.Equal(suite.T(), testRecords[5].Timestamp.Unix(), responseTimes[2].Timestamp.Unix())
 	}
 
 	// Test limit
-	ResponseTimes, err = suite.service.FindPaginatedResponseTimes(
+	responseTimes, err = suite.service.FindPaginatedResponseTimes(
 		2,   // offset
 		1,   // limit
 		"",  // order by
@@ -312,7 +312,7 @@ func (suite *MetricsTestSuite) TestFindPaginatedResponseTimes() {
 		nil, // to
 	)
 	if assert.Nil(suite.T(), err) {
-		assert.Equal(suite.T(), 1, len(ResponseTimes))
-		assert.Equal(suite.T(), testRecords[2].Timestamp.Unix(), ResponseTimes[0].Timestamp.Unix())
+		assert.Equal(suite.T(), 1, len(responseTimes))
+		assert.Equal(suite.T(), testRecords[2].Timestamp.Unix(), responseTimes[0].Timestamp.Unix())
 	}
 }
