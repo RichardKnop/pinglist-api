@@ -123,7 +123,7 @@ function docker-cleanup() {
     docker rmi "${tag}"
     # Delete all stopped containers (including data-only containers)
     docker rm $(docker ps -a -q) || true
-    # docker rmi $(docker images -q -f dangling=true)
+    # Delete all 'untagged/dangling' (<none>) images
     docker rmi $(docker images -q -f "dangling=true") || true
   fi
 }
