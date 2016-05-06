@@ -44,8 +44,6 @@ func (s *Service) loginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	logger.Infof("%v", resp)
-
 	// Initialise variables with from facebook
 	var (
 		facebookID = fmt.Sprintf("%s", resp["id"])

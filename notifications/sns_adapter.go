@@ -37,9 +37,6 @@ func (a *SNSAdapter) CreateEndpoint(applicationARN, customUserData, deviceToken 
 		return "", err
 	}
 
-	// Log the response
-	logger.Infof("%v", resp)
-
 	return *resp.EndpointArn, nil
 }
 
@@ -60,9 +57,6 @@ func (a *SNSAdapter) GetEndpointAttributes(endpointARN string) (*EndpointAttribu
 	if err != nil {
 		return nil, err
 	}
-
-	// Log the response
-	logger.Infof("%v", resp)
 
 	// Prepare variables to extract data from the attributes map (map[string]*string)
 	var (
@@ -118,13 +112,10 @@ func (a *SNSAdapter) SetEndpointAttributes(endpointARN string, endpointAttribute
 		},
 		EndpointArn: aws.String(endpointARN),
 	}
-	resp, err := a.svc.SetEndpointAttributes(params)
+	_, err := a.svc.SetEndpointAttributes(params)
 	if err != nil {
 		return err
 	}
-
-	// Log the response
-	logger.Infof("%v", resp)
 
 	return nil
 }
@@ -169,9 +160,6 @@ func (a *SNSAdapter) PublishMessage(endpointARN, msg string, opt map[string]inte
 	if err != nil {
 		return "", err
 	}
-
-	// Log the response
-	logger.Infof("%v", resp)
 
 	return *resp.MessageId, nil
 }
