@@ -133,12 +133,34 @@ func (s *Service) CreateUserTx(tx *gorm.DB, account *Account, userRequest *UserR
 
 // UpdateUser updates an existing user
 func (s *Service) UpdateUser(user *User, userRequest *UserRequest) error {
+	// Begin a transaction
+	tx := s.db.Begin()
+
 	// Update basic metadata
 	if err := s.db.Model(user).UpdateColumns(User{
 		FirstName: util.StringOrNull(userRequest.FirstName),
 		LastName:  util.StringOrNull(userRequest.LastName),
 		Model:     gorm.Model{UpdatedAt: time.Now()},
 	}).Error; err != nil {
+		tx.Rollback() // rollback the transaction
+		return err
+	}
+
+	// Optionally also update password
+	if userRequest.Password != "" {
+		if err := s.oauthService.SetPasswordTx(
+			tx,
+			user.OauthUser,
+			userRequest.Password,
+		); err != nil {
+			tx.Rollback() // rollback the transaction
+			return err
+		}
+	}
+
+	// Commit the transaction
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback() // rollback the transaction
 		return err
 	}
 

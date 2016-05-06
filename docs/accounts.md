@@ -102,6 +102,8 @@ Example response:
 
 ## Update User
 
+You can optionally also pass `password` field as part of the JSON request body. It it is not an empty string, user's password will be changed.
+
 Example request:
 
 ```
