@@ -37,7 +37,6 @@ func TestParseTimestamp(t *testing.T) {
 	assert.Equal(t, 5, parsedTimestamp.UTC().Hour())
 	assert.Equal(t, 8, parsedTimestamp.UTC().Minute())
 	assert.Equal(t, 35, parsedTimestamp.UTC().Second())
-
 }
 
 func TestIntOrNull(t *testing.T) {
