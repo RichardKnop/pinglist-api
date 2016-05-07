@@ -179,7 +179,7 @@ func (suite *AlarmsTestSuite) TestListAlarmResponseTimesNoResults() {
 				"response_times": jsonhal.Embedded([]*metrics.MetricResponse{}),
 			},
 		},
-		Uptime:  0,
+		Uptime:  100,
 		Average: 0,
 		IncidentTypeCounts: map[string]int{
 			incidenttypes.SlowResponse: 0,

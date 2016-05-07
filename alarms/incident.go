@@ -247,7 +247,7 @@ func (s *Service) getUptimeDowntime(alarm *Alarm) (float64, float64, error) {
 		COALESCE(
 			EXTRACT(EPOCH FROM (SELECT NOW() - created_at FROM alarm_alarms WHERE id = ?))
 				- EXTRACT(EPOCH FROM (SUM(resolved_at - created_at))),
-			0
+			100
 		) as uptime,
 		COALESCE(
 			EXTRACT(EPOCH FROM (SUM(COALESCE(resolved_at, NOW()) - created_at))),
