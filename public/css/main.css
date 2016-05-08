@@ -114,7 +114,11 @@ a.ios-download-badge img {
 .btn-primary {
     background-color: #B9E88A;
     color: #27303C;
-    border-color: white;
+    border-color: #B9E88A;
+}
+
+.btn-group .btn-primary {
+    border-color: #27303C;
 }
 
 .btn-primary:hover, .btn-primary:focus,
@@ -130,7 +134,7 @@ a.ios-download-badge img {
 .open > .dropdown-toggle.btn-primary.focus {
     background-color: #27303C;
     color: #B9E88A;
-    border-color: white;
+    border-color: #27303C;
 }
 
 /* Pagination */
