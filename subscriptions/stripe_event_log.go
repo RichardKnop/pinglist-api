@@ -15,10 +15,13 @@ var (
 
 // createStripeEventLog logs a Stripe event in an idempotent way
 func (s *Service) createStripeEventLog(stripeEvent *stripe.Event, r *http.Request) (*StripeEventLog, error) {
-	// Idempotency check
-	notFound := s.db.First(new(StripeEventLog), "event_id = ?", stripeEvent.ID).RecordNotFound()
+	var stripeEventLog = new(StripeEventLog)
+
+	// Check if we have already received this Stripe event
+	notFound := s.db.First(stripeEventLog, "event_id = ?", stripeEvent.ID).
+		RecordNotFound()
 	if !notFound {
-		return nil, ErrStripeEventAlreadyRecevied
+		return stripeEventLog, ErrStripeEventAlreadyRecevied
 	}
 
 	// Get request dump including body (so we can see the payload in the event log table)
@@ -31,7 +34,7 @@ func (s *Service) createStripeEventLog(stripeEvent *stripe.Event, r *http.Reques
 	}
 
 	// Save the event data into our log table
-	stripeEventLog := NewStripeEventLog(
+	stripeEventLog = NewStripeEventLog(
 		stripeEvent.ID,
 		stripeEvent.Type,
 		string(requestDump),

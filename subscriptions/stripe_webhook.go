@@ -44,7 +44,7 @@ func (s *Service) stripeWebhookHandler(w http.ResponseWriter, r *http.Request) {
 	stripeEventLog, err := s.createStripeEventLog(stripeEvent, r)
 
 	// We have already received and processed this event, just return OK
-	if err == ErrStripeEventAlreadyRecevied && stripeEventLog.Processed {
+	if err != nil && err == ErrStripeEventAlreadyRecevied && stripeEventLog != nil && stripeEventLog.Processed {
 		response.WriteJSON(w, stripeEvent, http.StatusOK)
 		return
 	}
