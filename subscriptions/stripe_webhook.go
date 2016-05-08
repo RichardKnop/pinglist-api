@@ -42,6 +42,14 @@ func (s *Service) stripeWebhookHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Log the event data in event log table
 	stripeEventLog, err := s.createStripeEventLog(stripeEvent, r)
+
+	// We have already received this event, just return OK
+	if err == ErrStripeEventAlreadyRecevied {
+		response.WriteJSON(w, stripeEvent, http.StatusOK)
+		return
+	}
+
+	// Something went wrong logging the event
 	if err != nil {
 		logger.Error("Failed to log the stripe event")
 		logger.Error(err)
@@ -56,24 +64,30 @@ func (s *Service) stripeWebhookHandler(w http.ResponseWriter, r *http.Request) {
 		"customer.subscription.trial_will_end": s.stripeEventCustomerSubscriptionTrialWillEnd,
 	}
 
-	// Process the event if we are interested in it
+	// Get the event handler
 	stripeEventHandler, ok := stripeEventHandlerMap[stripeEvent.Type]
-	if ok {
-		if err := stripeEventHandler(stripeEvent); err != nil {
-			logger.Errorf("Failed to process stripe event: %v", stripeEvent)
-			logger.Error(err)
-			response.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
 
-		// Update the processed flag in the event log table
-		if err := s.db.Model(stripeEventLog).UpdateColumns(map[string]interface{}{
-			"processed":  true,
-			"updated_at": time.Now(),
-		}).Error; err != nil {
-			response.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
+	// No handler defined for this event, we are not interested so just return OK
+	if !ok {
+		response.WriteJSON(w, stripeEvent, http.StatusOK)
+		return
+	}
+
+	// Try to process the event
+	if err := stripeEventHandler(stripeEvent); err != nil {
+		logger.Errorf("Failed to process stripe event: %v", stripeEvent)
+		logger.Error(err)
+		response.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Update the processed flag in the event log table
+	if err := s.db.Model(stripeEventLog).UpdateColumns(map[string]interface{}{
+		"processed":  true,
+		"updated_at": time.Now(),
+	}).Error; err != nil {
+		response.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	// Write JSON response
