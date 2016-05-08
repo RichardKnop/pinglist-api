@@ -114,7 +114,7 @@ a.ios-download-badge img {
 .btn-primary {
     background-color: #B9E88A;
     color: #27303C;
-    border-color: #B9E88A;
+    border-color: white;
 }
 
 .btn-primary:hover, .btn-primary:focus,
@@ -130,7 +130,25 @@ a.ios-download-badge img {
 .open > .dropdown-toggle.btn-primary.focus {
     background-color: #27303C;
     color: #B9E88A;
-    border-color: #27303C;
+    border-color: white;
+}
+
+/* Pagination */
+.pagination {
+    margin: 20px 0 0;
+}
+.pagination > li > a, .pagination > li > span {
+    background-color: #B9E88A;
+    color: #27303C;
+    border-color: white;
+}
+.pagination > li > a:hover,
+.pagination > li > span:hover,
+.pagination > li > a:focus,
+.pagination > li > span:focus {
+    background-color: #27303C;
+    color: #B9E88A;
+    border-color: white;
 }
 
 /* Landing page header image */
@@ -186,6 +204,10 @@ a.ios-download-badge img {
 
 .header-image .headline a.btn:hover {
     color: #B9E88A;
+}
+
+.header-image .headline a.btn-facebook, .header-image .headline a.btn-facebook:hover {
+    color: white;
 }
 
 /* Login form */
