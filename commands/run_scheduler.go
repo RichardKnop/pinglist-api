@@ -32,13 +32,15 @@ func RunScheduler() error {
 	}
 
 	// Run the scheduling goroutines
-	wg := theScheduler.Run(
+	quitChan := theScheduler.Run(
 		time.Duration(10),  // alarms check interval = 10s
 		time.Duration(600), // partition / rotate interval = 10m
 	)
 
-	// The Run method returns sync.WaitGroup, use it to block the return
-	wg.Wait()
+	select {
+	case <-quitChan:
+		break
+	}
 
 	return nil
 }

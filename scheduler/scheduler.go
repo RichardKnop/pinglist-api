@@ -1,7 +1,6 @@
 package scheduler
 
 import (
-	"sync"
 	"time"
 
 	"github.com/RichardKnop/pinglist-api/alarms"
@@ -25,15 +24,20 @@ func New(metricsService metrics.ServiceInterface, alarmsService alarms.ServiceIn
 // Run opens individial goroutines to:
 // - watch for scheduled alarms
 // - partition alarm_results table & rotate old sub tables
-func (s *Scheduler) Run(alarmsInterval, partitionInterval time.Duration) sync.WaitGroup {
-	var wg sync.WaitGroup
+func (s *Scheduler) Run(alarmsInterval, partitionInterval time.Duration) chan int {
+	var quitChan = make(chan int)
 
 	// Watch for scheduled alarm checks
-	wg.Add(1)
 	go func() {
-		defer wg.Done()
-
 		for {
+			// Return from the goroutine if quitChan receives a message
+			select {
+			case <-quitChan:
+				logger.Info("Quitting the alarm check goroutine")
+				return
+			default:
+			}
+
 			// Wait before repeating
 			time.Sleep(time.Second * alarmsInterval)
 
@@ -66,27 +70,34 @@ func (s *Scheduler) Run(alarmsInterval, partitionInterval time.Duration) sync.Wa
 	}()
 
 	// Partition alarm_results table and rotate old sub tables
-	wg.Add(1)
 	go func() {
-		defer wg.Done()
+		for {
+			// Return from the goroutine if quitChan receives a message
+			select {
+			case <-quitChan:
+				logger.Info("Quitting the partitioning goroutine")
+				return
+			default:
+			}
 
-		// Partition the request time metrics table
-		err := s.metricsService.PartitionResponseTime(
-			metrics.ResponseTimeParentTableName,
-			time.Now(),
-		)
-		if err != nil {
-			logger.Error(err)
+			// Partition the request time metrics table
+			err := s.metricsService.PartitionResponseTime(
+				metrics.ResponseTimeParentTableName,
+				time.Now(),
+			)
+			if err != nil {
+				logger.Error(err)
+			}
+
+			// Rotate old sub tables
+			if err := s.metricsService.RotateSubTables(); err != nil {
+				logger.Error(err)
+			}
+
+			// Wait before repeating
+			time.Sleep(time.Second * partitionInterval)
 		}
-
-		// Rotate old sub tables
-		if err := s.metricsService.RotateSubTables(); err != nil {
-			logger.Error(err)
-		}
-
-		// Wait before repeating
-		time.Sleep(time.Second * partitionInterval)
 	}()
 
-	return wg
+	return quitChan
 }
