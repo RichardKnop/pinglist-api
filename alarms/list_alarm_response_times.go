@@ -50,8 +50,8 @@ func (s *Service) listAlarmResponseTimesHandler(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	// Get page and limit
-	page, limit, err := pagination.GetPageLimit(r)
+	// Get page, limit and order by
+	page, limit, orderBy, err := pagination.GetPageLimitOrderBy(r)
 	if err != nil {
 		response.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -90,7 +90,7 @@ func (s *Service) listAlarmResponseTimesHandler(w http.ResponseWriter, r *http.R
 		responseTimes, err := s.metricsService.FindPaginatedResponseTimes(
 			pagination.GetOffsetForPage(count, page, limit),
 			limit,
-			r.URL.Query().Get("order_by"),
+			orderBy,
 			int(alarm.ID),
 			dateTrunc,
 			from,

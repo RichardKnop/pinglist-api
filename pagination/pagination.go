@@ -6,6 +6,7 @@ import (
 	"math"
 	"net/http"
 	"net/url"
+	"regexp"
 	"strconv"
 	"time"
 
@@ -27,7 +28,20 @@ var (
 	ErrLimitTooBig = fmt.Errorf("Limit must be < %d", MaxLimit)
 	// ErrPageTooBig ...
 	ErrPageTooBig = errors.New("Page too big")
+
+	// only match string like `name`, `users.name`, `name ASC`, `users.name desc`
+	orderByRegexp = regexp.MustCompile("^\"?[a-zA-Z0-9]+\"?(\\.\"?[a-zA-Z0-9]+\"?)?(?i)( (asc|desc))?$")
 )
+
+// GetPageLimitOrderBy parses querystring and returns page, limit and order by
+func GetPageLimitOrderBy(r *http.Request) (int, int, string, error) {
+	page, limit, err := GetPageLimit(r)
+	if err != nil {
+		return 0, 0, "", err
+	}
+
+	return page, limit, getOrderBy(r), nil
+}
 
 // GetPageLimit parses querystring and returns page and limit
 func GetPageLimit(r *http.Request) (int, int, error) {
@@ -151,4 +165,13 @@ func GetFromTo(r *http.Request) (*time.Time, *time.Time, error) {
 	}
 
 	return from, to, nil
+}
+
+// getOrderBy returns order by and makes sure it is valid
+func getOrderBy(r *http.Request) string {
+	orderBy := r.URL.Query().Get("order_by")
+	if orderBy == "" || !orderByRegexp.MatchString(orderBy) {
+		return ""
+	}
+	return orderBy
 }

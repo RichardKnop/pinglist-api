@@ -48,8 +48,8 @@ func (s *Service) listAlarmIncidentsHandler(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	// Get page and limit
-	page, limit, err := pagination.GetPageLimit(r)
+	// Get page, limit and order by
+	page, limit, orderBy, err := pagination.GetPageLimitOrderBy(r)
 	if err != nil {
 		response.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -91,12 +91,12 @@ func (s *Service) listAlarmIncidentsHandler(w http.ResponseWriter, r *http.Reque
 	incidents, err := s.findPaginatedIncidents(
 		pagination.GetOffsetForPage(count, page, limit),
 		limit,
-		r.URL.Query().Get("order_by"),
+		orderBy,
 		nil, // user
 		alarm,
 		nil, // incident type
-		nil, // from
-		nil, // to
+		from,
+		to,
 	)
 	if err != nil {
 		response.Error(w, err.Error(), http.StatusInternalServerError)

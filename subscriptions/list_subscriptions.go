@@ -42,8 +42,8 @@ func (s *Service) listSubscriptionsHandler(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	// Get page and limit
-	page, limit, err := pagination.GetPageLimit(r)
+	// Get page, limit and order by
+	page, limit, orderBy, err := pagination.GetPageLimitOrderBy(r)
 	if err != nil {
 		response.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -72,7 +72,7 @@ func (s *Service) listSubscriptionsHandler(w http.ResponseWriter, r *http.Reques
 	subscriptions, err := s.findPaginatedSubscriptions(
 		pagination.GetOffsetForPage(count, page, limit),
 		limit,
-		r.URL.Query().Get("order_by"),
+		orderBy,
 		user,
 	)
 	if err != nil {
