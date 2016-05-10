@@ -14,7 +14,7 @@ type Endpoint struct {
 	UserID         sql.NullInt64 `sql:"index;not null"`
 	User           *accounts.User
 	ApplicationARN string `sql:"type:varchar(200);index"`
-	ARN            string `sql:"type:varchar(200);unique;index"`
+	ARN            string `sql:"type:varchar(200);index"`
 	DeviceToken    string `sql:"type:varchar(200)"`
 	Enabled        bool
 }
