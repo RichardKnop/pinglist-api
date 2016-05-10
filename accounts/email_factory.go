@@ -10,7 +10,7 @@ import (
 var confirmationEmailTemplate = `
 Hello %s,
 
-Thank you foir joining %s.
+Thank you for joining %s.
 
 Please confirm your email: %s.
 
@@ -77,7 +77,7 @@ func (f *EmailFactory) NewConfirmationEmail(confirmation *Confirmation) *email.E
 	)
 
 	// The email subject
-	subject := fmt.Sprintf("You have joined %s", f.cnf.Web.Host)
+	subject := fmt.Sprintf("Thank you for joining %s", f.cnf.Web.AppHost)
 
 	// Replace placeholders in the email template
 	emailText := fmt.Sprintf(
@@ -94,7 +94,7 @@ func (f *EmailFactory) NewConfirmationEmail(confirmation *Confirmation) *email.E
 			Email: confirmation.User.OauthUser.Username,
 			Name:  confirmation.User.GetName(),
 		}},
-		From: fmt.Sprintf("noreply@%s", f.cnf.Web.Host),
+		From: fmt.Sprintf("noreply@%s", f.cnf.Web.AppHost),
 		Text: emailText,
 	}
 }
@@ -129,7 +129,7 @@ func (f *EmailFactory) NewInvitationEmail(invitation *Invitation) *email.Email {
 	)
 
 	// The email subject
-	subject := fmt.Sprintf("You have been invited to join %s", f.cnf.Web.Host)
+	subject := fmt.Sprintf("You have been invited to join %s", f.cnf.Web.AppHost)
 
 	// Replace placeholders in the email template
 	emailText := fmt.Sprintf(
@@ -176,7 +176,7 @@ func (f *EmailFactory) NewPasswordResetEmail(passwordReset *PasswordReset) *emai
 	)
 
 	// The email subject
-	subject := fmt.Sprintf("Reset password for %s", f.cnf.Web.Host)
+	subject := fmt.Sprintf("Reset password for %s", f.cnf.Web.AppHost)
 
 	// Replace placeholders in the email template
 	emailText := fmt.Sprintf(
@@ -192,7 +192,7 @@ func (f *EmailFactory) NewPasswordResetEmail(passwordReset *PasswordReset) *emai
 			Email: passwordReset.User.OauthUser.Username,
 			Name:  passwordReset.User.GetName(),
 		}},
-		From: fmt.Sprintf("noreply@%s", f.cnf.Web.Host),
+		From: fmt.Sprintf("noreply@%s", f.cnf.Web.AppHost),
 		Text: emailText,
 	}
 }
