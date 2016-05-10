@@ -51,7 +51,6 @@ func (suite *NotificationsTestSuite) TestRegisterIOSDeviceFirstTime() {
 	// Mock endpoint creation
 	suite.mockCreateEndpoint(
 		suite.service.cnf.AWS.APNSPlatformApplicationARN,
-		suite.users[1].OauthUser.Username,
 		"some_device_token",
 		"new_endpoint_arn",
 		nil,
@@ -66,9 +65,7 @@ func (suite *NotificationsTestSuite) TestRegisterIOSDeviceFirstTime() {
 	suite.router.ServeHTTP(w, r)
 
 	// Check that the mock object expectations were met
-	suite.oauthServiceMock.AssertExpectations(suite.T())
-	suite.accountsServiceMock.AssertExpectations(suite.T())
-	suite.snsAdapterMock.AssertExpectations(suite.T())
+	suite.assertMockExpectations()
 
 	// Check the status code
 	if !assert.Equal(suite.T(), 204, w.Code) {
@@ -90,7 +87,6 @@ func (suite *NotificationsTestSuite) TestRegisterIOSDeviceFirstTime() {
 	assert.Equal(suite.T(), suite.service.cnf.AWS.APNSPlatformApplicationARN, endpoint.ApplicationARN)
 	assert.Equal(suite.T(), "new_endpoint_arn", endpoint.ARN)
 	assert.Equal(suite.T(), "some_device_token", endpoint.DeviceToken)
-	assert.Equal(suite.T(), suite.users[1].OauthUser.Username, endpoint.CustomUserData)
 	assert.True(suite.T(), endpoint.Enabled)
 
 	// Check the response body
@@ -126,9 +122,8 @@ func (suite *NotificationsTestSuite) TestRegisterIOSDeviceWhenAlreadyRegisteredA
 	suite.mockGetAttributes(
 		suite.endpoints[0].ARN,
 		&EndpointAttributes{
-			CustomUserData: "the_custom_user_data_1",
-			Enabled:        true,
-			Token:          "the_device_token_1",
+			Enabled: true,
+			Token:   "the_device_token_1",
 		},
 		nil,
 	)
@@ -193,9 +188,8 @@ func (suite *NotificationsTestSuite) TestRegisterIOSDeviceWhenAlreadyRegisteredA
 	suite.mockGetAttributes(
 		suite.endpoints[0].ARN,
 		&EndpointAttributes{
-			CustomUserData: "the_custom_user_data_1",
-			Enabled:        false,
-			Token:          "the_device_token_1",
+			Enabled: false,
+			Token:   "the_device_token_1",
 		},
 		nil,
 	)
@@ -204,9 +198,8 @@ func (suite *NotificationsTestSuite) TestRegisterIOSDeviceWhenAlreadyRegisteredA
 	suite.mockSetAttributes(
 		suite.endpoints[0].ARN,
 		&EndpointAttributes{
-			CustomUserData: "the_custom_user_data_1",
-			Enabled:        true,
-			Token:          "the_device_token_1",
+			Enabled: true,
+			Token:   "the_device_token_1",
 		},
 		nil,
 	)
@@ -220,9 +213,7 @@ func (suite *NotificationsTestSuite) TestRegisterIOSDeviceWhenAlreadyRegisteredA
 	suite.router.ServeHTTP(w, r)
 
 	// Check that the mock object expectations were met
-	suite.oauthServiceMock.AssertExpectations(suite.T())
-	suite.accountsServiceMock.AssertExpectations(suite.T())
-	suite.snsAdapterMock.AssertExpectations(suite.T())
+	suite.assertMockExpectations()
 
 	// Check the status code
 	if !assert.Equal(suite.T(), 204, w.Code) {
@@ -281,9 +272,8 @@ func (suite *NotificationsTestSuite) TestRegisterIOSDeviceWhenAlreadyRegisteredA
 	suite.mockGetAttributes(
 		suite.endpoints[0].ARN,
 		&EndpointAttributes{
-			CustomUserData: "the_custom_user_data_1",
-			Enabled:        true,
-			Token:          "the_device_token_1",
+			Enabled: true,
+			Token:   "the_device_token_1",
 		},
 		nil,
 	)
@@ -292,9 +282,8 @@ func (suite *NotificationsTestSuite) TestRegisterIOSDeviceWhenAlreadyRegisteredA
 	suite.mockSetAttributes(
 		suite.endpoints[0].ARN,
 		&EndpointAttributes{
-			CustomUserData: "the_custom_user_data_1",
-			Enabled:        true,
-			Token:          "changed_device_token",
+			Enabled: true,
+			Token:   "changed_device_token",
 		},
 		nil,
 	)
@@ -308,9 +297,7 @@ func (suite *NotificationsTestSuite) TestRegisterIOSDeviceWhenAlreadyRegisteredA
 	suite.router.ServeHTTP(w, r)
 
 	// Check that the mock object expectations were met
-	suite.oauthServiceMock.AssertExpectations(suite.T())
-	suite.accountsServiceMock.AssertExpectations(suite.T())
-	suite.snsAdapterMock.AssertExpectations(suite.T())
+	suite.assertMockExpectations()
 
 	// Check the status code
 	if !assert.Equal(suite.T(), 204, w.Code) {

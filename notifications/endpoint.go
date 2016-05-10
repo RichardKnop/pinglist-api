@@ -45,7 +45,6 @@ func (s *Service) createOrUpdateEndpoint(user *accounts.User, applicationARN, de
 		// This is a first-time registration, create a new endpoint
 		endpointARN, err := s.snsAdapter.CreateEndpoint(
 			applicationARN,
-			user.OauthUser.Username,
 			deviceToken,
 		)
 		if err != nil {
@@ -58,7 +57,6 @@ func (s *Service) createOrUpdateEndpoint(user *accounts.User, applicationARN, de
 			applicationARN,
 			endpointARN,
 			deviceToken,
-			user.OauthUser.Username, // custom user data
 			true, // enabled
 		)
 		if err := s.db.Create(endpoint).Error; err != nil {
@@ -82,9 +80,8 @@ func (s *Service) createOrUpdateEndpoint(user *accounts.User, applicationARN, de
 		if err := s.snsAdapter.SetEndpointAttributes(
 			endpoint.ARN,
 			&EndpointAttributes{
-				CustomUserData: endpoint.CustomUserData,
-				Enabled:        true,
-				Token:          deviceToken,
+				Token:   deviceToken,
+				Enabled: true,
 			},
 		); err != nil {
 			return nil, err

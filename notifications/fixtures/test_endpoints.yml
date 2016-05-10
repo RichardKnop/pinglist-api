@@ -12,7 +12,6 @@
     application_arn: 'apns_platform_application_arn'
     arn: 'the_arn_1'
     device_token: 'the_device_token_1'
-    custom_user_data: 'the_custom_user_data_1'
     enabled: true
     created_at: 'ON_INSERT_NOW()'
     updated_at: 'ON_UPDATE_NOW()'
@@ -25,7 +24,6 @@
     application_arn: 'gcm_platform_application_arn'
     arn: 'the_arn_2'
     device_token: 'the_device_token_2'
-    custom_user_data: 'the_custom_user_data_2'
     enabled: true
     created_at: 'ON_INSERT_NOW()'
     updated_at: 'ON_UPDATE_NOW()'

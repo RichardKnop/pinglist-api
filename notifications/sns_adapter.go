@@ -25,12 +25,11 @@ func NewSNSAdapter(awsRegion string) *SNSAdapter {
 }
 
 // CreateEndpoint creates a new endpoint for this device
-func (a *SNSAdapter) CreateEndpoint(applicationARN, customUserData, deviceToken string) (string, error) {
+func (a *SNSAdapter) CreateEndpoint(applicationARN, deviceToken string) (string, error) {
 	// Call AWS to create a new endpoint
 	params := &sns.CreatePlatformEndpointInput{
 		PlatformApplicationArn: aws.String(applicationARN),
-		Token:          aws.String(deviceToken),
-		CustomUserData: aws.String(customUserData),
+		Token: aws.String(deviceToken),
 	}
 	resp, err := a.svc.CreatePlatformEndpoint(params)
 	if err != nil {
@@ -42,9 +41,8 @@ func (a *SNSAdapter) CreateEndpoint(applicationARN, customUserData, deviceToken 
 
 // EndpointAttributes is a wrapper around important endpoint data
 type EndpointAttributes struct {
-	CustomUserData string
-	Enabled        bool
-	Token          string
+	Token   string
+	Enabled bool
 }
 
 // GetEndpointAttributes returns endpoint attributes (customUserData, enabled, token)
@@ -60,17 +58,16 @@ func (a *SNSAdapter) GetEndpointAttributes(endpointARN string) (*EndpointAttribu
 
 	// Prepare variables to extract data from the attributes map (map[string]*string)
 	var (
-		customUserDataStr *string
-		enabledStr        *string
-		tokenStr          *string
-		ok                bool
+		token      *string
+		enabledStr *string
+		ok         bool
 	)
 
-	// Custom user data
-	customUserDataStr, ok = resp.Attributes["CustomUserData"]
+	// Token
+	token, ok = resp.Attributes["Token"]
 	if !ok {
 		logger.Info(resp.Attributes)
-		return nil, errors.New("CustomUserData key not found in attributes")
+		return nil, errors.New("Token key not found in attributes")
 	}
 
 	// Enabled
@@ -78,13 +75,6 @@ func (a *SNSAdapter) GetEndpointAttributes(endpointARN string) (*EndpointAttribu
 	if !ok {
 		logger.Info(resp.Attributes)
 		return nil, errors.New("Enabled key not found in attributes")
-	}
-
-	// Token
-	tokenStr, ok = resp.Attributes["Token"]
-	if !ok {
-		logger.Info(resp.Attributes)
-		return nil, errors.New("Token key not found in attributes")
 	}
 
 	// Parse the enabled key from string to a boolean
@@ -95,9 +85,8 @@ func (a *SNSAdapter) GetEndpointAttributes(endpointARN string) (*EndpointAttribu
 	}
 
 	return &EndpointAttributes{
-		CustomUserData: *customUserDataStr,
-		Enabled:        enabled,
-		Token:          *tokenStr,
+		Token:   *token,
+		Enabled: enabled,
 	}, nil
 }
 
@@ -106,9 +95,8 @@ func (a *SNSAdapter) SetEndpointAttributes(endpointARN string, endpointAttribute
 	// Call AWS to set the endpoint attributes data
 	params := &sns.SetEndpointAttributesInput{
 		Attributes: map[string]*string{
-			"CustomUserData": aws.String(endpointAttributes.CustomUserData),
-			"Enabled":        aws.String(fmt.Sprintf("%v", endpointAttributes.Enabled)),
-			"Token":          aws.String(endpointAttributes.Token),
+			"Token":   aws.String(endpointAttributes.Token),
+			"Enabled": aws.String(fmt.Sprintf("%v", endpointAttributes.Enabled)),
 		},
 		EndpointArn: aws.String(endpointARN),
 	}

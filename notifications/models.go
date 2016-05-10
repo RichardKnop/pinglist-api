@@ -16,7 +16,6 @@ type Endpoint struct {
 	ApplicationARN string `sql:"type:varchar(200);index"`
 	ARN            string `sql:"type:varchar(200);unique;index"`
 	DeviceToken    string `sql:"type:varchar(200)"`
-	CustomUserData string `sql:"type:varchar(200)"`
 	Enabled        bool
 }
 
@@ -26,14 +25,13 @@ func (e *Endpoint) TableName() string {
 }
 
 // NewEndpoint creates new Endpoint instance
-func NewEndpoint(user *accounts.User, applicationARN, arn, deviceToken, customUserData string, enabled bool) *Endpoint {
+func NewEndpoint(user *accounts.User, applicationARN, arn, deviceToken string, enabled bool) *Endpoint {
 	userID := util.PositiveIntOrNull(int64(user.ID))
 	endpoint := &Endpoint{
 		UserID:         userID,
 		ApplicationARN: applicationARN,
 		ARN:            arn,
 		DeviceToken:    deviceToken,
-		CustomUserData: customUserData,
 		Enabled:        enabled,
 	}
 	if userID.Valid {

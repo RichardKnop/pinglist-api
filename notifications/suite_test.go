@@ -133,6 +133,13 @@ func TestNotificationsTestSuite(t *testing.T) {
 	suite.Run(t, new(NotificationsTestSuite))
 }
 
+// Checks that the mock object expectations were met
+func (suite *NotificationsTestSuite) assertMockExpectations() {
+	suite.oauthServiceMock.AssertExpectations(suite.T())
+	suite.accountsServiceMock.AssertExpectations(suite.T())
+	suite.snsAdapterMock.AssertExpectations(suite.T())
+}
+
 // Mock authentication
 func (suite *NotificationsTestSuite) mockUserAuth(user *accounts.User) {
 	// Mock GetConfig call to return the config object
@@ -152,11 +159,10 @@ func (suite *NotificationsTestSuite) mockUserAuth(user *accounts.User) {
 }
 
 // Mock create endpoint
-func (suite *NotificationsTestSuite) mockCreateEndpoint(applicationARN, customUserData, deviceToken, endpointARN string, err error) {
+func (suite *NotificationsTestSuite) mockCreateEndpoint(applicationARN, deviceToken, endpointARN string, err error) {
 	suite.snsAdapterMock.On(
 		"CreateEndpoint",
 		applicationARN,
-		customUserData,
 		deviceToken,
 	).Return(endpointARN, err)
 }

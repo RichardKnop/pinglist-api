@@ -8,19 +8,19 @@ type SNSAdapterMock struct {
 }
 
 // CreateEndpoint ...
-func (_m *SNSAdapterMock) CreateEndpoint(applicationARN string, customUserData string, deviceToken string) (string, error) {
-	ret := _m.Called(applicationARN, customUserData, deviceToken)
+func (_m *SNSAdapterMock) CreateEndpoint(applicationARN string, deviceToken string) (string, error) {
+	ret := _m.Called(applicationARN, deviceToken)
 
 	var r0 string
-	if rf, ok := ret.Get(0).(func(string, string, string) string); ok {
-		r0 = rf(applicationARN, customUserData, deviceToken)
+	if rf, ok := ret.Get(0).(func(string, string) string); ok {
+		r0 = rf(applicationARN, deviceToken)
 	} else {
 		r0 = ret.Get(0).(string)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(string, string, string) error); ok {
-		r1 = rf(applicationARN, customUserData, deviceToken)
+	if rf, ok := ret.Get(1).(func(string, string) error); ok {
+		r1 = rf(applicationARN, deviceToken)
 	} else {
 		r1 = ret.Error(1)
 	}

@@ -67,7 +67,6 @@ func (suite *NotificationsTestSuite) TestFindEndpointByUserIDAndApplicationARN()
 		assert.Equal(suite.T(), suite.users[0].ID, uint(endpoint.UserID.Int64))
 		assert.Equal(suite.T(), suite.cnf.AWS.APNSPlatformApplicationARN, endpoint.ApplicationARN)
 		assert.Equal(suite.T(), "the_arn_1", endpoint.ARN)
-		assert.Equal(suite.T(), "the_custom_user_data_1", endpoint.CustomUserData)
 		assert.True(suite.T(), endpoint.Enabled)
 	}
 }
