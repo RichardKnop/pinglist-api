@@ -13,7 +13,7 @@ type Team struct {
 	gorm.Model
 	OwnerID sql.NullInt64 `sql:"index;not null"`
 	Owner   *accounts.User
-	Name    string           `sql:"type:varchar(40);unique;not null"`
+	Name    string           `sql:"type:varchar(40);not null"`
 	Members []*accounts.User `gorm:"many2many:team_team_members"`
 }
 
