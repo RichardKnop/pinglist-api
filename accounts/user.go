@@ -137,21 +137,24 @@ func (s *Service) UpdateUser(user *User, userRequest *UserRequest) error {
 	tx := s.db.Begin()
 
 	// Optionally also update password
-	if userRequest.Password != "" && userRequest.NewPassword != "" {
-		// Verify the old password
-		oauthUser, err := s.oauthService.AuthUser(
-			user.OauthUser.Username,
-			userRequest.Password,
-		)
-		if err != nil {
-			tx.Rollback() // rollback the transaction
-			return err
+	if userRequest.NewPassword != "" {
+		// Verify the old password, if the user doesn't have a password yet
+		// (user logged in with Facebook), skip this check
+		if user.OauthUser.Password.Valid {
+			_, err := s.oauthService.AuthUser(
+				user.OauthUser.Username,
+				userRequest.Password,
+			)
+			if err != nil {
+				tx.Rollback() // rollback the transaction
+				return err
+			}
 		}
 
 		// Set the new password
 		if err := s.oauthService.SetPasswordTx(
 			tx,
-			oauthUser,
+			user.OauthUser,
 			userRequest.NewPassword,
 		); err != nil {
 			tx.Rollback() // rollback the transaction
