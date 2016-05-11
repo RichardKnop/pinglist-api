@@ -7,5 +7,5 @@ const (
 	Alarm = "alarm"
 	// InsufficientData - The alarm has just started, the metric is not available,
 	// or not enough data is available for the metric to determine the alarm state
-	InsufficientData = "insufficient_data"
+	InsufficientData = "insufficient data"
 )

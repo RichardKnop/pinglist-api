@@ -22,7 +22,7 @@
 
 - table: 'alarm_states'
   pk:
-    id: 'insufficient_data'
+    id: 'insufficient data'
   fields:
     name: 'Insufficient Data'
     created_at: 'ON_INSERT_NOW()'
