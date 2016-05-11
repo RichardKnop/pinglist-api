@@ -170,6 +170,87 @@ func (suite *TeamsTestSuite) TestCreateTeamMaxMembersPerTeamLimitReached() {
 	}
 }
 
+func (suite *TeamsTestSuite) TestCreateTeamErrCannotAddYourself() {
+	// Insert a test team
+	testTeam := NewTeam(
+		suite.users[1],
+		[]*accounts.User{},
+		"Test Team",
+	)
+	err := suite.db.Create(testTeam).Error
+	assert.NoError(suite.T(), err, "Failed to insert a test team")
+
+	// Prepare a request
+	payload, err := json.Marshal(&TeamRequest{
+		Name: "New Test Team",
+		Members: []*TeamMemberRequest{
+			&TeamMemberRequest{Email: suite.users[1].OauthUser.Username},
+		},
+	})
+	assert.NoError(suite.T(), err, "JSON marshalling failed")
+	r, err := http.NewRequest(
+		"POST",
+		"http://1.2.3.4/v1/teams",
+		bytes.NewBuffer(payload),
+	)
+	assert.NoError(suite.T(), err, "Request setup should not get an error")
+	r.Header.Set("Authorization", "Bearer test_token")
+
+	// Check the routing
+	match := new(mux.RouteMatch)
+	suite.router.Match(r, match)
+	if assert.NotNil(suite.T(), match.Route) {
+		assert.Equal(suite.T(), "create_team", match.Route.GetName())
+	}
+
+	// Mock authentication
+	suite.mockUserAuth(suite.users[1])
+
+	// Mock find active subscription
+	suite.mockFindActiveSubscriptionByUserID(
+		suite.users[1].ID,
+		&subscriptions.Subscription{
+			Plan: &subscriptions.Plan{
+				MaxTeams:          5,
+				MaxMembersPerTeam: 10,
+			},
+		},
+		nil,
+	)
+
+	// Count before
+	var countBefore int
+	suite.db.Model(new(Team)).Count(&countBefore)
+
+	// And serve the request
+	w := httptest.NewRecorder()
+	suite.router.ServeHTTP(w, r)
+
+	// Check that the mock object expectations were met
+	suite.assertMockExpectations()
+
+	// Check the status code
+	if !assert.Equal(suite.T(), 400, w.Code) {
+		log.Print(w.Body.String())
+	}
+
+	// Count after
+	var countAfter int
+	suite.db.Model(new(Team)).Count(&countAfter)
+	assert.Equal(suite.T(), countBefore, countAfter)
+
+	expectedJSON, err := json.Marshal(
+		map[string]string{"error": ErrCannotAddYourself.Error()})
+	if assert.NoError(suite.T(), err, "JSON marshalling failed") {
+		assert.Equal(
+			suite.T(),
+			string(expectedJSON),
+			strings.TrimRight(w.Body.String(), "\n"),
+			"Body should contain JSON detailing the error",
+		)
+	}
+}
+
 func (suite *TeamsTestSuite) TestCreateTeamUserAlreadyMemberOfAnotherTeam() {
 	// Insert a test team
 	testTeam := NewTeam(
@@ -237,7 +318,7 @@ func (suite *TeamsTestSuite) TestCreateTeamUserAlreadyMemberOfAnotherTeam() {
 	suite.assertMockExpectations()
 
 	// Check the status code
-	if !assert.Equal(suite.T(), 400, w.Code) {
+	if !assert.Equal(suite.T(), 500, w.Code) {
 		log.Print(w.Body.String())
 	}
 
@@ -247,7 +328,7 @@ func (suite *TeamsTestSuite) TestCreateTeamUserAlreadyMemberOfAnotherTeam() {
 	assert.Equal(suite.T(), countBefore, countAfter)
 
 	expectedJSON, err := json.Marshal(
-		map[string]string{"error": ErrUserCanOnlyBeMemberOfOneTeam.Error()})
+		map[string]string{"error": "test@user2 is already member of the Test Team"})
 	if assert.NoError(suite.T(), err, "JSON marshalling failed") {
 		assert.Equal(
 			suite.T(),

@@ -2,11 +2,27 @@ package teams
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/jinzhu/gorm"
 )
+
+// ErrUserCanOnlyBeMemberOfOneTeam ...
+type ErrUserCanOnlyBeMemberOfOneTeam struct {
+	email, teamName string
+}
+
+// NewErrUserCanOnlyBeMemberOfOneTeam returns new ErrUserCanOnlyBeMemberOfOneTeam
+func NewErrUserCanOnlyBeMemberOfOneTeam(email, teamName string) *ErrUserCanOnlyBeMemberOfOneTeam {
+	return &ErrUserCanOnlyBeMemberOfOneTeam{email, teamName}
+}
+
+// Error method so we implement the error interface
+func (e *ErrUserCanOnlyBeMemberOfOneTeam) Error() string {
+	return fmt.Sprintf("%s is already member of the %s", e.email, e.teamName)
+}
 
 var (
 	// ErrTeamNotFound ...
@@ -15,8 +31,8 @@ var (
 	ErrMaxTeamsLimitReached = errors.New("Max teams limit reached")
 	// ErrMaxMembersPerTeamLimitReached ...
 	ErrMaxMembersPerTeamLimitReached = errors.New("Max members per team limit reached")
-	// ErrUserCanOnlyBeMemberOfOneTeam ...
-	ErrUserCanOnlyBeMemberOfOneTeam = errors.New("User can only be member of one team")
+	// ErrCannotAddYourself ...
+	ErrCannotAddYourself = errors.New("You cannot add yourself to the you have created")
 )
 
 // FindTeamByID looks up a team by ID
@@ -90,6 +106,11 @@ func (s *Service) createTeam(owner *accounts.User, teamRequest *TeamRequest) (*T
 	// Members
 	members := make([]*accounts.User, len(teamRequest.Members))
 	for i, teamMemberRequest := range teamRequest.Members {
+		// Owner cannot add himself / herself
+		if teamMemberRequest.Email == owner.OauthUser.Username {
+			return nil, ErrCannotAddYourself
+		}
+
 		// Fetch the member from the database
 		member, err := s.GetAccountsService().FindUserByEmail(teamMemberRequest.Email)
 		if err != nil {
@@ -97,9 +118,12 @@ func (s *Service) createTeam(owner *accounts.User, teamRequest *TeamRequest) (*T
 		}
 
 		// Users can only be members of a single team
-		_, err = s.FindTeamByMemberID(member.ID)
+		memberTeam, err := s.FindTeamByMemberID(member.ID)
 		if err == nil {
-			return nil, ErrUserCanOnlyBeMemberOfOneTeam
+			return nil, NewErrUserCanOnlyBeMemberOfOneTeam(
+				member.OauthUser.Username,
+				memberTeam.Name,
+			)
 		}
 
 		members[i] = member
@@ -138,6 +162,11 @@ func (s *Service) updateTeam(team *Team, teamRequest *TeamRequest) error {
 	// Members
 	members := make([]*accounts.User, len(teamRequest.Members))
 	for i, teamMemberRequest := range teamRequest.Members {
+		// Owner cannot add himself / herself
+		if teamMemberRequest.Email == team.Owner.OauthUser.Username {
+			return ErrCannotAddYourself
+		}
+
 		// Fetch the member from the database
 		member, err := s.GetAccountsService().FindUserByEmail(teamMemberRequest.Email)
 		if err != nil {
@@ -147,7 +176,10 @@ func (s *Service) updateTeam(team *Team, teamRequest *TeamRequest) error {
 		// Users can only be members of a single team
 		memberTeam, err := s.FindTeamByMemberID(member.ID)
 		if err == nil && memberTeam.ID != team.ID {
-			return ErrUserCanOnlyBeMemberOfOneTeam
+			return NewErrUserCanOnlyBeMemberOfOneTeam(
+				member.OauthUser.Username,
+				memberTeam.Name,
+			)
 		}
 
 		members[i] = member

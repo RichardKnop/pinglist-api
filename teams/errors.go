@@ -8,6 +8,6 @@ var (
 	errStatusCodeMap = map[error]int{
 		ErrMaxTeamsLimitReached:          http.StatusBadRequest,
 		ErrMaxMembersPerTeamLimitReached: http.StatusBadRequest,
-		ErrUserCanOnlyBeMemberOfOneTeam:  http.StatusBadRequest,
+		ErrCannotAddYourself:             http.StatusBadRequest,
 	}
 )
