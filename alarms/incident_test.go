@@ -62,7 +62,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	)
 	err = suite.service.openIncident(
 		alarm,
-		incidenttypes.SlowResponse,
+		incidenttypes.Slow,
 		&http.Response{StatusCode: 200},
 		2345, // response time
 		"",   // error message
@@ -91,7 +91,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		assert.Equal(suite.T(), 1, len(alarm.Incidents))
 
 		// New incident
-		assert.Equal(suite.T(), incidenttypes.SlowResponse, alarm.Incidents[0].IncidentTypeID.String)
+		assert.Equal(suite.T(), incidenttypes.Slow, alarm.Incidents[0].IncidentTypeID.String)
 		assert.Equal(suite.T(), int64(200), alarm.Incidents[0].HTTPCode.Int64)
 		assert.Equal(suite.T(), int64(2345), alarm.Incidents[0].ResponseTime.Int64)
 		assert.True(suite.T(), alarm.Incidents[0].Response.Valid)
@@ -111,7 +111,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	assert.Equal(suite.T(), 1, len(alarm.Incidents))
 
 	// New incident
-	assert.Equal(suite.T(), incidenttypes.SlowResponse, alarm.Incidents[0].IncidentTypeID.String)
+	assert.Equal(suite.T(), incidenttypes.Slow, alarm.Incidents[0].IncidentTypeID.String)
 	assert.Equal(suite.T(), int64(200), alarm.Incidents[0].HTTPCode.Int64)
 	assert.Equal(suite.T(), int64(2345), alarm.Incidents[0].ResponseTime.Int64)
 	assert.True(suite.T(), alarm.Incidents[0].Response.Valid)
@@ -126,7 +126,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	}
 	err = suite.service.openIncident(
 		alarm,
-		incidenttypes.SlowResponse,
+		incidenttypes.Slow,
 		&http.Response{StatusCode: 200},
 		3456, // response time
 		"",   // error message
@@ -532,7 +532,7 @@ func (suite *AlarmsTestSuite) TestIncidentTypeCounts() {
 		nil, // to
 	)
 	if assert.Nil(suite.T(), err) {
-		assert.Equal(suite.T(), 0, incidentTypeCounts[incidenttypes.SlowResponse])
+		assert.Equal(suite.T(), 0, incidentTypeCounts[incidenttypes.Slow])
 		assert.Equal(suite.T(), 2, incidentTypeCounts[incidenttypes.Timeout])
 		assert.Equal(suite.T(), 1, incidentTypeCounts[incidenttypes.BadCode])
 		assert.Equal(suite.T(), 1, incidentTypeCounts[incidenttypes.Other])
@@ -542,7 +542,7 @@ func (suite *AlarmsTestSuite) TestIncidentTypeCounts() {
 func (suite *AlarmsTestSuite) TestGetUptimeDowntime() {
 	var (
 		okAlarmState             *AlarmState
-		slowResponseIncidentType *IncidentType
+		SlowIncidentType *IncidentType
 		testAlarm                *Alarm
 		testIncidents            []*Incident
 		now                      = time.Now()
@@ -553,7 +553,7 @@ func (suite *AlarmsTestSuite) TestGetUptimeDowntime() {
 	okAlarmState, err = suite.service.findAlarmStateByID(alarmstates.OK)
 	assert.NoError(suite.T(), err, "Failed to fetch OK alarm state")
 
-	slowResponseIncidentType, err = suite.service.findIncidentTypeByID(incidenttypes.SlowResponse)
+	SlowIncidentType, err = suite.service.findIncidentTypeByID(incidenttypes.Slow)
 	assert.NoError(suite.T(), err, "Failed to fetch slow_response incident type")
 
 	// Insert a test alarm
@@ -579,14 +579,14 @@ func (suite *AlarmsTestSuite) TestGetUptimeDowntime() {
 	testIncidents = []*Incident{
 		NewIncident(
 			testAlarm,
-			slowResponseIncidentType,
+			SlowIncidentType,
 			nil, // response
 			123, // response time
 			"",  // error message,
 		),
 		NewIncident(
 			testAlarm,
-			slowResponseIncidentType,
+			SlowIncidentType,
 			nil, // response
 			123, // response time
 			"",  // error message,
@@ -738,7 +738,7 @@ func (suite *AlarmsTestSuite) TestIncidentsCount() {
 	}
 
 	// Filter by incident type with 0 incidents
-	slowIncidentType := incidenttypes.SlowResponse
+	slowIncidentType := incidenttypes.Slow
 	count, err = suite.service.incidentsCount(
 		nil,               // user
 		nil,               // alarm

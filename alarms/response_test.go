@@ -209,7 +209,7 @@ func TestNewListResponseTimesResponse(t *testing.T) {
 
 	// Mock aggregate incident type counts
 	incidentTypeCounts := map[string]int{
-		incidenttypes.SlowResponse: 0,
+		incidenttypes.Slow: 0,
 		incidenttypes.Timeout:      1,
 		incidenttypes.BadCode:      2,
 		incidenttypes.Other:        3,

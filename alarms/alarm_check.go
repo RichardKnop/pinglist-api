@@ -114,7 +114,7 @@ func (s *Service) CheckAlarm(alarmID uint, watermark time.Time) error {
 		incidentType = incidenttypes.BadCode
 	} else if uint(elapsed.Nanoseconds()/1000000) > alarm.MaxResponseTime {
 		// The response was too slow
-		incidentType = incidenttypes.SlowResponse
+		incidentType = incidenttypes.Slow
 	}
 
 	if incidentType != "" {

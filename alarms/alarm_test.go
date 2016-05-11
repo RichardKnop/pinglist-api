@@ -14,7 +14,7 @@ func TestHasOpenIncident(t *testing.T) {
 	alarm := &Alarm{
 		Incidents: []*Incident{
 			&Incident{
-				IncidentTypeID: util.StringOrNull(incidenttypes.SlowResponse),
+				IncidentTypeID: util.StringOrNull(incidenttypes.Slow),
 			},
 			&Incident{
 				IncidentTypeID: util.StringOrNull(incidenttypes.Timeout),
@@ -32,7 +32,7 @@ func TestHasOpenIncident(t *testing.T) {
 	}
 
 	assert.True(t, alarm.HasOpenIncident(
-		incidenttypes.SlowResponse,
+		incidenttypes.Slow,
 		nil, // response
 		"",  // error message
 	))

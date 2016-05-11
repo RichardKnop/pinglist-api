@@ -182,7 +182,7 @@ func (suite *AlarmsTestSuite) TestListAlarmResponseTimesNoResults() {
 		Uptime:  100,
 		Average: 0,
 		IncidentTypeCounts: map[string]int{
-			incidenttypes.SlowResponse: 0,
+			incidenttypes.Slow: 0,
 			incidenttypes.Timeout:      0,
 			incidenttypes.BadCode:      0,
 			incidenttypes.Other:        0,
@@ -308,7 +308,7 @@ func (suite *AlarmsTestSuite) TestListAlarmResponseTimes() {
 		Uptime:  expectedUptime,
 		Average: expectedAverage,
 		IncidentTypeCounts: map[string]int{
-			incidenttypes.SlowResponse: 0,
+			incidenttypes.Slow: 0,
 			incidenttypes.Timeout:      2,
 			incidenttypes.BadCode:      1,
 			incidenttypes.Other:        1,

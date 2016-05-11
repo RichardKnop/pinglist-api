@@ -40,7 +40,7 @@
     id: 4
   fields:
     alarm_id: 1
-    incident_type_id: 'bad_code'
+    incident_type_id: 'bad code'
     http_code: 500
     response: 'Internal Server Error'
     created_at: '2016-02-25T22:32:12Z'

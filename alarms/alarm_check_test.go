@@ -214,7 +214,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	assert.Equal(suite.T(), 1, len(alarm.Incidents))
 
 	// New incident
-	assert.Equal(suite.T(), incidenttypes.SlowResponse, alarm.Incidents[0].IncidentTypeID.String)
+	assert.Equal(suite.T(), incidenttypes.Slow, alarm.Incidents[0].IncidentTypeID.String)
 	assert.Equal(suite.T(), int64(200), alarm.Incidents[0].HTTPCode.Int64)
 	assert.True(suite.T(), alarm.Incidents[0].ResponseTime.Valid)
 	assert.True(suite.T(), alarm.Incidents[0].Response.Valid)

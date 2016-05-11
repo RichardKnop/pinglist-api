@@ -65,7 +65,7 @@ Example response:
 				},
 				"id": 2,
 				"alarm_id": 1,
-				"type": "bad_code",
+				"type": "bad code",
 				"http_code": 500,
 				"response_time": 1426,
 				"response": "Internal Server Error",

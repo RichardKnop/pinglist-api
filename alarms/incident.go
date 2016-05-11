@@ -210,7 +210,7 @@ func (s *Service) resolveIncidents(alarm *Alarm) error {
 // incidentTypeCount returns aggregated count of incidents types
 func (s *Service) incidentTypeCounts(user *accounts.User, alarm *Alarm, from, to *time.Time) (map[string]int, error) {
 	var incitentTypeCounts = map[string]int{
-		incidenttypes.SlowResponse: 0,
+		incidenttypes.Slow: 0,
 		incidenttypes.Timeout:      0,
 		incidenttypes.BadCode:      0,
 		incidenttypes.Other:        0,

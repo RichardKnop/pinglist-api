@@ -6,7 +6,7 @@
 
 - table: 'alarm_incident_types'
   pk:
-    id: 'slow_response'
+    id: 'slow'
   fields:
     name: 'Slow Response'
     created_at: 'ON_INSERT_NOW()'
@@ -22,7 +22,7 @@
 
 - table: 'alarm_incident_types'
   pk:
-    id: 'bad_code'
+    id: 'bad code'
   fields:
     name: 'Bad Code'
     created_at: 'ON_INSERT_NOW()'
