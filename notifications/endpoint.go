@@ -34,43 +34,31 @@ func (s *Service) FindEndpointByUserIDAndApplicationARN(userID uint, application
 
 // createOrUpdateEndpoint creates or updates a mobile application endpoint
 func (s *Service) createOrUpdateEndpoint(user *accounts.User, applicationARN, deviceToken string) (*Endpoint, error) {
+	var (
+		endpoint           *Endpoint
+		endpointAttributes *EndpointAttributes
+		err                error
+	)
+
 	// Does this user's device already have an endpoint in our database?
-	endpoint, err := s.FindEndpointByUserIDAndApplicationARN(user.ID, applicationARN)
+	endpoint, err = s.FindEndpointByUserIDAndApplicationARN(user.ID, applicationARN)
 	if err != nil {
 		// This should never happen, if it does, abort and return
 		if err != ErrEndpointNotFound {
 			return nil, err
 		}
 
-		// This is a first-time registration, create a new endpoint
-		endpointARN, err := s.snsAdapter.CreateEndpoint(
-			applicationARN,
-			deviceToken,
-		)
-		if err != nil {
-			return nil, err
-		}
-
-		// And store the platform endpoint ARN in our database
-		endpoint := NewEndpoint(
-			user,
-			applicationARN,
-			endpointARN,
-			deviceToken,
-			true, // enabled
-		)
-		if err := s.db.Create(endpoint).Error; err != nil {
-			return nil, err
-		}
-
-		// And return
-		return endpoint, nil
+		return s.createEndpoint(user, applicationARN, deviceToken)
 	}
 
 	// Get endpoint attributes
-	endpointAttributes, err := s.snsAdapter.GetEndpointAttributes(endpoint.ARN)
+	endpointAttributes, err = s.snsAdapter.GetEndpointAttributes(endpoint.ARN)
 	if err != nil {
-		return nil, err
+		// Not found? Perhaps the endpoint was deleted
+		endpoint, err = s.createEndpoint(user, applicationARN, deviceToken)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	// If the device token in the endpoint does not match the latest one or
@@ -95,6 +83,31 @@ func (s *Service) createOrUpdateEndpoint(user *accounts.User, applicationARN, de
 		}).Error; err != nil {
 			return nil, err
 		}
+	}
+
+	return endpoint, nil
+}
+
+func (s *Service) createEndpoint(user *accounts.User, applicationARN, deviceToken string) (*Endpoint, error) {
+	// This is a first-time registration, create a new endpoint
+	endpointARN, err := s.snsAdapter.CreateEndpoint(
+		applicationARN,
+		deviceToken,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	// And store the platform endpoint ARN in our database
+	endpoint := NewEndpoint(
+		user,
+		applicationARN,
+		endpointARN,
+		deviceToken,
+		true, // enabled
+	)
+	if err := s.db.Create(endpoint).Error; err != nil {
+		return nil, err
 	}
 
 	return endpoint, nil
