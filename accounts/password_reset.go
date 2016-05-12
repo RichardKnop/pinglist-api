@@ -70,18 +70,21 @@ func (s *Service) findUserPasswordReset(user *User) (*PasswordReset, error) {
 }
 
 func (s *Service) createPasswordReset(user *User) (*PasswordReset, error) {
-	var passwordReset *PasswordReset
+	var (
+		passwordReset *PasswordReset
+		err           error
+	)
 
 	// Does the user have an open password reset?
-	passwordReset, err := s.findUserPasswordReset(user)
+	passwordReset, err = s.findUserPasswordReset(user)
 	if err != nil {
 		// Create a new password reset
 		passwordReset = NewPasswordReset(user)
-	}
 
-	// Save the password reset to the database
-	if err := s.db.Create(passwordReset).Error; err != nil {
-		return nil, err
+		// Save the password reset to the database
+		if err := s.db.Create(passwordReset).Error; err != nil {
+			return nil, err
+		}
 	}
 
 	return passwordReset, nil
