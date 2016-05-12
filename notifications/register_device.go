@@ -18,7 +18,8 @@ const (
 )
 
 var (
-	errPlatformNotSupported = errors.New("Platform not supported. Use one of: iOS, Android")
+	// ErrPlatformNotSupported ...
+	ErrPlatformNotSupported = errors.New("Platform not supported. Use one of: iOS, Android")
 )
 
 // Handles calls to register a new device (POST /v1/devices)
@@ -57,7 +58,7 @@ func (s *Service) registerDeviceHandler(w http.ResponseWriter, r *http.Request) 
 		PlatformAndroid: s.cnf.AWS.GCMPlatformApplicationARN,
 	}[deviceRequest.Platform]
 	if !ok {
-		response.Error(w, errPlatformNotSupported.Error(), http.StatusBadRequest)
+		response.Error(w, ErrPlatformNotSupported.Error(), http.StatusBadRequest)
 		return
 	}
 
