@@ -55,10 +55,7 @@ func (s *Service) createOrUpdateEndpoint(user *accounts.User, applicationARN, de
 	endpointAttributes, err = s.snsAdapter.GetEndpointAttributes(endpoint.ARN)
 	if err != nil {
 		// Not found? Perhaps the endpoint was deleted
-		endpoint, err = s.createEndpoint(user, applicationARN, deviceToken)
-		if err != nil {
-			return nil, err
-		}
+		return s.createEndpoint(user, applicationARN, deviceToken)
 	}
 
 	// If the device token in the endpoint does not match the latest one or
