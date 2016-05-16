@@ -319,7 +319,7 @@ func (suite *TeamsTestSuite) TestCreateTeamUserAlreadyMemberOfAnotherTeam() {
 	suite.assertMockExpectations()
 
 	// Check the status code
-	if !assert.Equal(suite.T(), 500, w.Code) {
+	if !assert.Equal(suite.T(), 400, w.Code) {
 		log.Print(w.Body.String())
 	}
 

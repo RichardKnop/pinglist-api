@@ -15,12 +15,12 @@ type ErrUserCanOnlyBeMemberOfOneTeam struct {
 }
 
 // NewErrUserCanOnlyBeMemberOfOneTeam returns new ErrUserCanOnlyBeMemberOfOneTeam
-func NewErrUserCanOnlyBeMemberOfOneTeam(email, teamName string) *ErrUserCanOnlyBeMemberOfOneTeam {
-	return &ErrUserCanOnlyBeMemberOfOneTeam{email, teamName}
+func NewErrUserCanOnlyBeMemberOfOneTeam(email, teamName string) ErrUserCanOnlyBeMemberOfOneTeam {
+	return ErrUserCanOnlyBeMemberOfOneTeam{email, teamName}
 }
 
 // Error method so we implement the error interface
-func (e *ErrUserCanOnlyBeMemberOfOneTeam) Error() string {
+func (e ErrUserCanOnlyBeMemberOfOneTeam) Error() string {
 	return fmt.Sprintf("%s is already member of the %s", e.email, e.teamName)
 }
 

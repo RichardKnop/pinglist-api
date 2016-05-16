@@ -46,7 +46,12 @@ func (s *Service) createTeamHandler(w http.ResponseWriter, r *http.Request) {
 		logger.Errorf("Create team error: %s", err)
 		code, ok := errStatusCodeMap[err]
 		if !ok {
-			code = http.StatusInternalServerError
+			_, ok := err.(ErrUserCanOnlyBeMemberOfOneTeam)
+			if ok {
+				code = http.StatusBadRequest
+			} else {
+				code = http.StatusInternalServerError
+			}
 		}
 		response.Error(w, err.Error(), code)
 		return
