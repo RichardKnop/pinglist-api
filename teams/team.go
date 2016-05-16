@@ -298,7 +298,8 @@ func (s *Service) findPaginatedTeams(offset, limit int, orderBy string, owner *a
 
 	// Retrieve paginated results from the database
 	err := teamsQuery.Offset(offset).Limit(limit).Order(orderBy).
-		Preload("Owner.OauthUser").Preload("Members.OauthUser").
+		Preload("Owner.Account").Preload("Owner.OauthUser").Preload("Owner.Role").
+		Preload("Members.Account").Preload("Members.OauthUser").Preload("Members.Role").
 		Find(&teams).Error
 	if err != nil {
 		return teams, err
