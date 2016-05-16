@@ -11,6 +11,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestValidateEmail(t *testing.T) {
+	assert.False(t, ValidateEmail("test@user"))
+	assert.True(t, ValidateEmail("test@user.com"))
+}
+
 func TestParseTimestamp(t *testing.T) {
 	var (
 		parsedTimestamp time.Time

@@ -5,11 +5,19 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"regexp"
 	"strings"
 	"time"
 
 	"github.com/lib/pq"
 )
+
+var emailRegex = regexp.MustCompile(`^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,4}$`)
+
+// ValidateEmail validates an email address based on a regular expression
+func ValidateEmail(email string) bool {
+	return emailRegex.MatchString(email)
+}
 
 // ParseTimestamp parses a string representation of a timestamp in RFC3339
 // format and returns a time.Time instance
