@@ -10,3 +10,8 @@ type TeamRequest struct {
 	Name    string               `json:"name"`
 	Members []*TeamMemberRequest `json:"members"`
 }
+
+// InvitationRequest ...
+type InvitationRequest struct {
+	Email string `json:"email"`
+}

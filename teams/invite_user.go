@@ -62,7 +62,7 @@ func (s *Service) inviteUserHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Unmarshal the request body into the request prototype
-	invitationRequest := new(accounts.InvitationRequest)
+	invitationRequest := new(InvitationRequest)
 	if err := json.Unmarshal(payload, invitationRequest); err != nil {
 		logger.Errorf("Failed to unmarshal invitation request: %s", payload)
 		response.Error(w, err.Error(), http.StatusBadRequest)
@@ -70,7 +70,11 @@ func (s *Service) inviteUserHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Create a new invited user account
-	invitation, err := s.inviteUser(team, authenticatedUser, invitationRequest)
+	invitation, err := s.inviteUser(
+		team,
+		invitationRequest.Email,
+		true, // update members assoc
+	)
 	if err != nil {
 		logger.Errorf("Invite user error: %s", err)
 		code, ok := errStatusCodeMap[err]

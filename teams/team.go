@@ -39,8 +39,9 @@ var (
 func (s *Service) FindTeamByID(teamID uint) (*Team, error) {
 	// Fetch the team from the database
 	team := new(Team)
-	notFound := s.db.Preload("Owner.OauthUser").Preload("Members.OauthUser").
-		First(team, teamID).RecordNotFound()
+	notFound := s.db.Preload("Owner.Account").Preload("Owner.OauthUser").
+		Preload("Owner.Role").Preload("Members.Account").Preload("Members.OauthUser").
+		Preload("Members.Role").First(team, teamID).RecordNotFound()
 
 	// Not found
 	if notFound {
@@ -54,8 +55,9 @@ func (s *Service) FindTeamByID(teamID uint) (*Team, error) {
 func (s *Service) FindTeamByOwnerID(ownerID uint) (*Team, error) {
 	// Fetch the team from the database
 	team := new(Team)
-	notFound := s.db.Where("owner_id = ?", ownerID).
-		Preload("Owner.OauthUser").Preload("Members.OauthUser").
+	notFound := s.db.Where("owner_id = ?", ownerID).Preload("Owner.Account").
+		Preload("Owner.OauthUser").Preload("Owner.Role").Preload("Members.Account").
+		Preload("Members.OauthUser").Preload("Members.Role").
 		First(team).RecordNotFound()
 
 	// Not found
@@ -73,7 +75,8 @@ func (s *Service) FindTeamByMemberID(memberID uint) (*Team, error) {
 	notFound := s.db.
 		Joins("inner join team_team_members on team_team_members.team_id = team_teams.id").
 		Where("team_team_members.user_id = ?", memberID).
-		Preload("Owner.OauthUser").Preload("Members.OauthUser").
+		Preload("Owner.Account").Preload("Owner.OauthUser").Preload("Owner.Role").
+		Preload("Members.Account").Preload("Members.OauthUser").Preload("Members.Role").
 		First(team).RecordNotFound()
 
 	// Not found
@@ -103,23 +106,55 @@ func (s *Service) createTeam(owner *accounts.User, teamRequest *TeamRequest) (*T
 		return nil, ErrMaxMembersPerTeamLimitReached
 	}
 
+	// Begin a transaction
+	tx := s.db.Begin()
+
+	// Create a new team
+	team := NewTeam(owner, []*accounts.User{}, teamRequest.Name)
+
+	// Save the team to the database
+	if err := tx.Create(team).Error; err != nil {
+		tx.Rollback() // rollback the transaction
+		return nil, err
+	}
+
 	// Members
 	members := make([]*accounts.User, len(teamRequest.Members))
 	for i, teamMemberRequest := range teamRequest.Members {
 		// Owner cannot add himself / herself
 		if teamMemberRequest.Email == owner.OauthUser.Username {
+			tx.Rollback() // rollback the transaction
 			return nil, ErrCannotAddYourself
 		}
 
+		var member *accounts.User
+
 		// Fetch the member from the database
-		member, err := s.GetAccountsService().FindUserByEmail(teamMemberRequest.Email)
+		member, err = s.GetAccountsService().FindUserByEmail(teamMemberRequest.Email)
 		if err != nil {
-			return nil, err
+			switch err {
+			case accounts.ErrUserNotFound:
+				invitation, err := s.inviteUserTx(
+					tx,
+					team,
+					teamMemberRequest.Email,
+					false, // update members assoc
+				)
+				if err != nil {
+					tx.Rollback() // rollback the transaction
+					return nil, err
+				}
+				member = invitation.InvitedUser
+			default:
+				tx.Rollback() // rollback the transaction
+				return nil, err
+			}
 		}
 
 		// Users can only be members of a single team
 		memberTeam, err := s.FindTeamByMemberID(member.ID)
-		if err == nil {
+		if err == nil && memberTeam.ID != team.ID {
+			tx.Rollback() // rollback the transaction
 			return nil, NewErrUserCanOnlyBeMemberOfOneTeam(
 				member.OauthUser.Username,
 				memberTeam.Name,
@@ -129,11 +164,16 @@ func (s *Service) createTeam(owner *accounts.User, teamRequest *TeamRequest) (*T
 		members[i] = member
 	}
 
-	// Create a new team
-	team := NewTeam(owner, members, teamRequest.Name)
+	// Update members association
+	membersAssoc := tx.Model(team).Association("Members")
+	if err := membersAssoc.Replace(members).Error; err != nil {
+		tx.Rollback() // rollback the transaction
+		return nil, err
+	}
 
-	// Save the team to the database
-	if err := s.db.Create(team).Error; err != nil {
+	// Commit the transaction
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback() // rollback the transaction
 		return nil, err
 	}
 
@@ -159,23 +199,55 @@ func (s *Service) updateTeam(team *Team, teamRequest *TeamRequest) error {
 		return ErrMaxMembersPerTeamLimitReached
 	}
 
+	// Begin a transaction
+	tx := s.db.Begin()
+
+	// Update basic metadata
+	if err := tx.Model(team).UpdateColumns(Team{
+		Name:  teamRequest.Name,
+		Model: gorm.Model{UpdatedAt: time.Now()},
+	}).Error; err != nil {
+		tx.Rollback() // rollback the transaction
+		return err
+	}
+
 	// Members
 	members := make([]*accounts.User, len(teamRequest.Members))
 	for i, teamMemberRequest := range teamRequest.Members {
 		// Owner cannot add himself / herself
 		if teamMemberRequest.Email == team.Owner.OauthUser.Username {
+			tx.Rollback() // rollback the transaction
 			return ErrCannotAddYourself
 		}
 
+		var member *accounts.User
+
 		// Fetch the member from the database
-		member, err := s.GetAccountsService().FindUserByEmail(teamMemberRequest.Email)
+		member, err = s.GetAccountsService().FindUserByEmail(teamMemberRequest.Email)
 		if err != nil {
-			return err
+			switch err {
+			case accounts.ErrUserNotFound:
+				invitation, err := s.inviteUserTx(
+					tx,
+					team,
+					teamMemberRequest.Email,
+					false, // update members assoc
+				)
+				if err != nil {
+					tx.Rollback() // rollback the transaction
+					return err
+				}
+				member = invitation.InvitedUser
+			default:
+				tx.Rollback() // rollback the transaction
+				return err
+			}
 		}
 
 		// Users can only be members of a single team
 		memberTeam, err := s.FindTeamByMemberID(member.ID)
 		if err == nil && memberTeam.ID != team.ID {
+			tx.Rollback() // rollback the transaction
 			return NewErrUserCanOnlyBeMemberOfOneTeam(
 				member.OauthUser.Username,
 				memberTeam.Name,
@@ -185,19 +257,7 @@ func (s *Service) updateTeam(team *Team, teamRequest *TeamRequest) error {
 		members[i] = member
 	}
 
-	// Begin a transaction
-	tx := s.db.Begin()
-
-	// Update basic metadata
-	if err := s.db.Model(team).UpdateColumns(Team{
-		Name:  teamRequest.Name,
-		Model: gorm.Model{UpdatedAt: time.Now()},
-	}).Error; err != nil {
-		tx.Rollback() // rollback the transaction
-		return err
-	}
-
-	// Update owners association
+	// Update members association
 	membersAssoc := tx.Model(team).Association("Members")
 	if err := membersAssoc.Replace(members).Error; err != nil {
 		tx.Rollback() // rollback the transaction

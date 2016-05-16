@@ -89,9 +89,7 @@ func (suite *TeamsTestSuite) TestInviteUserWithoutPermission() {
 
 func (suite *TeamsTestSuite) TestInviteUser() {
 	// Prepare a request
-	invitationRequest := &accounts.InvitationRequest{
-		Email: "test@user",
-	}
+	invitationRequest := &InvitationRequest{"test@user"}
 	payload, err := json.Marshal(invitationRequest)
 	assert.NoError(suite.T(), err, "JSON marshalling failed")
 	r, err := http.NewRequest(
@@ -125,7 +123,7 @@ func (suite *TeamsTestSuite) TestInviteUser() {
 	}
 	suite.mockInviteUserTx(
 		suite.users[0],
-		invitationRequest,
+		"test@user",
 		invitation,
 		nil,
 	)

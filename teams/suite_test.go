@@ -186,11 +186,11 @@ func (suite *TeamsTestSuite) mockFindUserByEmail(email string, user *accounts.Us
 }
 
 // Mock invite user call to accounts service
-func (suite *TeamsTestSuite) mockInviteUserTx(invitedByUser *accounts.User, invitationRequest *accounts.InvitationRequest, invitation *accounts.Invitation, err error) {
+func (suite *TeamsTestSuite) mockInviteUserTx(invitedByUser *accounts.User, email string, invitation *accounts.Invitation, err error) {
 	suite.accountsServiceMock.On(
 		"InviteUserTx",
 		mock.AnythingOfType("*gorm.DB"),
 		invitedByUser,
-		invitationRequest,
+		&accounts.InvitationRequest{Email: email},
 	).Return(invitation, err)
 }
