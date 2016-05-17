@@ -7,9 +7,7 @@ import (
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/RichardKnop/pinglist-api/config"
 	"github.com/RichardKnop/pinglist-api/database"
-
 	"github.com/RichardKnop/pinglist-api/oauth"
-
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	"github.com/stretchr/testify/suite"
@@ -23,7 +21,6 @@ var testFixtures = []string{
 	"../accounts/fixtures/roles.yml",
 	"../accounts/fixtures/test_accounts.yml",
 	"../accounts/fixtures/test_users.yml",
-	"fixtures/test_endpoints.yml",
 }
 
 // db migrations needed for tests
@@ -44,7 +41,6 @@ type NotificationsTestSuite struct {
 	service             *Service
 	accounts            []*accounts.Account
 	users               []*accounts.User
-	endpoints           []*Endpoint
 	router              *mux.Router
 }
 
@@ -103,14 +99,7 @@ func (suite *NotificationsTestSuite) TearDownSuite() {
 
 // The SetupTest method will be run before every test in the suite.
 func (suite *NotificationsTestSuite) SetupTest() {
-	suite.db.Unscoped().Not("id", []int64{1, 2}).Delete(new(Endpoint))
-
-	// Fetch test endpoints
-	suite.endpoints = make([]*Endpoint, 0)
-	err := suite.db.Preload("User").Order("id").Find(&suite.endpoints).Error
-	if err != nil {
-		log.Fatal(err)
-	}
+	suite.db.Unscoped().Delete(new(Endpoint))
 
 	// Reset mocks
 	suite.oauthServiceMock.ExpectedCalls = suite.oauthServiceMock.ExpectedCalls[:0]

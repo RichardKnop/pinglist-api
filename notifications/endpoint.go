@@ -95,15 +95,34 @@ func (s *Service) createEndpoint(user *accounts.User, applicationARN, deviceToke
 		return nil, err
 	}
 
-	// And store the platform endpoint ARN in our database
-	endpoint := NewEndpoint(
-		user,
-		applicationARN,
-		endpointARN,
-		deviceToken,
-		true, // enabled
-	)
-	if err := s.db.Create(endpoint).Error; err != nil {
+	// Begin a transaction
+	tx := s.db.Begin()
+
+	var endpoint = new(Endpoint)
+
+	// Grab the first matching endpoint or create a new one
+	if err := s.db.Where(map[string]interface{}{
+		"user_id":         user.ID,
+		"application_arn": applicationARN,
+	}).FirstOrCreate(&endpoint).Error; err != nil {
+		tx.Rollback() // rollback the transaction
+		return nil, err
+	}
+
+	// Update arn, device token and set enabled to true
+	if err := s.db.Model(endpoint).UpdateColumns(map[string]interface{}{
+		"arn":          endpointARN,
+		"device_token": deviceToken,
+		"enabled":      true,
+		"updated_at":   time.Now(),
+	}).Error; err != nil {
+		tx.Rollback() // rollback the transaction
+		return nil, err
+	}
+
+	// Commit the transaction
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback() // rollback the transaction
 		return nil, err
 	}
 

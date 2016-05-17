@@ -541,13 +541,13 @@ func (suite *AlarmsTestSuite) TestIncidentTypeCounts() {
 
 func (suite *AlarmsTestSuite) TestGetUptimeDowntime() {
 	var (
-		okAlarmState             *AlarmState
+		okAlarmState     *AlarmState
 		SlowIncidentType *IncidentType
-		testAlarm                *Alarm
-		testIncidents            []*Incident
-		now                      = time.Now()
-		uptime, downtime         float64
-		err                      error
+		testAlarm        *Alarm
+		testIncidents    []*Incident
+		now              = time.Now()
+		uptime, downtime float64
+		err              error
 	)
 
 	okAlarmState, err = suite.service.findAlarmStateByID(alarmstates.OK)

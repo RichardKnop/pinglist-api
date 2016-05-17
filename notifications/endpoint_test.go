@@ -6,9 +6,20 @@ import (
 
 func (suite *NotificationsTestSuite) TestFindEndpointByUserIDAndApplicationARN() {
 	var (
-		endpoint *Endpoint
-		err      error
+		testEndpoint, endpoint *Endpoint
+		err                    error
 	)
+
+	// Insert a test endpoint
+	testEndpoint = NewEndpoint(
+		suite.users[0],
+		suite.cnf.AWS.APNSPlatformApplicationARN,
+		"endpoint_arn",
+		"device_token",
+		false, // enabled
+	)
+	err = suite.db.Create(testEndpoint).Error
+	assert.NoError(suite.T(), err, "Failed to insert a test endpoint")
 
 	// When we try to find an endpoint with a bogus user ID and application ARN
 	endpoint, err = suite.service.FindEndpointByUserIDAndApplicationARN(
@@ -63,10 +74,10 @@ func (suite *NotificationsTestSuite) TestFindEndpointByUserIDAndApplicationARN()
 
 	// Correct endpoint object should be returned with preloaded data
 	if assert.NotNil(suite.T(), endpoint) {
-		assert.Equal(suite.T(), suite.endpoints[0].ID, endpoint.ID)
-		assert.Equal(suite.T(), suite.users[0].ID, uint(endpoint.UserID.Int64))
+		assert.Equal(suite.T(), testEndpoint.ID, endpoint.ID)
+		assert.Equal(suite.T(), testEndpoint.User.ID, endpoint.User.ID)
 		assert.Equal(suite.T(), suite.cnf.AWS.APNSPlatformApplicationARN, endpoint.ApplicationARN)
-		assert.Equal(suite.T(), "the_arn_1", endpoint.ARN)
-		assert.True(suite.T(), endpoint.Enabled)
+		assert.Equal(suite.T(), testEndpoint.ARN, endpoint.ARN)
+		assert.Equal(suite.T(), testEndpoint.Enabled, endpoint.Enabled)
 	}
 }
