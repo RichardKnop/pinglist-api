@@ -62,6 +62,7 @@ var cnf = &Config{
 		AppScheme: "http",
 		AppHost:   "localhost:8000",
 	},
+	IOSLink:       "#",
 	ContactEmail:  "contact@pingli.st",
 	IsDevelopment: true,
 }

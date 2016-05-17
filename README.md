@@ -95,6 +95,7 @@ curl -L http://localhost:2379/v2/keys/config/pinglist.json -XPUT -d value='{
 		"AppScheme": "http",
 		"AppHost": "localhost:8000",
 	},
+	"IOSLink": "#",
 	"ContactEmail": "contact@pingli.st",
 	"IsDevelopment": true
 }'

@@ -62,6 +62,9 @@ func (s *Service) renderTemplate(w http.ResponseWriter, name string, data map[st
 		s.cnf.Web.AppHost,
 	)
 
+	// Add iOS app download link to the data
+	data["iOSLink"] = s.cnf.IOSLink
+
 	// Execute the template
 	err := tmpl.ExecuteTemplate(buf, "base", data)
 	if err != nil {
