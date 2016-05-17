@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"os"
 
 	"github.com/RichardKnop/pinglist-api/commands"
@@ -28,64 +27,50 @@ func main() {
 		{
 			Name:  "migrate",
 			Usage: "run migrations",
-			Action: func(c *cli.Context) {
-				if err := commands.Migrate(); err != nil {
-					log.Fatal(err)
-				}
+			Action: func(c *cli.Context) error {
+				return commands.Migrate()
 			},
 		},
 		{
 			Name:  "loaddata",
 			Usage: "load data from fixture",
-			Action: func(c *cli.Context) {
-				if err := commands.LoadData(c.Args()); err != nil {
-					log.Fatal(err)
-				}
+			Action: func(c *cli.Context) error {
+				return commands.LoadData(c.Args())
 			},
 		},
 		{
 			Name:  "createaccount",
 			Usage: "create new account",
-			Action: func(c *cli.Context) {
-				if err := commands.CreateAccount(); err != nil {
-					log.Fatal(err)
-				}
+			Action: func(c *cli.Context) error {
+				return commands.CreateAccount()
 			},
 		},
 		{
 			Name:  "createsuperuser",
 			Usage: "create new superuser",
-			Action: func(c *cli.Context) {
-				if err := commands.CreateSuperuser(); err != nil {
-					log.Fatal(err)
-				}
+			Action: func(c *cli.Context) error {
+				return commands.CreateSuperuser()
 			},
 		},
 		{
 			Name:  "runscheduler",
 			Usage: "run scheduler",
-			Action: func(c *cli.Context) {
-				if err := commands.RunScheduler(); err != nil {
-					log.Fatal(err)
-				}
+			Action: func(c *cli.Context) error {
+				return commands.RunScheduler()
 			},
 		},
 		{
 			Name:  "runserver",
 			Usage: "run web server",
-			Action: func(c *cli.Context) {
-				if err := commands.RunServer(); err != nil {
-					log.Fatal(err)
-				}
+			Action: func(c *cli.Context) error {
+				return commands.RunServer()
 			},
 		},
 		{
 			Name:  "runall",
 			Usage: "run both scheduler and web server",
-			Action: func(c *cli.Context) {
-				if err := commands.RunAll(); err != nil {
-					log.Fatal(err)
-				}
+			Action: func(c *cli.Context) error {
+				return commands.RunAll()
 			},
 		},
 	}
