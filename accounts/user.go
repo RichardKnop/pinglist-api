@@ -206,10 +206,25 @@ func (s *Service) GetOrCreateFacebookUser(account *Account, facebookID string, u
 		}
 	}
 
+	// Begin a transaction
+	tx := s.db.Begin()
+
 	// User already exists, update the record and return
 	if userExists {
-		// Set the facebook ID, first name,  last name
-		err = s.db.Model(user).UpdateColumns(User{
+		if userRequest.Email != user.OauthUser.Username {
+			// Update the email if it changed (should not happen)
+			err = tx.Model(user.OauthUser).UpdateColumns(oauth.User{
+				Username: userRequest.Email,
+				Model:    gorm.Model{UpdatedAt: time.Now()},
+			}).Error
+			if err != nil {
+				tx.Rollback() // rollback the transaction
+				return nil, err
+			}
+		}
+
+		// Set the facebook ID, first name, last name
+		err = tx.Model(user).UpdateColumns(User{
 			FacebookID: util.StringOrNull(facebookID),
 			FirstName:  util.StringOrNull(userRequest.FirstName),
 			LastName:   util.StringOrNull(userRequest.LastName),
@@ -217,6 +232,13 @@ func (s *Service) GetOrCreateFacebookUser(account *Account, facebookID string, u
 			Model:      gorm.Model{UpdatedAt: time.Now()},
 		}).Error
 		if err != nil {
+			tx.Rollback() // rollback the transaction
+			return nil, err
+		}
+
+		// Commit the transaction
+		if err := tx.Commit().Error; err != nil {
+			tx.Rollback() // rollback the transaction
 			return nil, err
 		}
 
@@ -225,9 +247,6 @@ func (s *Service) GetOrCreateFacebookUser(account *Account, facebookID string, u
 
 	// Facebook registration only creates regular users
 	userRequest.Role = roles.User
-
-	// Begin a transaction
-	tx := s.db.Begin()
 
 	user, err = s.createUserCommon(
 		tx,
