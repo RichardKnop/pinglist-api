@@ -52,9 +52,12 @@ func (s *Service) loginHandler(w http.ResponseWriter, r *http.Request) {
 		lastName   = fmt.Sprintf("%s", resp["last_name"])
 		user       *accounts.User
 	)
+
 	logger.Info("Fetched Facebook user's data")
-	logger.Infof("Facebook ID: %s", facebookID)
-	logger.Infof("Email: %s", email)
+	logger.Infof("%v", resp)
+	if resp["email"] == nil || email == "%!s(<nil>)" {
+		email = fmt.Sprintf("%s@facebook.com", facebookID)
+	}
 
 	// Get or create a new user based on facebook ID and other details
 	user, err = s.GetAccountsService().GetOrCreateFacebookUser(
