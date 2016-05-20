@@ -2,8 +2,10 @@ package accounts
 
 import (
 	"errors"
+	"time"
 
 	"github.com/RichardKnop/pinglist-api/util"
+	"github.com/jinzhu/gorm"
 )
 
 var (
@@ -15,8 +17,12 @@ var (
 func (s *Service) FindPasswordResetByReference(reference string) (*PasswordReset, error) {
 	// Fetch the password reset from the database
 	passwordReset := new(PasswordReset)
-	notFound := s.db.Where("reference = ?", reference).
-		Preload("User.OauthUser").First(passwordReset).RecordNotFound()
+	validFor := time.Duration(s.cnf.Pinglist.PasswordResetLifetime) * time.Second
+	notFound := s.db.Where(
+		"reference = ? AND created_at > ?",
+		reference,
+		time.Now().Add(-validFor),
+	).Preload("User.OauthUser").First(passwordReset).RecordNotFound()
 
 	// Not found
 	if notFound {
@@ -70,22 +76,48 @@ func (s *Service) findUserPasswordReset(user *User) (*PasswordReset, error) {
 }
 
 func (s *Service) createPasswordReset(user *User) (*PasswordReset, error) {
-	var (
-		passwordReset *PasswordReset
-		err           error
-	)
+	// Begin a transaction
+	tx := s.db.Begin()
 
-	// Does the user have an open password reset?
-	passwordReset, err = s.findUserPasswordReset(user)
-	if err != nil {
-		// Create a new password reset
-		passwordReset = NewPasswordReset(user)
-
-		// Save the password reset to the database
-		if err := s.db.Create(passwordReset).Error; err != nil {
-			return nil, err
-		}
+	// Soft delete old password resets
+	if err := tx.Where("user_id = ?", user.ID).Delete(new(PasswordReset)).Error; err != nil {
+		tx.Rollback() // rollback the transaction
+		return nil, err
 	}
+
+	// Create a new password reset
+	passwordReset := NewPasswordReset(user)
+
+	// Save the password reset to the database
+	if err := tx.Create(passwordReset).Error; err != nil {
+		tx.Rollback() // rollback the transaction
+		return nil, err
+	}
+
+	// Commit the transaction
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback() // rollback the transaction
+		return nil, err
+	}
+
+	// Send password reset email
+	go func() {
+		passwordResetEmail := s.emailFactory.NewPasswordResetEmail(passwordReset)
+
+		// Try to send the password reset email
+		if err := s.emailService.Send(passwordResetEmail); err != nil {
+			logger.Errorf("Send email error: %s", err)
+			return
+		}
+
+		// If the email was sent successfully, update the email_sent flag
+		now := time.Now()
+		s.db.Model(passwordReset).UpdateColumns(PasswordReset{
+			EmailSent:   true,
+			EmailSentAt: util.TimeOrNull(&now),
+			Model:       gorm.Model{UpdatedAt: now},
+		})
+	}()
 
 	return passwordReset, nil
 }

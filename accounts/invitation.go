@@ -148,7 +148,7 @@ func (s *Service) inviteUserCommon(db *gorm.DB, invitedByUser *User, invitationR
 
 		// If the email was sent successfully, update the email_sent flag
 		now := time.Now()
-		db.Model(invitation).UpdateColumns(Invitation{
+		s.db.Model(invitation).UpdateColumns(Invitation{
 			EmailSent:   true,
 			EmailSentAt: util.TimeOrNull(&now),
 			Model:       gorm.Model{UpdatedAt: time.Now()},

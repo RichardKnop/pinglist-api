@@ -52,7 +52,7 @@ func (suite *AccountsTestSuite) TestCreatePasswordReset() {
 	suite.router.ServeHTTP(w, r)
 
 	// Sleep for the email goroutine to finish
-	time.Sleep(5 * time.Millisecond)
+	time.Sleep(10 * time.Millisecond)
 
 	// Check that the mock object expectations were met
 	suite.assertMockExpectations()
@@ -126,12 +126,6 @@ func (suite *AccountsTestSuite) TestCreatePasswordResetSecondTime() {
 	w := httptest.NewRecorder()
 	suite.router.ServeHTTP(w, r)
 
-	// Sleep for the email goroutine to finish
-	time.Sleep(5 * time.Millisecond)
-
-	// Check that the mock object expectations were met
-	suite.assertMockExpectations()
-
 	// Check the status code
 	if !assert.Equal(suite.T(), 204, w.Code) {
 		log.Print(w.Body.String())
@@ -148,10 +142,12 @@ func (suite *AccountsTestSuite) TestCreatePasswordResetSecondTime() {
 		Last(passwordReset).RecordNotFound())
 
 	// And correct data was saved
-	assert.Equal(suite.T(), testPasswordReset.ID, passwordReset.ID)
+	assert.NotEqual(suite.T(), testPasswordReset.ID, passwordReset.ID)
 	assert.Equal(suite.T(), testPasswordReset.User.ID, passwordReset.User.ID)
-	assert.True(suite.T(), passwordReset.EmailSent)
-	assert.True(suite.T(), passwordReset.EmailSentAt.Time.After(testPasswordReset.EmailSentAt.Time))
+
+	// Email should not have been sent yet
+	assert.False(suite.T(), passwordReset.EmailSent)
+	assert.False(suite.T(), passwordReset.EmailSentAt.Valid)
 
 	// Check the response body
 	assert.Equal(
@@ -159,4 +155,19 @@ func (suite *AccountsTestSuite) TestCreatePasswordResetSecondTime() {
 		"", // empty string
 		strings.TrimRight(w.Body.String(), "\n"), // trim the trailing \n
 	)
+
+	// Sleep for the email goroutine to finish
+	time.Sleep(10 * time.Millisecond)
+
+	// Check that the mock object expectations were met
+	suite.assertMockExpectations()
+
+	// Refresh the password reset
+	passwordReset = new(PasswordReset)
+	assert.False(suite.T(), suite.db.Preload("User.OauthUser").
+		Last(passwordReset).RecordNotFound())
+
+	// Email should have been sent
+	assert.True(suite.T(), passwordReset.EmailSent)
+	assert.True(suite.T(), passwordReset.EmailSentAt.Valid)
 }

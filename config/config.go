@@ -65,6 +65,11 @@ type WebConfig struct {
 	AppHost   string
 }
 
+// PinglistConfig stores app specific config
+type PinglistConfig struct {
+	PasswordResetLifetime int
+}
+
 // Config stores all configuration options
 type Config struct {
 	Database      DatabaseConfig
@@ -75,6 +80,7 @@ type Config struct {
 	Sendgrid      SendgridConfig
 	Stripe        StripeConfig
 	Web           WebConfig
+	Pinglist PinglistConfig
 	IOSLink       string
 	ContactEmail  string
 	IsDevelopment bool

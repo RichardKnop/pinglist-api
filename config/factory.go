@@ -62,6 +62,9 @@ var cnf = &Config{
 		AppScheme: "http",
 		AppHost:   "localhost:8000",
 	},
+	Pinglist: PinglistConfig{
+		PasswordResetLifetime: 604800, // 7 days
+	},
 	IOSLink:       "#",
 	ContactEmail:  "contact@pingli.st",
 	IsDevelopment: true,
