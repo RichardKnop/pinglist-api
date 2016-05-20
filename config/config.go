@@ -80,7 +80,7 @@ type Config struct {
 	Sendgrid      SendgridConfig
 	Stripe        StripeConfig
 	Web           WebConfig
-	Pinglist PinglistConfig
+	Pinglist      PinglistConfig
 	IOSLink       string
 	ContactEmail  string
 	IsDevelopment bool
