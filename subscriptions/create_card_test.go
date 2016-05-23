@@ -8,8 +8,8 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"strings"
-	"time"
 
+	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/RichardKnop/jsonhal"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
@@ -153,8 +153,8 @@ func (suite *SubscriptionsTestSuite) TestCreateCardExistingValidCustomer() {
 		LastFour:  card.LastFour,
 		ExpMonth:  card.ExpMonth,
 		ExpYear:   card.ExpYear,
-		CreatedAt: card.CreatedAt.UTC().Format(time.RFC3339),
-		UpdatedAt: card.UpdatedAt.UTC().Format(time.RFC3339),
+		CreatedAt: util.FormatTime(card.CreatedAt),
+		UpdatedAt: util.FormatTime(card.UpdatedAt),
 	}
 	expectedJSON, err := json.Marshal(expected)
 	if assert.NoError(suite.T(), err, "JSON marshalling failed") {
@@ -284,8 +284,8 @@ func (suite *SubscriptionsTestSuite) TestCreateCardExistingInvalidCustomer() {
 		LastFour:  card.LastFour,
 		ExpMonth:  card.ExpMonth,
 		ExpYear:   card.ExpYear,
-		CreatedAt: card.CreatedAt.UTC().Format(time.RFC3339),
-		UpdatedAt: card.UpdatedAt.UTC().Format(time.RFC3339),
+		CreatedAt: util.FormatTime(card.CreatedAt),
+		UpdatedAt: util.FormatTime(card.UpdatedAt),
 	}
 	expectedJSON, err := json.Marshal(expected)
 	if assert.NoError(suite.T(), err, "JSON marshalling failed") {
@@ -410,8 +410,8 @@ func (suite *SubscriptionsTestSuite) TestCreateCardNewCustomer() {
 		LastFour:  card.LastFour,
 		ExpMonth:  card.ExpMonth,
 		ExpYear:   card.ExpYear,
-		CreatedAt: card.CreatedAt.UTC().Format(time.RFC3339),
-		UpdatedAt: card.UpdatedAt.UTC().Format(time.RFC3339),
+		CreatedAt: util.FormatTime(card.CreatedAt),
+		UpdatedAt: util.FormatTime(card.UpdatedAt),
 	}
 	expectedJSON, err := json.Marshal(expected)
 	if assert.NoError(suite.T(), err, "JSON marshalling failed") {

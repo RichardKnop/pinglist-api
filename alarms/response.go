@@ -3,8 +3,8 @@ package alarms
 import (
 	"fmt"
 	"strconv"
-	"time"
 
+	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/RichardKnop/jsonhal"
 	"github.com/RichardKnop/pinglist-api/metrics"
 )
@@ -152,8 +152,8 @@ func NewAlarmResponse(alarm *Alarm) (*AlarmResponse, error) {
 		PushNotificationAlerts: alarm.PushNotificationAlerts,
 		Active:                 alarm.Active,
 		State:                  alarm.AlarmStateID.String,
-		CreatedAt:              alarm.CreatedAt.UTC().Format(time.RFC3339),
-		UpdatedAt:              alarm.UpdatedAt.UTC().Format(time.RFC3339),
+		CreatedAt:              util.FormatTime(alarm.CreatedAt),
+		UpdatedAt:              util.FormatTime(alarm.UpdatedAt),
 	}
 
 	// Set the self link
@@ -213,8 +213,8 @@ func NewIncidentResponse(incident *Incident) (*IncidentResponse, error) {
 		ID:        incident.ID,
 		AlarmID:   uint(incident.AlarmID.Int64),
 		Type:      incident.IncidentTypeID.String,
-		CreatedAt: incident.CreatedAt.UTC().Format(time.RFC3339),
-		UpdatedAt: incident.UpdatedAt.UTC().Format(time.RFC3339),
+		CreatedAt: util.FormatTime(incident.CreatedAt),
+		UpdatedAt: util.FormatTime(incident.UpdatedAt),
 	}
 	if incident.HTTPCode.Valid {
 		httpCode := uint(incident.HTTPCode.Int64)
@@ -233,7 +233,7 @@ func NewIncidentResponse(incident *Incident) (*IncidentResponse, error) {
 		response.ErrorMessage = &e
 	}
 	if incident.ResolvedAt.Valid {
-		resolvedAt := incident.ResolvedAt.Time.UTC().Format(time.RFC3339)
+		resolvedAt := util.FormatTime(incident.ResolvedAt.Time)
 		response.ResolvedAt = &resolvedAt
 	}
 

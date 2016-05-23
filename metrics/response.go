@@ -3,6 +3,7 @@ package metrics
 import (
 	"time"
 
+	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/RichardKnop/jsonhal"
 )
 
@@ -16,7 +17,7 @@ type MetricResponse struct {
 // NewMetricResponse creates new MetricResponse instance
 func NewMetricResponse(timestamp time.Time, value int64) (*MetricResponse, error) {
 	return &MetricResponse{
-		Timestamp: timestamp.UTC().Format(time.RFC3339),
+		Timestamp: util.FormatTime(timestamp),
 		Value:     value,
 	}, nil
 }

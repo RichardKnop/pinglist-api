@@ -13,6 +13,7 @@ import (
 	"github.com/RichardKnop/jsonhal"
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/RichardKnop/pinglist-api/subscriptions"
+	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	"github.com/stretchr/testify/assert"
@@ -430,8 +431,8 @@ func (suite *TeamsTestSuite) TestCreateTeamWithoutMembers() {
 		},
 		ID:        team.ID,
 		Name:      "New Test Team",
-		CreatedAt: team.CreatedAt.UTC().Format(time.RFC3339),
-		UpdatedAt: team.CreatedAt.UTC().Format(time.RFC3339),
+		CreatedAt: util.FormatTime(team.CreatedAt),
+		UpdatedAt: util.FormatTime(team.UpdatedAt),
 	}
 	expectedJSON, err := json.Marshal(expected)
 	if assert.NoError(suite.T(), err, "JSON marshalling failed") {
@@ -545,8 +546,8 @@ func (suite *TeamsTestSuite) TestCreateTeamWithMembers() {
 		},
 		ID:        team.ID,
 		Name:      "New Test Team",
-		CreatedAt: team.CreatedAt.UTC().Format(time.RFC3339),
-		UpdatedAt: team.UpdatedAt.UTC().Format(time.RFC3339),
+		CreatedAt: util.FormatTime(team.CreatedAt),
+		UpdatedAt: util.FormatTime(team.UpdatedAt),
 	}
 	expectedJSON, err := json.Marshal(expected)
 	if assert.NoError(suite.T(), err, "JSON marshalling failed") {
@@ -689,8 +690,8 @@ func (suite *TeamsTestSuite) TestCreateTeamWithInvitation() {
 		},
 		ID:        team.ID,
 		Name:      "New Test Team",
-		CreatedAt: team.CreatedAt.UTC().Format(time.RFC3339),
-		UpdatedAt: team.UpdatedAt.UTC().Format(time.RFC3339),
+		CreatedAt: util.FormatTime(team.CreatedAt),
+		UpdatedAt: util.FormatTime(team.UpdatedAt),
 	}
 	expectedJSON, err := json.Marshal(expected)
 	if assert.NoError(suite.T(), err, "JSON marshalling failed") {

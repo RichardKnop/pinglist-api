@@ -16,6 +16,25 @@ func TestValidateEmail(t *testing.T) {
 	assert.True(t, ValidateEmail("test@user.com"))
 }
 
+func TestFormatTime(t *testing.T) {
+	var (
+		timestamp        time.Time
+		expected, actual string
+	)
+
+	// UTC
+	timestamp = time.Date(2012, 12, 11, 8, 52, 31, 493729031, time.UTC)
+	expected = "2012-12-11T08:52:31Z"
+	actual = FormatTime(timestamp)
+	assert.Equal(t, expected, actual)
+
+	// UTC
+	timestamp = time.Date(2012, 12, 11, 8, 52, 31, 493729031, time.FixedZone("HKT", 8*3600))
+	expected = "2012-12-11T00:52:31Z"
+	actual = FormatTime(timestamp)
+	assert.Equal(t, expected, actual)
+}
+
 func TestParseTimestamp(t *testing.T) {
 	var (
 		parsedTimestamp time.Time

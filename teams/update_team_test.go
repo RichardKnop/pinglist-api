@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/RichardKnop/jsonhal"
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/RichardKnop/pinglist-api/subscriptions"
@@ -501,8 +502,8 @@ func (suite *TeamsTestSuite) TestUpdateTeamWithMembers() {
 		},
 		ID:        team.ID,
 		Name:      "Test Team Updated",
-		CreatedAt: team.CreatedAt.UTC().Format(time.RFC3339),
-		UpdatedAt: team.UpdatedAt.UTC().Format(time.RFC3339),
+		CreatedAt: util.FormatTime(team.CreatedAt),
+		UpdatedAt: util.FormatTime(team.UpdatedAt),
 	}
 	expectedJSON, err := json.Marshal(expected)
 	if assert.NoError(suite.T(), err, "JSON marshalling failed") {
@@ -645,8 +646,8 @@ func (suite *TeamsTestSuite) TestUpdateTeamWithInvitation() {
 		},
 		ID:        team.ID,
 		Name:      "Test Team Updated",
-		CreatedAt: team.CreatedAt.UTC().Format(time.RFC3339),
-		UpdatedAt: team.UpdatedAt.UTC().Format(time.RFC3339),
+		CreatedAt: util.FormatTime(team.CreatedAt),
+		UpdatedAt: util.FormatTime(team.UpdatedAt),
 	}
 	expectedJSON, err := json.Marshal(expected)
 	if assert.NoError(suite.T(), err, "JSON marshalling failed") {

@@ -81,8 +81,8 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		// LastDowntimeStartedAt should be set
 		assert.Equal(
 			suite.T(),
-			when1.Format("2006-01-02T15:04:05Z"),
-			alarm.LastDowntimeStartedAt.Time.Format("2006-01-02T15:04:05Z"),
+			util.FormatTime(when1),
+			util.FormatTime(alarm.LastDowntimeStartedAt.Time),
 		)
 		// LastUptimeStartedAt should be nil
 		assert.False(suite.T(), alarm.LastUptimeStartedAt.Valid)
@@ -142,8 +142,8 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		// LastDowntimeStartedAt unchanged
 		assert.Equal(
 			suite.T(),
-			when1.Format("2006-01-02T15:04:05Z"),
-			alarm.LastDowntimeStartedAt.Time.UTC().Format("2006-01-02T15:04:05Z"),
+			util.FormatTime(when1),
+			util.FormatTime(alarm.LastDowntimeStartedAt.Time),
 		)
 		// LastUptimeStartedAt still nill
 		assert.False(suite.T(), alarm.LastUptimeStartedAt.Valid)
@@ -187,8 +187,8 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		// LastDowntimeStartedAt should be set
 		assert.Equal(
 			suite.T(),
-			when1.Format("2006-01-02T15:04:05Z"),
-			alarm.LastDowntimeStartedAt.Time.UTC().Format("2006-01-02T15:04:05Z"),
+			util.FormatTime(when1),
+			util.FormatTime(alarm.LastDowntimeStartedAt.Time),
 		)
 		// LastUptimeStartedAt should be nil
 		assert.False(suite.T(), alarm.LastUptimeStartedAt.Valid)
@@ -254,8 +254,8 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		// LastDowntimeStartedAt unchanged
 		assert.Equal(
 			suite.T(),
-			when1.Format("2006-01-02T15:04:05Z"),
-			alarm.LastDowntimeStartedAt.Time.UTC().Format("2006-01-02T15:04:05Z"),
+			util.FormatTime(when1),
+			util.FormatTime(alarm.LastDowntimeStartedAt.Time),
 		)
 		// LastUptimeStartedAt still nill
 		assert.False(suite.T(), alarm.LastUptimeStartedAt.Valid)
@@ -299,8 +299,8 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		// LastDowntimeStartedAt unchanged
 		assert.Equal(
 			suite.T(),
-			when1.Format("2006-01-02T15:04:05Z"),
-			alarm.LastDowntimeStartedAt.Time.UTC().Format("2006-01-02T15:04:05Z"),
+			util.FormatTime(when1),
+			util.FormatTime(alarm.LastDowntimeStartedAt.Time),
 		)
 		// LastUptimeStartedAt still nill
 		assert.False(suite.T(), alarm.LastUptimeStartedAt.Valid)
@@ -366,8 +366,8 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		// LastDowntimeStartedAt unchanged
 		assert.Equal(
 			suite.T(),
-			when1.Format("2006-01-02T15:04:05Z"),
-			alarm.LastDowntimeStartedAt.Time.UTC().Format("2006-01-02T15:04:05Z"),
+			util.FormatTime(when1),
+			util.FormatTime(alarm.LastDowntimeStartedAt.Time),
 		)
 		// LastUptimeStartedAt still nill
 		assert.False(suite.T(), alarm.LastUptimeStartedAt.Valid)
@@ -411,8 +411,8 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		// LastDowntimeStartedAt unchanged
 		assert.Equal(
 			suite.T(),
-			when1.Format("2006-01-02T15:04:05Z"),
-			alarm.LastDowntimeStartedAt.Time.UTC().Format("2006-01-02T15:04:05Z"),
+			util.FormatTime(when1),
+			util.FormatTime(alarm.LastDowntimeStartedAt.Time),
 		)
 		// LastUptimeStartedAt still nill
 		assert.False(suite.T(), alarm.LastUptimeStartedAt.Valid)
@@ -488,14 +488,14 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		// LastDowntimeStartedAt unchanged
 		assert.Equal(
 			suite.T(),
-			when1.Format("2006-01-02T15:04:05Z"),
-			alarm.LastDowntimeStartedAt.Time.UTC().Format("2006-01-02T15:04:05Z"),
+			util.FormatTime(when1),
+			util.FormatTime(alarm.LastDowntimeStartedAt.Time),
 		)
 		// LastUptimeStartedAt should be set
 		assert.Equal(
 			suite.T(),
-			when8.Format("2006-01-02T15:04:05Z"),
-			alarm.LastUptimeStartedAt.Time.UTC().Format("2006-01-02T15:04:05Z"),
+			util.FormatTime(when8),
+			util.FormatTime(alarm.LastUptimeStartedAt.Time),
 		)
 
 		// 4 incidents

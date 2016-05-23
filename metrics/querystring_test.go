@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -49,8 +50,8 @@ func TestGetParamsFromQueryString(t *testing.T) {
 	// Check error is nil and correct values were returned
 	if assert.NoError(t, err) {
 		assert.Equal(t, expectedDateTrunc, dateTrunc)
-		assert.Equal(t, expectedFrom, from.UTC().Format(time.RFC3339))
-		assert.Equal(t, expectedTo, to.UTC().Format(time.RFC3339))
+		assert.Equal(t, expectedFrom, util.FormatTime(*from))
+		assert.Equal(t, expectedTo, util.FormatTime(*to))
 	}
 
 	// Let's try with invalid date_trunc

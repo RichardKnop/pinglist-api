@@ -8,8 +8,8 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"strings"
-	"time"
 
+	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/RichardKnop/jsonhal"
 	"github.com/RichardKnop/pinglist-api/accounts/roles"
 	"github.com/RichardKnop/pinglist-api/oauth"
@@ -177,8 +177,8 @@ func (suite *AccountsTestSuite) TestUpdateUserChangePasswordWhenPasswordEmpty() 
 		LastName:  "Finch",
 		Role:      roles.User,
 		Confirmed: true,
-		CreatedAt: user.CreatedAt.UTC().Format(time.RFC3339),
-		UpdatedAt: user.UpdatedAt.UTC().Format(time.RFC3339),
+		CreatedAt: util.FormatTime(user.CreatedAt),
+		UpdatedAt: util.FormatTime(user.UpdatedAt),
 	}
 	expectedJSON, err := json.Marshal(expected)
 	if assert.NoError(suite.T(), err, "JSON marshalling failed") {
@@ -295,8 +295,8 @@ func (suite *AccountsTestSuite) TestUpdateUserChangePassword() {
 		LastName:  "Finch",
 		Role:      roles.User,
 		Confirmed: false,
-		CreatedAt: user.CreatedAt.UTC().Format(time.RFC3339),
-		UpdatedAt: user.UpdatedAt.UTC().Format(time.RFC3339),
+		CreatedAt: util.FormatTime(user.CreatedAt),
+		UpdatedAt: util.FormatTime(user.UpdatedAt),
 	}
 	expectedJSON, err := json.Marshal(expected)
 	if assert.NoError(suite.T(), err, "JSON marshalling failed") {
@@ -374,8 +374,8 @@ func (suite *AccountsTestSuite) TestUpdateUser() {
 		LastName:  "Reese",
 		Role:      user.RoleID.String,
 		Confirmed: user.Confirmed,
-		CreatedAt: user.CreatedAt.UTC().Format(time.RFC3339),
-		UpdatedAt: user.UpdatedAt.UTC().Format(time.RFC3339),
+		CreatedAt: util.FormatTime(user.CreatedAt),
+		UpdatedAt: util.FormatTime(user.UpdatedAt),
 	}
 	expectedJSON, err := json.Marshal(expected)
 	if assert.NoError(suite.T(), err, "JSON marshalling failed") {

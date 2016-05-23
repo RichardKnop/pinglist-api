@@ -3,6 +3,7 @@ package metrics
 import (
 	"time"
 
+	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -232,13 +233,13 @@ func (suite *MetricsTestSuite) TestFindPaginatedResponseTimes() {
 		assert.Equal(suite.T(), 2, len(responseTimes))
 		assert.Equal(
 			suite.T(),
-			yesterday.UTC().Format(time.RFC3339),
-			responseTimes[0].Timestamp.UTC().Format(time.RFC3339),
+			util.FormatTime(yesterday),
+			util.FormatTime(responseTimes[0].Timestamp),
 		)
 		assert.Equal(
 			suite.T(),
-			today.UTC().Format(time.RFC3339),
-			responseTimes[1].Timestamp.UTC().Format(time.RFC3339),
+			util.FormatTime(today),
+			util.FormatTime(responseTimes[1].Timestamp),
 		)
 		assert.Equal(suite.T(), int64(234), responseTimes[0].Value) // (123 + 234 + 345) / 3
 		assert.Equal(suite.T(), int64(567), responseTimes[1].Value) // (456 + 567 + 678) / 3

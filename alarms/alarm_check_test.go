@@ -141,8 +141,8 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	// Watermark updated
 	assert.Equal(
 		suite.T(),
-		start.Format("2006-01-02T15:04:05Z"),
-		alarm.Watermark.Time.UTC().Format("2006-01-02T15:04:05Z"),
+		util.FormatTime(start),
+		util.FormatTime(alarm.Watermark.Time),
 	)
 
 	// Status OK
@@ -203,8 +203,8 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	// Watermark updated
 	assert.Equal(
 		suite.T(),
-		start.Format("2006-01-02T15:04:05Z"),
-		alarm.Watermark.Time.UTC().Format("2006-01-02T15:04:05Z"),
+		util.FormatTime(start),
+		util.FormatTime(alarm.Watermark.Time),
 	)
 
 	// Status changed to Alarm
@@ -246,8 +246,8 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	// Watermark updated
 	assert.Equal(
 		suite.T(),
-		start.Format("2006-01-02T15:04:05Z"),
-		alarm.Watermark.Time.UTC().Format("2006-01-02T15:04:05Z"),
+		util.FormatTime(start),
+		util.FormatTime(alarm.Watermark.Time),
 	)
 
 	// Status still Alarm
@@ -289,8 +289,8 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	// Watermark updated
 	assert.Equal(
 		suite.T(),
-		start.Format("2006-01-02T15:04:05Z"),
-		alarm.Watermark.Time.UTC().Format("2006-01-02T15:04:05Z"),
+		util.FormatTime(start),
+		util.FormatTime(alarm.Watermark.Time),
 	)
 
 	// Status still Alarm
@@ -349,8 +349,8 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	// Watermark updated
 	assert.Equal(
 		suite.T(),
-		start.Format("2006-01-02T15:04:05Z"),
-		alarm.Watermark.Time.UTC().Format("2006-01-02T15:04:05Z"),
+		util.FormatTime(start),
+		util.FormatTime(alarm.Watermark.Time),
 	)
 
 	// Status back to OK
@@ -442,8 +442,8 @@ func (suite *AlarmsTestSuite) TestAlarmCheckIdempotency() {
 	// Watermark updated
 	assert.Equal(
 		suite.T(),
-		start.Format("2006-01-02T15:04:05Z"),
-		alarm.Watermark.Time.UTC().Format("2006-01-02T15:04:05Z"),
+		util.FormatTime(start),
+		util.FormatTime(alarm.Watermark.Time),
 	)
 
 	// Status OK

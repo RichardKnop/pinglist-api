@@ -2,8 +2,8 @@ package accounts
 
 import (
 	"fmt"
-	"time"
 
+	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/RichardKnop/jsonhal"
 )
 
@@ -40,8 +40,8 @@ func NewUserResponse(user *User) (*UserResponse, error) {
 		LastName:  user.LastName.String,
 		Role:      user.RoleID.String,
 		Confirmed: user.Confirmed,
-		CreatedAt: user.CreatedAt.UTC().Format(time.RFC3339),
-		UpdatedAt: user.UpdatedAt.UTC().Format(time.RFC3339),
+		CreatedAt: util.FormatTime(user.CreatedAt),
+		UpdatedAt: util.FormatTime(user.UpdatedAt),
 	}
 
 	// Set the self link
@@ -61,8 +61,8 @@ func NewInvitationResponse(invitation *Invitation) (*InvitationResponse, error) 
 		Reference:       invitation.Reference,
 		InvitedUserID:   invitation.InvitedUser.ID,
 		InvitedByUserID: invitation.InvitedByUser.ID,
-		CreatedAt:       invitation.CreatedAt.UTC().Format(time.RFC3339),
-		UpdatedAt:       invitation.UpdatedAt.UTC().Format(time.RFC3339),
+		CreatedAt:       util.FormatTime(invitation.CreatedAt),
+		UpdatedAt:       util.FormatTime(invitation.UpdatedAt),
 	}
 
 	// Set the self link

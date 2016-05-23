@@ -2,8 +2,8 @@ package teams
 
 import (
 	"fmt"
-	"time"
 
+	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/RichardKnop/jsonhal"
 	"github.com/RichardKnop/pinglist-api/accounts"
 )
@@ -29,8 +29,8 @@ func NewTeamResponse(team *Team) (*TeamResponse, error) {
 	response := &TeamResponse{
 		ID:        team.ID,
 		Name:      team.Name,
-		CreatedAt: team.CreatedAt.UTC().Format(time.RFC3339),
-		UpdatedAt: team.UpdatedAt.UTC().Format(time.RFC3339),
+		CreatedAt: util.FormatTime(team.CreatedAt),
+		UpdatedAt: util.FormatTime(team.UpdatedAt),
 	}
 
 	// Set the self link

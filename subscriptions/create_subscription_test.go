@@ -8,8 +8,8 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"strings"
-	"time"
 
+	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/RichardKnop/jsonhal"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
@@ -331,14 +331,14 @@ func (suite *SubscriptionsTestSuite) TestCreateSubscription() {
 		},
 		ID:             subscription.ID,
 		SubscriptionID: subscription.SubscriptionID,
-		StartedAt:      subscription.StartedAt.Time.UTC().Format(time.RFC3339),
-		PeriodStart:    subscription.PeriodStart.Time.UTC().Format(time.RFC3339),
-		PeriodEnd:      subscription.PeriodEnd.Time.UTC().Format(time.RFC3339),
-		TrialStart:     subscription.TrialStart.Time.UTC().Format(time.RFC3339),
-		TrialEnd:       subscription.TrialEnd.Time.UTC().Format(time.RFC3339),
+		StartedAt:      util.FormatTime(subscription.StartedAt.Time),
+		PeriodStart:    util.FormatTime(subscription.PeriodStart.Time),
+		PeriodEnd:      util.FormatTime(subscription.PeriodEnd.Time),
+		TrialStart:     util.FormatTime(subscription.TrialStart.Time),
+		TrialEnd:       util.FormatTime(subscription.TrialEnd.Time),
 		Status:         string(stripeSub.Trialing),
-		CreatedAt:      subscription.CreatedAt.UTC().Format(time.RFC3339),
-		UpdatedAt:      subscription.UpdatedAt.UTC().Format(time.RFC3339),
+		CreatedAt:      util.FormatTime(subscription.CreatedAt),
+		UpdatedAt:      util.FormatTime(subscription.UpdatedAt),
 	}
 	expectedJSON, err := json.Marshal(expected)
 	if assert.NoError(suite.T(), err, "JSON marshalling failed") {

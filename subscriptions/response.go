@@ -2,8 +2,8 @@ package subscriptions
 
 import (
 	"fmt"
-	"time"
 
+	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/RichardKnop/jsonhal"
 )
 
@@ -85,8 +85,8 @@ func NewCardResponse(card *Card) (*CardResponse, error) {
 		LastFour:  card.LastFour,
 		ExpMonth:  card.ExpMonth,
 		ExpYear:   card.ExpYear,
-		CreatedAt: card.CreatedAt.UTC().Format(time.RFC3339),
-		UpdatedAt: card.UpdatedAt.UTC().Format(time.RFC3339),
+		CreatedAt: util.FormatTime(card.CreatedAt),
+		UpdatedAt: util.FormatTime(card.UpdatedAt),
 	}
 
 	// Set the self link
@@ -154,8 +154,8 @@ func NewPlanResponse(plan *Plan) (*PlanResponse, error) {
 		MaxAlarms:         plan.MaxAlarms,
 		MaxTeams:          plan.MaxTeams,
 		MaxMembersPerTeam: plan.MaxMembersPerTeam,
-		CreatedAt:         plan.CreatedAt.UTC().Format(time.RFC3339),
-		UpdatedAt:         plan.UpdatedAt.UTC().Format(time.RFC3339),
+		CreatedAt:         util.FormatTime(plan.CreatedAt),
+		UpdatedAt:         util.FormatTime(plan.UpdatedAt),
 	}
 
 	// Set the self link
@@ -214,28 +214,28 @@ func NewSubscriptionResponse(subscription *Subscription) (*SubscriptionResponse,
 	response := &SubscriptionResponse{
 		ID:             subscription.ID,
 		SubscriptionID: subscription.SubscriptionID,
-		StartedAt:      subscription.StartedAt.Time.UTC().Format(time.RFC3339),
+		StartedAt:      util.FormatTime(subscription.StartedAt.Time),
 		Status:         subscription.Status,
-		CreatedAt:      subscription.CreatedAt.UTC().Format(time.RFC3339),
-		UpdatedAt:      subscription.UpdatedAt.UTC().Format(time.RFC3339),
+		CreatedAt:      util.FormatTime(subscription.CreatedAt),
+		UpdatedAt:      util.FormatTime(subscription.UpdatedAt),
 	}
 	if subscription.CancelledAt.Valid {
-		response.CancelledAt = subscription.CancelledAt.Time.UTC().Format(time.RFC3339)
+		response.CancelledAt = util.FormatTime(subscription.CancelledAt.Time)
 	}
 	if subscription.EndedAt.Valid {
-		response.EndedAt = subscription.EndedAt.Time.UTC().Format(time.RFC3339)
+		response.EndedAt = util.FormatTime(subscription.EndedAt.Time)
 	}
 	if subscription.PeriodStart.Valid {
-		response.PeriodStart = subscription.PeriodStart.Time.UTC().Format(time.RFC3339)
+		response.PeriodStart = util.FormatTime(subscription.PeriodStart.Time)
 	}
 	if subscription.PeriodEnd.Valid {
-		response.PeriodEnd = subscription.PeriodEnd.Time.UTC().Format(time.RFC3339)
+		response.PeriodEnd = util.FormatTime(subscription.PeriodEnd.Time)
 	}
 	if subscription.TrialStart.Valid {
-		response.TrialStart = subscription.TrialStart.Time.UTC().Format(time.RFC3339)
+		response.TrialStart = util.FormatTime(subscription.TrialStart.Time)
 	}
 	if subscription.TrialEnd.Valid {
-		response.TrialEnd = subscription.TrialEnd.Time.UTC().Format(time.RFC3339)
+		response.TrialEnd = util.FormatTime(subscription.TrialEnd.Time)
 	}
 
 	// Set the self link

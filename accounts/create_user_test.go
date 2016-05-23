@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/RichardKnop/jsonhal"
 	"github.com/RichardKnop/pinglist-api/accounts/roles"
 	"github.com/gorilla/mux"
@@ -119,8 +120,8 @@ func (suite *AccountsTestSuite) TestCreateUser() {
 		Email:     "test@newuser",
 		Role:      roles.User,
 		Confirmed: false,
-		CreatedAt: user.CreatedAt.UTC().Format(time.RFC3339),
-		UpdatedAt: user.UpdatedAt.UTC().Format(time.RFC3339),
+		CreatedAt: util.FormatTime(user.CreatedAt),
+		UpdatedAt: util.FormatTime(user.UpdatedAt),
 	}
 	expectedJSON, err := json.Marshal(expected)
 	if assert.NoError(suite.T(), err, "JSON marshalling failed") {

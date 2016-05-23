@@ -21,6 +21,11 @@ func ValidateEmail(email string) bool {
 	return emailRegex.MatchString(email)
 }
 
+// FormatTime formats a time object to RFC3339
+func FormatTime(timestamp time.Time) string {
+	return timestamp.UTC().Format(time.RFC3339)
+}
+
 // ParseTimestamp parses a string representation of a timestamp in RFC3339
 // format and returns a time.Time instance
 func ParseTimestamp(timestamp string) (time.Time, error) {

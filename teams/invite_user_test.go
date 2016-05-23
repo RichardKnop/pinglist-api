@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/RichardKnop/jsonhal"
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/gorilla/mux"
@@ -172,8 +173,8 @@ func (suite *TeamsTestSuite) TestInviteUser() {
 		Reference:       invitation.Reference,
 		InvitedUserID:   invitation.InvitedUser.ID,
 		InvitedByUserID: invitation.InvitedByUser.ID,
-		CreatedAt:       invitation.CreatedAt.UTC().Format(time.RFC3339),
-		UpdatedAt:       invitation.UpdatedAt.UTC().Format(time.RFC3339),
+		CreatedAt:       util.FormatTime(invitation.CreatedAt),
+		UpdatedAt:       util.FormatTime(invitation.UpdatedAt),
 	}
 	expectedJSON, err := json.Marshal(expected)
 	if assert.NoError(suite.T(), err, "JSON marshalling failed") {

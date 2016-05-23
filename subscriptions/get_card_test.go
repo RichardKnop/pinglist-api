@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"strings"
-	"time"
 
+	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/RichardKnop/jsonhal"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
@@ -170,8 +170,8 @@ func (suite *SubscriptionsTestSuite) TestGetCard() {
 		LastFour:  testCard.LastFour,
 		ExpMonth:  testCard.ExpMonth,
 		ExpYear:   testCard.ExpYear,
-		CreatedAt: testCard.CreatedAt.UTC().Format(time.RFC3339),
-		UpdatedAt: testCard.UpdatedAt.UTC().Format(time.RFC3339),
+		CreatedAt: util.FormatTime(testCard.CreatedAt),
+		UpdatedAt: util.FormatTime(testCard.UpdatedAt),
 	}
 	expectedJSON, err := json.Marshal(expected)
 	if assert.NoError(suite.T(), err, "JSON marshalling failed") {

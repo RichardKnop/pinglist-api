@@ -8,8 +8,8 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"strings"
-	"time"
 
+	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/RichardKnop/jsonhal"
 	"github.com/RichardKnop/pinglist-api/alarms/alarmstates"
 	"github.com/RichardKnop/pinglist-api/alarms/regions"
@@ -509,8 +509,8 @@ func (suite *AlarmsTestSuite) TestUpdateAlarm() {
 		PushNotificationAlerts: false,
 		Active:                 true,
 		State:                  alarmstates.OK,
-		CreatedAt:              alarm.CreatedAt.UTC().Format(time.RFC3339),
-		UpdatedAt:              alarm.UpdatedAt.UTC().Format(time.RFC3339),
+		CreatedAt:              util.FormatTime(alarm.CreatedAt),
+		UpdatedAt:              util.FormatTime(alarm.UpdatedAt),
 	}
 	expectedJSON, err := json.Marshal(expected)
 	if assert.NoError(suite.T(), err, "JSON marshalling failed") {

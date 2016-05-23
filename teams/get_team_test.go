@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"strings"
-	"time"
 
+	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/RichardKnop/jsonhal"
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/gorilla/mux"
@@ -151,8 +151,8 @@ func (suite *TeamsTestSuite) TestGetTeam() {
 		},
 		ID:        team.ID,
 		Name:      team.Name,
-		CreatedAt: team.CreatedAt.UTC().Format(time.RFC3339),
-		UpdatedAt: team.UpdatedAt.UTC().Format(time.RFC3339),
+		CreatedAt: util.FormatTime(team.CreatedAt),
+		UpdatedAt: util.FormatTime(team.UpdatedAt),
 	}
 	expectedJSON, err := json.Marshal(expected)
 	if assert.NoError(suite.T(), err, "JSON marshalling failed") {

@@ -3,6 +3,8 @@ package metrics
 import (
 	"fmt"
 	"time"
+
+	"github.com/RichardKnop/pinglist-api/util"
 )
 
 // PartitionResponseTime creates a new request time sub table if needed
@@ -72,8 +74,8 @@ func (s *Service) createResponseTimeSubTable(parentTableName, subTableName strin
 	sql = fmt.Sprintf(
 		"ALTER TABLE %s ADD CONSTRAINT timestamp_check CHECK (timestamp >= '%s' AND timestamp < '%s') NO INHERIT",
 		subTableName,
-		from.UTC().Format("2006-01-02T15:04:05Z"),
-		to.UTC().Format("2006-01-02T15:04:05Z"),
+		util.FormatTime(from),
+		util.FormatTime(to),
 	)
 	if err := tx.Exec(sql).Error; err != nil {
 		tx.Rollback() // rollback the transaction
