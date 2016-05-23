@@ -20,103 +20,103 @@
 		},
 		{
 			"ImportPath": "github.com/aws/aws-sdk-go/aws",
-			"Comment": "v1.1.26-7-g7bad22e",
-			"Rev": "7bad22e9cff8295edef29844b4daa55ecfb057b9"
+			"Comment": "v1.1.29",
+			"Rev": "83c400dd354759bdb2fb49f9c6e53cee3e0c9484"
 		},
 		{
 			"ImportPath": "github.com/aws/aws-sdk-go/aws/awserr",
-			"Comment": "v1.1.26-7-g7bad22e",
-			"Rev": "7bad22e9cff8295edef29844b4daa55ecfb057b9"
+			"Comment": "v1.1.29",
+			"Rev": "83c400dd354759bdb2fb49f9c6e53cee3e0c9484"
 		},
 		{
 			"ImportPath": "github.com/aws/aws-sdk-go/aws/awsutil",
-			"Comment": "v1.1.26-7-g7bad22e",
-			"Rev": "7bad22e9cff8295edef29844b4daa55ecfb057b9"
+			"Comment": "v1.1.29",
+			"Rev": "83c400dd354759bdb2fb49f9c6e53cee3e0c9484"
 		},
 		{
 			"ImportPath": "github.com/aws/aws-sdk-go/aws/client",
-			"Comment": "v1.1.26-7-g7bad22e",
-			"Rev": "7bad22e9cff8295edef29844b4daa55ecfb057b9"
+			"Comment": "v1.1.29",
+			"Rev": "83c400dd354759bdb2fb49f9c6e53cee3e0c9484"
 		},
 		{
 			"ImportPath": "github.com/aws/aws-sdk-go/aws/client/metadata",
-			"Comment": "v1.1.26-7-g7bad22e",
-			"Rev": "7bad22e9cff8295edef29844b4daa55ecfb057b9"
+			"Comment": "v1.1.29",
+			"Rev": "83c400dd354759bdb2fb49f9c6e53cee3e0c9484"
 		},
 		{
 			"ImportPath": "github.com/aws/aws-sdk-go/aws/corehandlers",
-			"Comment": "v1.1.26-7-g7bad22e",
-			"Rev": "7bad22e9cff8295edef29844b4daa55ecfb057b9"
+			"Comment": "v1.1.29",
+			"Rev": "83c400dd354759bdb2fb49f9c6e53cee3e0c9484"
 		},
 		{
 			"ImportPath": "github.com/aws/aws-sdk-go/aws/credentials",
-			"Comment": "v1.1.26-7-g7bad22e",
-			"Rev": "7bad22e9cff8295edef29844b4daa55ecfb057b9"
+			"Comment": "v1.1.29",
+			"Rev": "83c400dd354759bdb2fb49f9c6e53cee3e0c9484"
 		},
 		{
 			"ImportPath": "github.com/aws/aws-sdk-go/aws/credentials/ec2rolecreds",
-			"Comment": "v1.1.26-7-g7bad22e",
-			"Rev": "7bad22e9cff8295edef29844b4daa55ecfb057b9"
+			"Comment": "v1.1.29",
+			"Rev": "83c400dd354759bdb2fb49f9c6e53cee3e0c9484"
 		},
 		{
 			"ImportPath": "github.com/aws/aws-sdk-go/aws/defaults",
-			"Comment": "v1.1.26-7-g7bad22e",
-			"Rev": "7bad22e9cff8295edef29844b4daa55ecfb057b9"
+			"Comment": "v1.1.29",
+			"Rev": "83c400dd354759bdb2fb49f9c6e53cee3e0c9484"
 		},
 		{
 			"ImportPath": "github.com/aws/aws-sdk-go/aws/ec2metadata",
-			"Comment": "v1.1.26-7-g7bad22e",
-			"Rev": "7bad22e9cff8295edef29844b4daa55ecfb057b9"
+			"Comment": "v1.1.29",
+			"Rev": "83c400dd354759bdb2fb49f9c6e53cee3e0c9484"
 		},
 		{
 			"ImportPath": "github.com/aws/aws-sdk-go/aws/request",
-			"Comment": "v1.1.26-7-g7bad22e",
-			"Rev": "7bad22e9cff8295edef29844b4daa55ecfb057b9"
+			"Comment": "v1.1.29",
+			"Rev": "83c400dd354759bdb2fb49f9c6e53cee3e0c9484"
 		},
 		{
 			"ImportPath": "github.com/aws/aws-sdk-go/aws/session",
-			"Comment": "v1.1.26-7-g7bad22e",
-			"Rev": "7bad22e9cff8295edef29844b4daa55ecfb057b9"
+			"Comment": "v1.1.29",
+			"Rev": "83c400dd354759bdb2fb49f9c6e53cee3e0c9484"
 		},
 		{
 			"ImportPath": "github.com/aws/aws-sdk-go/private/endpoints",
-			"Comment": "v1.1.26-7-g7bad22e",
-			"Rev": "7bad22e9cff8295edef29844b4daa55ecfb057b9"
+			"Comment": "v1.1.29",
+			"Rev": "83c400dd354759bdb2fb49f9c6e53cee3e0c9484"
 		},
 		{
 			"ImportPath": "github.com/aws/aws-sdk-go/private/protocol",
-			"Comment": "v1.1.26-7-g7bad22e",
-			"Rev": "7bad22e9cff8295edef29844b4daa55ecfb057b9"
+			"Comment": "v1.1.29",
+			"Rev": "83c400dd354759bdb2fb49f9c6e53cee3e0c9484"
 		},
 		{
 			"ImportPath": "github.com/aws/aws-sdk-go/private/protocol/query",
-			"Comment": "v1.1.26-7-g7bad22e",
-			"Rev": "7bad22e9cff8295edef29844b4daa55ecfb057b9"
+			"Comment": "v1.1.29",
+			"Rev": "83c400dd354759bdb2fb49f9c6e53cee3e0c9484"
 		},
 		{
 			"ImportPath": "github.com/aws/aws-sdk-go/private/protocol/query/queryutil",
-			"Comment": "v1.1.26-7-g7bad22e",
-			"Rev": "7bad22e9cff8295edef29844b4daa55ecfb057b9"
+			"Comment": "v1.1.29",
+			"Rev": "83c400dd354759bdb2fb49f9c6e53cee3e0c9484"
 		},
 		{
 			"ImportPath": "github.com/aws/aws-sdk-go/private/protocol/rest",
-			"Comment": "v1.1.26-7-g7bad22e",
-			"Rev": "7bad22e9cff8295edef29844b4daa55ecfb057b9"
+			"Comment": "v1.1.29",
+			"Rev": "83c400dd354759bdb2fb49f9c6e53cee3e0c9484"
 		},
 		{
 			"ImportPath": "github.com/aws/aws-sdk-go/private/protocol/xml/xmlutil",
-			"Comment": "v1.1.26-7-g7bad22e",
-			"Rev": "7bad22e9cff8295edef29844b4daa55ecfb057b9"
+			"Comment": "v1.1.29",
+			"Rev": "83c400dd354759bdb2fb49f9c6e53cee3e0c9484"
 		},
 		{
 			"ImportPath": "github.com/aws/aws-sdk-go/private/signer/v4",
-			"Comment": "v1.1.26-7-g7bad22e",
-			"Rev": "7bad22e9cff8295edef29844b4daa55ecfb057b9"
+			"Comment": "v1.1.29",
+			"Rev": "83c400dd354759bdb2fb49f9c6e53cee3e0c9484"
 		},
 		{
 			"ImportPath": "github.com/aws/aws-sdk-go/service/sns",
-			"Comment": "v1.1.26-7-g7bad22e",
-			"Rev": "7bad22e9cff8295edef29844b4daa55ecfb057b9"
+			"Comment": "v1.1.29",
+			"Rev": "83c400dd354759bdb2fb49f9c6e53cee3e0c9484"
 		},
 		{
 			"ImportPath": "github.com/codegangsta/cli",
@@ -178,8 +178,8 @@
 		},
 		{
 			"ImportPath": "github.com/jinzhu/gorm",
-			"Comment": "v1.0-12-g57c7212",
-			"Rev": "57c72125b3087e1ed02c16f23a1f381cde3aaf2c"
+			"Comment": "v1.0-18-g2752245",
+			"Rev": "27522453dea253cf90dcb5345286a5fcf0fbed7c"
 		},
 		{
 			"ImportPath": "github.com/jinzhu/inflection",
@@ -229,8 +229,8 @@
 		},
 		{
 			"ImportPath": "github.com/sendgrid/smtpapi-go",
-			"Comment": "v0.4.0-1-gb616837",
-			"Rev": "b616837442153d876b2d0b84d09e5e48a2aa91ee"
+			"Comment": "v0.4.0-7-gb88787c",
+			"Rev": "b88787cc8801ef961d7daef0bcb79ae3f50bfd52"
 		},
 		{
 			"ImportPath": "github.com/stretchr/objx",
@@ -258,43 +258,43 @@
 		},
 		{
 			"ImportPath": "github.com/stripe/stripe-go",
-			"Comment": "v14.2.0",
-			"Rev": "c7fcc60aeb412e14c6bcbe4a2aef9ac8611e55c9"
+			"Comment": "v14.3.0",
+			"Rev": "237be2f313a4badbdb4350fc848f81a6b257ea5e"
 		},
 		{
 			"ImportPath": "github.com/stripe/stripe-go/card",
-			"Comment": "v14.2.0",
-			"Rev": "c7fcc60aeb412e14c6bcbe4a2aef9ac8611e55c9"
+			"Comment": "v14.3.0",
+			"Rev": "237be2f313a4badbdb4350fc848f81a6b257ea5e"
 		},
 		{
 			"ImportPath": "github.com/stripe/stripe-go/customer",
-			"Comment": "v14.2.0",
-			"Rev": "c7fcc60aeb412e14c6bcbe4a2aef9ac8611e55c9"
+			"Comment": "v14.3.0",
+			"Rev": "237be2f313a4badbdb4350fc848f81a6b257ea5e"
 		},
 		{
 			"ImportPath": "github.com/stripe/stripe-go/event",
-			"Comment": "v14.2.0",
-			"Rev": "c7fcc60aeb412e14c6bcbe4a2aef9ac8611e55c9"
+			"Comment": "v14.3.0",
+			"Rev": "237be2f313a4badbdb4350fc848f81a6b257ea5e"
 		},
 		{
 			"ImportPath": "github.com/stripe/stripe-go/orderitem",
-			"Comment": "v14.2.0",
-			"Rev": "c7fcc60aeb412e14c6bcbe4a2aef9ac8611e55c9"
+			"Comment": "v14.3.0",
+			"Rev": "237be2f313a4badbdb4350fc848f81a6b257ea5e"
 		},
 		{
 			"ImportPath": "github.com/stripe/stripe-go/sub",
-			"Comment": "v14.2.0",
-			"Rev": "c7fcc60aeb412e14c6bcbe4a2aef9ac8611e55c9"
+			"Comment": "v14.3.0",
+			"Rev": "237be2f313a4badbdb4350fc848f81a6b257ea5e"
 		},
 		{
 			"ImportPath": "github.com/stripe/stripe-go/token",
-			"Comment": "v14.2.0",
-			"Rev": "c7fcc60aeb412e14c6bcbe4a2aef9ac8611e55c9"
+			"Comment": "v14.3.0",
+			"Rev": "237be2f313a4badbdb4350fc848f81a6b257ea5e"
 		},
 		{
 			"ImportPath": "github.com/stripe/stripe-go/utils",
-			"Comment": "v14.2.0",
-			"Rev": "c7fcc60aeb412e14c6bcbe4a2aef9ac8611e55c9"
+			"Comment": "v14.3.0",
+			"Rev": "237be2f313a4badbdb4350fc848f81a6b257ea5e"
 		},
 		{
 			"ImportPath": "github.com/ugorji/go/codec",
