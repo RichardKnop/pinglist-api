@@ -75,6 +75,7 @@ curl -L http://localhost:2379/v2/keys/config/pinglist.json -XPUT -d value='{
 	},
 	"AWS": {
 		"Region": "us-west-2",
+		"AssetsBucket": "prod.pinglist.assets",
 		"APNSPlatformApplicationARN": "apns_platform_application_arn",
 		"GCMPlatformApplicationARN":  "gcm_platform_application_arn"
 	},

@@ -41,7 +41,8 @@ var cnf = &Config{
 		HTTPOnly: true,
 	},
 	AWS: AWSConfig{
-		Region: "us-west-2",
+		Region:                     "us-west-2",
+		AssetsBucket:               "prod.pinglist.assets",
 		APNSPlatformApplicationARN: "apns_platform_application_arn",
 		GCMPlatformApplicationARN:  "gcm_platform_application_arn",
 	},

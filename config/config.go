@@ -36,6 +36,7 @@ type SessionConfig struct {
 // AWSConfig stores AWS related configuration
 type AWSConfig struct {
 	Region                     string
+	AssetsBucket               string
 	APNSPlatformApplicationARN string
 	GCMPlatformApplicationARN  string
 }
