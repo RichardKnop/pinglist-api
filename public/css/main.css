@@ -239,7 +239,15 @@ a.ios-download-badge img {
 /* Footer */
 
 footer {
-    margin-bottom: 30px;
+    padding-bottom: 30px;
+    margin-bottom: 0;
+    background: #27303C;
+    border-color: #0807FF;
+    color: #B9E88A;
+}
+
+footer a, footer a:hover, footer a:active {
+    color: #B9E88A;
 }
 
 .center-to-left {
@@ -254,23 +262,18 @@ footer {
     height: 59px;
 }
 
-.comodo-site-seal:hover {
-    text-decoration: none;
-}
-
-.comodo-site-seal img {
-    width: 113px;
-    height: 59px;
-    border: 0;
-    margin-top: -15px;
-}
-
 .stripe-badge img {
+    margin-top: 30px;
     border: 0;
 }
 
 .copyright {
-    paddin-top: 40px;
+    padding-top: 30px;
+}
+
+.ios-download-badge img {
+    margin-top: 30px;
+    border: 0;
 }
 
 /* Responsive media queries */
