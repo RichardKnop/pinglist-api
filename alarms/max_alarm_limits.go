@@ -6,6 +6,11 @@ import (
 	"github.com/RichardKnop/pinglist-api/teams"
 )
 
+var (
+	// FreeTierMaxAlarms ...
+	FreeTierMaxAlarms = 1
+)
+
 // countActiveAlarms counts active alarms of the current user or his/her team
 func (s *Service) countActiveAlarms(team *teams.Team, user *accounts.User) int {
 	var (
@@ -29,10 +34,8 @@ func (s *Service) getMaxAlarms(team *teams.Team, user *accounts.User) int {
 		subscription *subscriptions.Subscription
 	)
 
-	// If user is in a free trial, allow one alarm
-	if subscriptions.IsInFreeTrial(user) {
-		maxAlarms = subscriptions.FreeTrialMaxAlarms
-	}
+	// Users in free tier get 1 free alarm all the time
+	maxAlarms = FreeTierMaxAlarms
 
 	// If the user is member of a team, look for a team owner subscription
 	if team != nil {

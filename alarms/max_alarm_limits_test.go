@@ -1,8 +1,6 @@
 package alarms
 
 import (
-	"time"
-
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/RichardKnop/pinglist-api/subscriptions"
 	"github.com/RichardKnop/pinglist-api/teams"
@@ -10,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func (suite *AlarmsTestSuite) TestGetMaxAlarmsNoSubscriptionUserInTrialPeriod() {
+func (suite *AlarmsTestSuite) TestGetMaxAlarmsFreeTier() {
 	user := new(accounts.User)
 	*user = *suite.users[1]
 
@@ -20,41 +18,13 @@ func (suite *AlarmsTestSuite) TestGetMaxAlarmsNoSubscriptionUserInTrialPeriod() 
 		nil,
 		subscriptions.ErrUserHasNoActiveSubscription,
 	)
-
-	// User is in a free trial period
-	user.CreatedAt = time.Now()
 
 	// Max alarms should default to the free trial constant
 	maxAlarms := suite.service.getMaxAlarms(
 		nil, // team
 		user,
 	)
-	assert.Equal(suite.T(), subscriptions.FreeTrialMaxAlarms, maxAlarms)
-
-	// Check that the mock object expectations were met
-	suite.assertMockExpectations()
-}
-
-func (suite *AlarmsTestSuite) TestGetMaxAlarmsNoSubscriptionUserNotInTrialPeriod() {
-	user := new(accounts.User)
-	*user = *suite.users[1]
-
-	// User does not have an active subscription
-	suite.mockFindActiveSubscriptionByUserID(
-		suite.users[1].ID,
-		nil,
-		subscriptions.ErrUserHasNoActiveSubscription,
-	)
-
-	// User is no longer in a free trial period
-	user.CreatedAt = time.Now().Add(-31 * 24 * time.Hour)
-
-	// Max alarms should be zero
-	maxAlarms := suite.service.getMaxAlarms(
-		nil, // team
-		user,
-	)
-	assert.Equal(suite.T(), 0, maxAlarms)
+	assert.Equal(suite.T(), FreeTierMaxAlarms, maxAlarms)
 
 	// Check that the mock object expectations were met
 	suite.assertMockExpectations()
