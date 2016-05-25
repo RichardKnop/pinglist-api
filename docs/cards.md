@@ -22,19 +22,19 @@ Example response:
 
 ```json
 {
-	"_links": {
-		"self": {
-			"href": "/v1/cards/1"
-		}
-	},
-	"id": 1,
-	"brand": "Visa",
-	"funding": "credit",
-	"last_four": "4242",
-	"exp_month": 10,
-	"exp_year": 2020,
-	"created_at": "2016-01-14T13:52:24Z",
-	"updated_at": "2016-01-14T13:52:24Z"
+    "_links": {
+        "self": {
+            "href": "/v1/cards/1"
+        }
+    },
+    "id": 1,
+    "brand": "Visa",
+    "funding": "credit",
+    "last_four": "4242",
+    "exp_month": 10,
+    "exp_year": 2020,
+    "created_at": "2016-01-14T13:52:24Z",
+    "updated_at": "2016-01-14T13:52:24Z"
 }
 ```
 
@@ -51,19 +51,19 @@ Example response:
 
 ```json
 {
-	"_links": {
-		"self": {
-			"href": "/v1/cards/1"
-		}
-	},
-	"id": 1,
-	"brand": "Visa",
-	"funding": "credit",
-	"last_four": "4242",
-	"exp_month": 10,
-	"exp_year": 2020,
-	"created_at": "2016-01-14T13:52:24Z",
-	"updated_at": "2016-01-14T13:52:24Z"
+    "_links": {
+        "self": {
+            "href": "/v1/cards/1"
+        }
+    },
+    "id": 1,
+    "brand": "Visa",
+    "funding": "credit",
+    "last_four": "4242",
+    "exp_month": 10,
+    "exp_year": 2020,
+    "created_at": "2016-01-14T13:52:24Z",
+    "updated_at": "2016-01-14T13:52:24Z"
 }
 ```
 
@@ -97,58 +97,58 @@ Example response:
 
 ```json
 {
-	"_links": {
-		"first": {
-			"href": "/v1/cards?page=1"
-		},
-		"last": {
-			"href": "/v1/cards?page=1"
-		},
-		"next": {
-			"href": ""
-		},
-		"prev": {
-			"href": ""
-		},
-		"self": {
-			"href": "/v1/cards"
-		}
-	},
-	"_embedded": {
-		"cards": [
-			{
-				"_links": {
-					"self": {
-						"href": "/v1/cards/1"
-					}
-				},
-        "id": 1,
-      	"brand": "Visa",
-				"funding": "credit",
-      	"last_four": "4242",
-				"exp_month": 10,
-				"exp_year": 2020,
-      	"created_at": "2016-01-14T13:52:24Z",
-      	"updated_at": "2016-01-14T13:52:24Z"
-			},
-			{
-				"_links": {
-					"self": {
-						"href": "/v1/cards/2"
-					}
-				},
-        "id": 1,
-      	"brand": "MasterCard",
-				"funding": "debit",
-      	"last_four": "4444",
-				"exp_month": 10,
-				"exp_year": 2020,
-      	"created_at": "2016-01-14T13:52:24Z",
-      	"updated_at": "2016-01-14T13:52:24Z"
-			}
-		]
-	},
-	"count": 2,
-	"page": 1
+    "_links": {
+        "first": {
+            "href": "/v1/cards?page=1"
+        },
+        "last": {
+            "href": "/v1/cards?page=1"
+        },
+        "next": {
+            "href": ""
+        },
+        "prev": {
+            "href": ""
+        },
+        "self": {
+            "href": "/v1/cards"
+        }
+    },
+    "_embedded": {
+        "cards": [
+            {
+                "_links": {
+                    "self": {
+                        "href": "/v1/cards/1"
+                    }
+                },
+                "id": 1,
+                "brand": "Visa",
+                "funding": "credit",
+                "last_four": "4242",
+                "exp_month": 10,
+                "exp_year": 2020,
+                "created_at": "2016-01-14T13:52:24Z",
+                "updated_at": "2016-01-14T13:52:24Z"
+            },
+            {
+                "_links": {
+                    "self": {
+                        "href": "/v1/cards/2"
+                    }
+                },
+                "id": 1,
+                "brand": "MasterCard",
+                "funding": "debit",
+                "last_four": "4444",
+                "exp_month": 10,
+                "exp_year": 2020,
+                "created_at": "2016-01-14T13:52:24Z",
+                "updated_at": "2016-01-14T13:52:24Z"
+            }
+        ]
+    },
+    "count": 2,
+    "page": 1
 }
 ```

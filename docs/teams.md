@@ -29,34 +29,34 @@ Example response:
 
 ```json
 {
-	"_links": {
-		"self": {
-			"href": "/v1/teams/1"
-		}
-	},
-	"_embedded": {
-		"members": [
-			{
-				"_links": {
-					"self": {
-						"href": "/v1/accounts/users/3"
-					}
-				},
-				"id": 3,
-				"email": "john@reese",
-				"first_name": "John",
-				"last_name": "Reese",
-				"role": "user",
-				"confirmed": true,
-				"created_at": "2015-12-17T06:17:54Z",
-				"updated_at": "2015-12-17T06:17:54Z"
-			}
-		]
-	},
-	"id": 1,
-	"name": "Test Team 1",
-	"created_at": "2016-01-14T13:52:24Z",
-	"updated_at": "2016-01-14T13:52:24Z"
+    "_links": {
+        "self": {
+            "href": "/v1/teams/1"
+        }
+    },
+    "_embedded": {
+        "members": [
+            {
+                "_links": {
+                    "self": {
+                        "href": "/v1/accounts/users/3"
+                    }
+                },
+                "id": 3,
+                "email": "john@reese",
+                "first_name": "John",
+                "last_name": "Reese",
+                "role": "user",
+                "confirmed": true,
+                "created_at": "2015-12-17T06:17:54Z",
+                "updated_at": "2015-12-17T06:17:54Z"
+            }
+        ]
+    },
+    "id": 1,
+    "name": "Test Team 1",
+    "created_at": "2016-01-14T13:52:24Z",
+    "updated_at": "2016-01-14T13:52:24Z"
 }
 ```
 
@@ -73,34 +73,34 @@ Example response:
 
 ```json
 {
-	"_links": {
-		"self": {
-			"href": "/v1/teams/1"
-		}
-	},
-	"_embedded": {
-		"members": [
-			{
-				"_links": {
-					"self": {
-						"href": "/v1/accounts/users/3"
-					}
-				},
-				"id": 3,
-				"email": "john@reese",
-				"first_name": "John",
-				"last_name": "Reese",
-				"role": "user",
-				"confirmed": true,
-				"created_at": "2015-12-17T06:17:54Z",
-				"updated_at": "2015-12-17T06:17:54Z"
-			}
-		]
-	},
-	"id": 1,
-	"name": "Test Team 1",
-	"created_at": "2016-01-14T13:52:24Z",
-	"updated_at": "2016-01-14T13:52:24Z"
+    "_links": {
+        "self": {
+            "href": "/v1/teams/1"
+        }
+    },
+    "_embedded": {
+        "members": [
+            {
+                "_links": {
+                    "self": {
+                        "href": "/v1/accounts/users/3"
+                    }
+                },
+                "id": 3,
+                "email": "john@reese",
+                "first_name": "John",
+                "last_name": "Reese",
+                "role": "user",
+                "confirmed": true,
+                "created_at": "2015-12-17T06:17:54Z",
+                "updated_at": "2015-12-17T06:17:54Z"
+            }
+        ]
+    },
+    "id": 1,
+    "name": "Test Team 1",
+    "created_at": "2016-01-14T13:52:24Z",
+    "updated_at": "2016-01-14T13:52:24Z"
 }
 ```
 
@@ -129,49 +129,49 @@ Example response:
 
 ```json
 {
-	"_links": {
-		"self": {
-			"href": "/v1/teams/1"
-		}
-	},
-	"_embedded": {
-		"members": [
-			{
-				"_links": {
-					"self": {
-						"href": "/v1/accounts/users/3"
-					}
-				},
-				"id": 3,
-				"email": "john@reese",
-				"first_name": "John",
-				"last_name": "Reese",
-				"role": "user",
-				"confirmed": true,
-				"created_at": "2015-12-17T06:17:54Z",
-				"updated_at": "2015-12-17T06:17:54Z"
-			},
-			{
-				"_links": {
-					"self": {
-						"href": "/v1/accounts/users/4"
-					}
-				},
-				"id": 4,
-				"email": "harold@finch",
-				"first_name": "Harold",
-				"last_name": "Finch",
-				"role": "user",
-				"confirmed": true,
-				"created_at": "2015-12-17T06:17:54Z",
-				"updated_at": "2015-12-17T06:17:54Z"
-			}
-		]
-	},
-	"id": 1,
-	"name": "Test Team 1 Updated",
-	"created_at": "2016-01-14T13:52:24Z",
-	"updated_at": "2016-01-14T13:52:24Z"
+    "_links": {
+        "self": {
+            "href": "/v1/teams/1"
+        }
+    },
+    "_embedded": {
+        "members": [
+            {
+                "_links": {
+                    "self": {
+                        "href": "/v1/accounts/users/3"
+                    }
+                },
+                "id": 3,
+                "email": "john@reese",
+                "first_name": "John",
+                "last_name": "Reese",
+                "role": "user",
+                "confirmed": true,
+                "created_at": "2015-12-17T06:17:54Z",
+                "updated_at": "2015-12-17T06:17:54Z"
+            },
+            {
+                "_links": {
+                    "self": {
+                        "href": "/v1/accounts/users/4"
+                    }
+                },
+                "id": 4,
+                "email": "harold@finch",
+                "first_name": "Harold",
+                "last_name": "Finch",
+                "role": "user",
+                "confirmed": true,
+                "created_at": "2015-12-17T06:17:54Z",
+                "updated_at": "2015-12-17T06:17:54Z"
+            }
+        ]
+    },
+    "id": 1,
+    "name": "Test Team 1 Updated",
+    "created_at": "2016-01-14T13:52:24Z",
+    "updated_at": "2016-01-14T13:52:24Z"
 }
 ```
 
@@ -205,89 +205,89 @@ Example response:
 
 ```json
 {
-	"_links": {
-		"first": {
-			"href": "/v1/teams?page=1"
-		},
-		"last": {
-			"href": "/v1/teams?page=1"
-		},
-		"next": {
-			"href": ""
-		},
-		"prev": {
-			"href": ""
-		},
-		"self": {
-			"href": "/v1/teams"
-		}
-	},
-	"_embedded": {
-		"teams": [
-			{
-				"_links": {
-					"self": {
-						"href": "/v1/teams/1"
-					}
-				},
-				"_embedded": {
-					"members": [
-						{
-							"_links": {
-								"self": {
-									"href": "/v1/accounts/users/3"
-								}
-							},
-							"id": 3,
-							"email": "john@reese",
-							"first_name": "John",
-							"last_name": "Reese",
-							"role": "user",
-							"confirmed": false,
-							"created_at": "2015-12-17T06:17:54Z",
-							"updated_at": "2015-12-17T06:17:54Z"
-						}
-					]
-				},
-				"id": 1,
-				"name": "Test Team 1",
-				"created_at": "2016-01-14T13:52:24Z",
-				"updated_at": "2016-01-14T13:52:24Z"
-			},
-			{
-				"_links": {
-					"self": {
-						"href": "/v1/teams/2"
-					}
-				},
-				"_embedded": {
-					"members": [
-						{
-							"_links": {
-								"self": {
-									"href": "/v1/accounts/users/4"
-								}
-							},
-							"id": 4,
-							"email": "harold@finch",
-							"first_name": "Harold",
-							"last_name": "Finch",
-							"role": "user",
-							"confirmed": false,
-							"created_at": "2015-12-17T06:17:54Z",
-							"updated_at": "2015-12-17T06:17:54Z"
-						}
-					]
-				},
-				"id": 2,
-				"name": "Test Team 2",
-				"created_at": "2016-01-14T13:52:24Z",
-				"updated_at": "2016-01-14T13:52:24Z"
-			}
-		]
-	},
-	"count": 2,
-	"page": 1
+    "_links": {
+        "first": {
+            "href": "/v1/teams?page=1"
+        },
+        "last": {
+            "href": "/v1/teams?page=1"
+        },
+        "next": {
+            "href": ""
+        },
+        "prev": {
+            "href": ""
+        },
+        "self": {
+            "href": "/v1/teams"
+        }
+    },
+    "_embedded": {
+        "teams": [
+            {
+                "_links": {
+                    "self": {
+                        "href": "/v1/teams/1"
+                    }
+                },
+                "_embedded": {
+                    "members": [
+                        {
+                            "_links": {
+                                "self": {
+                                    "href": "/v1/accounts/users/3"
+                                }
+                            },
+                            "id": 3,
+                            "email": "john@reese",
+                            "first_name": "John",
+                            "last_name": "Reese",
+                            "role": "user",
+                            "confirmed": false,
+                            "created_at": "2015-12-17T06:17:54Z",
+                            "updated_at": "2015-12-17T06:17:54Z"
+                        }
+                    ]
+                },
+                "id": 1,
+                "name": "Test Team 1",
+                "created_at": "2016-01-14T13:52:24Z",
+                "updated_at": "2016-01-14T13:52:24Z"
+            },
+            {
+                "_links": {
+                    "self": {
+                        "href": "/v1/teams/2"
+                    }
+                },
+                "_embedded": {
+                    "members": [
+                        {
+                            "_links": {
+                                "self": {
+                                    "href": "/v1/accounts/users/4"
+                                }
+                            },
+                            "id": 4,
+                            "email": "harold@finch",
+                            "first_name": "Harold",
+                            "last_name": "Finch",
+                            "role": "user",
+                            "confirmed": false,
+                            "created_at": "2015-12-17T06:17:54Z",
+                            "updated_at": "2015-12-17T06:17:54Z"
+                        }
+                    ]
+                },
+                "id": 2,
+                "name": "Test Team 2",
+                "created_at": "2016-01-14T13:52:24Z",
+                "updated_at": "2016-01-14T13:52:24Z"
+            }
+        ]
+    },
+    "count": 2,
+    "page": 1
 }
 ```
 

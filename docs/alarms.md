@@ -30,24 +30,24 @@ Example response:
 
 ```json
 {
-	"_links": {
-		"self": {
-			"href": "/v1/alarms/1"
-		}
-	},
-	"id": 1,
-	"user_id": 1,
-	"region": "us-west-2",
-	"endpoint_url": "http://endpoint-1",
-	"expected_http_code": 200,
-	"max_response_time": 1000,
-	"interval": 60,
-	"email_alerts": true,
-	"push_notification_alerts": true,
-	"active": false,
-	"state": "insufficient_data",
-	"created_at": "2016-01-14T13:52:24Z",
-	"updated_at": "2016-01-14T13:52:24Z"
+    "_links": {
+        "self": {
+            "href": "/v1/alarms/1"
+        }
+    },
+    "id": 1,
+    "user_id": 1,
+    "region": "us-west-2",
+    "endpoint_url": "http://endpoint-1",
+    "expected_http_code": 200,
+    "max_response_time": 1000,
+    "interval": 60,
+    "email_alerts": true,
+    "push_notification_alerts": true,
+    "active": false,
+    "state": "insufficient data",
+    "created_at": "2016-01-14T13:52:24Z",
+    "updated_at": "2016-01-14T13:52:24Z"
 }
 ```
 
@@ -64,24 +64,24 @@ Example response:
 
 ```json
 {
-	"_links": {
-		"self": {
-			"href": "/v1/alarms/1"
-		}
-	},
-	"id": 1,
-	"user_id": 1,
-	"region": "us-west-2",
-	"endpoint_url": "http://endpoint-1",
-	"expected_http_code": 200,
-	"max_response_time": 1000,
-	"interval": 60,
-	"email_alerts": true,
-	"push_notification_alerts": true,
-	"active": false,
-	"state": "insufficient_data",
-	"created_at": "2016-01-14T13:52:24Z",
-	"updated_at": "2016-01-14T13:52:24Z"
+    "_links": {
+        "self": {
+            "href": "/v1/alarms/1"
+        }
+    },
+    "id": 1,
+    "user_id": 1,
+    "region": "us-west-2",
+    "endpoint_url": "http://endpoint-1",
+    "expected_http_code": 200,
+    "max_response_time": 1000,
+    "interval": 60,
+    "email_alerts": true,
+    "push_notification_alerts": true,
+    "active": false,
+    "state": "insufficient_data",
+    "created_at": "2016-01-14T13:52:24Z",
+    "updated_at": "2016-01-14T13:52:24Z"
 }
 ```
 
@@ -109,24 +109,24 @@ Example response:
 
 ```json
 {
-  "_links": {
-		"self": {
-			"href": "/v1/alarms/1"
-		}
-	},
-	"id": 1,
-	"user_id": 1,
-	"region": "us-west-2",
-	"endpoint_url": "http://endpoint-1-updated",
-	"expected_http_code": 201,
-	"max_response_time": 2000,
-	"interval": 90,
-	"email_alerts": true,
-	"push_notification_alerts": false,
-	"active": true,
-	"state": "insufficient_data",
-	"created_at": "2016-01-14T13:52:24Z",
-	"updated_at": "2016-01-14T13:52:24Z"
+    "_links": {
+        "self": {
+            "href": "/v1/alarms/1"
+        }
+    },
+    "id": 1,
+    "user_id": 1,
+    "region": "us-west-2",
+    "endpoint_url": "http://endpoint-1-updated",
+    "expected_http_code": 201,
+    "max_response_time": 2000,
+    "interval": 90,
+    "email_alerts": true,
+    "push_notification_alerts": false,
+    "active": true,
+    "state": "insufficient_data",
+    "created_at": "2016-01-14T13:52:24Z",
+    "updated_at": "2016-01-14T13:52:24Z"
 }
 ```
 
@@ -160,68 +160,68 @@ Example response:
 
 ```json
 {
-	"_links": {
-		"first": {
-			"href": "/v1/alarms?page=1"
-		},
-		"last": {
-			"href": "/v1/alarms?page=2"
-		},
-		"next": {
-			"href": "/v1/alarms?page=2"
-		},
-		"prev": {
-			"href": ""
-		},
-		"self": {
-			"href": "/v1/alarms"
-		}
-	},
-	"_embedded": {
-		"alarms": [
-			{
-				"_links": {
-					"self": {
-						"href": "/v1/alarms/1"
-					}
-				},
-				"id": 1,
-				"user_id": 1,
-				"region": "us-west-2",
-				"endpoint_url": "http://endpoint-1",
-				"expected_http_code": 200,
-				"max_response_time": 1000,
-				"interval": 60,
-				"email_alerts": true,
-				"push_notification_alerts": true,
-				"active": true,
-				"state": "ok",
-				"created_at": "2016-01-14T13:52:24Z",
-				"updated_at": "2016-01-14T13:52:24Z"
-			},
-			{
-				"_links": {
-					"self": {
-						"href": "/v1/alarms/2"
-					}
-				},
-				"id": 2,
-				"user_id": 1,
-				"region": "us-west-2",
-				"endpoint_url": "http://endpoint-2",
-				"expected_http_code": 200,
-				"max_response_time": 1000,
-				"interval": 60,
-				"email_alerts": true,
-				"push_notification_alerts": true,
-				"active": true,
-				"state": "alarm",
-				"created_at": "2016-01-14T13:52:24Z",
-				"updated_at": "2016-01-14T13:52:24Z"
-			}
-		]
-	},
-	"count": 4,
-	"page": 1
+    "_links": {
+        "first": {
+            "href": "/v1/alarms?page=1"
+        },
+        "last": {
+            "href": "/v1/alarms?page=2"
+        },
+        "next": {
+            "href": "/v1/alarms?page=2"
+        },
+        "prev": {
+            "href": ""
+        },
+        "self": {
+            "href": "/v1/alarms"
+        }
+    },
+    "_embedded": {
+        "alarms": [
+            {
+                "_links": {
+                    "self": {
+                        "href": "/v1/alarms/1"
+                    }
+                },
+                "id": 1,
+                "user_id": 1,
+                "region": "us-west-2",
+                "endpoint_url": "http://endpoint-1",
+                "expected_http_code": 200,
+                "max_response_time": 1000,
+                "interval": 60,
+                "email_alerts": true,
+                "push_notification_alerts": true,
+                "active": true,
+                "state": "ok",
+                "created_at": "2016-01-14T13:52:24Z",
+                "updated_at": "2016-01-14T13:52:24Z"
+            },
+            {
+                "_links": {
+                    "self": {
+                        "href": "/v1/alarms/2"
+                    }
+                },
+                "id": 2,
+                "user_id": 1,
+                "region": "us-west-2",
+                "endpoint_url": "http://endpoint-2",
+                "expected_http_code": 200,
+                "max_response_time": 1000,
+                "interval": 60,
+                "email_alerts": true,
+                "push_notification_alerts": true,
+                "active": true,
+                "state": "alarm",
+                "created_at": "2016-01-14T13:52:24Z",
+                "updated_at": "2016-01-14T13:52:24Z"
+            }
+        ]
+    },
+    "count": 4,
+    "page": 1
 }
 ```

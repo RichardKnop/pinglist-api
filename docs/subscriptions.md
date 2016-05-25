@@ -51,45 +51,45 @@ Example response:
 
 ```json
 {
-	"_links": {
-		"self": {
-			"href": "/v1/subscriptions/1"
-		}
-	},
-	"_embedded": {
-		"plan":	{
-			"_links": {
-				"self": {
-					"href": "/v1/plans/1"
-				}
-			},
-			"id": 1,
-			"plan_id": "personal",
-			"name": "Personal",
-			"description": "Personal website and/or a blog.",
-			"currency": "USD",
-			"amount": 250,
-			"trial_period": 30,
-			"interval": 30,
-			"max_alarms": 2,
-			"max_teams": 0,
-			"max_members_per_team": 0,
-			"created_at": "2016-01-14T13:52:24Z",
-			"updated_at": "2016-01-14T13:52:24Z"
-		}
-	},
-	"id": 1,
-	"subscription_id": "sub_7z94rezxDE9frw",
-	"started_at": "2016-01-14T13:52:24Z",
-	"cancelled_at": "",
-	"ended_at": "",
-	"period_start": "2016-01-14T13:52:24Z",
-	"period_end": "2016-02-14T13:52:24Z",
-	"trial_start": "2016-01-14T13:52:24Z",
-	"trial_end": "2016-02-14T13:52:24Z",
-	"status": "trialing",
-	"created_at": "2016-01-14T13:52:24Z",
-	"updated_at": "2016-01-14T13:52:24Z"
+    "_links": {
+        "self": {
+            "href": "/v1/subscriptions/1"
+        }
+    },
+    "_embedded": {
+        "plan": {
+            "_links": {
+                "self": {
+                    "href": "/v1/plans/1"
+                }
+            },
+            "id": 1,
+            "plan_id": "personal",
+            "name": "Personal",
+            "description": "Personal website and/or a blog.",
+            "currency": "USD",
+            "amount": 250,
+            "trial_period": 30,
+            "interval": 30,
+            "max_alarms": 2,
+            "max_teams": 0,
+            "max_members_per_team": 0,
+            "created_at": "2016-01-14T13:52:24Z",
+            "updated_at": "2016-01-14T13:52:24Z"
+        }
+    },
+    "id": 1,
+    "subscription_id": "sub_7z94rezxDE9frw",
+    "started_at": "2016-01-14T13:52:24Z",
+    "cancelled_at": "",
+    "ended_at": "",
+    "period_start": "2016-01-14T13:52:24Z",
+    "period_end": "2016-02-14T13:52:24Z",
+    "trial_start": "2016-01-14T13:52:24Z",
+    "trial_end": "2016-02-14T13:52:24Z",
+    "status": "trialing",
+    "created_at": "2016-01-14T13:52:24Z",
+    "updated_at": "2016-01-14T13:52:24Z"
 }
 ```
 
@@ -106,45 +106,45 @@ Example response:
 
 ```json
 {
-	"_links": {
-		"self": {
-			"href": "/v1/subscriptions/1"
-		}
-	},
-	"_embedded": {
-		"plan":	{
-			"_links": {
-				"self": {
-					"href": "/v1/plans/1"
-				}
-			},
-			"id": 1,
-			"plan_id": "personal",
-			"name": "Personal",
-			"description": "Personal website and/or a blog.",
-			"currency": "USD",
-			"amount": 250,
-			"trial_period": 30,
-			"interval": 30,
-			"max_alarms": 2,
-			"max_teams": 0,
-			"max_members_per_team": 0,
-			"created_at": "2016-01-14T13:52:24Z",
-			"updated_at": "2016-01-14T13:52:24Z"
-		}
-	},
-	"id": 1,
-	"subscription_id": "sub_7z94rezxDE9frw",
-	"started_at": "2016-01-14T13:52:24Z",
-	"cancelled_at": "",
-	"ended_at": "",
-	"period_start": "2016-01-14T13:52:24Z",
-	"period_end": "2016-02-14T13:52:24Z",
-	"trial_start": "2016-01-14T13:52:24Z",
-	"trial_end": "2016-02-14T13:52:24Z",
-	"status": "trialing",
-	"created_at": "2016-01-14T13:52:24Z",
-	"updated_at": "2016-01-14T13:52:24Z"
+    "_links": {
+        "self": {
+            "href": "/v1/subscriptions/1"
+        }
+    },
+    "_embedded": {
+        "plan": {
+            "_links": {
+                "self": {
+                    "href": "/v1/plans/1"
+                }
+            },
+            "id": 1,
+            "plan_id": "personal",
+            "name": "Personal",
+            "description": "Personal website and/or a blog.",
+            "currency": "USD",
+            "amount": 250,
+            "trial_period": 30,
+            "interval": 30,
+            "max_alarms": 2,
+            "max_teams": 0,
+            "max_members_per_team": 0,
+            "created_at": "2016-01-14T13:52:24Z",
+            "updated_at": "2016-01-14T13:52:24Z"
+        }
+    },
+    "id": 1,
+    "subscription_id": "sub_7z94rezxDE9frw",
+    "started_at": "2016-01-14T13:52:24Z",
+    "cancelled_at": "",
+    "ended_at": "",
+    "period_start": "2016-01-14T13:52:24Z",
+    "period_end": "2016-02-14T13:52:24Z",
+    "trial_start": "2016-01-14T13:52:24Z",
+    "trial_end": "2016-02-14T13:52:24Z",
+    "status": "trialing",
+    "created_at": "2016-01-14T13:52:24Z",
+    "updated_at": "2016-01-14T13:52:24Z"
 }
 ```
 
@@ -165,45 +165,45 @@ Example response:
 
 ```json
 {
-	"_links": {
-		"self": {
-			"href": "/v1/subscriptions/1"
-		}
-	},
-	"_embedded": {
-		"plan": {
-			"_links": {
-				"self": {
-					"href": "/v1/plans/2"
-				}
-			},
-			"id": 2,
-			"plan_id": "professional",
-			"name": "Professional",
-			"description": "Monitor up to 10 different websites or APIs.",
-			"currency": "USD",
-			"amount": 1000,
-			"trial_period": 30,
-			"interval": 30,
-			"max_alarms": 10,
-			"max_teams": 0,
-			"max_members_per_team": 0,
-			"created_at": "2016-01-14T13:52:24Z",
-			"updated_at": "2016-01-14T13:52:24Z"
-		}
-	},
-	"id": 1,
-	"subscription_id": "sub_7z94rezxDE9frw",
-	"started_at": "2016-01-14T13:52:24Z",
-	"cancelled_at": "",
-	"ended_at": "",
-	"period_start": "2016-01-14T13:52:24Z",
-	"period_end": "2016-02-14T13:52:24Z",
-	"trial_start": "2016-01-14T13:52:24Z",
-	"trial_end": "2016-02-14T13:52:24Z",
-	"status": "trialing",
-	"created_at": "2016-01-14T13:52:24Z",
-	"updated_at": "2016-01-14T13:52:24Z"
+    "_links": {
+        "self": {
+            "href": "/v1/subscriptions/1"
+        }
+    },
+    "_embedded": {
+        "plan": {
+            "_links": {
+                "self": {
+                    "href": "/v1/plans/2"
+                }
+            },
+            "id": 2,
+            "plan_id": "professional",
+            "name": "Professional",
+            "description": "Monitor up to 10 different websites or APIs.",
+            "currency": "USD",
+            "amount": 1000,
+            "trial_period": 30,
+            "interval": 30,
+            "max_alarms": 10,
+            "max_teams": 0,
+            "max_members_per_team": 0,
+            "created_at": "2016-01-14T13:52:24Z",
+            "updated_at": "2016-01-14T13:52:24Z"
+        }
+    },
+    "id": 1,
+    "subscription_id": "sub_7z94rezxDE9frw",
+    "started_at": "2016-01-14T13:52:24Z",
+    "cancelled_at": "",
+    "ended_at": "",
+    "period_start": "2016-01-14T13:52:24Z",
+    "period_end": "2016-02-14T13:52:24Z",
+    "trial_start": "2016-01-14T13:52:24Z",
+    "trial_end": "2016-02-14T13:52:24Z",
+    "status": "trialing",
+    "created_at": "2016-01-14T13:52:24Z",
+    "updated_at": "2016-01-14T13:52:24Z"
 }
 ```
 
@@ -237,110 +237,110 @@ Example response:
 
 ```json
 {
-	"_links": {
-		"first": {
-			"href": "/v1/subscriptions?page=1"
-		},
-		"last": {
-			"href": "/v1/subscriptions?page=1"
-		},
-		"next": {
-			"href": ""
-		},
-		"prev": {
-			"href": ""
-		},
-		"self": {
-			"href": "/v1/subscriptions"
-		}
-	},
-	"_embedded": {
-		"subscriptions": [
-			{
-				"_links": {
-					"self": {
-						"href": "/v1/subscriptions/1"
-					}
-				},
-				"_embedded": {
-					"plan":	{
-						"_links": {
-							"self": {
-								"href": "/v1/plans/1"
-							}
-						},
-						"id": 1,
-						"plan_id": "professional",
-						"name": "Professional",
-						"description": "Monitor up to 10 different websites or APIs.",
-						"currency": "USD",
-						"amount": 1000,
-						"trial_period": 30,
-						"interval": 30,
-						"max_alarms": 10,
-						"max_teams": 0,
-						"max_members_per_team": 0,
-						"created_at": "2016-01-14T13:52:24Z",
-						"updated_at": "2016-01-14T13:52:24Z"
-					}
-				},
-				"id": 1,
-				"subscription_id": "sub_7z94rezxDE9frw",
-				"started_at": "2016-02-14T13:52:24Z",
-				"cancelled_at": "",
-				"ended_at": "",
-				"period_start": "2016-02-14T13:52:24Z",
-				"period_end": "2016-03-14T13:52:24Z",
-				"trial_start": "2016-02-14T13:52:24Z",
-				"trial_end": "2016-03-14T13:52:24Z",
-				"status": "canceled",
-				"created_at": "2016-02-14T13:52:24Z",
-				"updated_at": "2016-02-14T13:52:24Z"
-			},
-			{
-				"_links": {
-					"self": {
-						"href": "/v1/subscriptions/2"
-					}
-				},
-				"_embedded": {
-					"plan":	{
-						"_links": {
-							"self": {
-								"href": "/v1/plans/1"
-							}
-						},
-						"id": 1,
-						"plan_id": "personal",
-						"name": "Personal",
-						"description": "Personal website and/or a blog.",
-						"currency": "USD",
-						"amount": 250,
-						"trial_period": 30,
-						"interval": 30,
-						"max_alarms": 2,
-						"max_teams": 0,
-						"max_members_per_team": 0,
-						"created_at": "2016-01-14T13:52:24Z",
-						"updated_at": "2016-01-14T13:52:24Z"
-					}
-				},
-				"id": 2,
-				"subscription_id": "sub_87HIdrte99poeq",
-				"started_at": "2016-01-14T13:52:24Z",
-				"cancelled_at": "2016-01-18T13:52:24Z",
-				"ended_at": "2016-02-14T13:52:24Z",
-				"period_start": "2016-01-14T13:52:24Z",
-				"period_end": "2016-02-14T13:52:24Z",
-				"trial_start": "2016-01-14T13:52:24Z",
-				"trial_end": "2016-02-14T13:52:24Z",
-				"status": "active",
-				"created_at": "2016-01-14T13:52:24Z",
-				"updated_at": "2016-01-14T13:52:24Z"
-			}
-		]
-	},
-	"count": 2,
-	"page": 1
+    "_links": {
+        "first": {
+            "href": "/v1/subscriptions?page=1"
+        },
+        "last": {
+            "href": "/v1/subscriptions?page=1"
+        },
+        "next": {
+            "href": ""
+        },
+        "prev": {
+            "href": ""
+        },
+        "self": {
+            "href": "/v1/subscriptions"
+        }
+    },
+    "_embedded": {
+        "subscriptions": [
+            {
+                "_links": {
+                    "self": {
+                        "href": "/v1/subscriptions/1"
+                    }
+                },
+                "_embedded": {
+                    "plan": {
+                        "_links": {
+                            "self": {
+                                "href": "/v1/plans/1"
+                            }
+                        },
+                        "id": 1,
+                        "plan_id": "professional",
+                        "name": "Professional",
+                        "description": "Monitor up to 10 different websites or APIs.",
+                        "currency": "USD",
+                        "amount": 1000,
+                        "trial_period": 30,
+                        "interval": 30,
+                        "max_alarms": 10,
+                        "max_teams": 0,
+                        "max_members_per_team": 0,
+                        "created_at": "2016-01-14T13:52:24Z",
+                        "updated_at": "2016-01-14T13:52:24Z"
+                    }
+                },
+                "id": 1,
+                "subscription_id": "sub_7z94rezxDE9frw",
+                "started_at": "2016-02-14T13:52:24Z",
+                "cancelled_at": "",
+                "ended_at": "",
+                "period_start": "2016-02-14T13:52:24Z",
+                "period_end": "2016-03-14T13:52:24Z",
+                "trial_start": "2016-02-14T13:52:24Z",
+                "trial_end": "2016-03-14T13:52:24Z",
+                "status": "canceled",
+                "created_at": "2016-02-14T13:52:24Z",
+                "updated_at": "2016-02-14T13:52:24Z"
+            },
+            {
+                "_links": {
+                    "self": {
+                        "href": "/v1/subscriptions/2"
+                    }
+                },
+                "_embedded": {
+                    "plan": {
+                        "_links": {
+                            "self": {
+                                "href": "/v1/plans/1"
+                            }
+                        },
+                        "id": 1,
+                        "plan_id": "personal",
+                        "name": "Personal",
+                        "description": "Personal website and/or a blog.",
+                        "currency": "USD",
+                        "amount": 250,
+                        "trial_period": 30,
+                        "interval": 30,
+                        "max_alarms": 2,
+                        "max_teams": 0,
+                        "max_members_per_team": 0,
+                        "created_at": "2016-01-14T13:52:24Z",
+                        "updated_at": "2016-01-14T13:52:24Z"
+                    }
+                },
+                "id": 2,
+                "subscription_id": "sub_87HIdrte99poeq",
+                "started_at": "2016-01-14T13:52:24Z",
+                "cancelled_at": "2016-01-18T13:52:24Z",
+                "ended_at": "2016-02-14T13:52:24Z",
+                "period_start": "2016-01-14T13:52:24Z",
+                "period_end": "2016-02-14T13:52:24Z",
+                "trial_start": "2016-01-14T13:52:24Z",
+                "trial_end": "2016-02-14T13:52:24Z",
+                "status": "active",
+                "created_at": "2016-01-14T13:52:24Z",
+                "updated_at": "2016-01-14T13:52:24Z"
+            }
+        ]
+    },
+    "count": 2,
+    "page": 1
 }
 ```

@@ -52,56 +52,56 @@ Load a development configuration into `etcd`:
 
 ```
 curl -L http://localhost:2379/v2/keys/config/pinglist.json -XPUT -d value='{
-	"Database": {
-		"Type": "postgres",
-		"Host": "localhost",
-		"Port": 5432,
-		"User": "pinglist",
-		"Password": "",
-		"DatabaseName": "pinglist",
-		"MaxIdleConns": 5,
-		"MaxOpenConns": 5
-	},
-	"Oauth": {
-		"AccessTokenLifetime": 3600,
-		"RefreshTokenLifetime": 1209600,
-		"AuthCodeLifetime": 3600
-	},
-	"Session": {
-		"Secret": "test_secret",
-		"Path": "/",
-		"MaxAge": 604800,
-		"HTTPOnly": true
-	},
-	"AWS": {
-		"Region": "us-west-2",
-		"AssetsBucket": "prod.pinglist.assets",
-		"APNSPlatformApplicationARN": "apns_platform_application_arn",
-		"GCMPlatformApplicationARN":  "gcm_platform_application_arn"
-	},
-	"Facebook": {
-		"AppID": "facebook_app_id",
-		"AppSecret": "facebook_app_secret"
-	},
-	"Stripe": {
-		"SecretKey": "stripe_secret_key",
-		"PublishableKey": "stripe_publishable_key"
-	},
-	"Sendgrid": {
-		"APIKey": "sendgrid_api_key"
-	},
-	"Web": {
-		"Scheme": "http",
-		"Host": "localhost:8080",
-		"AppScheme": "http",
-		"AppHost": "localhost:8000",
-	},
-	"Pinglist": {
-		"PasswordResetLifetime": 604800
-	},
-	"IOSLink": "#",
-	"ContactEmail": "contact@pingli.st",
-	"IsDevelopment": true
+    "Database": {
+        "Type": "postgres",
+        "Host": "localhost",
+        "Port": 5432,
+        "User": "pinglist",
+        "Password": "",
+        "DatabaseName": "pinglist",
+        "MaxIdleConns": 5,
+        "MaxOpenConns": 5
+    },
+    "Oauth": {
+        "AccessTokenLifetime": 3600,
+        "RefreshTokenLifetime": 1209600,
+        "AuthCodeLifetime": 3600
+    },
+    "Session": {
+        "Secret": "test_secret",
+        "Path": "/",
+        "MaxAge": 604800,
+        "HTTPOnly": true
+    },
+    "AWS": {
+        "Region": "us-west-2",
+        "AssetsBucket": "prod.pinglist.assets",
+        "APNSPlatformApplicationARN": "apns_platform_application_arn",
+        "GCMPlatformApplicationARN": "gcm_platform_application_arn"
+    },
+    "Facebook": {
+        "AppID": "facebook_app_id",
+        "AppSecret": "facebook_app_secret"
+    },
+    "Stripe": {
+        "SecretKey": "stripe_secret_key",
+        "PublishableKey": "stripe_publishable_key"
+    },
+    "Sendgrid": {
+        "APIKey": "sendgrid_api_key"
+    },
+    "Web": {
+        "Scheme": "http",
+        "Host": "localhost:8080",
+        "AppScheme": "http",
+        "AppHost": "localhost:8000"
+    },
+    "Pinglist": {
+        "PasswordResetLifetime": 604800
+    },
+    "IOSLink": "#",
+    "ContactEmail": "contact@pingli.st",
+    "IsDevelopment": true
 }'
 ```
 

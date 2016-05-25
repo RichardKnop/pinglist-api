@@ -27,44 +27,44 @@ Example response:
 
 ```json
 {
-	"_links": {
-		"first": {
-			"href": "/v1/alarms/1/response-times?page=1"
-		},
-		"last": {
-			"href": "/v1/alarms/1/response-times?page=2"
-		},
-		"next": {
-			"href": "/v1/alarms/1/response-times?page=2"
-		},
-		"prev": {
-			"href": ""
-		},
-		"self": {
-			"href": "/v1/alarms/1/response-times"
-		}
-	},
-	"_embedded": {
-		"response_times": [
-			{
-				"timestamp": "2016-01-14T13:52:24Z",
-				"value": 12345
-			},
-			{
-				"timestamp": "2016-01-14T13:53:24Z",
-				"value": 12345
-			}
-		]
-	},
-	"uptime": 99.99,
-	"average": 12345.0,
-	"incident_type_counts": {
-		"slow_response": 0,
-		"timeout": 2,
-		"bad_code": 1,
-		"other": 1,
-	},
-	"count": 2,
-	"page": 1
+    "_links": {
+        "first": {
+            "href": "/v1/alarms/1/response-times?page=1"
+        },
+        "last": {
+            "href": "/v1/alarms/1/response-times?page=2"
+        },
+        "next": {
+            "href": "/v1/alarms/1/response-times?page=2"
+        },
+        "prev": {
+            "href": ""
+        },
+        "self": {
+            "href": "/v1/alarms/1/response-times"
+        }
+    },
+    "_embedded": {
+        "response_times": [
+            {
+                "timestamp": "2016-01-14T13:52:24Z",
+                "value": 12345
+            },
+            {
+                "timestamp": "2016-01-14T13:53:24Z",
+                "value": 12345
+            }
+        ]
+    },
+    "uptime": 99.99,
+    "average": 12345,
+    "incident_type_counts": {
+        "slow_response": 0,
+        "timeout": 2,
+        "bad_code": 1,
+        "other": 1
+    },
+    "count": 2,
+    "page": 1
 }
 ```
