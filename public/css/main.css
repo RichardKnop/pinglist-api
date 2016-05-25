@@ -5,27 +5,24 @@ body, html {
     color: #27303C;
 }
 
+html {
+    position: relative;
+    min-height: 100%;
+}
+
 body {
     /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
     margin-top: 50px;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
-body {
-  /* Margin bottom by footer height */
-  margin-bottom: 125px;
+    /* Margin bottom by footer height */
+    margin-bottom: 125px;
 }
 
 .footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  /* Set the fixed height of the footer here */
-  height: 125px;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 125px;
 }
 
 a {
@@ -159,11 +156,13 @@ a.ios-download-badge img {
 .pagination {
     margin: 20px 0 0;
 }
+
 .pagination > li > a, .pagination > li > span {
     background-color: #B9E88A;
     color: #27303C;
     border-color: white;
 }
+
 .pagination > li > a:hover,
 .pagination > li > span:hover,
 .pagination > li > a:focus,
@@ -177,6 +176,7 @@ a.ios-download-badge img {
 
 .jumbotron {
     padding: 0;
+    margin-bottom: 0;
 }
 
 .jumbotron .alert {
@@ -257,36 +257,23 @@ a.ios-download-badge img {
 /* Footer */
 
 footer {
-    padding-bottom: 30px;
     margin-bottom: 0;
     background: #27303C;
     border-color: #0807FF;
     color: #B9E88A;
 }
 
+footer .row {
+    background: #27303C;
+    padding: 30px 0;
+}
+
 footer a, footer a:hover, footer a:active {
     color: #B9E88A;
 }
 
-.center-to-left {
-    margin-right: auto;
-    margin-left: auto;
-    padding-top: 30px;
-}
-
-.center-to-right {
-    margin-right: auto;
-    margin-left: auto;
-    padding-top: 30px;
-    text-align: right;
-}
-
 .stripe-badge img {
     border: 0;
-}
-
-.copyright {
-    padding-top: 35px;
 }
 
 .ios-download-badge img {
