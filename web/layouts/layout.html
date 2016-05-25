@@ -56,39 +56,39 @@
   <!-- Begin page content -->
   {{ template "content" . }}
 
-  <footer>
+  <footer class="footer">
     <div class="container" class="clearfix">
-        <div class="row">
-            <div class="col-sm-4">
-                <div class="center-to-left">
-                    <a href="https://stripe.com" class="stripe-badge">
-                        <img src="/images/stripe//solid@2x.png" alt="Powered by Stripe">
-                    </a>
-                </div>
-                <span class="clearfix"></span>
-            </div>
-
-            <div class="col-sm-4">
-                <div class="text-center">
-                    <p class="copyright">&copy; 2016 Apollo Labs Ltd</p>
-                    <ul class="list-inline">
-                        <li><a href="{{ .appLink }}/faq">FAQ</a></li>
-                        <li><a href="{{ .appLink }}/contact">Contact</a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="col-sm-4">
-                <div class="center-to-right">
-                    <a href="{{ .iOSLink }}" class="ios-download-badge">
-                        <img src="/images/ios-download_135x40.svg" alt="Download from App Store">
-                    </a>
-                </div>
-                <span class="clearfix"></span>
-            </div>
+      <div class="row">
+        <div class="col-sm-4">
+          <div class="center-to-left">
+            <a href="https://stripe.com" class="stripe-badge">
+              <img src="/images/stripe//solid@2x.png" alt="Powered by Stripe">
+            </a>
+          </div>
+          <span class="clearfix"></span>
         </div>
+
+        <div class="col-sm-4">
+          <div class="text-center">
+            <p class="copyright">&copy; 2016 Apollo Labs Ltd</p>
+            <ul class="list-inline">
+              <li><a href="{{ .appLink }}/faq">FAQ</a></li>
+              <li><a href="{{ .appLink }}/contact">Contact</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <div class="center-to-right">
+            <a href="{{ .iOSLink }}" class="ios-download-badge">
+              <img src="/images/ios-download_135x40.svg" alt="Download from App Store">
+            </a>
+          </div>
+          <span class="clearfix"></span>
+        </div>
+      </div>
     </div>
-</footer>
+  </footer>
 
   <!-- jQuery -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
