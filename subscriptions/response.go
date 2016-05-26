@@ -155,6 +155,7 @@ func NewPlanResponse(plan *Plan) (*PlanResponse, error) {
 		MaxAlarms:         plan.MaxAlarms,
 		MaxTeams:          plan.MaxTeams,
 		MaxMembersPerTeam: plan.MaxMembersPerTeam,
+		MinAlarmInterval:  plan.MinAlarmInterval,
 		CreatedAt:         util.FormatTime(plan.CreatedAt),
 		UpdatedAt:         util.FormatTime(plan.UpdatedAt),
 	}
