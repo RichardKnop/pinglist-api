@@ -9,11 +9,11 @@ import (
 	"net/http/httptest"
 	"strings"
 
-	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/RichardKnop/jsonhal"
 	"github.com/RichardKnop/pinglist-api/accounts/roles"
 	"github.com/RichardKnop/pinglist-api/oauth"
 	"github.com/RichardKnop/pinglist-api/password"
+	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
 )

@@ -3,8 +3,8 @@ package accounts
 import (
 	"fmt"
 
-	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/RichardKnop/jsonhal"
+	"github.com/RichardKnop/pinglist-api/util"
 )
 
 // UserResponse ...

@@ -3,9 +3,9 @@ package teams
 import (
 	"fmt"
 
-	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/RichardKnop/jsonhal"
 	"github.com/RichardKnop/pinglist-api/accounts"
+	"github.com/RichardKnop/pinglist-api/util"
 )
 
 // TeamResponse ...

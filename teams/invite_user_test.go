@@ -10,9 +10,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/RichardKnop/jsonhal"
 	"github.com/RichardKnop/pinglist-api/accounts"
+	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	"github.com/stretchr/testify/assert"

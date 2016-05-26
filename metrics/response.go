@@ -3,8 +3,8 @@ package metrics
 import (
 	"time"
 
-	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/RichardKnop/jsonhal"
+	"github.com/RichardKnop/pinglist-api/util"
 )
 
 // MetricResponse ...

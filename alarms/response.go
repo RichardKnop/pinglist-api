@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/RichardKnop/jsonhal"
 	"github.com/RichardKnop/pinglist-api/metrics"
+	"github.com/RichardKnop/pinglist-api/util"
 )
 
 // RegionResponse ...
