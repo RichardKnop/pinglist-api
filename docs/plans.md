@@ -49,9 +49,9 @@ Example response:
                 "trial_period": 30,
                 "interval": 30,
                 "max_alarms": 5,
-								"min_alarm_interval": 60,
                 "max_teams": 0,
                 "max_members_per_team": 0,
+								"min_alarm_interval": 60,
                 "created_at": "2016-01-14T13:52:24Z",
                 "updated_at": "2016-01-14T13:52:24Z"
             },
@@ -70,9 +70,9 @@ Example response:
                 "trial_period": 30,
                 "interval": 30,
                 "max_alarms": 15,
-								"min_alarm_interval": 60,
                 "max_teams": 0,
                 "max_members_per_team": 0,
+								"min_alarm_interval": 60,
                 "created_at": "2016-01-14T13:52:24Z",
                 "updated_at": "2016-01-14T13:52:24Z"
             },
@@ -91,9 +91,9 @@ Example response:
                 "trial_period": 30,
                 "interval": 30,
                 "max_alarms": 75,
-								"min_alarm_interval": 30,
                 "max_teams": 1,
                 "max_members_per_team": 10,
+								"min_alarm_interval": 30,
                 "created_at": "2016-01-14T13:52:24Z",
                 "updated_at": "2016-01-14T13:52:24Z"
             },
@@ -112,9 +112,9 @@ Example response:
                 "trial_period": 30,
                 "interval": 30,
                 "max_alarms": 300,
-								"min_alarm_interval": 30,
                 "max_teams": 10,
                 "max_members_per_team": 20,
+								"min_alarm_interval": 30,
                 "created_at": "2016-01-14T13:52:24Z",
                 "updated_at": "2016-01-14T13:52:24Z"
             },

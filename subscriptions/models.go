@@ -35,9 +35,9 @@ type Plan struct {
 	TrialPeriod       uint // days
 	Interval          uint // days
 	MaxAlarms         uint
-	MinAlarmInterval  uint
 	MaxTeams          uint
 	MaxMembersPerTeam uint
+	MinAlarmInterval  uint
 }
 
 // TableName specifies table name
