@@ -14,8 +14,6 @@ import (
 )
 
 var (
-	// MinIntervalLimit limits alarm check interval to a sensible smallest period
-	MinIntervalLimit = uint(60)
 	// MaxResponseTimeLimit limits max response time to a sensible biggest value
 	MaxResponseTimeLimit = uint(10000)
 
@@ -23,11 +21,24 @@ var (
 	ErrAlarmNotFound = errors.New("Alarm not found")
 	// ErrMaxAlarmsLimitReached ...
 	ErrMaxAlarmsLimitReached = errors.New("Max alarms limit reached")
-	// ErrIntervalTooSmall ...
-	ErrIntervalTooSmall = fmt.Errorf("Minimal interval is %d seconds", MinIntervalLimit)
 	// ErrMaxResponseTimeTooBig ...
 	ErrMaxResponseTimeTooBig = fmt.Errorf("Max response time cannot be greater than %d ms", MaxResponseTimeLimit)
 )
+
+// ErrIntervalTooSmall ...
+type ErrIntervalTooSmall struct {
+	minInterval uint
+}
+
+// NewErrIntervalTooSmall returns new ErrIntervalTooSmall
+func NewErrIntervalTooSmall(minInterval uint) ErrIntervalTooSmall {
+	return ErrIntervalTooSmall{minInterval}
+}
+
+// Error method so we implement the error interface
+func (e ErrIntervalTooSmall) Error() string {
+	return fmt.Sprintf("Minimal interval is %d seconds", e.minInterval)
+}
 
 // HasOpenIncident returns true if the alarm already has such open incident
 func (a *Alarm) HasOpenIncident(theType string, resp *http.Response, errMsg string) bool {
@@ -79,26 +90,23 @@ func (s *Service) FindAlarmByID(alarmID uint) (*Alarm, error) {
 
 // createAlarm creates a new alarm
 func (s *Service) createAlarm(user *accounts.User, alarmRequest *AlarmRequest) (*Alarm, error) {
+	// Fetch the user team
+	team, _ := s.teamsService.FindTeamByMemberID(user.ID)
+
+	// Count alarms and calculate max limit
+	var (
+		alarmsCount = s.countActiveAlarms(team, user)
+		alarmLimits = s.getAlarmLimits(team, user)
+	)
+
 	// Limit active alarms to the max number defined as per subscription plan
-	if alarmRequest.Active {
-		// Fetch the user team
-		team, _ := s.teamsService.FindTeamByMemberID(user.ID)
-
-		// Count alarms and calculate max limit
-		var (
-			alarmsCount = s.countActiveAlarms(team, user)
-			maxAlarms   = s.getMaxAlarms(team, user)
-		)
-
-		// Check the alarm limit
-		if alarmsCount+1 > maxAlarms {
-			return nil, ErrMaxAlarmsLimitReached
-		}
+	if alarmRequest.Active && alarmsCount+1 > alarmLimits.maxAlarms {
+		return nil, ErrMaxAlarmsLimitReached
 	}
 
-	// Limit interval to a sensible smallest period (MinInterval constant)
-	if alarmRequest.Interval < MinIntervalLimit {
-		return nil, ErrIntervalTooSmall
+	// Limit interval to the smallest value defined as per subscription plan
+	if alarmRequest.Interval < alarmLimits.minAlarmInterval {
+		return nil, NewErrIntervalTooSmall(alarmLimits.minAlarmInterval)
 	}
 
 	// Limit max response time to a sensible biggest value (ErrTimeoutTooBig constact)
@@ -131,26 +139,23 @@ func (s *Service) createAlarm(user *accounts.User, alarmRequest *AlarmRequest) (
 
 // updateAlarm updates an existing alarm
 func (s *Service) updateAlarm(alarm *Alarm, alarmRequest *AlarmRequest) error {
+	// Fetch the user team
+	team, _ := s.teamsService.FindTeamByMemberID(alarm.User.ID)
+
+	// Count alarms and calculate max limit
+	var (
+		alarmsCount = s.countActiveAlarms(team, alarm.User)
+		alarmLimits = s.getAlarmLimits(team, alarm.User)
+	)
+
 	// Limit active alarms to the max number defined as per subscription plan
-	if !alarm.Active && alarmRequest.Active {
-		// Fetch the user team
-		team, _ := s.teamsService.FindTeamByMemberID(alarm.User.ID)
-
-		// Count alarms and calculate max limit
-		var (
-			alarmsCount = s.countActiveAlarms(team, alarm.User)
-			maxAlarms   = s.getMaxAlarms(team, alarm.User)
-		)
-
-		// Check the alarm limit
-		if alarmsCount+1 > maxAlarms {
-			return ErrMaxAlarmsLimitReached
-		}
+	if !alarm.Active && alarmRequest.Active && alarmsCount+1 > alarmLimits.maxAlarms {
+		return ErrMaxAlarmsLimitReached
 	}
 
-	// Limit interval to a sensible smallest period (MinInterval constant)
-	if alarmRequest.Interval < MinIntervalLimit {
-		return ErrIntervalTooSmall
+	// Limit interval to the smallest value defined as per subscription plan
+	if alarmRequest.Interval < alarmLimits.minAlarmInterval {
+		return NewErrIntervalTooSmall(alarmLimits.minAlarmInterval)
 	}
 
 	// Limit max response time to a sensible biggest value (ErrTimeoutTooBig constact)

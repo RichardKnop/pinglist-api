@@ -44,11 +44,7 @@ func (s *Service) createAlarmHandler(w http.ResponseWriter, r *http.Request) {
 	alarm, err := s.createAlarm(authenticatedUser, alarmRequest)
 	if err != nil {
 		logger.Errorf("Create alarm error: %s", err)
-		code, ok := errStatusCodeMap[err]
-		if !ok {
-			code = http.StatusInternalServerError
-		}
-		response.Error(w, err.Error(), code)
+		response.Error(w, err.Error(), getErrStatusCode(err))
 		return
 	}
 

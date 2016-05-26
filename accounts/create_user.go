@@ -43,11 +43,7 @@ func (s *Service) createUserHandler(w http.ResponseWriter, r *http.Request) {
 	user, err := s.CreateUser(authenticatedAccount, userRequest)
 	if err != nil {
 		logger.Errorf("Create user error: %s", err)
-		code, ok := errStatusCodeMap[err]
-		if !ok {
-			code = http.StatusInternalServerError
-		}
-		response.Error(w, err.Error(), code)
+		response.Error(w, err.Error(), getErrStatusCode(err))
 		return
 	}
 

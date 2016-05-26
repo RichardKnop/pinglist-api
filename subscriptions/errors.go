@@ -12,3 +12,12 @@ var (
 		ErrCardNotFound:                         http.StatusBadRequest,
 	}
 )
+
+func getErrStatusCode(err error) int {
+	code, ok := errStatusCodeMap[err]
+	if ok {
+		return code
+	}
+
+	return http.StatusInternalServerError
+}

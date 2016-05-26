@@ -9,12 +9,12 @@ import (
 	"net/http/httptest"
 	"strings"
 
-	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/RichardKnop/jsonhal"
 	"github.com/RichardKnop/pinglist-api/alarms/alarmstates"
 	"github.com/RichardKnop/pinglist-api/alarms/regions"
 	"github.com/RichardKnop/pinglist-api/subscriptions"
 	"github.com/RichardKnop/pinglist-api/teams"
+	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
 )
@@ -196,7 +196,8 @@ func (suite *AlarmsTestSuite) TestUpdateAlarmIntervalTooSmall() {
 		suite.users[1].ID,
 		&subscriptions.Subscription{
 			Plan: &subscriptions.Plan{
-				MaxAlarms: 10,
+				MaxAlarms:        10,
+				MinAlarmInterval: 50,
 			},
 		},
 		nil,
@@ -224,7 +225,7 @@ func (suite *AlarmsTestSuite) TestUpdateAlarmIntervalTooSmall() {
 	assert.Equal(suite.T(), countBefore, countAfter)
 
 	expectedJSON, err := json.Marshal(
-		map[string]string{"error": ErrIntervalTooSmall.Error()})
+		map[string]string{"error": NewErrIntervalTooSmall(uint(50)).Error()})
 	if assert.NoError(suite.T(), err, "JSON marshalling failed") {
 		assert.Equal(
 			suite.T(),

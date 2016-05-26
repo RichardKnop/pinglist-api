@@ -71,11 +71,7 @@ func (s *Service) updateUserHandler(w http.ResponseWriter, r *http.Request) {
 	// Update the user
 	if err := s.UpdateUser(user, userRequest); err != nil {
 		logger.Errorf("Update user error: %s", err)
-		code, ok := errStatusCodeMap[err]
-		if !ok {
-			code = http.StatusInternalServerError
-		}
-		response.Error(w, err.Error(), code)
+		response.Error(w, err.Error(), getErrStatusCode(err))
 		return
 	}
 

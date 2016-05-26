@@ -3,8 +3,8 @@ package subscriptions
 import (
 	"fmt"
 
-	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/RichardKnop/jsonhal"
+	"github.com/RichardKnop/pinglist-api/util"
 )
 
 // CardResponse ...
@@ -39,6 +39,7 @@ type PlanResponse struct {
 	TrialPeriod       uint   `json:"trial_period"`
 	Interval          uint   `json:"interval"`
 	MaxAlarms         uint   `json:"max_alarms"`
+	MinAlarmInterval  uint   `json:"min_alarm_interval"`
 	MaxTeams          uint   `json:"max_teams"`
 	MaxMembersPerTeam uint   `json:"max_members_per_team"`
 	CreatedAt         string `json:"created_at"`

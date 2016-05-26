@@ -44,11 +44,7 @@ func (s *Service) createCardHandler(w http.ResponseWriter, r *http.Request) {
 	card, err := s.createCard(authenticatedUser, cardRequest)
 	if err != nil {
 		logger.Errorf("Create card error: %s", err)
-		code, ok := errStatusCodeMap[err]
-		if !ok {
-			code = http.StatusInternalServerError
-		}
-		response.Error(w, err.Error(), code)
+		response.Error(w, err.Error(), getErrStatusCode(err))
 		return
 	}
 

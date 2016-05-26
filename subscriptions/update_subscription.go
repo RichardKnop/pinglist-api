@@ -73,11 +73,7 @@ func (s *Service) updateSubscriptionHandler(w http.ResponseWriter, r *http.Reque
 	// Update the subscription
 	if err := s.updateSubscription(subscription, subscriptionRequest); err != nil {
 		log.Printf("Update subscription error: %s", err)
-		code, ok := errStatusCodeMap[err]
-		if !ok {
-			code = http.StatusInternalServerError
-		}
-		response.Error(w, err.Error(), code)
+		response.Error(w, err.Error(), getErrStatusCode(err))
 		return
 	}
 

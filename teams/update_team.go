@@ -72,16 +72,7 @@ func (s *Service) updateTeamHandler(w http.ResponseWriter, r *http.Request) {
 	// Update the team
 	if err := s.updateTeam(team, teamRequest); err != nil {
 		logger.Errorf("Update team error: %s", err)
-		code, ok := errStatusCodeMap[err]
-		if !ok {
-			_, ok := err.(ErrUserCanOnlyBeMemberOfOneTeam)
-			if ok {
-				code = http.StatusBadRequest
-			} else {
-				code = http.StatusInternalServerError
-			}
-		}
-		response.Error(w, err.Error(), code)
+		response.Error(w, err.Error(), getErrStatusCode(err))
 		return
 	}
 

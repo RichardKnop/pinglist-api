@@ -44,11 +44,7 @@ func (s *Service) createSubscriptionHandler(w http.ResponseWriter, r *http.Reque
 	subscription, err := s.createSubscription(authenticatedUser, subscriptionRequest)
 	if err != nil {
 		logger.Errorf("Create subscription error: %s", err)
-		code, ok := errStatusCodeMap[err]
-		if !ok {
-			code = http.StatusInternalServerError
-		}
-		response.Error(w, err.Error(), code)
+		response.Error(w, err.Error(), getErrStatusCode(err))
 		return
 	}
 

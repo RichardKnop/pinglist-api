@@ -73,11 +73,7 @@ func (s *Service) updateAlarmHandler(w http.ResponseWriter, r *http.Request) {
 	// Update an alarm
 	if err := s.updateAlarm(alarm, alarmRequest); err != nil {
 		log.Printf("Update alarm error: %s", err)
-		code, ok := errStatusCodeMap[err]
-		if !ok {
-			code = http.StatusInternalServerError
-		}
-		response.Error(w, err.Error(), code)
+		response.Error(w, err.Error(), getErrStatusCode(err))
 		return
 	}
 

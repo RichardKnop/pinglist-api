@@ -77,11 +77,7 @@ func (s *Service) inviteUserHandler(w http.ResponseWriter, r *http.Request) {
 	)
 	if err != nil {
 		logger.Errorf("Invite user error: %s", err)
-		code, ok := errStatusCodeMap[err]
-		if !ok {
-			code = http.StatusInternalServerError
-		}
-		response.Error(w, err.Error(), code)
+		response.Error(w, err.Error(), getErrStatusCode(err))
 		return
 	}
 

@@ -154,7 +154,8 @@ func (suite *AlarmsTestSuite) TestCreateAlarmIntervalTooSmall() {
 		suite.users[1].ID,
 		&subscriptions.Subscription{
 			Plan: &subscriptions.Plan{
-				MaxAlarms: 10,
+				MaxAlarms:        10,
+				MinAlarmInterval: 50,
 			},
 		},
 		nil,
@@ -182,7 +183,7 @@ func (suite *AlarmsTestSuite) TestCreateAlarmIntervalTooSmall() {
 	assert.Equal(suite.T(), countBefore, countAfter)
 
 	expectedJSON, err := json.Marshal(
-		map[string]string{"error": ErrIntervalTooSmall.Error()})
+		map[string]string{"error": NewErrIntervalTooSmall(50).Error()})
 	if assert.NoError(suite.T(), err, "JSON marshalling failed") {
 		assert.Equal(
 			suite.T(),
