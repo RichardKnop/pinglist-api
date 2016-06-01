@@ -112,9 +112,6 @@ func NewAccount(oauthClient *oauth.Client, name, description string) *Account {
 		Name:          name,
 		Description:   util.StringOrNull(description),
 	}
-	if oauthClientID.Valid {
-		account.OauthClient = oauthClient
-	}
 	return account
 }
 
@@ -132,15 +129,6 @@ func NewUser(account *Account, oauthUser *oauth.User, role *Role, facebookID, fi
 		LastName:    util.StringOrNull(lastName),
 		Confirmed:   confirmed,
 	}
-	if accountID.Valid {
-		user.Account = account
-	}
-	if oauthUserID.Valid {
-		user.OauthUser = oauthUser
-	}
-	if roleID.Valid {
-		user.Role = role
-	}
 	return user
 }
 
@@ -151,9 +139,6 @@ func NewConfirmation(user *User) *Confirmation {
 		UserID:      userID,
 		Reference:   uuid.New(),
 		EmailSentAt: util.TimeOrNull(nil),
-	}
-	if userID.Valid {
-		confirmation.User = user
 	}
 	return confirmation
 }
@@ -168,12 +153,6 @@ func NewInvitation(invitedUser, invitedByUser *User) *Invitation {
 		Reference:       uuid.New(),
 		EmailSentAt:     util.TimeOrNull(nil),
 	}
-	if invitedUserID.Valid {
-		invitation.InvitedUser = invitedUser
-	}
-	if invitedByUserID.Valid {
-		invitation.InvitedByUser = invitedByUser
-	}
 	return invitation
 }
 
@@ -184,9 +163,6 @@ func NewPasswordReset(user *User) *PasswordReset {
 		UserID:      userID,
 		Reference:   uuid.New(),
 		EmailSentAt: util.TimeOrNull(nil),
-	}
-	if userID.Valid {
-		passwordReset.User = user
 	}
 	return passwordReset
 }

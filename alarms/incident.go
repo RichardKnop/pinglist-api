@@ -90,6 +90,9 @@ func (s *Service) openIncident(alarm *Alarm, incidentTypeID string, resp *http.R
 			return err
 		}
 
+		// Assign related object
+		incident.Alarm = alarm
+
 		// There should be only one open incident per alarm at any time
 		err = tx.Model(new(Incident)).Where(
 			"resolved_at IS NULL AND alarm_id = ? AND id != ?",

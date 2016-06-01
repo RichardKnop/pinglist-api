@@ -132,6 +132,10 @@ func (s *Service) createSubscription(user *accounts.User, subscriptionRequest *S
 		return nil, err
 	}
 
+	// Assign related objects
+	subscription.Customer = customer
+	subscription.Plan = plan
+
 	// Commit the transaction
 	if err := tx.Commit().Error; err != nil {
 		tx.Rollback() // rollback the transaction

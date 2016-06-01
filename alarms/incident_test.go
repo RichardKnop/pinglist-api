@@ -574,6 +574,9 @@ func (suite *AlarmsTestSuite) TestGetUptimeDowntime() {
 	)
 	err = suite.db.Create(testAlarm).Error
 	assert.NoError(suite.T(), err, "Failed to insert a test alarm")
+	testAlarm.User = suite.users[1]
+	testAlarm.Region = suite.regions[0]
+	testAlarm.AlarmState = okAlarmState
 
 	// Insert test incidents
 	testIncidents = []*Incident{

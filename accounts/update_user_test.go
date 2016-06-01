@@ -102,6 +102,11 @@ func (suite *AccountsTestSuite) TestUpdateUserChangePasswordWhenPasswordEmpty() 
 	err = suite.db.Create(testUser).Error
 	assert.NoError(suite.T(), err, "Failed to insert a test user")
 
+	// Assign related objects
+	testUser.Account = suite.accounts[0]
+	testUser.OauthUser = testOauthUser
+	testUser.Role = suite.userRole
+
 	// Login the test user
 	testAccessToken, _, err = suite.service.oauthService.Login(
 		suite.accounts[0].OauthClient,
@@ -215,6 +220,9 @@ func (suite *AccountsTestSuite) TestUpdateUserChangePassword() {
 	)
 	err = suite.db.Create(testUser).Error
 	assert.NoError(suite.T(), err, "Failed to insert a test user")
+	testUser.Account = suite.accounts[0]
+	testUser.OauthUser = testOauthUser
+	testUser.Role = suite.userRole
 
 	// Login the test user
 	testAccessToken, _, err = suite.service.oauthService.Login(

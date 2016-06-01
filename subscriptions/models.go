@@ -118,9 +118,6 @@ func NewCustomer(user *accounts.User, customerID string) *Customer {
 		UserID:     userID,
 		CustomerID: customerID,
 	}
-	if userID.Valid {
-		customer.User = user
-	}
 	return customer
 }
 
@@ -135,9 +132,6 @@ func NewCard(customer *Customer, cardID, brand, funding, lastFour string, expMon
 		LastFour:   lastFour,
 		ExpMonth:   expMonth,
 		ExpYear:    expYear,
-	}
-	if customerID.Valid {
-		card.Customer = customer
 	}
 	return card
 }
@@ -158,12 +152,6 @@ func NewSubscription(customer *Customer, plan *Plan, subscriptionID string, star
 		TrialStart:     util.TimeOrNull(trialStart),
 		TrialEnd:       util.TimeOrNull(trialEnd),
 		Status:         status,
-	}
-	if customerID.Valid {
-		subscription.Customer = customer
-	}
-	if planID.Valid {
-		subscription.Plan = plan
 	}
 	return subscription
 }

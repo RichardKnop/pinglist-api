@@ -112,15 +112,6 @@ func NewAlarm(user *accounts.User, region *Region, alarmState *AlarmState, alarm
 		PushNotificationAlerts: alarmRequest.PushNotificationAlerts,
 		Active:                 alarmRequest.Active,
 	}
-	if userID.Valid {
-		alarm.User = user
-	}
-	if regionID.Valid {
-		alarm.Region = region
-	}
-	if alarmStateID.Valid {
-		alarm.AlarmState = alarmState
-	}
 	return alarm
 }
 
@@ -132,12 +123,6 @@ func NewIncident(alarm *Alarm, incidentType *IncidentType, resp *http.Response, 
 		AlarmID:        alarmID,
 		IncidentTypeID: incidentTypeID,
 		ErrorMessage:   util.StringOrNull(errMsg),
-	}
-	if alarmID.Valid {
-		incident.Alarm = alarm
-	}
-	if incidentTypeID.Valid {
-		incident.IncidentType = incidentType
 	}
 
 	// If the response is not nil

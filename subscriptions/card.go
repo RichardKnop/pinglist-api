@@ -78,6 +78,9 @@ func (s *Service) createCard(user *accounts.User, cardRequest *CardRequest) (*Ca
 			tx.Rollback() // rollback the transaction
 			return nil, err
 		}
+
+		// Assign related object
+		customer.User = user
 	} else {
 		// Get an existing Stripe customer or create a new one
 		stripeCustomer, created, err = s.stripeAdapter.GetOrCreateCustomer(
@@ -107,6 +110,9 @@ func (s *Service) createCard(user *accounts.User, cardRequest *CardRequest) (*Ca
 				tx.Rollback() // rollback the transaction
 				return nil, err
 			}
+
+			// Assign related object
+			customer.User = user
 		}
 	}
 
@@ -144,6 +150,9 @@ func (s *Service) createCard(user *accounts.User, cardRequest *CardRequest) (*Ca
 		tx.Rollback() // rollback the transaction
 		return nil, err
 	}
+
+	// Assign related object
+	card.Customer = customer
 
 	// Commit the transaction
 	if err := tx.Commit().Error; err != nil {

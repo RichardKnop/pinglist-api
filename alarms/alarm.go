@@ -134,6 +134,11 @@ func (s *Service) createAlarm(user *accounts.User, alarmRequest *AlarmRequest) (
 		return nil, err
 	}
 
+	// Assign related objects
+	alarm.User = user
+	alarm.Region = region
+	alarm.AlarmState = alarmState
+
 	return alarm, nil
 }
 

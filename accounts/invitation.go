@@ -124,6 +124,11 @@ func (s *Service) inviteUserCommon(db *gorm.DB, invitedByUser *User, invitationR
 		return nil, err
 	}
 
+	// Assign related objects
+	invitedUser.Account = invitedByUser.Account
+	invitedUser.OauthUser = oauthUser
+	invitedUser.Role = role
+
 	// Update the meta user ID field
 	err = db.Model(oauthUser).UpdateColumn(oauth.User{MetaUserID: invitedUser.ID}).Error
 	if err != nil {
@@ -135,6 +140,10 @@ func (s *Service) inviteUserCommon(db *gorm.DB, invitedByUser *User, invitationR
 	if err := db.Create(invitation).Error; err != nil {
 		return nil, err
 	}
+
+	// Assign related objects
+	invitation.InvitedUser = invitedUser
+	invitation.InvitedByUser = invitedByUser
 
 	// Send invitation email
 	go func() {
