@@ -2,7 +2,6 @@ package stripe
 
 import (
 	"encoding/json"
-	"net/url"
 )
 
 // CustomerParams is the set of parameters that can be used when creating or updating a customer.
@@ -18,6 +17,7 @@ type CustomerParams struct {
 	TrialEnd      int64
 	DefaultSource string
 	Shipping      *CustomerShippingDetails
+	BusinessVatID string
 }
 
 // SetSource adds valid sources to a CustomerParams object,
@@ -53,6 +53,7 @@ type Customer struct {
 	Subs          *SubList                 `json:"subscriptions"`
 	Deleted       bool                     `json:"deleted"`
 	Shipping      *CustomerShippingDetails `json:"shipping"`
+	BusinessVatID string                   `json:"business_vat_id"`
 }
 
 // CustomerList is a list of customers as retrieved from a list endpoint.
@@ -69,7 +70,7 @@ type CustomerShippingDetails struct {
 }
 
 // AppendDetails adds the shipping details to the query string.
-func (s *CustomerShippingDetails) AppendDetails(values *url.Values) {
+func (s *CustomerShippingDetails) AppendDetails(values *RequestValues) {
 	values.Add("shipping[name]", s.Name)
 
 	values.Add("shipping[address][line1]", s.Address.Line1)
