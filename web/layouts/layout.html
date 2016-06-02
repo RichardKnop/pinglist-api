@@ -18,7 +18,8 @@
   <link href="//fonts.googleapis.com/css?family=Lato" rel="stylesheet">
 
   <!-- Custom CSS -->
-  <link href="/css/main.css" rel="stylesheet">
+  <link href="/static/css/common.css" rel="stylesheet">
+  <link href="/static/css/main.css" rel="stylesheet">
 
   <!-- Custom styles for this template -->
   {{ template "links" . }}
@@ -39,7 +40,7 @@
           <!-- Brand and toggle get grouped for better mobile display -->
           <div class="navbar-header">
               <a class="navbar-brand" href="{{ .appLink }}">
-                  <img src="/images/logo_login_pinglist@2x.png">
+                  <img src="/static/images/logo_login_pinglist@2x.png">
               </a>
           </div>
           <div id="navbar" class="collapse navbar-collapse">
@@ -62,7 +63,7 @@
         <div class="col-sm-4">
           <p class="text-left">
             <a href="https://stripe.com" class="stripe-badge">
-              <img src="/images/stripe//solid@2x.png" alt="Powered by Stripe">
+              <img src="/static/images/stripe//solid@2x.png" alt="Powered by Stripe">
             </a>
           </p>
         </div>
@@ -80,7 +81,7 @@
         <div class="col-sm-4">
           <p class="text-right">
             <a href="{{ .iOSLink }}" class="ios-download-badge">
-              <img src="/images/ios-download_135x40.svg" alt="Download from App Store">
+              <img src="/static/images/ios-download_135x40.svg" alt="Download from App Store">
             </a>
           </p>
         </div>
