@@ -24,7 +24,7 @@
 }
 
 .jumbotron .headline {
-    padding: 143px 0 88px;
+    padding: 143px 0 158px;
 }
 
 .jumbotron .headline h1 {
@@ -208,7 +208,7 @@ footer a, footer a:hover, footer a:active {
 
 @media (max-width: 640px) {
     .header-image .headline {
-        padding: 96px 0;
+        padding: 96px 0 111px;
     }
 }
 
