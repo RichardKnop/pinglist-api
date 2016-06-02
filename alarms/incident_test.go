@@ -69,7 +69,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	)
 
 	// Sleep for the email and push notification goroutines to finish
-	time.Sleep(10 * time.Millisecond)
+	time.Sleep(15 * time.Millisecond)
 
 	// Check that the mock object expectations were met
 	suite.assertMockExpectations()
@@ -476,7 +476,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	err = suite.service.resolveIncidents(alarm)
 
 	// Sleep for the email and push notification goroutines to finish
-	time.Sleep(10 * time.Millisecond)
+	time.Sleep(15 * time.Millisecond)
 
 	// Check that the mock object expectations were met
 	suite.assertMockExpectations()
