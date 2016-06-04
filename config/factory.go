@@ -53,6 +53,9 @@ var cnf = &Config{
 	Sendgrid: SendgridConfig{
 		APIKey: "sendgrid_api_key",
 	},
+	Slack: SlackConfig{
+		IncomingWebhook: "slack_incoming_webhook",
+	},
 	Stripe: StripeConfig{
 		SecretKey:      "stripe_secret_key",
 		PublishableKey: "stripe_publishable_key",

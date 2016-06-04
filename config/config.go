@@ -52,6 +52,11 @@ type SendgridConfig struct {
 	APIKey string
 }
 
+// SlackConfig stores Slack configuration options
+type SlackConfig struct {
+	IncomingWebhook string
+}
+
 // StripeConfig stores stripe configuration options
 type StripeConfig struct {
 	SecretKey      string
@@ -79,6 +84,7 @@ type Config struct {
 	AWS           AWSConfig
 	Facebook      FacebookConfig
 	Sendgrid      SendgridConfig
+	Slack         SlackConfig
 	Stripe        StripeConfig
 	Web           WebConfig
 	Pinglist      PinglistConfig
