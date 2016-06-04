@@ -46,7 +46,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	gorm.NowFunc = func() time.Time {
 		return when1
 	}
-	suite.mockAlarmDownEmail()
+	suite.mockNewIncidentEmail()
 	suite.mockFindEndpointByUserIDAndApplicationARN(
 		alarm.User.ID,
 		suite.service.cnf.AWS.APNSPlatformApplicationARN,
@@ -459,7 +459,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	gorm.NowFunc = func() time.Time {
 		return when8
 	}
-	suite.mockAlarmUpEmail()
+	suite.mockIncidentsResolvedEmail()
 	suite.mockFindEndpointByUserIDAndApplicationARN(
 		alarm.User.ID,
 		suite.service.cnf.AWS.APNSPlatformApplicationARN,

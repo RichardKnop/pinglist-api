@@ -6,6 +6,6 @@ import (
 
 // EmailFactoryInterface defines exported methods
 type EmailFactoryInterface interface {
-	NewAlarmDownEmail(alarm *Alarm) *email.Email
-	NewAlarmUpEmail(alarm *Alarm) *email.Email
+	NewIncidentEmail(incident *Incident) *email.Email
+	NewIncidentsResolvedEmail(alarm *Alarm) *email.Email
 }

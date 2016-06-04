@@ -31,39 +31,6 @@ func (s *Service) openIncident(alarm *Alarm, incidentTypeID string, resp *http.R
 			tx.Rollback() // rollback the transaction
 			return err
 		}
-
-		// Send alarm down push notification alert
-		if alarm.PushNotificationAlerts {
-			go func() {
-				endpoint, err := s.notificationsService.FindEndpointByUserIDAndApplicationARN(
-					alarm.User.ID,
-					s.cnf.AWS.APNSPlatformApplicationARN,
-				)
-				if err == nil && endpoint != nil {
-					_, err := s.notificationsService.PublishMessage(
-						endpoint.ARN,
-						fmt.Sprintf("ALERT: %s is down", alarm.EndpointURL),
-						map[string]interface{}{},
-					)
-					if err != nil {
-						logger.Errorf("Publish Message Error: %s", err.Error())
-					}
-				}
-			}()
-		}
-
-		// Send alarm down notification email alert
-		if alarm.EmailAlerts {
-			go func() {
-				alarmDownEmail := s.emailFactory.NewAlarmDownEmail(alarm)
-
-				// Try to send the alarm down email email
-				if err := s.emailService.Send(alarmDownEmail); err != nil {
-					logger.Errorf("Send email error: %s", err)
-					return
-				}
-			}()
-		}
 	}
 
 	// If the alarm does not have an open incident of such type yet
@@ -114,6 +81,39 @@ func (s *Service) openIncident(alarm *Alarm, incidentTypeID string, resp *http.R
 			}
 		}
 		alarm.Incidents = append(alarm.Incidents, incident)
+
+		// Send new incident push notification alert
+		if alarm.PushNotificationAlerts {
+			go func() {
+				endpoint, err := s.notificationsService.FindEndpointByUserIDAndApplicationARN(
+					uint(alarm.UserID.Int64),
+					s.cnf.AWS.APNSPlatformApplicationARN,
+				)
+				if err == nil && endpoint != nil {
+					_, err := s.notificationsService.PublishMessage(
+						endpoint.ARN,
+						fmt.Sprintf("ALERT: %s is down", alarm.EndpointURL),
+						map[string]interface{}{},
+					)
+					if err != nil {
+						logger.Errorf("Publish Message Error: %s", err.Error())
+					}
+				}
+			}()
+		}
+
+		// Send new incident notification email alert
+		if alarm.EmailAlerts {
+			go func() {
+				newIncidentEmail := s.emailFactory.NewIncidentEmail(incident)
+
+				// Try to send the new incident email
+				if err := s.emailService.Send(newIncidentEmail); err != nil {
+					logger.Errorf("Send email error: %s", err)
+					return
+				}
+			}()
+		}
 	}
 
 	// Commit the transaction
@@ -127,6 +127,11 @@ func (s *Service) openIncident(alarm *Alarm, incidentTypeID string, resp *http.R
 
 // resolveIncidents resolves any open alarm incidents
 func (s *Service) resolveIncidents(alarm *Alarm) error {
+	// If the alarm state is alarmstates.OK, just return, nothing to do
+	if alarm.AlarmStateID.String == alarmstates.OK {
+		return nil
+	}
+
 	var err error
 
 	// Begin a transaction
@@ -134,54 +139,18 @@ func (s *Service) resolveIncidents(alarm *Alarm) error {
 
 	now := gorm.NowFunc()
 
-	// Change the alarm state to alarmstates.OK if it isn't already
-	if alarm.AlarmStateID.String != alarmstates.OK {
-		// Save the current alarm state in a variable
-		alarmInitialState := alarm.AlarmStateID.String
+	// Save the current alarm state in a variable
+	alarmInitialState := alarm.AlarmStateID.String
 
-		// Set state to alarmstates.OK and update uptime timestamp
-		err = tx.Model(alarm).UpdateColumns(Alarm{
-			AlarmStateID:        util.StringOrNull(alarmstates.OK),
-			LastUptimeStartedAt: util.TimeOrNull(&now),
-			Model:               gorm.Model{UpdatedAt: now},
-		}).Error
-		if err != nil {
-			tx.Rollback() // rollback the transaction
-			return err
-		}
-
-		// Send alarm up push notification alert
-		if alarm.PushNotificationAlerts && alarmInitialState != alarmstates.InsufficientData {
-			go func() {
-				endpoint, err := s.notificationsService.FindEndpointByUserIDAndApplicationARN(
-					alarm.User.ID,
-					s.cnf.AWS.APNSPlatformApplicationARN,
-				)
-				if err == nil && endpoint != nil {
-					_, err := s.notificationsService.PublishMessage(
-						endpoint.ARN,
-						fmt.Sprintf("ALERT: %s is up again", alarm.EndpointURL),
-						map[string]interface{}{},
-					)
-					if err != nil {
-						logger.Errorf("Publish Message Error: %s", err.Error())
-					}
-				}
-			}()
-		}
-
-		// Send alarm up notification email alert
-		if alarm.EmailAlerts && alarmInitialState != alarmstates.InsufficientData {
-			go func() {
-				alarmUpEmail := s.emailFactory.NewAlarmUpEmail(alarm)
-
-				// Try to send the alarm up email email
-				if err := s.emailService.Send(alarmUpEmail); err != nil {
-					logger.Errorf("Send email error: %s", err)
-					return
-				}
-			}()
-		}
+	// Set state to alarmstates.OK and update uptime timestamp
+	err = tx.Model(alarm).UpdateColumns(Alarm{
+		AlarmStateID:        util.StringOrNull(alarmstates.OK),
+		LastUptimeStartedAt: util.TimeOrNull(&now),
+		Model:               gorm.Model{UpdatedAt: now},
+	}).Error
+	if err != nil {
+		tx.Rollback() // rollback the transaction
+		return err
 	}
 
 	// Resolve open incidents
@@ -205,6 +174,39 @@ func (s *Service) resolveIncidents(alarm *Alarm) error {
 	if err := tx.Commit().Error; err != nil {
 		tx.Rollback() // rollback the transaction
 		return err
+	}
+
+	// Send incidents resolved push notification alert
+	if alarm.PushNotificationAlerts && alarmInitialState != alarmstates.InsufficientData {
+		go func() {
+			endpoint, err := s.notificationsService.FindEndpointByUserIDAndApplicationARN(
+				alarm.User.ID,
+				s.cnf.AWS.APNSPlatformApplicationARN,
+			)
+			if err == nil && endpoint != nil {
+				_, err := s.notificationsService.PublishMessage(
+					endpoint.ARN,
+					fmt.Sprintf("ALERT: %s is up again", alarm.EndpointURL),
+					map[string]interface{}{},
+				)
+				if err != nil {
+					logger.Errorf("Publish Message Error: %s", err.Error())
+				}
+			}
+		}()
+	}
+
+	// Send incidents resolved notification email alert
+	if alarm.EmailAlerts && alarmInitialState != alarmstates.InsufficientData {
+		go func() {
+			alarmUpEmail := s.emailFactory.NewIncidentsResolvedEmail(alarm)
+
+			// Try to send the alarm up email email
+			if err := s.emailService.Send(alarmUpEmail); err != nil {
+				logger.Errorf("Send email error: %s", err)
+				return
+			}
+		}()
 	}
 
 	return nil

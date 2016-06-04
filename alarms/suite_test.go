@@ -250,21 +250,21 @@ func (suite *AlarmsTestSuite) mockUserFiltering(user *accounts.User) {
 	).Return(user, nil)
 }
 
-// Mock alarm down notification email
-func (suite *AlarmsTestSuite) mockAlarmDownEmail() {
+// Mock new incident notification email
+func (suite *AlarmsTestSuite) mockNewIncidentEmail() {
 	emailMock := new(email.Email)
 	suite.emailFactoryMock.On(
-		"NewAlarmDownEmail",
-		mock.AnythingOfType("*alarms.Alarm"),
+		"NewIncidentEmail",
+		mock.AnythingOfType("*alarms.Incident"),
 	).Return(emailMock)
 	suite.emailServiceMock.On("Send", emailMock).Return(nil)
 }
 
-// Mock alarm up notification email
-func (suite *AlarmsTestSuite) mockAlarmUpEmail() {
+// Mock incidents resolved notification email
+func (suite *AlarmsTestSuite) mockIncidentsResolvedEmail() {
 	emailMock := new(email.Email)
 	suite.emailFactoryMock.On(
-		"NewAlarmUpEmail",
+		"NewIncidentsResolvedEmail",
 		mock.AnythingOfType("*alarms.Alarm"),
 	).Return(emailMock)
 	suite.emailServiceMock.On("Send", emailMock).Return(nil)

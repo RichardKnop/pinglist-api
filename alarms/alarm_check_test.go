@@ -164,7 +164,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 		suite.db.Model(alarm).UpdateColumn("max_response_time", 0).Error,
 		"Updating max_response_time to 0 failed",
 	)
-	suite.mockAlarmDownEmail()
+	suite.mockNewIncidentEmail()
 	suite.mockFindEndpointByUserIDAndApplicationARN(
 		alarm.User.ID,
 		suite.service.cnf.AWS.APNSPlatformApplicationARN,
@@ -315,7 +315,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	gorm.NowFunc = func() time.Time {
 		return start
 	}
-	suite.mockAlarmUpEmail()
+	suite.mockIncidentsResolvedEmail()
 	suite.mockFindEndpointByUserIDAndApplicationARN(
 		alarm.User.ID,
 		suite.service.cnf.AWS.APNSPlatformApplicationARN,
