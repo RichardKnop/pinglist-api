@@ -55,7 +55,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	)
 	suite.mockPublishMessage(
 		"endpoint_arn",
-		fmt.Sprintf("ALERT: %s is down", alarm.EndpointURL),
+		fmt.Sprintf("ALERT: %s returned slow response", alarm.EndpointURL),
 		map[string]interface{}{},
 		"message_id",
 		nil,
@@ -168,6 +168,20 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	gorm.NowFunc = func() time.Time {
 		return when3
 	}
+	suite.mockNewIncidentEmail()
+	suite.mockFindEndpointByUserIDAndApplicationARN(
+		alarm.User.ID,
+		suite.service.cnf.AWS.APNSPlatformApplicationARN,
+		&notifications.Endpoint{ARN: "endpoint_arn"},
+		nil,
+	)
+	suite.mockPublishMessage(
+		"endpoint_arn",
+		fmt.Sprintf("ALERT: %s timed out", alarm.EndpointURL),
+		map[string]interface{}{},
+		"message_id",
+		nil,
+	)
 	err = suite.service.openIncident(
 		alarm,
 		incidenttypes.Timeout,
@@ -175,6 +189,9 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		0,                  // response time
 		"timeout error...", // error message
 	)
+
+	// Sleep for the email and push notification goroutines to finish
+	time.Sleep(15 * time.Millisecond)
 
 	// Check that the mock object expectations were met
 	suite.assertMockExpectations()
@@ -280,6 +297,20 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	gorm.NowFunc = func() time.Time {
 		return when5
 	}
+	suite.mockNewIncidentEmail()
+	suite.mockFindEndpointByUserIDAndApplicationARN(
+		alarm.User.ID,
+		suite.service.cnf.AWS.APNSPlatformApplicationARN,
+		&notifications.Endpoint{ARN: "endpoint_arn"},
+		nil,
+	)
+	suite.mockPublishMessage(
+		"endpoint_arn",
+		fmt.Sprintf("ALERT: %s returned bad status code", alarm.EndpointURL),
+		map[string]interface{}{},
+		"message_id",
+		nil,
+	)
 	err = suite.service.openIncident(
 		alarm,
 		incidenttypes.BadCode,
@@ -287,6 +318,9 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		1000, // response time
 		"",   // error message
 	)
+
+	// Sleep for the email and push notification goroutines to finish
+	time.Sleep(15 * time.Millisecond)
 
 	// Check that the mock object expectations were met
 	suite.assertMockExpectations()
@@ -468,7 +502,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	)
 	suite.mockPublishMessage(
 		"endpoint_arn",
-		fmt.Sprintf("ALERT: %s is up again", alarm.EndpointURL),
+		fmt.Sprintf("ALERT: %s is up and working correctly", alarm.EndpointURL),
 		map[string]interface{}{},
 		"message_id",
 		nil,

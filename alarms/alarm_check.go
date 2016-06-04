@@ -101,6 +101,7 @@ func (s *Service) CheckAlarm(alarmID uint, watermark time.Time) error {
 		incidentType string
 		errMsg       string
 	)
+	logger.Info(err)
 	if e, ok := err.(net.Error); ok && e.Timeout() {
 		// The response timed out
 		incidentType = incidenttypes.Timeout

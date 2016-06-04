@@ -173,7 +173,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	)
 	suite.mockPublishMessage(
 		"endpoint_arn",
-		fmt.Sprintf("ALERT: %s is down", alarm.EndpointURL),
+		fmt.Sprintf("ALERT: %s returned slow response", alarm.EndpointURL),
 		map[string]interface{}{},
 		"message_id",
 		nil,
@@ -229,8 +229,25 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	gorm.NowFunc = func() time.Time {
 		return start
 	}
+	suite.mockNewIncidentEmail()
+	suite.mockFindEndpointByUserIDAndApplicationARN(
+		alarm.User.ID,
+		suite.service.cnf.AWS.APNSPlatformApplicationARN,
+		&notifications.Endpoint{ARN: "endpoint_arn"},
+		nil,
+	)
+	suite.mockPublishMessage(
+		"endpoint_arn",
+		fmt.Sprintf("ALERT: %s timed out", alarm.EndpointURL),
+		map[string]interface{}{},
+		"message_id",
+		nil,
+	)
 	suite.mockLogResponseTime(start, alarm.ID, nil)
 	err = suite.service.CheckAlarm(alarm.ID, alarm.Watermark.Time)
+
+	// Sleep for the email and push notification goroutines to finish
+	time.Sleep(15 * time.Millisecond)
 
 	// Check that the mock object expectations were met
 	suite.assertMockExpectations()
@@ -272,8 +289,25 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	gorm.NowFunc = func() time.Time {
 		return start
 	}
+	suite.mockNewIncidentEmail()
+	suite.mockFindEndpointByUserIDAndApplicationARN(
+		alarm.User.ID,
+		suite.service.cnf.AWS.APNSPlatformApplicationARN,
+		&notifications.Endpoint{ARN: "endpoint_arn"},
+		nil,
+	)
+	suite.mockPublishMessage(
+		"endpoint_arn",
+		fmt.Sprintf("ALERT: %s returned bad status code", alarm.EndpointURL),
+		map[string]interface{}{},
+		"message_id",
+		nil,
+	)
 	suite.mockLogResponseTime(start, alarm.ID, nil)
 	err = suite.service.CheckAlarm(alarm.ID, alarm.Watermark.Time)
+
+	// Sleep for the email and push notification goroutines to finish
+	time.Sleep(15 * time.Millisecond)
 
 	// Check that the mock object expectations were met
 	suite.assertMockExpectations()
@@ -324,7 +358,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 	)
 	suite.mockPublishMessage(
 		"endpoint_arn",
-		fmt.Sprintf("ALERT: %s is up again", alarm.EndpointURL),
+		fmt.Sprintf("ALERT: %s is up and working correctly", alarm.EndpointURL),
 		map[string]interface{}{},
 		"message_id",
 		nil,

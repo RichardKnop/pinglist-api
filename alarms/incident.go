@@ -92,7 +92,10 @@ func (s *Service) openIncident(alarm *Alarm, incidentTypeID string, resp *http.R
 				if err == nil && endpoint != nil {
 					_, err := s.notificationsService.PublishMessage(
 						endpoint.ARN,
-						fmt.Sprintf("ALERT: %s is down", alarm.EndpointURL),
+						fmt.Sprintf(
+							newIncidentPushNotificationTemplates[incident.IncidentTypeID.String],
+							alarm.EndpointURL,
+						),
 						map[string]interface{}{},
 					)
 					if err != nil {
@@ -186,7 +189,7 @@ func (s *Service) resolveIncidents(alarm *Alarm) error {
 			if err == nil && endpoint != nil {
 				_, err := s.notificationsService.PublishMessage(
 					endpoint.ARN,
-					fmt.Sprintf("ALERT: %s is up again", alarm.EndpointURL),
+					fmt.Sprintf(incidentsResolvedPushNotificationTemplate, alarm.EndpointURL),
 					map[string]interface{}{},
 				)
 				if err != nil {
