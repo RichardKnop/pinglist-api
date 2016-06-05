@@ -58,6 +58,7 @@ type AlarmsTestSuite struct {
 	notificationsServiceMock *notifications.ServiceMock
 	emailServiceMock         *email.ServiceMock
 	emailFactoryMock         *EmailFactoryMock
+	slackAdapterMock         *SlackAdapterMock
 	service                  *Service
 	accounts                 []*accounts.Account
 	users                    []*accounts.User
@@ -134,6 +135,7 @@ func (suite *AlarmsTestSuite) SetupSuite() {
 	suite.notificationsServiceMock = new(notifications.ServiceMock)
 	suite.emailServiceMock = new(email.ServiceMock)
 	suite.emailFactoryMock = new(EmailFactoryMock)
+	suite.slackAdapterMock = new(SlackAdapterMock)
 
 	// Initialise the service
 	suite.service = NewService(
@@ -146,6 +148,7 @@ func (suite *AlarmsTestSuite) SetupSuite() {
 		suite.notificationsServiceMock,
 		suite.emailServiceMock,
 		suite.emailFactoryMock,
+		suite.slackAdapterMock,
 		nil, // HTTP client
 	)
 
@@ -182,6 +185,8 @@ func (suite *AlarmsTestSuite) SetupTest() {
 	suite.emailServiceMock.Calls = suite.emailServiceMock.Calls[:0]
 	suite.emailFactoryMock.ExpectedCalls = suite.emailFactoryMock.ExpectedCalls[:0]
 	suite.emailFactoryMock.Calls = suite.emailFactoryMock.Calls[:0]
+	suite.slackAdapterMock.ExpectedCalls = suite.slackAdapterMock.ExpectedCalls[:0]
+	suite.slackAdapterMock.Calls = suite.slackAdapterMock.Calls[:0]
 }
 
 // The TearDownTest method will be run after every test in the suite.
@@ -206,6 +211,7 @@ func (suite *AlarmsTestSuite) assertMockExpectations() {
 	suite.notificationsServiceMock.AssertExpectations(suite.T())
 	suite.emailServiceMock.AssertExpectations(suite.T())
 	suite.emailFactoryMock.AssertExpectations(suite.T())
+	suite.slackAdapterMock.AssertExpectations(suite.T())
 }
 
 // Mock authentication
@@ -322,4 +328,15 @@ func (suite *AlarmsTestSuite) mockFindPaginatedResponseTimes(offset, limit int, 
 		from,
 		to,
 	).Return(ResponseTimes, err)
+}
+
+// Mock send Slack message
+func (suite *AlarmsTestSuite) mockSendSlackMessage(channel, username, emoji string, err error) {
+	suite.slackAdapterMock.On(
+		"SendMessage",
+		channel,
+		username,
+		mock.AnythingOfType("string"),
+		emoji,
+	).Once().Return(err)
 }
