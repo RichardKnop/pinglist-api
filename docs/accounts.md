@@ -37,6 +37,8 @@ Example response:
     "last_name": "",
     "role": "user",
     "confirmed": false,
+		"slack_api_key": "",
+		"slack_channel": "",
     "created_at": "2015-12-17T06:17:54Z",
     "updated_at": "2015-12-17T06:17:54Z"
 }
@@ -67,6 +69,8 @@ Example response:
     "last_name": "",
     "role": "user",
     "confirmed": true,
+		"slack_api_key": "",
+		"slack_channel": "",
     "created_at": "2015-12-17T06:17:54Z",
     "updated_at": "2015-12-17T06:17:54Z"
 }
@@ -96,6 +100,8 @@ Example response:
     "last_name": "",
     "role": "user",
     "confirmed": true,
+		"slack_api_key": "",
+		"slack_channel": "",
     "created_at": "2015-12-17T06:17:54Z",
     "updated_at": "2015-12-17T06:17:54Z"
 }
@@ -112,6 +118,8 @@ curl -XPUT --compressed -v localhost:8080/v1/accounts/users/1 \
 	-d '{
 		"first_name": "test_first_name_updated",
 		"last_name": "test_last_name_updated",
+		"slack_api_key": "slack_api_key",
+		"slack_channel": "slack_channel"
 	}'
 ```
 
@@ -130,6 +138,8 @@ Example response:
     "last_name": "test_last_name_updated",
     "role": "user",
     "confirmed": true,
+		"slack_api_key": "slack_api_key",
+		"slack_channel": "slack_channel",
     "created_at": "2015-12-17T06:17:54Z",
     "updated_at": "2015-12-18T07:09:15Z"
 }
@@ -164,6 +174,8 @@ Example response:
     "last_name": "test_last_name",
     "role": "user",
     "confirmed": true,
+		"slack_api_key": "slack_api_key",
+		"slack_channel": "slack_channel",
     "created_at": "2015-12-17T06:17:54Z",
     "updated_at": "2015-12-18T07:09:15Z"
 }

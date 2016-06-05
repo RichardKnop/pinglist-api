@@ -117,6 +117,8 @@ func (s *Service) inviteUserCommon(db *gorm.DB, invitedByUser *User, invitationR
 		invitationRequest.FirstName,
 		invitationRequest.LastName,
 		false, // confirmed
+		"",    // slack API key
+		"",    // slack channel
 	)
 
 	// Save the user to the database

@@ -90,10 +90,12 @@ func (suite *AccountsTestSuite) TestCreateUser() {
 	// And correct data was saved
 	assert.Equal(suite.T(), user.ID, user.OauthUser.MetaUserID)
 	assert.Equal(suite.T(), "test@newuser", user.OauthUser.Username)
-	assert.Equal(suite.T(), "", user.FirstName.String)
-	assert.Equal(suite.T(), "", user.LastName.String)
+	assert.False(suite.T(), user.FirstName.Valid)
+	assert.False(suite.T(), user.LastName.Valid)
 	assert.Equal(suite.T(), roles.User, user.Role.ID)
 	assert.False(suite.T(), user.Confirmed)
+	assert.False(suite.T(), user.SlackAPIKey.Valid)
+	assert.False(suite.T(), user.SlackChannel.Valid)
 	assert.Equal(suite.T(), "test@newuser", confirmation.User.OauthUser.Username)
 
 	// Email should not have been sent yet
