@@ -4,6 +4,7 @@ import (
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/RichardKnop/pinglist-api/subscriptions"
 	"github.com/RichardKnop/pinglist-api/teams"
+	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/jinzhu/gorm"
 	"github.com/stretchr/testify/assert"
 )
@@ -27,12 +28,18 @@ func (suite *AlarmsTestSuite) TestGetAlarmLimitsFreeTier() {
 	assert.Equal(suite.T(), FreeTierMaxAlarms, alarmLimits.maxAlarms)
 	// Min alarm interval should default to the free tier value
 	assert.Equal(suite.T(), FreeTierMinAlarmInterval, alarmLimits.minAlarmInterval)
+	// Unlimited emails should default to false
+	assert.False(suite.T(), alarmLimits.unlimitedEmails)
+	// Max emails per interval value should default to the free tier value
+	assert.Equal(suite.T(), FreeTierMaxEmailsPerInterval, alarmLimits.maxEmailsPerInterval)
+	// Slack alerts should default to false
+	assert.False(suite.T(), alarmLimits.slackAlerts)
 
 	// Check that the mock object expectations were met
 	suite.assertMockExpectations()
 }
 
-func (suite *AlarmsTestSuite) TestgetAlarmLimitsTeamWithSubscriptionUserWithoutSubscription() {
+func (suite *AlarmsTestSuite) TestGetAlarmLimitsTeamWithSubscriptionUserWithoutSubscription() {
 	user := new(accounts.User)
 	*user = *suite.users[1]
 
@@ -41,8 +48,11 @@ func (suite *AlarmsTestSuite) TestgetAlarmLimitsTeamWithSubscriptionUserWithoutS
 		123,
 		&subscriptions.Subscription{
 			Plan: &subscriptions.Plan{
-				MaxAlarms:        100,
-				MinAlarmInterval: 40,
+				MaxAlarms:            100,
+				MinAlarmInterval:     40,
+				UnlimitedEmails:      true,
+				MaxEmailsPerInterval: util.PositiveIntOrNull(0),
+				SlackAlerts:          true,
 			},
 		},
 		nil,
@@ -56,6 +66,12 @@ func (suite *AlarmsTestSuite) TestgetAlarmLimitsTeamWithSubscriptionUserWithoutS
 	assert.Equal(suite.T(), uint(100), alarmLimits.maxAlarms)
 	// Min alarm interval should be taken from the team plan
 	assert.Equal(suite.T(), uint(40), alarmLimits.minAlarmInterval)
+	// Unlimited emails should be taken from the team plan
+	assert.True(suite.T(), alarmLimits.unlimitedEmails)
+	// Max emails per interval should be taken from the team plan
+	assert.Equal(suite.T(), uint(0), alarmLimits.maxEmailsPerInterval)
+	// Slack alerts should be taken from the team plan
+	assert.True(suite.T(), alarmLimits.slackAlerts)
 
 	// Check that the mock object expectations were met
 	suite.assertMockExpectations()
@@ -77,8 +93,11 @@ func (suite *AlarmsTestSuite) TestgetAlarmLimitsTeamWithoutSubscriptionUserWithS
 		suite.users[1].ID,
 		&subscriptions.Subscription{
 			Plan: &subscriptions.Plan{
-				MaxAlarms:        10,
-				MinAlarmInterval: 50,
+				MaxAlarms:            10,
+				MinAlarmInterval:     50,
+				UnlimitedEmails:      true,
+				MaxEmailsPerInterval: util.PositiveIntOrNull(30),
+				SlackAlerts:          true,
 			},
 		},
 		nil,
@@ -92,6 +111,12 @@ func (suite *AlarmsTestSuite) TestgetAlarmLimitsTeamWithoutSubscriptionUserWithS
 	assert.Equal(suite.T(), uint(10), alarmLimits.maxAlarms)
 	// Min alarm interval should be taken from the user plan
 	assert.Equal(suite.T(), uint(50), alarmLimits.minAlarmInterval)
+	// Unlimited emails should be taken from the user plan
+	assert.True(suite.T(), alarmLimits.unlimitedEmails)
+	// Max emails per interval should be taken from the user plan
+	assert.Equal(suite.T(), uint(30), alarmLimits.maxEmailsPerInterval)
+	// Slack alerts should be taken from the user plan
+	assert.True(suite.T(), alarmLimits.slackAlerts)
 
 	// Check that the mock object expectations were met
 	suite.assertMockExpectations()
@@ -106,8 +131,11 @@ func (suite *AlarmsTestSuite) TestGetAlarmLimitsUserWithSubscription() {
 		suite.users[1].ID,
 		&subscriptions.Subscription{
 			Plan: &subscriptions.Plan{
-				MaxAlarms:        20,
-				MinAlarmInterval: 40,
+				MaxAlarms:            20,
+				MinAlarmInterval:     40,
+				UnlimitedEmails:      false,
+				MaxEmailsPerInterval: util.PositiveIntOrNull(20),
+				SlackAlerts:          false,
 			},
 		},
 		nil,
@@ -121,4 +149,10 @@ func (suite *AlarmsTestSuite) TestGetAlarmLimitsUserWithSubscription() {
 	assert.Equal(suite.T(), uint(20), alarmLimits.maxAlarms)
 	// Min alarm interval should be taken from the user plan
 	assert.Equal(suite.T(), uint(40), alarmLimits.minAlarmInterval)
+	// Unlimited emails should be taken from the user plan
+	assert.False(suite.T(), alarmLimits.unlimitedEmails)
+	// Max emails per interval should be taken from the user plan
+	assert.Equal(suite.T(), uint(20), alarmLimits.maxEmailsPerInterval)
+	// Slack alerts should be taken from the user plan
+	assert.False(suite.T(), alarmLimits.slackAlerts)
 }
