@@ -84,6 +84,7 @@ func initApp(cnf *config.Config, db *gorm.DB) (*negroni.Negroni, error) {
 		nil, // email.Service
 		nil, // alarms.EmailFactory
 		nil, // alarms.SlackAdapter
+		nil, // alarms.SlackFactory
 		nil, // HTTP client
 	)
 	webService := web.NewService(cnf, accountsService)

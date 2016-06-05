@@ -80,6 +80,7 @@ func initScheduler(cnf *config.Config, db *gorm.DB) (*scheduler.Scheduler, error
 		nil, // email.Service
 		nil, // alarms.EmailFactory
 		nil, // alarms.SlackAdapter
+		nil, // alarms.SlackFactory
 		nil, // HTTP client
 	)
 

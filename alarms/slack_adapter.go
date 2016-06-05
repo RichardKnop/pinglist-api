@@ -6,24 +6,18 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
-
-	"github.com/RichardKnop/pinglist-api/config"
 )
 
 // SlackAdapter ...
-type SlackAdapter struct {
-	incomingWebhook string
-}
+type SlackAdapter struct{}
 
 // NewSlackAdapter starts a new Adapter instance
-func NewSlackAdapter(cnf *config.Config) *SlackAdapter {
-	return &SlackAdapter{
-		incomingWebhook: cnf.Slack.IncomingWebhook,
-	}
+func NewSlackAdapter() *SlackAdapter {
+	return new(SlackAdapter)
 }
 
 // SendMessage pushes a message to one of Slack's channels
-func (a *SlackAdapter) SendMessage(channel, username, text, emoji string) error {
+func (a *SlackAdapter) SendMessage(incomingWebhook, channel, username, text, emoji string) error {
 	payload := map[string]string{
 		"channel":  channel,
 		"username": username,
@@ -34,7 +28,7 @@ func (a *SlackAdapter) SendMessage(channel, username, text, emoji string) error 
 	if err != nil {
 		return err
 	}
-	resp, err := http.PostForm(a.incomingWebhook,
+	resp, err := http.PostForm(incomingWebhook,
 		url.Values{
 			"payload": {string(payloadJSON)},
 		},

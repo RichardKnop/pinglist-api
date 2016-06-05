@@ -185,11 +185,11 @@ func (s *Service) UpdateUser(user *User, userRequest *UserRequest) error {
 
 	// Update user metadata
 	return s.db.Model(user).UpdateColumns(map[string]interface{}{
-		"first_name":    util.StringOrNull(userRequest.FirstName),
-		"last_name":     util.StringOrNull(userRequest.LastName),
-		"slack_api_key": util.StringOrNull(userRequest.SlackAPIKey),
-		"slack_channel": util.StringOrNull(userRequest.SlackChannel),
-		"updated_at":    time.Now(),
+		"first_name":             util.StringOrNull(userRequest.FirstName),
+		"last_name":              util.StringOrNull(userRequest.LastName),
+		"slack_incoming_webhook": util.StringOrNull(userRequest.SlackIncomingWebhook),
+		"slack_channel":          util.StringOrNull(userRequest.SlackChannel),
+		"updated_at":             time.Now(),
 	}).Error
 }
 
@@ -349,7 +349,7 @@ func (s *Service) createUserCommon(db *gorm.DB, account *Account, userRequest *U
 		userRequest.FirstName,
 		userRequest.LastName,
 		confirmed,
-		userRequest.SlackAPIKey,
+		userRequest.SlackIncomingWebhook,
 		userRequest.SlackChannel,
 	)
 

@@ -15,7 +15,7 @@
     first_name: 'test_first_name_1'
     last_name: 'test_last_name_1'
     confirmed: true
-    slack_api_key: null
+    slack_incoming_webhook: null
     slack_channel: null
     created_at: 'ON_INSERT_NOW()'
     updated_at: 'ON_UPDATE_NOW()'
@@ -31,7 +31,7 @@
     first_name: 'test_first_name_2'
     last_name: 'test_last_name_2'
     confirmed: true
-    slack_api_key: 'slack_api_key_2'
+    slack_incoming_webhook: 'slack_incoming_webhook_2'
     slack_channel: 'slack_channel_2'
     created_at: 'ON_INSERT_NOW()'
     updated_at: 'ON_UPDATE_NOW()'
@@ -47,7 +47,7 @@
     first_name: 'test_first_name_3'
     last_name: 'test_last_name_3'
     confirmed: true
-    slack_api_key: 'slack_api_key_3'
+    slack_incoming_webhook: 'slack_incoming_webhook_3'
     slack_channel: 'slack_channel_3'
     created_at: 'ON_INSERT_NOW()'
     updated_at: 'ON_UPDATE_NOW()'

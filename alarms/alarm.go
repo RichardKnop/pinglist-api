@@ -93,9 +93,10 @@ func (s *Service) createAlarm(user *accounts.User, alarmRequest *AlarmRequest) (
 	// Fetch the user team
 	team, _ := s.teamsService.FindTeamByMemberID(user.ID)
 
-	// Count alarms and calculate max limit
 	var (
+		// Count active alarms
 		alarmsCount = s.countActiveAlarms(team, user)
+		// Get alarm limits
 		alarmLimits = s.getAlarmLimits(team, user)
 	)
 
@@ -147,9 +148,10 @@ func (s *Service) updateAlarm(alarm *Alarm, alarmRequest *AlarmRequest) error {
 	// Fetch the user team
 	team, _ := s.teamsService.FindTeamByMemberID(alarm.User.ID)
 
-	// Count alarms and calculate max limit
 	var (
+		// Count active alarms
 		alarmsCount = s.countActiveAlarms(team, alarm.User)
+		// Get alarm limits
 		alarmLimits = s.getAlarmLimits(team, alarm.User)
 	)
 

@@ -97,9 +97,9 @@ func (suite *AccountsTestSuite) TestUpdateUserChangePasswordWhenPasswordEmpty() 
 		"some_facebook_id", // facebook ID
 		"Harold",
 		"Finch",
-		true,                 // confirmed
-		"some_slack_api_key", // slack API key
-		"some_slack_channel", // slack channel
+		true, // confirmed
+		"some_slack_incoming_webhook", // slack incoming webhook
+		"some_slack_channel",          // slack channel
 	)
 	err = suite.db.Create(testUser).Error
 	assert.NoError(suite.T(), err, "Failed to insert a test user")
@@ -175,7 +175,7 @@ func (suite *AccountsTestSuite) TestUpdateUserChangePasswordWhenPasswordEmpty() 
 	assert.Equal(suite.T(), "Finch", user.LastName.String)
 	assert.Equal(suite.T(), roles.User, user.Role.ID)
 	assert.True(suite.T(), user.Confirmed)
-	assert.Equal(suite.T(), "some_slack_api_key", user.SlackAPIKey.String)
+	assert.Equal(suite.T(), "some_slack_incoming_webhook", user.SlackIncomingWebhook.String)
 	assert.Equal(suite.T(), "some_slack_channel", user.SlackChannel.String)
 
 	// Check the response body
@@ -187,16 +187,16 @@ func (suite *AccountsTestSuite) TestUpdateUserChangePasswordWhenPasswordEmpty() 
 				},
 			},
 		},
-		ID:           user.ID,
-		Email:        "harold@finch",
-		FirstName:    "Harold",
-		LastName:     "Finch",
-		Role:         roles.User,
-		Confirmed:    true,
-		SlackAPIKey:  "some_slack_api_key",
-		SlackChannel: "some_slack_channel",
-		CreatedAt:    util.FormatTime(user.CreatedAt),
-		UpdatedAt:    util.FormatTime(user.UpdatedAt),
+		ID:                   user.ID,
+		Email:                "harold@finch",
+		FirstName:            "Harold",
+		LastName:             "Finch",
+		Role:                 roles.User,
+		Confirmed:            true,
+		SlackIncomingWebhook: "some_slack_incoming_webhook",
+		SlackChannel:         "some_slack_channel",
+		CreatedAt:            util.FormatTime(user.CreatedAt),
+		UpdatedAt:            util.FormatTime(user.UpdatedAt),
 	}
 	expectedJSON, err := json.Marshal(expected)
 	if assert.NoError(suite.T(), err, "JSON marshalling failed") {
@@ -230,7 +230,7 @@ func (suite *AccountsTestSuite) TestUpdateUserChangePassword() {
 		"Harold",
 		"Finch",
 		false, // confirmed
-		"",    // slack API key
+		"",    // slack incoming webhook
 		"",    // slack channel
 	)
 	err = suite.db.Create(testUser).Error
@@ -309,7 +309,7 @@ func (suite *AccountsTestSuite) TestUpdateUserChangePassword() {
 	assert.Equal(suite.T(), "Finch", user.LastName.String)
 	assert.Equal(suite.T(), roles.User, user.Role.ID)
 	assert.False(suite.T(), user.Confirmed)
-	assert.False(suite.T(), user.SlackAPIKey.Valid)
+	assert.False(suite.T(), user.SlackIncomingWebhook.Valid)
 	assert.False(suite.T(), user.SlackChannel.Valid)
 
 	// Check the response body
@@ -362,7 +362,7 @@ func (suite *AccountsTestSuite) TestUpdateUser() {
 		"",    // first name
 		"",    // last name
 		false, // confirmed
-		"",    // slack API key
+		"",    // slack incoming webhook
 		"",    // slack channel
 	)
 	err = suite.db.Create(testUser).Error
@@ -380,10 +380,10 @@ func (suite *AccountsTestSuite) TestUpdateUser() {
 	assert.NoError(suite.T(), err, "Failed to login the test user")
 
 	payload, err := json.Marshal(&UserRequest{
-		FirstName:    "Harold",
-		LastName:     "Finch",
-		SlackAPIKey:  "harolds_slack_api_key",
-		SlackChannel: "harolds_slack_channel",
+		FirstName:            "Harold",
+		LastName:             "Finch",
+		SlackIncomingWebhook: "harolds_slack_incoming_webhook",
+		SlackChannel:         "harolds_slack_channel",
 	})
 	assert.NoError(suite.T(), err, "JSON marshalling failed")
 	r, err := http.NewRequest(
@@ -439,7 +439,7 @@ func (suite *AccountsTestSuite) TestUpdateUser() {
 	assert.Equal(suite.T(), "Finch", user.LastName.String)
 	assert.Equal(suite.T(), roles.User, user.Role.ID)
 	assert.False(suite.T(), user.Confirmed)
-	assert.Equal(suite.T(), "harolds_slack_api_key", user.SlackAPIKey.String)
+	assert.Equal(suite.T(), "harolds_slack_incoming_webhook", user.SlackIncomingWebhook.String)
 	assert.Equal(suite.T(), "harolds_slack_channel", user.SlackChannel.String)
 
 	// Check the response body
@@ -451,16 +451,16 @@ func (suite *AccountsTestSuite) TestUpdateUser() {
 				},
 			},
 		},
-		ID:           user.ID,
-		Email:        "harold@finch",
-		FirstName:    "Harold",
-		LastName:     "Finch",
-		Role:         roles.User,
-		Confirmed:    false,
-		SlackAPIKey:  "harolds_slack_api_key",
-		SlackChannel: "harolds_slack_channel",
-		CreatedAt:    util.FormatTime(user.CreatedAt),
-		UpdatedAt:    util.FormatTime(user.UpdatedAt),
+		ID:                   user.ID,
+		Email:                "harold@finch",
+		FirstName:            "Harold",
+		LastName:             "Finch",
+		Role:                 roles.User,
+		Confirmed:            false,
+		SlackIncomingWebhook: "harolds_slack_incoming_webhook",
+		SlackChannel:         "harolds_slack_channel",
+		CreatedAt:            util.FormatTime(user.CreatedAt),
+		UpdatedAt:            util.FormatTime(user.UpdatedAt),
 	}
 	expectedJSON, err := json.Marshal(expected)
 	if assert.NoError(suite.T(), err, "JSON marshalling failed") {

@@ -84,17 +84,17 @@ func (s *Service) openIncident(alarm *Alarm, incidentTypeID string, resp *http.R
 
 		// Send new incident push notification alert
 		if alarm.PushNotificationAlerts {
-			go func() {
+			go func(a *Alarm, i *Incident) {
 				endpoint, err := s.notificationsService.FindEndpointByUserIDAndApplicationARN(
-					uint(alarm.UserID.Int64),
+					uint(a.UserID.Int64),
 					s.cnf.AWS.APNSPlatformApplicationARN,
 				)
 				if err == nil && endpoint != nil {
 					_, err := s.notificationsService.PublishMessage(
 						endpoint.ARN,
 						fmt.Sprintf(
-							newIncidentPushNotificationTemplates[incident.IncidentTypeID.String],
-							alarm.EndpointURL,
+							newIncidentPushNotificationTemplates[i.IncidentTypeID.String],
+							a.EndpointURL,
 						),
 						map[string]interface{}{},
 					)
@@ -102,20 +102,45 @@ func (s *Service) openIncident(alarm *Alarm, incidentTypeID string, resp *http.R
 						logger.Errorf("Publish Message Error: %s", err.Error())
 					}
 				}
-			}()
+			}(alarm, incident)
 		}
 
 		// Send new incident notification email alert
 		if alarm.EmailAlerts {
-			go func() {
-				newIncidentEmail := s.emailFactory.NewIncidentEmail(incident)
+			go func(i *Incident) {
+				newIncidentEmail := s.emailFactory.NewIncidentEmail(i)
 
 				// Try to send the new incident email
 				if err := s.emailService.Send(newIncidentEmail); err != nil {
 					logger.Errorf("Send email error: %s", err)
 					return
 				}
-			}()
+			}(incident)
+		}
+
+		if alarm.SlackAlerts && alarm.User.SlackIncomingWebhook.Valid && alarm.User.SlackChannel.Valid {
+			go func(a *Alarm) {
+				// Fetch the user team
+				team, _ := s.teamsService.FindTeamByMemberID(a.User.ID)
+
+				// Get alarm limits
+				alarmLimits := s.getAlarmLimits(team, a.User)
+
+				if !alarmLimits.slackAlerts {
+					return
+				}
+
+				// if err := s.slackAdapter.SendMessage(
+				// 	alarm.User.SlackIncomingWebhook.String,
+				// 	alarm.User.SlackChannel.String,
+				// 	slackNotificationsUsername,
+				// 	"TODO",
+				// 	slackNotificationsEmoji,
+				// ); err != nil {
+				// 	logger.Errorf("Send Slack message error: %s", err)
+				// 	return
+				// }
+			}(alarm)
 		}
 	}
 

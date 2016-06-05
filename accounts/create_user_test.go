@@ -94,7 +94,7 @@ func (suite *AccountsTestSuite) TestCreateUser() {
 	assert.False(suite.T(), user.LastName.Valid)
 	assert.Equal(suite.T(), roles.User, user.Role.ID)
 	assert.False(suite.T(), user.Confirmed)
-	assert.False(suite.T(), user.SlackAPIKey.Valid)
+	assert.False(suite.T(), user.SlackIncomingWebhook.Valid)
 	assert.False(suite.T(), user.SlackChannel.Valid)
 	assert.Equal(suite.T(), "test@newuser", confirmation.User.OauthUser.Username)
 
