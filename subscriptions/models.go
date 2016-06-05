@@ -38,11 +38,11 @@ type Plan struct {
 	MaxTeams                        uint
 	MaxMembersPerTeam               uint
 	MinAlarmInterval                uint
-	UnlimitedEmails                 bool
+	UnlimitedEmails                 bool `sql:"default:false;not null"`
 	MaxEmailsPerInterval            sql.NullInt64
-	UnlimitedPushNotifications      bool
+	UnlimitedPushNotifications      bool `sql:"default:false;not null"`
 	MaxPushNotificationsPerInterval sql.NullInt64
-	SlackAlerts                     bool
+	SlackAlerts                     bool `sql:"default:false;not null"`
 }
 
 // TableName specifies table name
