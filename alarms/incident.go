@@ -135,26 +135,32 @@ func (s *Service) resolveIncidents(alarm *Alarm) error {
 	}
 
 	// Resolve open incidents
-	err = tx.Model(new(Incident)).Where(
+	result := tx.Model(new(Incident)).Where(
 		"resolved_at IS NULL AND alarm_id = ?", alarm.ID,
 	).UpdateColumns(Incident{
 		ResolvedAt: util.TimeOrNull(&now),
 		Model:      gorm.Model{UpdatedAt: now},
-	}).Error
-	if err != nil {
+	})
+	if err := result.Error; err != nil {
 		tx.Rollback() // rollback the transaction
 		return err
-	}
-
-	// Make sure incidents of the passed alarm object are up-to-date
-	for _, incident := range alarm.Incidents {
-		incident.ResolvedAt = util.TimeOrNull(&now)
 	}
 
 	// Commit the transaction
 	if err := tx.Commit().Error; err != nil {
 		tx.Rollback() // rollback the transaction
 		return err
+	}
+
+	// If no rows were affected (meaning there were no open incidents),
+	// just return and do not trigger any notifications
+	if result.RowsAffected == 0 {
+		return nil
+	}
+
+	// Make sure incidents of the passed alarm object are up-to-date
+	for _, incident := range alarm.Incidents {
+		incident.ResolvedAt = util.TimeOrNull(&now)
 	}
 
 	// Send incidents resolved push notification alert
