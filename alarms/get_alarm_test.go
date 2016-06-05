@@ -162,6 +162,7 @@ func (suite *AlarmsTestSuite) TestGetAlarm() {
 		Interval:               alarm.Interval,
 		EmailAlerts:            alarm.EmailAlerts,
 		PushNotificationAlerts: alarm.PushNotificationAlerts,
+		SlackAlerts:            alarm.SlackAlerts,
 		Active:                 alarm.Active,
 		State:                  alarm.AlarmStateID.String,
 		CreatedAt:              util.FormatTime(alarm.CreatedAt),

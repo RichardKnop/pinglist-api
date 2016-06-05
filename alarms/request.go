@@ -9,5 +9,6 @@ type AlarmRequest struct {
 	Interval               uint   `json:"interval"`
 	EmailAlerts            bool   `json:"email_alerts"`
 	PushNotificationAlerts bool   `json:"push_notification_alerts"`
+	SlackAlerts            bool   `json:"slack_alerts"`
 	Active                 bool   `json:"active"`
 }

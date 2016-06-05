@@ -83,8 +83,9 @@ func (suite *AlarmsTestSuite) TestUpdateAlarmMaxLimitReached() {
 		ExpectedHTTPCode:       201,
 		MaxResponseTime:        2000,
 		Interval:               90,
-		EmailAlerts:            true,
+		EmailAlerts:            false,
 		PushNotificationAlerts: false,
+		SlackAlerts:            false,
 		Active:                 true,
 	})
 	assert.NoError(suite.T(), err, "JSON marshalling failed")
@@ -161,8 +162,9 @@ func (suite *AlarmsTestSuite) TestUpdateAlarmIntervalTooSmall() {
 		ExpectedHTTPCode:       201,
 		MaxResponseTime:        2000,
 		Interval:               5,
-		EmailAlerts:            true,
+		EmailAlerts:            false,
 		PushNotificationAlerts: false,
+		SlackAlerts:            false,
 		Active:                 true,
 	})
 	assert.NoError(suite.T(), err, "JSON marshalling failed")
@@ -244,8 +246,9 @@ func (suite *AlarmsTestSuite) TestUpdateAlarmMaxResponseTimeTooBig() {
 		ExpectedHTTPCode:       201,
 		MaxResponseTime:        10001,
 		Interval:               60,
-		EmailAlerts:            true,
+		EmailAlerts:            false,
 		PushNotificationAlerts: false,
+		SlackAlerts:            false,
 		Active:                 true,
 	})
 	assert.NoError(suite.T(), err, "JSON marshalling failed")
@@ -326,8 +329,9 @@ func (suite *AlarmsTestSuite) TestUpdateAlarmRegionNotFound() {
 		ExpectedHTTPCode:       201,
 		MaxResponseTime:        2000,
 		Interval:               90,
-		EmailAlerts:            true,
+		EmailAlerts:            false,
 		PushNotificationAlerts: false,
+		SlackAlerts:            false,
 		Active:                 true,
 	})
 	assert.NoError(suite.T(), err, "JSON marshalling failed")
@@ -413,6 +417,7 @@ func (suite *AlarmsTestSuite) TestUpdateAlarm() {
 		Interval:               90,
 		EmailAlerts:            false,
 		PushNotificationAlerts: false,
+		SlackAlerts:            false,
 		Active:                 true,
 	})
 	assert.NoError(suite.T(), err, "JSON marshalling failed")
@@ -487,6 +492,7 @@ func (suite *AlarmsTestSuite) TestUpdateAlarm() {
 	assert.Equal(suite.T(), uint(90), alarm.Interval)
 	assert.False(suite.T(), alarm.EmailAlerts)
 	assert.False(suite.T(), alarm.PushNotificationAlerts)
+	assert.False(suite.T(), alarm.SlackAlerts)
 	assert.True(suite.T(), alarm.Active)
 	assert.Equal(suite.T(), 4, len(alarm.Incidents))
 
@@ -508,6 +514,7 @@ func (suite *AlarmsTestSuite) TestUpdateAlarm() {
 		Interval:               uint(90),
 		EmailAlerts:            false,
 		PushNotificationAlerts: false,
+		SlackAlerts:            false,
 		Active:                 true,
 		State:                  alarmstates.OK,
 		CreatedAt:              util.FormatTime(alarm.CreatedAt),

@@ -184,6 +184,7 @@ func (s *Service) updateAlarm(alarm *Alarm, alarmRequest *AlarmRequest) error {
 		"interval":                 alarmRequest.Interval,
 		"email_alerts":             alarmRequest.EmailAlerts,
 		"push_notification_alerts": alarmRequest.PushNotificationAlerts,
+		"slack_alerts":             alarmRequest.SlackAlerts,
 		"active":                   alarmRequest.Active,
 		"updated_at":               time.Now(),
 	}).Error; err != nil {

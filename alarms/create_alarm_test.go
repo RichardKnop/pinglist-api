@@ -43,6 +43,7 @@ func (suite *AlarmsTestSuite) TestCreateAlarmMaxLimitReached() {
 		Interval:               60,
 		EmailAlerts:            true,
 		PushNotificationAlerts: true,
+		SlackAlerts:            true,
 		Active:                 true,
 	})
 	assert.NoError(suite.T(), err, "JSON marshalling failed")
@@ -121,6 +122,7 @@ func (suite *AlarmsTestSuite) TestCreateAlarmIntervalTooSmall() {
 		Interval:               5,
 		EmailAlerts:            true,
 		PushNotificationAlerts: true,
+		SlackAlerts:            true,
 		Active:                 true,
 	})
 	assert.NoError(suite.T(), err, "JSON marshalling failed")
@@ -204,6 +206,7 @@ func (suite *AlarmsTestSuite) TestCreateAlarmMaxResponseTimeTooBig() {
 		Interval:               60,
 		EmailAlerts:            true,
 		PushNotificationAlerts: true,
+		SlackAlerts:            true,
 		Active:                 true,
 	})
 	assert.NoError(suite.T(), err, "JSON marshalling failed")
@@ -286,6 +289,7 @@ func (suite *AlarmsTestSuite) TestCreateAlarmRegionNotFound() {
 		Interval:               60,
 		EmailAlerts:            true,
 		PushNotificationAlerts: true,
+		SlackAlerts:            true,
 		Active:                 true,
 	})
 	assert.NoError(suite.T(), err, "JSON marshalling failed")
@@ -368,6 +372,7 @@ func (suite *AlarmsTestSuite) TestCreateAlarm() {
 		Interval:               60,
 		EmailAlerts:            true,
 		PushNotificationAlerts: true,
+		SlackAlerts:            true,
 		Active:                 true,
 	})
 	assert.NoError(suite.T(), err, "JSON marshalling failed")
@@ -470,6 +475,7 @@ func (suite *AlarmsTestSuite) TestCreateAlarm() {
 		Interval:               uint(60),
 		EmailAlerts:            true,
 		PushNotificationAlerts: true,
+		SlackAlerts:            true,
 		Active:                 true,
 		State:                  alarmstates.InsufficientData,
 		CreatedAt:              util.FormatTime(alarm.CreatedAt),

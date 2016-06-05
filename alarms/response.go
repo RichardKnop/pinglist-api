@@ -35,6 +35,7 @@ type AlarmResponse struct {
 	Interval               uint   `json:"interval"`
 	EmailAlerts            bool   `json:"email_alerts"`
 	PushNotificationAlerts bool   `json:"push_notification_alerts"`
+	SlackAlerts            bool   `json:"slack_alerts"`
 	Active                 bool   `json:"active"`
 	State                  string `json:"state"`
 	CreatedAt              string `json:"created_at"`
@@ -150,6 +151,7 @@ func NewAlarmResponse(alarm *Alarm) (*AlarmResponse, error) {
 		Interval:               alarm.Interval,
 		EmailAlerts:            alarm.EmailAlerts,
 		PushNotificationAlerts: alarm.PushNotificationAlerts,
+		SlackAlerts:            alarm.SlackAlerts,
 		Active:                 alarm.Active,
 		State:                  alarm.AlarmStateID.String,
 		CreatedAt:              util.FormatTime(alarm.CreatedAt),

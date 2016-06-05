@@ -22,6 +22,7 @@ curl --compressed -v localhost:8080/v1/alarms \
 		"interval": 60,
 		"email_alerts": true,
 		"push_notification_alerts": true,
+		"slack_alerts": true,
 		"active": false
 	}'
 ```
@@ -44,6 +45,7 @@ Example response:
     "interval": 60,
     "email_alerts": true,
     "push_notification_alerts": true,
+		"slack_alerts": true,
     "active": false,
     "state": "insufficient data",
     "created_at": "2016-01-14T13:52:24Z",
@@ -78,6 +80,7 @@ Example response:
     "interval": 60,
     "email_alerts": true,
     "push_notification_alerts": true,
+		"slack_alerts": true,
     "active": false,
     "state": "insufficient_data",
     "created_at": "2016-01-14T13:52:24Z",
@@ -99,8 +102,9 @@ curl -XPUT --compressed -v localhost:8080/v1/alarms/1 \
 		"expected_http_code": 201,
 		"max_response_time": 2000,
 		"interval": 90,
-		"email_alerts": true,
+		"email_alerts": false,
 		"push_notification_alerts": false,
+		"slack_alerts": false,
 		"active": true
 	}'
 ```
@@ -121,8 +125,9 @@ Example response:
     "expected_http_code": 201,
     "max_response_time": 2000,
     "interval": 90,
-    "email_alerts": true,
+    "email_alerts": false,
     "push_notification_alerts": false,
+		"slack_alerts": false,
     "active": true,
     "state": "insufficient_data",
     "created_at": "2016-01-14T13:52:24Z",
@@ -194,6 +199,7 @@ Example response:
                 "interval": 60,
                 "email_alerts": true,
                 "push_notification_alerts": true,
+								"slack_alerts": true,
                 "active": true,
                 "state": "ok",
                 "created_at": "2016-01-14T13:52:24Z",
@@ -214,6 +220,7 @@ Example response:
                 "interval": 60,
                 "email_alerts": true,
                 "push_notification_alerts": true,
+								"slack_alerts": true,
                 "active": true,
                 "state": "alarm",
                 "created_at": "2016-01-14T13:52:24Z",
