@@ -8,19 +8,19 @@ import (
 	"github.com/RichardKnop/pinglist-api/email"
 )
 
-// TimeFormat specifies how the time will be parsed in emails
-const TimeFormat = "Mon Jan 2 15:04:05 2006"
+// EmailTimeFormat specifies how the time will be parsed in emails
+const EmailTimeFormat = "Mon Jan 2 15:04:05 2006"
 
-var newIncidentSubjectTemplates = map[string]string{
+var newIncidentEmailSubjectTemplates = map[string]string{
 	incidenttypes.Slow:    "ALERT: %s returned slow response",
 	incidenttypes.Timeout: "ALERT: %s timed out",
 	incidenttypes.BadCode: "ALERT: %s returned bad status code",
 	incidenttypes.Other:   "ALERT: %s failed for unknown reason",
 }
 
-var incidentResolvedSubjectTemplate = "ALERT: %s is up and working correctly"
+var incidentResolvedEmailSubjectTemplate = "ALERT: %s is up and working correctly"
 
-var newIncidentEmailTemplates = map[string]string{
+var newIncidentEmailTextTemplates = map[string]string{
 	incidenttypes.Slow: `
 Hello %s,
 
@@ -75,7 +75,7 @@ Kind Regards,
 `,
 }
 
-var incidentResolvedEmailTemplate = `
+var incidentResolvedEmailTextTemplate = `
 Hello %s,
 
 Our system has noticed a recent incident with one of your alarms has been resolved.
@@ -94,7 +94,7 @@ type EmailFactory struct {
 	cnf *config.Config
 }
 
-// NewEmailFactory starts a new emailFactory instance
+// NewEmailFactory starts a new EmailFactory instance
 func NewEmailFactory(cnf *config.Config) *EmailFactory {
 	return &EmailFactory{cnf: cnf}
 }
@@ -109,7 +109,7 @@ func (f *EmailFactory) NewIncidentEmail(incident *Incident) *email.Email {
 
 	// The email subject
 	subject := fmt.Sprintf(
-		newIncidentSubjectTemplates[incident.IncidentTypeID.String],
+		newIncidentEmailSubjectTemplates[incident.IncidentTypeID.String],
 		incident.Alarm.EndpointURL,
 	)
 
@@ -123,10 +123,10 @@ func (f *EmailFactory) NewIncidentEmail(incident *Incident) *email.Email {
 
 	// Replace placeholders in the email template
 	emailText := fmt.Sprintf(
-		newIncidentEmailTemplates[incident.IncidentTypeID.String],
+		newIncidentEmailTextTemplates[incident.IncidentTypeID.String],
 		name,
 		incident.Alarm.EndpointURL,
-		incident.Alarm.LastDowntimeStartedAt.Time.UTC().Format(TimeFormat),
+		incident.Alarm.LastDowntimeStartedAt.Time.UTC().Format(EmailTimeFormat),
 		incidentsLink,
 		f.cnf.Web.AppHost,
 	)
@@ -151,10 +151,10 @@ func (f *EmailFactory) NewIncidentsResolvedEmail(alarm *Alarm) *email.Email {
 	}
 
 	// The email subject
-	subject := fmt.Sprintf(incidentResolvedSubjectTemplate, alarm.EndpointURL)
+	subject := fmt.Sprintf(incidentResolvedEmailSubjectTemplate, alarm.EndpointURL)
 
 	// Downtime started at
-	downtimeStartedAt := alarm.LastDowntimeStartedAt.Time.UTC().Format(TimeFormat)
+	downtimeStartedAt := alarm.LastDowntimeStartedAt.Time.UTC().Format(EmailTimeFormat)
 
 	// Downtime
 	downtime := fmt.Sprintf(
@@ -172,7 +172,7 @@ func (f *EmailFactory) NewIncidentsResolvedEmail(alarm *Alarm) *email.Email {
 
 	// Replace placeholders in the email template
 	emailText := fmt.Sprintf(
-		incidentResolvedEmailTemplate,
+		incidentResolvedEmailTextTemplate,
 		name,
 		downtimeStartedAt,
 		alarm.EndpointURL,

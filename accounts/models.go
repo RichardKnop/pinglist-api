@@ -40,16 +40,18 @@ func (r *Role) TableName() string {
 // User ...
 type User struct {
 	gorm.Model
-	AccountID   sql.NullInt64  `sql:"index;not null"`
-	OauthUserID sql.NullInt64  `sql:"index;not null"`
-	RoleID      sql.NullString `sql:"type:varchar(20);index;not null"`
-	Account     *Account
-	OauthUser   *oauth.User
-	Role        *Role
-	FacebookID  sql.NullString `sql:"type:varchar(60);unique"`
-	FirstName   sql.NullString `sql:"type:varchar(100)"`
-	LastName    sql.NullString `sql:"type:varchar(100)"`
-	Confirmed   bool           `sql:"index;not null"`
+	AccountID            sql.NullInt64  `sql:"index;not null"`
+	OauthUserID          sql.NullInt64  `sql:"index;not null"`
+	RoleID               sql.NullString `sql:"type:varchar(20);index;not null"`
+	Account              *Account
+	OauthUser            *oauth.User
+	Role                 *Role
+	FacebookID           sql.NullString `sql:"type:varchar(60);unique"`
+	FirstName            sql.NullString `sql:"type:varchar(100)"`
+	LastName             sql.NullString `sql:"type:varchar(100)"`
+	Confirmed            bool           `sql:"index;not null"`
+	SlackIncomingWebhook sql.NullString `sql:"type:varchar(200)"`
+	SlackChannel         sql.NullString `sql:"type:varchar(100)"`
 }
 
 // TableName specifies table name
@@ -116,18 +118,20 @@ func NewAccount(oauthClient *oauth.Client, name, description string) *Account {
 }
 
 // NewUser creates new User instance
-func NewUser(account *Account, oauthUser *oauth.User, role *Role, facebookID, firstName, lastName string, confirmed bool) *User {
+func NewUser(account *Account, oauthUser *oauth.User, role *Role, facebookID, firstName, lastName string, confirmed bool, slackIncomingWebhook, slackChannel string) *User {
 	accountID := util.PositiveIntOrNull(int64(account.ID))
 	oauthUserID := util.PositiveIntOrNull(int64(oauthUser.ID))
 	roleID := util.StringOrNull(role.ID)
 	user := &User{
-		AccountID:   accountID,
-		OauthUserID: oauthUserID,
-		RoleID:      roleID,
-		FacebookID:  util.StringOrNull(facebookID),
-		FirstName:   util.StringOrNull(firstName),
-		LastName:    util.StringOrNull(lastName),
-		Confirmed:   confirmed,
+		AccountID:            accountID,
+		OauthUserID:          oauthUserID,
+		RoleID:               roleID,
+		FacebookID:           util.StringOrNull(facebookID),
+		FirstName:            util.StringOrNull(firstName),
+		LastName:             util.StringOrNull(lastName),
+		Confirmed:            confirmed,
+		SlackIncomingWebhook: util.StringOrNull(slackIncomingWebhook),
+		SlackChannel:         util.StringOrNull(slackChannel),
 	}
 	return user
 }

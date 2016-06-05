@@ -6,7 +6,6 @@ import (
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/RichardKnop/pinglist-api/alarms"
 	"github.com/RichardKnop/pinglist-api/config"
-	"github.com/RichardKnop/pinglist-api/email"
 	"github.com/RichardKnop/pinglist-api/facebook"
 	"github.com/RichardKnop/pinglist-api/health"
 	"github.com/RichardKnop/pinglist-api/metrics"
@@ -47,12 +46,11 @@ func initApp(cnf *config.Config, db *gorm.DB) (*negroni.Negroni, error) {
 	// Initialise services
 	healthService := health.NewService(db)
 	oauthService := oauth.NewService(cnf, db)
-	emailService := email.NewService(cnf)
 	accountsService := accounts.NewService(
 		cnf,
 		db,
 		oauthService,
-		emailService,
+		nil, // email.Service
 		nil, // accounts.EmailFactory
 	)
 	facebookService := facebook.NewService(
@@ -83,8 +81,10 @@ func initApp(cnf *config.Config, db *gorm.DB) (*negroni.Negroni, error) {
 		teamsService,
 		metricsService,
 		notificationsService,
-		emailService,
+		nil, // email.Service
 		nil, // alarms.EmailFactory
+		nil, // alarms.SlackAdapter
+		nil, // alarms.SlackFactory
 		nil, // HTTP client
 	)
 	webService := web.NewService(cnf, accountsService)

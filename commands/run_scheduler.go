@@ -6,7 +6,6 @@ import (
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/RichardKnop/pinglist-api/alarms"
 	"github.com/RichardKnop/pinglist-api/config"
-	"github.com/RichardKnop/pinglist-api/email"
 	"github.com/RichardKnop/pinglist-api/metrics"
 	"github.com/RichardKnop/pinglist-api/notifications"
 	"github.com/RichardKnop/pinglist-api/oauth"
@@ -49,12 +48,11 @@ func RunScheduler() error {
 func initScheduler(cnf *config.Config, db *gorm.DB) (*scheduler.Scheduler, error) {
 	// Initialise services
 	oauthService := oauth.NewService(cnf, db)
-	emailService := email.NewService(cnf)
 	accountsService := accounts.NewService(
 		cnf,
 		db,
 		oauthService,
-		emailService,
+		nil, // email.Service
 		nil, // accounts.EmailFactory
 	)
 	subscriptionsService := subscriptions.NewService(
@@ -79,8 +77,10 @@ func initScheduler(cnf *config.Config, db *gorm.DB) (*scheduler.Scheduler, error
 		teamsService,
 		metricsService,
 		notificationsService,
-		emailService,
+		nil, // email.Service
 		nil, // alarms.EmailFactory
+		nil, // alarms.SlackAdapter
+		nil, // alarms.SlackFactory
 		nil, // HTTP client
 	)
 

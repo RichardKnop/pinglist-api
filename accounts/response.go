@@ -10,14 +10,16 @@ import (
 // UserResponse ...
 type UserResponse struct {
 	jsonhal.Hal
-	ID        uint   `json:"id"`
-	Email     string `json:"email"`
-	FirstName string `json:"first_name"`
-	LastName  string `json:"last_name"`
-	Role      string `json:"role"`
-	Confirmed bool   `json:"confirmed"`
-	CreatedAt string `json:"created_at"`
-	UpdatedAt string `json:"updated_at"`
+	ID                   uint   `json:"id"`
+	Email                string `json:"email"`
+	FirstName            string `json:"first_name"`
+	LastName             string `json:"last_name"`
+	Role                 string `json:"role"`
+	Confirmed            bool   `json:"confirmed"`
+	SlackIncomingWebhook string `json:"slack_incoming_webhook"`
+	SlackChannel         string `json:"slack_channel"`
+	CreatedAt            string `json:"created_at"`
+	UpdatedAt            string `json:"updated_at"`
 }
 
 // InvitationResponse ...
@@ -34,14 +36,16 @@ type InvitationResponse struct {
 // NewUserResponse creates new UserResponse instance
 func NewUserResponse(user *User) (*UserResponse, error) {
 	response := &UserResponse{
-		ID:        user.OauthUser.ID,
-		Email:     user.OauthUser.Username,
-		FirstName: user.FirstName.String,
-		LastName:  user.LastName.String,
-		Role:      user.RoleID.String,
-		Confirmed: user.Confirmed,
-		CreatedAt: util.FormatTime(user.CreatedAt),
-		UpdatedAt: util.FormatTime(user.UpdatedAt),
+		ID:                   user.OauthUser.ID,
+		Email:                user.OauthUser.Username,
+		FirstName:            user.FirstName.String,
+		LastName:             user.LastName.String,
+		Role:                 user.RoleID.String,
+		Confirmed:            user.Confirmed,
+		SlackIncomingWebhook: user.SlackIncomingWebhook.String,
+		SlackChannel:         user.SlackChannel.String,
+		CreatedAt:            util.FormatTime(user.CreatedAt),
+		UpdatedAt:            util.FormatTime(user.UpdatedAt),
 	}
 
 	// Set the self link

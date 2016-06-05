@@ -7,7 +7,6 @@ import (
 
 	"github.com/RichardKnop/pinglist-api/alarms/alarmstates"
 	"github.com/RichardKnop/pinglist-api/alarms/incidenttypes"
-	"github.com/RichardKnop/pinglist-api/alarms/regions"
 	"github.com/RichardKnop/pinglist-api/notifications"
 	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/jinzhu/gorm"
@@ -15,29 +14,11 @@ import (
 )
 
 func (suite *AlarmsTestSuite) TestIncidents() {
-	var (
-		testAlarm, alarm *Alarm
-		err              error
-	)
-
-	// Insert a test alarm
-	testAlarm = &Alarm{
-		User:                   suite.users[1],
-		Region:                 &Region{ID: regions.USWest2, Name: "US West (Oregon)"},
-		AlarmState:             &AlarmState{ID: alarmstates.InsufficientData},
-		EndpointURL:            "http://foobar",
-		ExpectedHTTPCode:       200,
-		MaxResponseTime:        1000,
-		Interval:               60,
-		EmailAlerts:            true,
-		PushNotificationAlerts: true,
-		Active:                 true,
-	}
-	err = suite.db.Create(testAlarm).Error
+	testAlarm, err := suite.insertTestAlarm(true)
 	assert.NoError(suite.T(), err, "Inserting test data failed")
 
 	// Fetch the alarm
-	alarm = new(Alarm)
+	alarm := new(Alarm)
 	assert.False(suite.T(), suite.service.db.Preload("User").Preload("Incidents").
 		First(alarm, testAlarm.ID).RecordNotFound())
 
@@ -60,6 +41,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		"message_id",
 		nil,
 	)
+	suite.mockNewIncidentSlackMessage(suite.users[1])
 	err = suite.service.openIncident(
 		alarm,
 		incidenttypes.Slow,
@@ -182,6 +164,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		"message_id",
 		nil,
 	)
+	suite.mockNewIncidentSlackMessage(suite.users[1])
 	err = suite.service.openIncident(
 		alarm,
 		incidenttypes.Timeout,
@@ -311,6 +294,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		"message_id",
 		nil,
 	)
+	suite.mockNewIncidentSlackMessage(suite.users[1])
 	err = suite.service.openIncident(
 		alarm,
 		incidenttypes.BadCode,
@@ -507,6 +491,7 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		"message_id",
 		nil,
 	)
+	suite.mockIncidentsResolvedSlackMessage(suite.users[1])
 	err = suite.service.resolveIncidents(alarm)
 
 	// Sleep for the email and push notification goroutines to finish
@@ -596,14 +581,13 @@ func (suite *AlarmsTestSuite) TestGetUptimeDowntime() {
 		suite.regions[0],
 		okAlarmState,
 		&AlarmRequest{
-			Region:                 "us-west-2",
-			EndpointURL:            "http://new-endpoint",
-			ExpectedHTTPCode:       200,
-			MaxResponseTime:        1000,
-			Interval:               60,
-			EmailAlerts:            true,
-			PushNotificationAlerts: true,
-			Active:                 true,
+			Region:           "us-west-2",
+			EndpointURL:      "http://new-endpoint",
+			ExpectedHTTPCode: 200,
+			MaxResponseTime:  1000,
+			Interval:         60,
+			EmailAlerts:      true,
+			Active:           true,
 		},
 	)
 	err = suite.db.Create(testAlarm).Error

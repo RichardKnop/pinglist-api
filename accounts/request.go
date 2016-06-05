@@ -2,12 +2,14 @@ package accounts
 
 // UserRequest ...
 type UserRequest struct {
-	Email       string `json:"email"`
-	Password    string `json:"password"`
-	NewPassword string `json:"new_password"`
-	FirstName   string `json:"first_name"`
-	LastName    string `json:"last_name"`
-	Role        string `json:"role"`
+	Email                string `json:"email"`
+	Password             string `json:"password"`
+	NewPassword          string `json:"new_password"`
+	FirstName            string `json:"first_name"`
+	LastName             string `json:"last_name"`
+	Role                 string `json:"role"`
+	SlackIncomingWebhook string `json:"slack_incoming_webhook"`
+	SlackChannel         string `json:"slack_channel"`
 }
 
 // InvitationRequest ...

@@ -16,6 +16,7 @@
     interval: 60
     email_alerts: true
     push_notification_alerts: true
+    slack_alerts: true
     active: false
     alarm_state_id: 'ok'
     created_at: '2016-02-01T22:29:12Z'
@@ -33,6 +34,7 @@
     interval: 60
     email_alerts: true
     push_notification_alerts: true
+    slack_alerts: true
     active: false
     alarm_state_id: 'ok'
     created_at: 'ON_INSERT_NOW()'
@@ -50,6 +52,7 @@
     interval: 60
     email_alerts: true
     push_notification_alerts: true
+    slack_alerts: true
     active: false
     alarm_state_id: 'ok'
     created_at: 'ON_INSERT_NOW()'
@@ -67,6 +70,7 @@
     interval: 60
     email_alerts: true
     push_notification_alerts: true
+    slack_alerts: true
     active: false
     alarm_state_id: 'ok'
     created_at: 'ON_INSERT_NOW()'

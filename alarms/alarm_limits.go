@@ -11,6 +11,8 @@ var (
 	FreeTierMaxAlarms = uint(1)
 	// FreeTierMinAlarmInterval ...
 	FreeTierMinAlarmInterval = uint(60)
+	// FreeTierMaxEmailsPerInterval ...
+	FreeTierMaxEmailsPerInterval = uint(50)
 )
 
 // countActiveAlarms counts active alarms of the current user or his/her team
@@ -30,8 +32,11 @@ func (s *Service) countActiveAlarms(team *teams.Team, user *accounts.User) uint 
 }
 
 type alarmLimitsConfig struct {
-	maxAlarms        uint
-	minAlarmInterval uint
+	maxAlarms            uint
+	minAlarmInterval     uint
+	unlimitedEmails      bool
+	maxEmailsPerInterval uint
+	slackAlerts          bool
 }
 
 // getAlarmLimits returns a struct containing different alarm limits based on
@@ -43,6 +48,12 @@ func (s *Service) getAlarmLimits(team *teams.Team, user *accounts.User) *alarmLi
 			maxAlarms: FreeTierMaxAlarms,
 			// Users in free tier have minimum alarm check interval of 60s
 			minAlarmInterval: FreeTierMinAlarmInterval,
+			// Emails are not unlimited by default
+			unlimitedEmails: false,
+			// Users in free tier have limit of 50 emails per interval
+			maxEmailsPerInterval: FreeTierMaxEmailsPerInterval,
+			// Slack alerts are not enabled by default
+			slackAlerts: false,
 		}
 		subscription *subscriptions.Subscription
 	)
@@ -61,6 +72,9 @@ func (s *Service) getAlarmLimits(team *teams.Team, user *accounts.User) *alarmLi
 	if subscription != nil {
 		alarmLimits.maxAlarms = subscription.Plan.MaxAlarms
 		alarmLimits.minAlarmInterval = subscription.Plan.MinAlarmInterval
+		alarmLimits.unlimitedEmails = subscription.Plan.UnlimitedEmails
+		alarmLimits.maxEmailsPerInterval = uint(subscription.Plan.MaxEmailsPerInterval.Int64)
+		alarmLimits.slackAlerts = subscription.Plan.SlackAlerts
 	}
 
 	return alarmLimits

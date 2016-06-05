@@ -1,7 +1,6 @@
 package alarms
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 
@@ -84,38 +83,17 @@ func (s *Service) openIncident(alarm *Alarm, incidentTypeID string, resp *http.R
 
 		// Send new incident push notification alert
 		if alarm.PushNotificationAlerts {
-			go func() {
-				endpoint, err := s.notificationsService.FindEndpointByUserIDAndApplicationARN(
-					uint(alarm.UserID.Int64),
-					s.cnf.AWS.APNSPlatformApplicationARN,
-				)
-				if err == nil && endpoint != nil {
-					_, err := s.notificationsService.PublishMessage(
-						endpoint.ARN,
-						fmt.Sprintf(
-							newIncidentPushNotificationTemplates[incident.IncidentTypeID.String],
-							alarm.EndpointURL,
-						),
-						map[string]interface{}{},
-					)
-					if err != nil {
-						logger.Errorf("Publish Message Error: %s", err.Error())
-					}
-				}
-			}()
+			go s.sendNewIncidentPushNotification(alarm, incident)
 		}
 
 		// Send new incident notification email alert
 		if alarm.EmailAlerts {
-			go func() {
-				newIncidentEmail := s.emailFactory.NewIncidentEmail(incident)
+			go s.sendNewIncidentEmail(incident)
+		}
 
-				// Try to send the new incident email
-				if err := s.emailService.Send(newIncidentEmail); err != nil {
-					logger.Errorf("Send email error: %s", err)
-					return
-				}
-			}()
+		// Send new incident notification Slack alert
+		if alarm.SlackAlerts && alarm.User.SlackIncomingWebhook.Valid && alarm.User.SlackChannel.Valid {
+			go s.sendNewIncidentSlackMessage(alarm, incident)
 		}
 	}
 
@@ -157,20 +135,15 @@ func (s *Service) resolveIncidents(alarm *Alarm) error {
 	}
 
 	// Resolve open incidents
-	err = tx.Model(new(Incident)).Where(
+	result := tx.Model(new(Incident)).Where(
 		"resolved_at IS NULL AND alarm_id = ?", alarm.ID,
 	).UpdateColumns(Incident{
 		ResolvedAt: util.TimeOrNull(&now),
 		Model:      gorm.Model{UpdatedAt: now},
-	}).Error
-	if err != nil {
+	})
+	if err := result.Error; err != nil {
 		tx.Rollback() // rollback the transaction
 		return err
-	}
-
-	// Make sure incidents of the passed alarm object are up-to-date
-	for _, incident := range alarm.Incidents {
-		incident.ResolvedAt = util.TimeOrNull(&now)
 	}
 
 	// Commit the transaction
@@ -179,37 +152,30 @@ func (s *Service) resolveIncidents(alarm *Alarm) error {
 		return err
 	}
 
+	// If no rows were affected (meaning there were no open incidents),
+	// just return and do not trigger any notifications
+	if result.RowsAffected == 0 {
+		return nil
+	}
+
+	// Make sure incidents of the passed alarm object are up-to-date
+	for _, incident := range alarm.Incidents {
+		incident.ResolvedAt = util.TimeOrNull(&now)
+	}
+
 	// Send incidents resolved push notification alert
 	if alarm.PushNotificationAlerts && alarmInitialState != alarmstates.InsufficientData {
-		go func() {
-			endpoint, err := s.notificationsService.FindEndpointByUserIDAndApplicationARN(
-				alarm.User.ID,
-				s.cnf.AWS.APNSPlatformApplicationARN,
-			)
-			if err == nil && endpoint != nil {
-				_, err := s.notificationsService.PublishMessage(
-					endpoint.ARN,
-					fmt.Sprintf(incidentsResolvedPushNotificationTemplate, alarm.EndpointURL),
-					map[string]interface{}{},
-				)
-				if err != nil {
-					logger.Errorf("Publish Message Error: %s", err.Error())
-				}
-			}
-		}()
+		go s.sendIncidentsResolvedPushNotification(alarm)
 	}
 
 	// Send incidents resolved notification email alert
 	if alarm.EmailAlerts && alarmInitialState != alarmstates.InsufficientData {
-		go func() {
-			alarmUpEmail := s.emailFactory.NewIncidentsResolvedEmail(alarm)
+		go s.sendIncidentsResolvedEmail(alarm)
+	}
 
-			// Try to send the alarm up email email
-			if err := s.emailService.Send(alarmUpEmail); err != nil {
-				logger.Errorf("Send email error: %s", err)
-				return
-			}
-		}()
+	// Send incidents resolved notification Slack alert
+	if alarm.SlackAlerts && alarm.User.SlackIncomingWebhook.Valid && alarm.User.SlackChannel.Valid {
+		go s.sendIncidentsResolvedSlackMessage(alarm)
 	}
 
 	return nil

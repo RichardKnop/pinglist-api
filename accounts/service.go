@@ -18,6 +18,9 @@ type Service struct {
 
 // NewService starts a new Service instance
 func NewService(cnf *config.Config, db *gorm.DB, oauthService oauth.ServiceInterface, emailService email.ServiceInterface, emailFactory EmailFactoryInterface) *Service {
+	if emailService == nil {
+		emailService = email.NewService(cnf)
+	}
 	if emailFactory == nil {
 		emailFactory = NewEmailFactory(cnf)
 	}

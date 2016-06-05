@@ -58,6 +58,8 @@ type AlarmsTestSuite struct {
 	notificationsServiceMock *notifications.ServiceMock
 	emailServiceMock         *email.ServiceMock
 	emailFactoryMock         *EmailFactoryMock
+	slackAdapterMock         *SlackAdapterMock
+	slackFactoryMock         *SlackFactoryMock
 	service                  *Service
 	accounts                 []*accounts.Account
 	users                    []*accounts.User
@@ -134,6 +136,8 @@ func (suite *AlarmsTestSuite) SetupSuite() {
 	suite.notificationsServiceMock = new(notifications.ServiceMock)
 	suite.emailServiceMock = new(email.ServiceMock)
 	suite.emailFactoryMock = new(EmailFactoryMock)
+	suite.slackAdapterMock = new(SlackAdapterMock)
+	suite.slackFactoryMock = new(SlackFactoryMock)
 
 	// Initialise the service
 	suite.service = NewService(
@@ -146,6 +150,8 @@ func (suite *AlarmsTestSuite) SetupSuite() {
 		suite.notificationsServiceMock,
 		suite.emailServiceMock,
 		suite.emailFactoryMock,
+		suite.slackAdapterMock,
+		suite.slackFactoryMock,
 		nil, // HTTP client
 	)
 
@@ -182,6 +188,10 @@ func (suite *AlarmsTestSuite) SetupTest() {
 	suite.emailServiceMock.Calls = suite.emailServiceMock.Calls[:0]
 	suite.emailFactoryMock.ExpectedCalls = suite.emailFactoryMock.ExpectedCalls[:0]
 	suite.emailFactoryMock.Calls = suite.emailFactoryMock.Calls[:0]
+	suite.slackAdapterMock.ExpectedCalls = suite.slackAdapterMock.ExpectedCalls[:0]
+	suite.slackAdapterMock.Calls = suite.slackAdapterMock.Calls[:0]
+	suite.slackFactoryMock.ExpectedCalls = suite.slackFactoryMock.ExpectedCalls[:0]
+	suite.slackFactoryMock.Calls = suite.slackFactoryMock.Calls[:0]
 }
 
 // The TearDownTest method will be run after every test in the suite.
@@ -206,6 +216,8 @@ func (suite *AlarmsTestSuite) assertMockExpectations() {
 	suite.notificationsServiceMock.AssertExpectations(suite.T())
 	suite.emailServiceMock.AssertExpectations(suite.T())
 	suite.emailFactoryMock.AssertExpectations(suite.T())
+	suite.slackAdapterMock.AssertExpectations(suite.T())
+	suite.slackFactoryMock.AssertExpectations(suite.T())
 }
 
 // Mock authentication
@@ -322,4 +334,74 @@ func (suite *AlarmsTestSuite) mockFindPaginatedResponseTimes(offset, limit int, 
 		from,
 		to,
 	).Return(ResponseTimes, err)
+}
+
+// Mock new incident notification Slack message
+func (suite *AlarmsTestSuite) mockNewIncidentSlackMessage(user *accounts.User) {
+	// Mock find team
+	suite.mockFindTeamByMemberID(
+		user.ID,
+		nil,
+		teams.ErrTeamNotFound,
+	)
+
+	// Mock find active subscription
+	suite.mockFindActiveSubscriptionByUserID(
+		user.ID,
+		&subscriptions.Subscription{
+			Plan: &subscriptions.Plan{
+				SlackAlerts: true,
+			},
+		},
+		nil,
+	)
+
+	// Mock Slack message
+	suite.slackFactoryMock.On(
+		"NewIncidentMessage",
+		mock.AnythingOfType("*alarms.Incident"),
+	).Return("Some mock message...")
+	suite.slackAdapterMock.On(
+		"SendMessage",
+		user.SlackIncomingWebhook.String,
+		user.SlackChannel.String,
+		slackNotificationsUsername,
+		slackNotificationsEmoji,
+		"Some mock message...",
+	).Return(nil)
+}
+
+// Mock incidents resolved notification Slack message
+func (suite *AlarmsTestSuite) mockIncidentsResolvedSlackMessage(user *accounts.User) {
+	// Mock find team
+	suite.mockFindTeamByMemberID(
+		user.ID,
+		nil,
+		teams.ErrTeamNotFound,
+	)
+
+	// Mock find active subscription
+	suite.mockFindActiveSubscriptionByUserID(
+		user.ID,
+		&subscriptions.Subscription{
+			Plan: &subscriptions.Plan{
+				SlackAlerts: true,
+			},
+		},
+		nil,
+	)
+
+	// Mock Slack message
+	suite.slackFactoryMock.On(
+		"NewIncidentsResolvedMessage",
+		mock.AnythingOfType("*alarms.Alarm"),
+	).Return("Some mock message...")
+	suite.slackAdapterMock.On(
+		"SendMessage",
+		user.SlackIncomingWebhook.String,
+		user.SlackChannel.String,
+		slackNotificationsUsername,
+		slackNotificationsEmoji,
+		"Some mock message...",
+	).Return(nil)
 }

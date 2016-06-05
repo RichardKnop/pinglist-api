@@ -30,20 +30,25 @@ type ListCardsResponse struct {
 // PlanResponse ...
 type PlanResponse struct {
 	jsonhal.Hal
-	ID                uint   `json:"id"`
-	PlanID            string `json:"plan_id"`
-	Name              string `json:"name"`
-	Description       string `json:"description"`
-	Currency          string `json:"currency"`
-	Amount            uint   `json:"amount"`
-	TrialPeriod       uint   `json:"trial_period"`
-	Interval          uint   `json:"interval"`
-	MaxAlarms         uint   `json:"max_alarms"`
-	MaxTeams          uint   `json:"max_teams"`
-	MaxMembersPerTeam uint   `json:"max_members_per_team"`
-	MinAlarmInterval  uint   `json:"min_alarm_interval"`
-	CreatedAt         string `json:"created_at"`
-	UpdatedAt         string `json:"updated_at"`
+	ID                              uint   `json:"id"`
+	PlanID                          string `json:"plan_id"`
+	Name                            string `json:"name"`
+	Description                     string `json:"description"`
+	Currency                        string `json:"currency"`
+	Amount                          uint   `json:"amount"`
+	TrialPeriod                     uint   `json:"trial_period"`
+	Interval                        uint   `json:"interval"`
+	MaxAlarms                       uint   `json:"max_alarms"`
+	MaxTeams                        uint   `json:"max_teams"`
+	MaxMembersPerTeam               uint   `json:"max_members_per_team"`
+	MinAlarmInterval                uint   `json:"min_alarm_interval"`
+	UnlimitedEmails                 bool   `json:"unlimited_emails"`
+	MaxEmailsPerInterval            *uint  `json:"max_emails_per_interval"`
+	UnlimitedPushNotifications      bool   `json:"unlimited_push_notifications"`
+	MaxPushNotificationsPerInterval *uint  `json:"max_push_notifications_per_interval"`
+	SlackAlerts                     bool   `json:"slack_alerts"`
+	CreatedAt                       string `json:"created_at"`
+	UpdatedAt                       string `json:"updated_at"`
 }
 
 // ListPlansResponse ...
@@ -144,20 +149,33 @@ func NewListCardsResponse(count, page int, self, first, last, previous, next str
 // NewPlanResponse creates new PlanResponse instance
 func NewPlanResponse(plan *Plan) (*PlanResponse, error) {
 	response := &PlanResponse{
-		ID:                plan.ID,
-		PlanID:            plan.PlanID,
-		Name:              plan.Name,
-		Description:       plan.Description.String,
-		Currency:          plan.Currency,
-		Amount:            plan.Amount,
-		TrialPeriod:       plan.TrialPeriod,
-		Interval:          plan.Interval,
-		MaxAlarms:         plan.MaxAlarms,
-		MaxTeams:          plan.MaxTeams,
-		MaxMembersPerTeam: plan.MaxMembersPerTeam,
-		MinAlarmInterval:  plan.MinAlarmInterval,
-		CreatedAt:         util.FormatTime(plan.CreatedAt),
-		UpdatedAt:         util.FormatTime(plan.UpdatedAt),
+		ID:                         plan.ID,
+		PlanID:                     plan.PlanID,
+		Name:                       plan.Name,
+		Description:                plan.Description.String,
+		Currency:                   plan.Currency,
+		Amount:                     plan.Amount,
+		TrialPeriod:                plan.TrialPeriod,
+		Interval:                   plan.Interval,
+		MaxAlarms:                  plan.MaxAlarms,
+		MaxTeams:                   plan.MaxTeams,
+		MaxMembersPerTeam:          plan.MaxMembersPerTeam,
+		MinAlarmInterval:           plan.MinAlarmInterval,
+		UnlimitedEmails:            plan.UnlimitedEmails,
+		UnlimitedPushNotifications: plan.UnlimitedPushNotifications,
+		SlackAlerts:                plan.SlackAlerts,
+		CreatedAt:                  util.FormatTime(plan.CreatedAt),
+		UpdatedAt:                  util.FormatTime(plan.UpdatedAt),
+	}
+
+	if plan.MaxEmailsPerInterval.Valid {
+		maxEmailsPerInterval := uint(plan.MaxEmailsPerInterval.Int64)
+		response.MaxEmailsPerInterval = &maxEmailsPerInterval
+	}
+
+	if plan.MaxPushNotificationsPerInterval.Valid {
+		maxPushNotificationsPerInterval := uint(plan.MaxPushNotificationsPerInterval.Int64)
+		response.MaxPushNotificationsPerInterval = &maxPushNotificationsPerInterval
 	}
 
 	// Set the self link

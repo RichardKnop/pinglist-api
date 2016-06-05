@@ -53,6 +53,7 @@ type Alarm struct {
 	Interval               uint        `sql:"default:60;not null"` // seconds
 	EmailAlerts            bool        `sql:"default:false;index;not null"`
 	PushNotificationAlerts bool        `sql:"default:false;index;not null"`
+	SlackAlerts            bool        `sql:"default:false;index;not null"`
 	Active                 bool        `sql:"index;not null"`
 	Watermark              pq.NullTime `sql:"index"`
 	LastDowntimeStartedAt  pq.NullTime `sql:"index"`
@@ -110,6 +111,7 @@ func NewAlarm(user *accounts.User, region *Region, alarmState *AlarmState, alarm
 		Interval:               alarmRequest.Interval,
 		EmailAlerts:            alarmRequest.EmailAlerts,
 		PushNotificationAlerts: alarmRequest.PushNotificationAlerts,
+		SlackAlerts:            alarmRequest.SlackAlerts,
 		Active:                 alarmRequest.Active,
 	}
 	return alarm

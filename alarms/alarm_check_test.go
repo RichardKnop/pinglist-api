@@ -106,6 +106,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 		Interval:               60,
 		EmailAlerts:            true,
 		PushNotificationAlerts: true,
+		SlackAlerts:            true,
 		Active:                 true,
 	}
 	err = suite.db.Create(testAlarm).Error
@@ -178,6 +179,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 		"message_id",
 		nil,
 	)
+	suite.mockNewIncidentSlackMessage(suite.users[1])
 	suite.mockLogResponseTime(start, alarm.ID, nil)
 	err = suite.service.CheckAlarm(alarm.ID, alarm.Watermark.Time)
 	assert.NoError(
@@ -243,6 +245,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 		"message_id",
 		nil,
 	)
+	suite.mockNewIncidentSlackMessage(suite.users[1])
 	suite.mockLogResponseTime(start, alarm.ID, nil)
 	err = suite.service.CheckAlarm(alarm.ID, alarm.Watermark.Time)
 
@@ -303,6 +306,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 		"message_id",
 		nil,
 	)
+	suite.mockNewIncidentSlackMessage(suite.users[1])
 	suite.mockLogResponseTime(start, alarm.ID, nil)
 	err = suite.service.CheckAlarm(alarm.ID, alarm.Watermark.Time)
 
@@ -363,6 +367,7 @@ func (suite *AlarmsTestSuite) TestAlarmCheck() {
 		"message_id",
 		nil,
 	)
+	suite.mockIncidentsResolvedSlackMessage(suite.users[1])
 	suite.mockLogResponseTime(start, alarm.ID, nil)
 	err = suite.service.CheckAlarm(alarm.ID, alarm.Watermark.Time)
 
