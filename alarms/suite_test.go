@@ -337,27 +337,69 @@ func (suite *AlarmsTestSuite) mockFindPaginatedResponseTimes(offset, limit int, 
 }
 
 // Mock new incident notification Slack message
-func (suite *AlarmsTestSuite) mockNewIncidentSlackMessage(incomingWebhook, channel string) {
+func (suite *AlarmsTestSuite) mockNewIncidentSlackMessage(user *accounts.User) {
+	// Mock find team
+	suite.mockFindTeamByMemberID(
+		user.ID,
+		nil,
+		teams.ErrTeamNotFound,
+	)
+
+	// Mock find active subscription
+	suite.mockFindActiveSubscriptionByUserID(
+		user.ID,
+		&subscriptions.Subscription{
+			Plan: &subscriptions.Plan{
+				SlackAlerts: true,
+			},
+		},
+		nil,
+	)
+
+	// Mock Slack message
 	suite.slackFactoryMock.On(
 		"NewIncidentMessage",
 		mock.AnythingOfType("*alarms.Incident"),
 	).Return("Some mock message...")
 	suite.slackAdapterMock.On(
 		"SendMessage",
+		user.SlackIncomingWebhook.String,
+		user.SlackChannel.String,
+		slackNotificationsUsername,
+		slackNotificationsEmoji,
 		"Some mock message...",
 	).Return(nil)
 }
 
 // Mock incidents resolved notification Slack message
-func (suite *AlarmsTestSuite) mockIncidentsResolvedSlackMessage(incomingWebhook, channel string) {
+func (suite *AlarmsTestSuite) mockIncidentsResolvedSlackMessage(user *accounts.User) {
+	// Mock find team
+	suite.mockFindTeamByMemberID(
+		user.ID,
+		nil,
+		teams.ErrTeamNotFound,
+	)
+
+	// Mock find active subscription
+	suite.mockFindActiveSubscriptionByUserID(
+		user.ID,
+		&subscriptions.Subscription{
+			Plan: &subscriptions.Plan{
+				SlackAlerts: true,
+			},
+		},
+		nil,
+	)
+
+	// Mock Slack message
 	suite.slackFactoryMock.On(
 		"NewIncidentsResolvedMessage",
 		mock.AnythingOfType("*alarms.Alarm"),
 	).Return("Some mock message...")
 	suite.slackAdapterMock.On(
 		"SendMessage",
-		incomingWebhook,
-		channel,
+		user.SlackIncomingWebhook.String,
+		user.SlackChannel.String,
 		slackNotificationsUsername,
 		slackNotificationsEmoji,
 		"Some mock message...",

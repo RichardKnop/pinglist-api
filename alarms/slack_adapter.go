@@ -17,7 +17,7 @@ func NewSlackAdapter() *SlackAdapter {
 }
 
 // SendMessage pushes a message to one of Slack's channels
-func (a *SlackAdapter) SendMessage(incomingWebhook, channel, username, text, emoji string) error {
+func (a *SlackAdapter) SendMessage(incomingWebhook, channel, username, emoji, text string) error {
 	payload := map[string]string{
 		"channel":  channel,
 		"username": username,

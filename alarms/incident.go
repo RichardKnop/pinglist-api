@@ -1,7 +1,6 @@
 package alarms
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 
@@ -84,63 +83,17 @@ func (s *Service) openIncident(alarm *Alarm, incidentTypeID string, resp *http.R
 
 		// Send new incident push notification alert
 		if alarm.PushNotificationAlerts {
-			go func(a *Alarm, i *Incident) {
-				endpoint, err := s.notificationsService.FindEndpointByUserIDAndApplicationARN(
-					uint(a.UserID.Int64),
-					s.cnf.AWS.APNSPlatformApplicationARN,
-				)
-				if err == nil && endpoint != nil {
-					_, err := s.notificationsService.PublishMessage(
-						endpoint.ARN,
-						fmt.Sprintf(
-							newIncidentPushNotificationTemplates[i.IncidentTypeID.String],
-							a.EndpointURL,
-						),
-						map[string]interface{}{},
-					)
-					if err != nil {
-						logger.Errorf("Publish Message Error: %s", err.Error())
-					}
-				}
-			}(alarm, incident)
+			go s.sendNewIncidentPushNotification(alarm, incident)
 		}
 
 		// Send new incident notification email alert
 		if alarm.EmailAlerts {
-			go func(i *Incident) {
-				newIncidentEmail := s.emailFactory.NewIncidentEmail(i)
-
-				// Try to send the new incident email
-				if err := s.emailService.Send(newIncidentEmail); err != nil {
-					logger.Errorf("Send email error: %s", err)
-					return
-				}
-			}(incident)
+			go s.sendNewIncidentEmail(incident)
 		}
 
+		// Send new incident notification Slack alert
 		if alarm.SlackAlerts && alarm.User.SlackIncomingWebhook.Valid && alarm.User.SlackChannel.Valid {
-			go func(a *Alarm) {
-				// Fetch the user team
-				team, _ := s.teamsService.FindTeamByMemberID(a.User.ID)
-
-				// Get alarm limits
-				alarmLimits := s.getAlarmLimits(team, a.User)
-
-				if !alarmLimits.slackAlerts {
-					return
-				}
-
-				// if err := s.slackAdapter.SendMessage(
-				// 	alarm.User.SlackIncomingWebhook.String,
-				// 	alarm.User.SlackChannel.String,
-				// 	slackNotificationsUsername,
-				// 	"TODO",
-				// 	slackNotificationsEmoji,
-				// ); err != nil {
-				// 	logger.Errorf("Send Slack message error: %s", err)
-				// 	return
-				// }
-			}(alarm)
+			go s.sendNewIncidentSlackMessage(alarm, incident)
 		}
 	}
 
@@ -206,35 +159,17 @@ func (s *Service) resolveIncidents(alarm *Alarm) error {
 
 	// Send incidents resolved push notification alert
 	if alarm.PushNotificationAlerts && alarmInitialState != alarmstates.InsufficientData {
-		go func() {
-			endpoint, err := s.notificationsService.FindEndpointByUserIDAndApplicationARN(
-				alarm.User.ID,
-				s.cnf.AWS.APNSPlatformApplicationARN,
-			)
-			if err == nil && endpoint != nil {
-				_, err := s.notificationsService.PublishMessage(
-					endpoint.ARN,
-					fmt.Sprintf(incidentsResolvedPushNotificationTemplate, alarm.EndpointURL),
-					map[string]interface{}{},
-				)
-				if err != nil {
-					logger.Errorf("Publish Message Error: %s", err.Error())
-				}
-			}
-		}()
+		go s.sendIncidentsResolvedPushNotification(alarm)
 	}
 
 	// Send incidents resolved notification email alert
 	if alarm.EmailAlerts && alarmInitialState != alarmstates.InsufficientData {
-		go func() {
-			alarmUpEmail := s.emailFactory.NewIncidentsResolvedEmail(alarm)
+		go s.sendIncidentsResolvedEmail(alarm)
+	}
 
-			// Try to send the alarm up email email
-			if err := s.emailService.Send(alarmUpEmail); err != nil {
-				logger.Errorf("Send email error: %s", err)
-				return
-			}
-		}()
+	// Send incidents resolved notification Slack alert
+	if alarm.SlackAlerts && alarm.User.SlackIncomingWebhook.Valid && alarm.User.SlackChannel.Valid {
+		go s.sendIncidentsResolvedSlackMessage(alarm)
 	}
 
 	return nil

@@ -31,10 +31,13 @@ func (suite *AlarmsTestSuite) TestUpdateAlarmRequiresUserAuthentication() {
 }
 
 func (suite *AlarmsTestSuite) TestUpdateAlarmWithoutPermission() {
+	testAlarm, err := suite.insertTestAlarm(true)
+	assert.NoError(suite.T(), err, "Inserting test data failed")
+
 	// Prepare a request
 	r, err := http.NewRequest(
 		"PUT",
-		fmt.Sprintf("http://1.2.3.4/v1/alarms/%d", suite.alarms[1].ID),
+		fmt.Sprintf("http://1.2.3.4/v1/alarms/%d", testAlarm.ID),
 		nil,
 	)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
@@ -76,10 +79,16 @@ func (suite *AlarmsTestSuite) TestUpdateAlarmWithoutPermission() {
 }
 
 func (suite *AlarmsTestSuite) TestUpdateAlarmMaxLimitReached() {
+	_, err := suite.insertTestAlarm(true)
+	assert.NoError(suite.T(), err, "Inserting test data failed")
+
+	testAlarm, err := suite.insertTestAlarm(false)
+	assert.NoError(suite.T(), err, "Inserting test data failed")
+
 	// Prepare a request
 	payload, err := json.Marshal(&AlarmRequest{
 		Region:                 "us-west-2",
-		EndpointURL:            "http://endpoint-2-updated",
+		EndpointURL:            "http://foobar-updated",
 		ExpectedHTTPCode:       201,
 		MaxResponseTime:        2000,
 		Interval:               90,
@@ -91,7 +100,7 @@ func (suite *AlarmsTestSuite) TestUpdateAlarmMaxLimitReached() {
 	assert.NoError(suite.T(), err, "JSON marshalling failed")
 	r, err := http.NewRequest(
 		"PUT",
-		fmt.Sprintf("http://1.2.3.4/v1/alarms/%d", suite.alarms[1].ID),
+		fmt.Sprintf("http://1.2.3.4/v1/alarms/%d", testAlarm.ID),
 		bytes.NewBuffer(payload),
 	)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
@@ -155,10 +164,13 @@ func (suite *AlarmsTestSuite) TestUpdateAlarmMaxLimitReached() {
 }
 
 func (suite *AlarmsTestSuite) TestUpdateAlarmIntervalTooSmall() {
+	testAlarm, err := suite.insertTestAlarm(true)
+	assert.NoError(suite.T(), err, "Inserting test data failed")
+
 	// Prepare a request
 	payload, err := json.Marshal(&AlarmRequest{
 		Region:                 "us-west-2",
-		EndpointURL:            "http://endpoint-2-updated",
+		EndpointURL:            "http://foobar-updated",
 		ExpectedHTTPCode:       201,
 		MaxResponseTime:        2000,
 		Interval:               5,
@@ -170,7 +182,7 @@ func (suite *AlarmsTestSuite) TestUpdateAlarmIntervalTooSmall() {
 	assert.NoError(suite.T(), err, "JSON marshalling failed")
 	r, err := http.NewRequest(
 		"PUT",
-		fmt.Sprintf("http://1.2.3.4/v1/alarms/%d", suite.alarms[1].ID),
+		fmt.Sprintf("http://1.2.3.4/v1/alarms/%d", testAlarm.ID),
 		bytes.NewBuffer(payload),
 	)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
@@ -239,10 +251,13 @@ func (suite *AlarmsTestSuite) TestUpdateAlarmIntervalTooSmall() {
 }
 
 func (suite *AlarmsTestSuite) TestUpdateAlarmMaxResponseTimeTooBig() {
+	testAlarm, err := suite.insertTestAlarm(true)
+	assert.NoError(suite.T(), err, "Inserting test data failed")
+
 	// Prepare a request
 	payload, err := json.Marshal(&AlarmRequest{
 		Region:                 "us-west-2",
-		EndpointURL:            "http://endpoint-2-updated",
+		EndpointURL:            "http://foobar-updated",
 		ExpectedHTTPCode:       201,
 		MaxResponseTime:        10001,
 		Interval:               60,
@@ -254,7 +269,7 @@ func (suite *AlarmsTestSuite) TestUpdateAlarmMaxResponseTimeTooBig() {
 	assert.NoError(suite.T(), err, "JSON marshalling failed")
 	r, err := http.NewRequest(
 		"PUT",
-		fmt.Sprintf("http://1.2.3.4/v1/alarms/%d", suite.alarms[1].ID),
+		fmt.Sprintf("http://1.2.3.4/v1/alarms/%d", testAlarm.ID),
 		bytes.NewBuffer(payload),
 	)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
@@ -322,10 +337,13 @@ func (suite *AlarmsTestSuite) TestUpdateAlarmMaxResponseTimeTooBig() {
 }
 
 func (suite *AlarmsTestSuite) TestUpdateAlarmRegionNotFound() {
+	testAlarm, err := suite.insertTestAlarm(true)
+	assert.NoError(suite.T(), err, "Inserting test data failed")
+
 	// Prepare a request
 	payload, err := json.Marshal(&AlarmRequest{
 		Region:                 "transylvania",
-		EndpointURL:            "http://endpoint-2-updated",
+		EndpointURL:            "http://foobar-updated",
 		ExpectedHTTPCode:       201,
 		MaxResponseTime:        2000,
 		Interval:               90,
@@ -337,7 +355,7 @@ func (suite *AlarmsTestSuite) TestUpdateAlarmRegionNotFound() {
 	assert.NoError(suite.T(), err, "JSON marshalling failed")
 	r, err := http.NewRequest(
 		"PUT",
-		fmt.Sprintf("http://1.2.3.4/v1/alarms/%d", suite.alarms[1].ID),
+		fmt.Sprintf("http://1.2.3.4/v1/alarms/%d", testAlarm.ID),
 		bytes.NewBuffer(payload),
 	)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
@@ -405,13 +423,13 @@ func (suite *AlarmsTestSuite) TestUpdateAlarmRegionNotFound() {
 }
 
 func (suite *AlarmsTestSuite) TestUpdateAlarm() {
-	// Deactivate the alarm
-	err := suite.db.Model(suite.alarms[0]).UpdateColumn("active", false).Error
-	assert.NoError(suite.T(), err, "Deactivating alarm failed")
+	testAlarm, err := suite.insertTestAlarm(true)
+	assert.NoError(suite.T(), err, "Inserting test data failed")
+
 	// Prepare a request
 	payload, err := json.Marshal(&AlarmRequest{
 		Region:                 "us-west-2",
-		EndpointURL:            "http://endpoint-1-updated",
+		EndpointURL:            "http://foobar-updated",
 		ExpectedHTTPCode:       201,
 		MaxResponseTime:        2000,
 		Interval:               90,
@@ -423,7 +441,7 @@ func (suite *AlarmsTestSuite) TestUpdateAlarm() {
 	assert.NoError(suite.T(), err, "JSON marshalling failed")
 	r, err := http.NewRequest(
 		"PUT",
-		fmt.Sprintf("http://1.2.3.4/v1/alarms/%d", suite.alarms[0].ID),
+		fmt.Sprintf("http://1.2.3.4/v1/alarms/%d", testAlarm.ID),
 		bytes.NewBuffer(payload),
 	)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
@@ -481,12 +499,12 @@ func (suite *AlarmsTestSuite) TestUpdateAlarm() {
 	// Fetch the updated alarm
 	alarm := new(Alarm)
 	notFound := suite.db.Preload("User").Preload("Incidents").
-		Find(alarm, suite.alarms[0].ID).RecordNotFound()
+		Find(alarm, testAlarm.ID).RecordNotFound()
 	assert.False(suite.T(), notFound)
 
 	// Check that the correct data was saved
 	assert.Equal(suite.T(), suite.users[1].ID, uint(alarm.UserID.Int64))
-	assert.Equal(suite.T(), "http://endpoint-1-updated", alarm.EndpointURL)
+	assert.Equal(suite.T(), "http://foobar-updated", alarm.EndpointURL)
 	assert.Equal(suite.T(), uint(201), alarm.ExpectedHTTPCode)
 	assert.Equal(suite.T(), uint(2000), alarm.MaxResponseTime)
 	assert.Equal(suite.T(), uint(90), alarm.Interval)
@@ -494,7 +512,7 @@ func (suite *AlarmsTestSuite) TestUpdateAlarm() {
 	assert.False(suite.T(), alarm.PushNotificationAlerts)
 	assert.False(suite.T(), alarm.SlackAlerts)
 	assert.True(suite.T(), alarm.Active)
-	assert.Equal(suite.T(), 4, len(alarm.Incidents))
+	assert.Equal(suite.T(), 0, len(alarm.Incidents))
 
 	// Check the response body
 	expected := &AlarmResponse{
@@ -508,7 +526,7 @@ func (suite *AlarmsTestSuite) TestUpdateAlarm() {
 		ID:                     alarm.ID,
 		UserID:                 suite.users[1].ID,
 		Region:                 regions.USWest2,
-		EndpointURL:            "http://endpoint-1-updated",
+		EndpointURL:            "http://foobar-updated",
 		ExpectedHTTPCode:       uint(201),
 		MaxResponseTime:        uint(2000),
 		Interval:               uint(90),
@@ -516,7 +534,7 @@ func (suite *AlarmsTestSuite) TestUpdateAlarm() {
 		PushNotificationAlerts: false,
 		SlackAlerts:            false,
 		Active:                 true,
-		State:                  alarmstates.OK,
+		State:                  alarmstates.InsufficientData,
 		CreatedAt:              util.FormatTime(alarm.CreatedAt),
 		UpdatedAt:              util.FormatTime(alarm.UpdatedAt),
 	}
@@ -528,4 +546,22 @@ func (suite *AlarmsTestSuite) TestUpdateAlarm() {
 			strings.TrimRight(w.Body.String(), "\n"), // trim the trailing \n
 		)
 	}
+}
+
+func (suite *AlarmsTestSuite) insertTestAlarm(active bool) (*Alarm, error) {
+	// Insert a test alarm
+	testAlarm := &Alarm{
+		User:                   suite.users[1],
+		Region:                 &Region{ID: regions.USWest2, Name: "US West (Oregon)"},
+		AlarmState:             &AlarmState{ID: alarmstates.InsufficientData},
+		EndpointURL:            "http://foobar",
+		ExpectedHTTPCode:       200,
+		MaxResponseTime:        1000,
+		Interval:               60,
+		EmailAlerts:            true,
+		PushNotificationAlerts: true,
+		SlackAlerts:            true,
+		Active:                 active,
+	}
+	return testAlarm, suite.db.Create(testAlarm).Error
 }
