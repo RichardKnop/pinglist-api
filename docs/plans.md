@@ -52,6 +52,11 @@ Example response:
                 "max_teams": 0,
                 "max_members_per_team": 0,
 								"min_alarm_interval": 60,
+                "unlimited_emails": false,
+                "max_emails_per_interval": 100,
+                "unlimited_push_notifications": true,
+                "max_push_notifications_per_interval": null,
+                "slack_alerts": false,
                 "created_at": "2016-01-14T13:52:24Z",
                 "updated_at": "2016-01-14T13:52:24Z"
             },
@@ -73,6 +78,11 @@ Example response:
                 "max_teams": 0,
                 "max_members_per_team": 0,
 								"min_alarm_interval": 60,
+								"unlimited_emails": false,
+                "max_emails_per_interval": 300,
+                "unlimited_push_notifications": true,
+                "max_push_notifications_per_interval": null,
+                "slack_alerts": false,
                 "created_at": "2016-01-14T13:52:24Z",
                 "updated_at": "2016-01-14T13:52:24Z"
             },
@@ -94,6 +104,11 @@ Example response:
                 "max_teams": 1,
                 "max_members_per_team": 10,
 								"min_alarm_interval": 30,
+								"unlimited_emails": true,
+                "max_emails_per_interval": null,
+                "unlimited_push_notifications": true,
+                "max_push_notifications_per_interval": null,
+                "slack_alerts": true,
                 "created_at": "2016-01-14T13:52:24Z",
                 "updated_at": "2016-01-14T13:52:24Z"
             },
@@ -115,26 +130,11 @@ Example response:
                 "max_teams": 10,
                 "max_members_per_team": 20,
 								"min_alarm_interval": 30,
-                "created_at": "2016-01-14T13:52:24Z",
-                "updated_at": "2016-01-14T13:52:24Z"
-            },
-            {
-                "_links": {
-                    "self": {
-                        "href": "/v1/plans/5"
-                    }
-                },
-                "id": 5,
-                "plan_id": "enterprise",
-                "name": "Enterprise",
-                "description": "Create 10 teams of 10 members each and monitor up to 500 APIs.",
-                "currency": "USD",
-                "amount": 35000,
-                "trial_period": 30,
-                "interval": 30,
-                "max_alarms": 500,
-                "max_teams": 10,
-                "max_members_per_team": 10,
+								"unlimited_emails": true,
+                "max_emails_per_interval": null,
+                "unlimited_push_notifications": true,
+                "max_push_notifications_per_interval": null,
+                "slack_alerts": true,
                 "created_at": "2016-01-14T13:52:24Z",
                 "updated_at": "2016-01-14T13:52:24Z"
             }
