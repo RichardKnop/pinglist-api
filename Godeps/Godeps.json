@@ -130,18 +130,18 @@
 		},
 		{
 			"ImportPath": "github.com/coreos/etcd/client",
-			"Comment": "v3.0.0-beta.0-274-gfc06dd1",
-			"Rev": "fc06dd1452490ec4b23537addd11e601f6a3b8d0"
+			"Comment": "v3.0.0-beta.0-348-gc63eaf4",
+			"Rev": "c63eaf45f9886df3d3e0174a1f2eb6163c6d9aff"
 		},
 		{
 			"ImportPath": "github.com/coreos/etcd/pkg/pathutil",
-			"Comment": "v3.0.0-beta.0-274-gfc06dd1",
-			"Rev": "fc06dd1452490ec4b23537addd11e601f6a3b8d0"
+			"Comment": "v3.0.0-beta.0-348-gc63eaf4",
+			"Rev": "c63eaf45f9886df3d3e0174a1f2eb6163c6d9aff"
 		},
 		{
 			"ImportPath": "github.com/coreos/etcd/pkg/types",
-			"Comment": "v3.0.0-beta.0-274-gfc06dd1",
-			"Rev": "fc06dd1452490ec4b23537addd11e601f6a3b8d0"
+			"Comment": "v3.0.0-beta.0-348-gc63eaf4",
+			"Rev": "c63eaf45f9886df3d3e0174a1f2eb6163c6d9aff"
 		},
 		{
 			"ImportPath": "github.com/davecgh/go-spew/spew",
@@ -258,43 +258,43 @@
 		},
 		{
 			"ImportPath": "github.com/stripe/stripe-go",
-			"Comment": "v15.1.0-2-g1e56524",
-			"Rev": "1e56524d5d7dbbfab2d1880456499710155e6eb0"
+			"Comment": "v15.2.0",
+			"Rev": "e7ac4300fe6b0709d63d8891c4bba1f1f02edb95"
 		},
 		{
 			"ImportPath": "github.com/stripe/stripe-go/card",
-			"Comment": "v15.1.0-2-g1e56524",
-			"Rev": "1e56524d5d7dbbfab2d1880456499710155e6eb0"
+			"Comment": "v15.2.0",
+			"Rev": "e7ac4300fe6b0709d63d8891c4bba1f1f02edb95"
 		},
 		{
 			"ImportPath": "github.com/stripe/stripe-go/customer",
-			"Comment": "v15.1.0-2-g1e56524",
-			"Rev": "1e56524d5d7dbbfab2d1880456499710155e6eb0"
+			"Comment": "v15.2.0",
+			"Rev": "e7ac4300fe6b0709d63d8891c4bba1f1f02edb95"
 		},
 		{
 			"ImportPath": "github.com/stripe/stripe-go/event",
-			"Comment": "v15.1.0-2-g1e56524",
-			"Rev": "1e56524d5d7dbbfab2d1880456499710155e6eb0"
+			"Comment": "v15.2.0",
+			"Rev": "e7ac4300fe6b0709d63d8891c4bba1f1f02edb95"
 		},
 		{
 			"ImportPath": "github.com/stripe/stripe-go/orderitem",
-			"Comment": "v15.1.0-2-g1e56524",
-			"Rev": "1e56524d5d7dbbfab2d1880456499710155e6eb0"
+			"Comment": "v15.2.0",
+			"Rev": "e7ac4300fe6b0709d63d8891c4bba1f1f02edb95"
 		},
 		{
 			"ImportPath": "github.com/stripe/stripe-go/sub",
-			"Comment": "v15.1.0-2-g1e56524",
-			"Rev": "1e56524d5d7dbbfab2d1880456499710155e6eb0"
+			"Comment": "v15.2.0",
+			"Rev": "e7ac4300fe6b0709d63d8891c4bba1f1f02edb95"
 		},
 		{
 			"ImportPath": "github.com/stripe/stripe-go/token",
-			"Comment": "v15.1.0-2-g1e56524",
-			"Rev": "1e56524d5d7dbbfab2d1880456499710155e6eb0"
+			"Comment": "v15.2.0",
+			"Rev": "e7ac4300fe6b0709d63d8891c4bba1f1f02edb95"
 		},
 		{
 			"ImportPath": "github.com/stripe/stripe-go/utils",
-			"Comment": "v15.1.0-2-g1e56524",
-			"Rev": "1e56524d5d7dbbfab2d1880456499710155e6eb0"
+			"Comment": "v15.2.0",
+			"Rev": "e7ac4300fe6b0709d63d8891c4bba1f1f02edb95"
 		},
 		{
 			"ImportPath": "github.com/ugorji/go/codec",
@@ -303,6 +303,11 @@
 		{
 			"ImportPath": "github.com/unrolled/secure",
 			"Rev": "4b41e52ab568cbfd31eda3612d98192da1575c77"
+		},
+		{
+			"ImportPath": "github.com/urfave/negroni",
+			"Comment": "v0.2.0-44-gfeacfc5",
+			"Rev": "feacfc52d357c844f524c794947493483ed881b3"
 		},
 		{
 			"ImportPath": "golang.org/x/crypto/bcrypt",

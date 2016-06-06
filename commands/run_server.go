@@ -14,7 +14,7 @@ import (
 	"github.com/RichardKnop/pinglist-api/subscriptions"
 	"github.com/RichardKnop/pinglist-api/teams"
 	"github.com/RichardKnop/pinglist-api/web"
-	"github.com/codegangsta/negroni"
+	"github.com/urfave/negroni"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	"github.com/phyber/negroni-gzip/gzip"
