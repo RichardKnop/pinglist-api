@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/RichardKnop/pinglist-api/commands"
-	"github.com/codegangsta/cli"
+	"github.com/urfave/cli"
 )
 
 var (

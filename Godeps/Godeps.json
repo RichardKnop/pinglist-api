@@ -119,11 +119,6 @@
 			"Rev": "665c623d7f3e0ee276596b006655ba4dbe0565b0"
 		},
 		{
-			"ImportPath": "github.com/codegangsta/cli",
-			"Comment": "v1.17.0-44-g9a18ffa",
-			"Rev": "9a18ffad6c548ca4d458d4c30a8aa4d181cf92fa"
-		},
-		{
 			"ImportPath": "github.com/codegangsta/negroni",
 			"Comment": "v0.2.0-42-gfb7b7c0",
 			"Rev": "fb7b7c045dfb05dc81a5c3688c568550b5bd6e36"
@@ -303,6 +298,11 @@
 		{
 			"ImportPath": "github.com/unrolled/secure",
 			"Rev": "4b41e52ab568cbfd31eda3612d98192da1575c77"
+		},
+		{
+			"ImportPath": "github.com/urfave/cli",
+			"Comment": "v1.17.0-57-gedb24d0",
+			"Rev": "edb24d02aa3cea2319c33f2836d4a5133907fe4c"
 		},
 		{
 			"ImportPath": "github.com/urfave/negroni",
