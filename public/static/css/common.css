@@ -76,9 +76,13 @@ footer {
     color: #B9E88A;
 }
 
+footer .container {
+    padding: 0;
+}
+
 footer .row {
     background: #27303C;
-    padding: 30px 0;
+    padding: 30px 15px;
 }
 
 footer a, footer a:hover, footer a:active {
@@ -206,6 +210,7 @@ footer a, footer a:hover, footer a:active {
 }
 
 /* Tables */
+
 .table-container {
     overflow-x: scroll;
 }
@@ -305,6 +310,7 @@ a.btn {
 }
 
 /* Pagination */
+
 .pagination {
     margin: 20px 0 0;
 }
