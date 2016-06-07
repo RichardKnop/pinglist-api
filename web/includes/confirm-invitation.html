@@ -1,41 +1,40 @@
 {{ define "title"}}Set Password - Pinglist{{ end }}
 
 {{ define "content" }}
-<div class="header-image-full"></div>
 
-<!-- Jumbotron -->
-<header class="jumbotron">
-
-  {{ if .error }}
-    <div class="alert alert-danger" role="alert">
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-      {{ .error }}
-    </div>
-  {{ end }}
-
-  <div class="headline">
-
-    <form class="form-signin" action="" method="post">
-
-      <div class="form-group">
-        <label for="inputPassword1" class="sr-only">Password</label>
-        <input type="password" name="password1" id="inputPassword1" class="form-control" placeholder="Password" required>
-      </div>
-
-      <div class="form-group">
-        <label for="inputPassword2" class="sr-only">Password</label>
-        <input type="password" name="password2" id="inputPassword2" class="form-control" placeholder="Password Again" required>
-      </div>
-
-      <div class="form-group">
-        <button class="btn outline btn-lg btn-primary btn-block" type="submit">Save</button>
-      </div>
-
-    </form>
-
+{{ if .error }}
+  <div class="alert alert-no-border text-center alert-danger" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    {{ .error }}
   </div>
+{{ end }}
 
-</header>
+<!-- Page Content -->
+<div class="container">
+
+  <form class="form-signin" action="" method="post">
+
+    <h3 class="text-center">Set Password</h3>
+
+    <div class="form-group">
+      <label for="inputPassword1" class="sr-only">Password</label>
+      <input type="password" name="password1" id="inputPassword1" class="form-control" placeholder="Password" required>
+    </div>
+
+    <div class="form-group">
+      <label for="inputPassword2" class="sr-only">Password</label>
+      <input type="password" name="password2" id="inputPassword2" class="form-control" placeholder="Password Again" required>
+    </div>
+
+    <div class="form-group">
+      <button class="btn outline btn-lg btn-primary btn-block" type="submit">Save</button>
+    </div>
+
+  </form>
+
+</div>
+<!-- /.container -->
+
 {{ end }}

@@ -6,24 +6,9 @@ body, html {
     overflow-x: hidden;
 }
 
-html {
-    position: relative;
-    min-height: 100%;
-}
-
 body {
     /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
     margin-top: 50px;
-    /* Margin bottom by footer height */
-    margin-bottom: 125px;
-}
-
-.footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    /* Set the fixed height of the footer here */
-    height: 125px;
 }
 
 a {
@@ -53,6 +38,140 @@ span.label a:hover {
 
 th, td b {
     text-transform: uppercase;
+}
+
+.alert-no-border {
+    margin-bottom: 0;
+    border-radius: 0;
+}
+
+/* Responsive media queries */
+
+.featurette-divider {
+    margin: 80px 0;
+}
+
+.featurette {
+    overflow: hidden;
+}
+
+.featurette-image.pull-left {
+    margin-right: 40px;
+}
+
+.featurette-image.pull-right {
+    margin-left: 40px;
+}
+
+.featurette-heading {
+    font-size: 50px;
+}
+
+@media (max-width: 1200px) {
+    .featurette-divider {
+        margin: 50px 0;
+    }
+
+    .featurette-image.pull-left {
+        margin-right: 20px;
+    }
+
+    .featurette-image.pull-right {
+        margin-left: 20px;
+    }
+
+    .featurette-heading {
+        font-size: 35px;
+    }
+}
+
+@media (max-width: 991px) {
+    .featurette-divider {
+        margin: 40px 0;
+    }
+
+    .featurette-image {
+        max-width: 50%;
+    }
+
+    .featurette-image.pull-left {
+        margin-right: 10px;
+    }
+
+    .featurette-image.pull-right {
+        margin-left: 10px;
+    }
+
+    .featurette-heading {
+        font-size: 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        margin: 0 15px;
+    }
+
+    .featurette-divider {
+        margin: 40px 0;
+    }
+
+    .featurette-heading {
+        font-size: 25px;
+    }
+
+    .center-to-left {
+        text-align: left;
+        float: left;
+    }
+
+    .center-to-right {
+        float: right;
+        text-align: right;
+    }
+}
+
+@media (max-width: 668px) {
+    .featurette-divider {
+        margin: 30px 0;
+    }
+}
+
+@media (max-width: 640px) {
+    .header-image .headline {
+        padding: 96px 0 111px;
+    }
+}
+
+@media (max-width: 375px) {
+    .featurette-divider {
+        margin: 10px 0;
+    }
+
+    .featurette-image {
+        max-width: 100%;
+    }
+
+    .featurette-image.pull-left {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .featurette-image.pull-right {
+        margin-bottom: 10px;
+        margin-left: 0;
+    }
+
+    .header-image .headline {
+        padding: 48px 0;
+    }
+}
+
+/* Misc styles */
+
+a.ios-download-badge img {
+    width: 170px;
+    height: 46px;
 }
 
 /* Tables */
