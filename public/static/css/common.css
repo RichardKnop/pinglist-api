@@ -49,6 +49,7 @@ th, td b {
 
 .featurette-divider {
     margin: 80px 0;
+    border-color: white;
 }
 
 .featurette {
@@ -170,7 +171,6 @@ th, td b {
 /* Misc styles */
 
 a.ios-download-badge img {
-    width: 170px;
     height: 46px;
 }
 
