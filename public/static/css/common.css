@@ -3,7 +3,6 @@
 body, html {
     font-family: Lato, sans-serif;
     color: #27303C;
-    overflow-x: hidden;
 }
 
 body {
@@ -13,6 +12,7 @@ body {
 
 a {
     color: #27303C;
+    text-decoration: underline;
 }
 
 a:hover {
@@ -45,10 +45,50 @@ th, td b {
     border-radius: 0;
 }
 
+/* Login form */
+
+.form-signin {
+    max-width: 330px;
+    padding: 29px;
+    margin: 0 auto 20px;
+}
+
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+    margin-bottom: 10px;
+}
+
+.form-signin input[type="email"],
+.form-signin input[type="text"],
+.form-signin input[type="password"] {
+    font-size: 16px;
+    height: auto;
+    margin-bottom: 15px;
+    padding: 7px 9px;
+}
+
+/* Footer */
+
+footer {
+    margin-bottom: 0;
+    background: #27303C;
+    border-color: #0807FF;
+    color: #B9E88A;
+}
+
+footer .row {
+    background: #27303C;
+    padding: 30px 0;
+}
+
+footer a, footer a:hover, footer a:active {
+    color: #B9E88A;
+}
+
 /* Responsive media queries */
 
 .featurette-divider {
-    margin: 80px 0;
+    margin: 60px 0;
     border-color: white;
 }
 
@@ -66,6 +106,7 @@ th, td b {
 
 .featurette-heading {
     font-size: 50px;
+    margin-top: 0;
 }
 
 @media (max-width: 1200px) {
@@ -114,7 +155,7 @@ th, td b {
     }
 
     .featurette-divider {
-        margin: 40px 0;
+        margin: 30px 0;
     }
 
     .featurette-heading {
@@ -134,13 +175,13 @@ th, td b {
 
 @media (max-width: 668px) {
     .featurette-divider {
-        margin: 30px 0;
+        margin: 20px 0;
     }
 }
 
 @media (max-width: 640px) {
-    .header-image .headline {
-        padding: 96px 0 111px;
+    .featurette-image {
+        max-width: 60%;
     }
 }
 
@@ -162,16 +203,6 @@ th, td b {
         margin-bottom: 10px;
         margin-left: 0;
     }
-
-    .header-image .headline {
-        padding: 48px 0;
-    }
-}
-
-/* Misc styles */
-
-a.ios-download-badge img {
-    height: 46px;
 }
 
 /* Tables */
@@ -209,6 +240,10 @@ span.label.alarm-active {
 
 /* Navigation */
 
+.navbar a {
+    text-decoration: none;
+}
+
 .navbar-inverse {
     background-color: #27303C;
 }
@@ -238,6 +273,10 @@ span.label.alarm-active {
 }
 
 /* Buttons */
+
+a.btn {
+    text-decoration: none;
+}
 
 .btn-primary {
     background-color: #B9E88A;
@@ -283,4 +322,14 @@ span.label.alarm-active {
     background-color: #27303C;
     color: #B9E88A;
     border-color: white;
+}
+
+/* Misc styles */
+
+a.ios-download-badge img {
+    height: 46px;
+}
+
+.stripe-badge img, .ios-download-badge img {
+    border: 0;
 }
