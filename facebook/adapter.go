@@ -1,8 +1,6 @@
 package facebook
 
 import (
-	"fmt"
-
 	"github.com/RichardKnop/pinglist-api/config"
 	fb "github.com/huandu/facebook"
 	"golang.org/x/oauth2"
@@ -20,11 +18,6 @@ func NewAdapter(cnf *config.Config) *Adapter {
 		oauth2Cnf: &oauth2.Config{
 			ClientID:     cnf.Facebook.AppID,
 			ClientSecret: cnf.Facebook.AppSecret,
-			RedirectURL: fmt.Sprintf(
-				"%s://%s/v1/facebook/redirect",
-				cnf.Web.Scheme,
-				cnf.Web.Host,
-			),
 			Scopes: []string{
 				"public_profile",
 				"email",

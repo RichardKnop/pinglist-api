@@ -94,8 +94,6 @@ curl -L http://localhost:2379/v2/keys/config/pinglist.json -XPUT -d value='{
         "PublishableKey": "stripe_publishable_key"
     },
     "Web": {
-        "Scheme": "http",
-        "Host": "localhost:8080",
         "AppScheme": "http",
         "AppHost": "localhost:8000"
     },
