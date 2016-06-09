@@ -1,6 +1,8 @@
 package commands
 
-import "time"
+import (
+	"time"
+)
 
 // RunAll runs the both the scheduler and the app
 func RunAll() error {

@@ -13,11 +13,10 @@ import (
 	"github.com/RichardKnop/pinglist-api/oauth"
 	"github.com/RichardKnop/pinglist-api/subscriptions"
 	"github.com/RichardKnop/pinglist-api/teams"
-	"github.com/RichardKnop/pinglist-api/web"
-	"github.com/urfave/negroni"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	"github.com/phyber/negroni-gzip/gzip"
+	"github.com/urfave/negroni"
 )
 
 // RunServer runs the app
@@ -87,7 +86,6 @@ func initApp(cnf *config.Config, db *gorm.DB) (*negroni.Negroni, error) {
 		nil, // alarms.SlackFactory
 		nil, // HTTP client
 	)
-	webService := web.NewService(cnf, accountsService)
 
 	// Start a negroni app
 	app := negroni.New()
@@ -109,7 +107,6 @@ func initApp(cnf *config.Config, db *gorm.DB) (*negroni.Negroni, error) {
 	metrics.RegisterRoutes(router, metricsService)
 	notifications.RegisterRoutes(router, notificationsService)
 	alarms.RegisterRoutes(router, alarmsService)
-	web.RegisterRoutes(router, webService)
 
 	// Set the router
 	app.UseHandler(router)
