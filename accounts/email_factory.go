@@ -71,8 +71,8 @@ func (f *EmailFactory) NewConfirmationEmail(confirmation *Confirmation) *email.E
 	// Confirmation link where the user can confirm his/her email
 	link := fmt.Sprintf(
 		"%s://%s/web/confirm-email/%s",
-		f.cnf.Web.Scheme,
-		f.cnf.Web.Host,
+		f.cnf.Web.AppScheme,
+		f.cnf.Web.AppHost,
 		confirmation.Reference,
 	)
 
@@ -123,8 +123,8 @@ func (f *EmailFactory) NewInvitationEmail(invitation *Invitation) *email.Email {
 	// Confirmation link where the invited user can set his/her password
 	link := fmt.Sprintf(
 		"%s://%s/web/confirm-invitation/%s",
-		f.cnf.Web.Scheme,
-		f.cnf.Web.Host,
+		f.cnf.Web.AppScheme,
+		f.cnf.Web.AppHost,
 		invitation.Reference,
 	)
 
@@ -169,9 +169,9 @@ func (f *EmailFactory) NewPasswordResetEmail(passwordReset *PasswordReset) *emai
 
 	// Password reset link where the user can set a new password
 	link := fmt.Sprintf(
-		"%s://%s/web/password-reset/%s",
-		f.cnf.Web.Scheme,
-		f.cnf.Web.Host,
+		"%s://%s/web/confirm-password-reset/%s",
+		f.cnf.Web.AppScheme,
+		f.cnf.Web.AppHost,
 		passwordReset.Reference,
 	)
 

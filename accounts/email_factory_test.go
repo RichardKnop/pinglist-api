@@ -41,7 +41,7 @@ Hello John Reese,
 
 Thank you for joining https://pingli.st.
 
-Please confirm your email: https://api.pingli.st/web/confirm-email/some-reference.
+Please confirm your email: https://pingli.st/web/confirm-email/some-reference.
 
 Kind Regards,
 
@@ -89,7 +89,7 @@ Hello John Reese,
 
 You have been invited to join https://pingli.st by Harold Finch.
 
-Follow this link to set your password please: https://api.pingli.st/web/confirm-invitation/some-reference.
+Follow this link to set your password please: https://pingli.st/web/confirm-invitation/some-reference.
 
 Kind Regards,
 
@@ -130,7 +130,7 @@ Hello John Reese,
 
 It seems you have forgotten your password.
 
-You can set a new password here: https://api.pingli.st/web/password-reset/some-reference.
+You can set a new password here: https://pingli.st/web/confirm-password-reset/some-reference.
 
 Kind Regards,
 
