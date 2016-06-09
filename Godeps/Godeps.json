@@ -19,6 +19,10 @@
 			"Rev": "15ee95bcedec408ada7a4835eeb57a0ecea67fc6"
 		},
 		{
+			"ImportPath": "github.com/RichardKnop/uuid",
+			"Rev": "c55201b036063326c5b1b89ccfe45a184973d073"
+		},
+		{
 			"ImportPath": "github.com/aws/aws-sdk-go/aws",
 			"Comment": "v1.1.31-2-g665c623",
 			"Rev": "665c623d7f3e0ee276596b006655ba4dbe0565b0"
@@ -203,11 +207,6 @@
 		{
 			"ImportPath": "github.com/oxtoacart/bpool",
 			"Rev": "4e1c5567d7c2dd59fa4c7c83d34c2f3528b025d6"
-		},
-		{
-			"ImportPath": "github.com/pborman/uuid",
-			"Comment": "v1.0-11-gc55201b",
-			"Rev": "c55201b036063326c5b1b89ccfe45a184973d073"
 		},
 		{
 			"ImportPath": "github.com/phyber/negroni-gzip/gzip",

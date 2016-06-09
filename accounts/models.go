@@ -6,9 +6,9 @@ import (
 	"github.com/RichardKnop/pinglist-api/database"
 	"github.com/RichardKnop/pinglist-api/oauth"
 	"github.com/RichardKnop/pinglist-api/util"
+	"github.com/RichardKnop/uuid"
 	"github.com/jinzhu/gorm"
 	"github.com/lib/pq"
-	"github.com/pborman/uuid"
 )
 
 // Account ...

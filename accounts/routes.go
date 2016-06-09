@@ -2,8 +2,8 @@ package accounts
 
 import (
 	"github.com/RichardKnop/pinglist-api/routes"
-	"github.com/urfave/negroni"
 	"github.com/gorilla/mux"
+	"github.com/urfave/negroni"
 )
 
 // RegisterRoutes registers route handlers for the accounts service
@@ -74,6 +74,33 @@ func newRoutes(service ServiceInterface) []routes.Route {
 			Method:      "POST",
 			Pattern:     "/contact",
 			HandlerFunc: service.contactHandler,
+			Middlewares: []negroni.Handler{
+				NewAccountAuthMiddleware(service),
+			},
+		},
+		routes.Route{
+			Name:        "confirm_email",
+			Method:      "GET",
+			Pattern:     "/confirmations/{reference:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}",
+			HandlerFunc: service.confirmEmailHandler,
+			Middlewares: []negroni.Handler{
+				NewAccountAuthMiddleware(service),
+			},
+		},
+		routes.Route{
+			Name:        "confirm_invitation",
+			Method:      "POST",
+			Pattern:     "/invitations/{reference:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}",
+			HandlerFunc: service.confirmInvitationHandler,
+			Middlewares: []negroni.Handler{
+				NewAccountAuthMiddleware(service),
+			},
+		},
+		routes.Route{
+			Name:        "confirm_password_reset",
+			Method:      "POST",
+			Pattern:     "/password-resets/{reference:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}",
+			HandlerFunc: service.confirmPasswordResetHandler,
 			Middlewares: []negroni.Handler{
 				NewAccountAuthMiddleware(service),
 			},
