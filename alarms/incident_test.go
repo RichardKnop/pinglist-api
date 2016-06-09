@@ -8,6 +8,8 @@ import (
 	"github.com/RichardKnop/pinglist-api/alarms/alarmstates"
 	"github.com/RichardKnop/pinglist-api/alarms/incidenttypes"
 	"github.com/RichardKnop/pinglist-api/notifications"
+	"github.com/RichardKnop/pinglist-api/subscriptions"
+	"github.com/RichardKnop/pinglist-api/teams"
 	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/jinzhu/gorm"
 	"github.com/stretchr/testify/assert"
@@ -27,6 +29,21 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	gorm.NowFunc = func() time.Time {
 		return when1
 	}
+	suite.mockFindTeamByMemberID(
+		alarm.User.ID,
+		nil,
+		teams.ErrTeamNotFound,
+	)
+	suite.mockFindActiveSubscriptionByUserID(
+		alarm.User.ID,
+		&subscriptions.Subscription{
+			Plan: &subscriptions.Plan{
+				UnlimitedEmails: true,
+				SlackAlerts:     true,
+			},
+		},
+		nil,
+	)
 	suite.mockNewIncidentEmail()
 	suite.mockFindEndpointByUserIDAndApplicationARN(
 		alarm.User.ID,
@@ -114,6 +131,9 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		"",   // error message
 	)
 
+	// Sleep for the email and push notification goroutines to finish
+	time.Sleep(15 * time.Millisecond)
+
 	// Check that the mock object expectations were met
 	suite.assertMockExpectations()
 
@@ -150,6 +170,21 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	gorm.NowFunc = func() time.Time {
 		return when3
 	}
+	suite.mockFindTeamByMemberID(
+		alarm.User.ID,
+		nil,
+		teams.ErrTeamNotFound,
+	)
+	suite.mockFindActiveSubscriptionByUserID(
+		alarm.User.ID,
+		&subscriptions.Subscription{
+			Plan: &subscriptions.Plan{
+				UnlimitedEmails: true,
+				SlackAlerts:     true,
+			},
+		},
+		nil,
+	)
 	suite.mockNewIncidentEmail()
 	suite.mockFindEndpointByUserIDAndApplicationARN(
 		alarm.User.ID,
@@ -244,6 +279,9 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		"timeout error...", // error message
 	)
 
+	// Sleep for the email and push notification goroutines to finish
+	time.Sleep(15 * time.Millisecond)
+
 	// Check that the mock object expectations were met
 	suite.assertMockExpectations()
 
@@ -280,6 +318,21 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	gorm.NowFunc = func() time.Time {
 		return when5
 	}
+	suite.mockFindTeamByMemberID(
+		alarm.User.ID,
+		nil,
+		teams.ErrTeamNotFound,
+	)
+	suite.mockFindActiveSubscriptionByUserID(
+		alarm.User.ID,
+		&subscriptions.Subscription{
+			Plan: &subscriptions.Plan{
+				UnlimitedEmails: true,
+				SlackAlerts:     true,
+			},
+		},
+		nil,
+	)
 	suite.mockNewIncidentEmail()
 	suite.mockFindEndpointByUserIDAndApplicationARN(
 		alarm.User.ID,
@@ -374,6 +427,9 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		"",  // error message
 	)
 
+	// Sleep for the email and push notification goroutines to finish
+	time.Sleep(15 * time.Millisecond)
+
 	// Check that the mock object expectations were met
 	suite.assertMockExpectations()
 
@@ -410,6 +466,36 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	gorm.NowFunc = func() time.Time {
 		return when7
 	}
+	suite.mockFindTeamByMemberID(
+		alarm.User.ID,
+		nil,
+		teams.ErrTeamNotFound,
+	)
+	suite.mockFindActiveSubscriptionByUserID(
+		alarm.User.ID,
+		&subscriptions.Subscription{
+			Plan: &subscriptions.Plan{
+				UnlimitedEmails: true,
+				SlackAlerts:     true,
+			},
+		},
+		nil,
+	)
+	suite.mockNewIncidentEmail()
+	suite.mockFindEndpointByUserIDAndApplicationARN(
+		alarm.User.ID,
+		suite.service.cnf.AWS.APNSPlatformApplicationARN,
+		&notifications.Endpoint{ARN: "endpoint_arn"},
+		nil,
+	)
+	suite.mockPublishMessage(
+		"endpoint_arn",
+		fmt.Sprintf("ALERT: %s returned bad status code", alarm.EndpointURL),
+		map[string]interface{}{},
+		"message_id",
+		nil,
+	)
+	suite.mockNewIncidentSlackMessage(suite.users[1])
 	err = suite.service.openIncident(
 		alarm,
 		incidenttypes.BadCode,
@@ -417,6 +503,9 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 		1000, // response time
 		"",   // error message
 	)
+
+	// Sleep for the email and push notification goroutines to finish
+	time.Sleep(15 * time.Millisecond)
 
 	// Check that the mock object expectations were met
 	suite.assertMockExpectations()
@@ -477,6 +566,21 @@ func (suite *AlarmsTestSuite) TestIncidents() {
 	gorm.NowFunc = func() time.Time {
 		return when8
 	}
+	suite.mockFindTeamByMemberID(
+		alarm.User.ID,
+		nil,
+		teams.ErrTeamNotFound,
+	)
+	suite.mockFindActiveSubscriptionByUserID(
+		alarm.User.ID,
+		&subscriptions.Subscription{
+			Plan: &subscriptions.Plan{
+				UnlimitedEmails: true,
+				SlackAlerts:     true,
+			},
+		},
+		nil,
+	)
 	suite.mockIncidentsResolvedEmail()
 	suite.mockFindEndpointByUserIDAndApplicationARN(
 		alarm.User.ID,

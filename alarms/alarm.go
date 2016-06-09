@@ -90,14 +90,11 @@ func (s *Service) FindAlarmByID(alarmID uint) (*Alarm, error) {
 
 // createAlarm creates a new alarm
 func (s *Service) createAlarm(user *accounts.User, alarmRequest *AlarmRequest) (*Alarm, error) {
-	// Fetch the user team
-	team, _ := s.teamsService.FindTeamByMemberID(user.ID)
-
 	var (
 		// Count active alarms
-		alarmsCount = s.countActiveAlarms(team, user)
+		alarmsCount = s.countActiveAlarms(user)
 		// Get alarm limits
-		alarmLimits = s.getAlarmLimits(team, user)
+		alarmLimits = s.getAlarmLimits(user)
 	)
 
 	// Limit active alarms to the max number defined as per subscription plan
@@ -145,14 +142,11 @@ func (s *Service) createAlarm(user *accounts.User, alarmRequest *AlarmRequest) (
 
 // updateAlarm updates an existing alarm
 func (s *Service) updateAlarm(alarm *Alarm, alarmRequest *AlarmRequest) error {
-	// Fetch the user team
-	team, _ := s.teamsService.FindTeamByMemberID(alarm.User.ID)
-
 	var (
 		// Count active alarms
-		alarmsCount = s.countActiveAlarms(team, alarm.User)
+		alarmsCount = s.countActiveAlarms(alarm.User)
 		// Get alarm limits
-		alarmLimits = s.getAlarmLimits(team, alarm.User)
+		alarmLimits = s.getAlarmLimits(alarm.User)
 	)
 
 	// Limit active alarms to the max number defined as per subscription plan

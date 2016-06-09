@@ -3,7 +3,6 @@ package alarms
 import (
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/RichardKnop/pinglist-api/subscriptions"
-	"github.com/RichardKnop/pinglist-api/teams"
 )
 
 var (
@@ -16,16 +15,23 @@ var (
 )
 
 // countActiveAlarms counts active alarms of the current user or his/her team
-func (s *Service) countActiveAlarms(team *teams.Team, user *accounts.User) uint {
+func (s *Service) countActiveAlarms(user *accounts.User) uint {
 	var (
 		userIDs = []uint{user.ID}
 		count   uint
 	)
+
+	// Fetch the user team
+	team, _ := s.teamsService.FindTeamByMemberID(user.ID)
+
 	if team != nil {
+		// Aggregate IDs of all team members
 		for _, member := range team.Members {
 			userIDs = append(userIDs, member.ID)
 		}
 	}
+
+	// Count active alarms
 	s.db.Model(new(Alarm)).Where("user_id IN (?)", userIDs).
 		Where("active = ?", true).Count(&count)
 	return count
@@ -41,7 +47,7 @@ type alarmLimitsConfig struct {
 
 // getAlarmLimits returns a struct containing different alarm limits based on
 // a plan (e.g. max number of active alarms or min alarm interval)
-func (s *Service) getAlarmLimits(team *teams.Team, user *accounts.User) *alarmLimitsConfig {
+func (s *Service) getAlarmLimits(user *accounts.User) *alarmLimitsConfig {
 	var (
 		alarmLimits = &alarmLimitsConfig{
 			// Users in free tier get 1 free alarm all the time
@@ -57,6 +63,9 @@ func (s *Service) getAlarmLimits(team *teams.Team, user *accounts.User) *alarmLi
 		}
 		subscription *subscriptions.Subscription
 	)
+
+	// Fetch the user team
+	team, _ := s.teamsService.FindTeamByMemberID(user.ID)
 
 	// If the user is member of a team, look for a team owner subscription
 	if team != nil {

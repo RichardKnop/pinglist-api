@@ -13,10 +13,14 @@ func MigrateAll(db *gorm.DB) error {
 		return err
 	}
 
+	if err := migrate0002(db); err != nil {
+		return err
+	}
+
 	return nil
 }
 
-// Migrate0001 creates files schema
+// Migrate0001 creates alarms schema
 func migrate0001(db *gorm.DB) error {
 	migrationName := "alarms_initial"
 
@@ -115,6 +119,49 @@ func migrate0001(db *gorm.DB) error {
 	if err != nil {
 		return fmt.Errorf("Error creating foreign key on "+
 			"alarm_incidents.incident_type_id for alarm_incident_types(id): %s", err)
+	}
+
+	// Save a record to migrations table,
+	// so we don't rerun this migration again
+	migration.Name = migrationName
+	if err := db.Create(migration).Error; err != nil {
+		return fmt.Errorf("Error saving record to migrations table: %s", err)
+	}
+
+	return nil
+}
+
+// Migrate0002 adds alarm_notification_counters table
+func migrate0002(db *gorm.DB) error {
+	migrationName := "alarms_add_notification_counters"
+
+	migration := new(migrations.Migration)
+	found := !db.Where("name = ?", migrationName).First(migration).RecordNotFound()
+
+	if found {
+		logger.Infof("Skipping %s migration", migrationName)
+		return nil
+	}
+
+	logger.Infof("Running %s migration", migrationName)
+
+	var err error
+
+	// Create alarm_notification_counters table
+	if err := db.CreateTable(new(NotificationCounter)).Error; err != nil {
+		return fmt.Errorf("Error creating alarm_notification_counters table: %s", err)
+	}
+
+	// Add foreign key on alarm_notification_counters.user_id
+	err = db.Model(new(NotificationCounter)).AddForeignKey(
+		"user_id",
+		"account_users(id)",
+		"RESTRICT",
+		"RESTRICT",
+	).Error
+	if err != nil {
+		return fmt.Errorf("Error creating foreign key on "+
+			"alarm_notification_counters.user_id for account_users(id): %s", err)
 	}
 
 	// Save a record to migrations table,

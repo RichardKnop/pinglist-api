@@ -96,6 +96,23 @@ func (i *Incident) TableName() string {
 	return "alarm_incidents"
 }
 
+// NotificationCounter ...
+type NotificationCounter struct {
+	gorm.Model
+	UserID sql.NullInt64 `sql:"index;not null"`
+	User   *accounts.User
+	Year   uint `sql:"index;not null"`
+	Month  uint `sql:"index;not null"`
+	Email  uint `sql:"default:0;not null"`
+	Push   uint `sql:"default:0;not null"`
+	Slack  uint `sql:"default:0;not null"`
+}
+
+// TableName specifies table name
+func (i *NotificationCounter) TableName() string {
+	return "alarm_notification_counters"
+}
+
 // NewAlarm creates new Alarm instance
 func NewAlarm(user *accounts.User, region *Region, alarmState *AlarmState, alarmRequest *AlarmRequest) *Alarm {
 	userID := util.PositiveIntOrNull(int64(user.ID))

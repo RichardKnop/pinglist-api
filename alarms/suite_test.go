@@ -168,30 +168,11 @@ func (suite *AlarmsTestSuite) TearDownSuite() {
 
 // The SetupTest method will be run before every test in the suite.
 func (suite *AlarmsTestSuite) SetupTest() {
+	suite.db.Unscoped().Delete(new(NotificationCounter))
 	suite.db.Unscoped().Not("id", []int64{1, 2, 3, 4}).Delete(new(Incident))
 	suite.db.Unscoped().Not("id", []int64{1, 2, 3, 4}).Delete(new(Alarm))
 
-	// Reset mocks
-	suite.oauthServiceMock.ExpectedCalls = suite.oauthServiceMock.ExpectedCalls[:0]
-	suite.oauthServiceMock.Calls = suite.oauthServiceMock.Calls[:0]
-	suite.accountsServiceMock.ExpectedCalls = suite.accountsServiceMock.ExpectedCalls[:0]
-	suite.accountsServiceMock.Calls = suite.accountsServiceMock.Calls[:0]
-	suite.subscriptionsServiceMock.ExpectedCalls = suite.subscriptionsServiceMock.ExpectedCalls[:0]
-	suite.subscriptionsServiceMock.Calls = suite.subscriptionsServiceMock.Calls[:0]
-	suite.teamsServiceMock.ExpectedCalls = suite.teamsServiceMock.ExpectedCalls[:0]
-	suite.teamsServiceMock.Calls = suite.teamsServiceMock.Calls[:0]
-	suite.metricsServiceMock.ExpectedCalls = suite.metricsServiceMock.ExpectedCalls[:0]
-	suite.metricsServiceMock.Calls = suite.metricsServiceMock.Calls[:0]
-	suite.notificationsServiceMock.ExpectedCalls = suite.notificationsServiceMock.ExpectedCalls[:0]
-	suite.notificationsServiceMock.Calls = suite.notificationsServiceMock.Calls[:0]
-	suite.emailServiceMock.ExpectedCalls = suite.emailServiceMock.ExpectedCalls[:0]
-	suite.emailServiceMock.Calls = suite.emailServiceMock.Calls[:0]
-	suite.emailFactoryMock.ExpectedCalls = suite.emailFactoryMock.ExpectedCalls[:0]
-	suite.emailFactoryMock.Calls = suite.emailFactoryMock.Calls[:0]
-	suite.slackAdapterMock.ExpectedCalls = suite.slackAdapterMock.ExpectedCalls[:0]
-	suite.slackAdapterMock.Calls = suite.slackAdapterMock.Calls[:0]
-	suite.slackFactoryMock.ExpectedCalls = suite.slackFactoryMock.ExpectedCalls[:0]
-	suite.slackFactoryMock.Calls = suite.slackFactoryMock.Calls[:0]
+	suite.resetMocks()
 }
 
 // The TearDownTest method will be run after every test in the suite.
@@ -218,6 +199,31 @@ func (suite *AlarmsTestSuite) assertMockExpectations() {
 	suite.emailFactoryMock.AssertExpectations(suite.T())
 	suite.slackAdapterMock.AssertExpectations(suite.T())
 	suite.slackFactoryMock.AssertExpectations(suite.T())
+	suite.resetMocks()
+}
+
+// Reset mocks
+func (suite *AlarmsTestSuite) resetMocks() {
+	suite.oauthServiceMock.ExpectedCalls = suite.oauthServiceMock.ExpectedCalls[:0]
+	suite.oauthServiceMock.Calls = suite.oauthServiceMock.Calls[:0]
+	suite.accountsServiceMock.ExpectedCalls = suite.accountsServiceMock.ExpectedCalls[:0]
+	suite.accountsServiceMock.Calls = suite.accountsServiceMock.Calls[:0]
+	suite.subscriptionsServiceMock.ExpectedCalls = suite.subscriptionsServiceMock.ExpectedCalls[:0]
+	suite.subscriptionsServiceMock.Calls = suite.subscriptionsServiceMock.Calls[:0]
+	suite.teamsServiceMock.ExpectedCalls = suite.teamsServiceMock.ExpectedCalls[:0]
+	suite.teamsServiceMock.Calls = suite.teamsServiceMock.Calls[:0]
+	suite.metricsServiceMock.ExpectedCalls = suite.metricsServiceMock.ExpectedCalls[:0]
+	suite.metricsServiceMock.Calls = suite.metricsServiceMock.Calls[:0]
+	suite.notificationsServiceMock.ExpectedCalls = suite.notificationsServiceMock.ExpectedCalls[:0]
+	suite.notificationsServiceMock.Calls = suite.notificationsServiceMock.Calls[:0]
+	suite.emailServiceMock.ExpectedCalls = suite.emailServiceMock.ExpectedCalls[:0]
+	suite.emailServiceMock.Calls = suite.emailServiceMock.Calls[:0]
+	suite.emailFactoryMock.ExpectedCalls = suite.emailFactoryMock.ExpectedCalls[:0]
+	suite.emailFactoryMock.Calls = suite.emailFactoryMock.Calls[:0]
+	suite.slackAdapterMock.ExpectedCalls = suite.slackAdapterMock.ExpectedCalls[:0]
+	suite.slackAdapterMock.Calls = suite.slackAdapterMock.Calls[:0]
+	suite.slackFactoryMock.ExpectedCalls = suite.slackFactoryMock.ExpectedCalls[:0]
+	suite.slackFactoryMock.Calls = suite.slackFactoryMock.Calls[:0]
 }
 
 // Mock authentication
@@ -338,25 +344,6 @@ func (suite *AlarmsTestSuite) mockFindPaginatedResponseTimes(offset, limit int, 
 
 // Mock new incident notification Slack message
 func (suite *AlarmsTestSuite) mockNewIncidentSlackMessage(user *accounts.User) {
-	// Mock find team
-	suite.mockFindTeamByMemberID(
-		user.ID,
-		nil,
-		teams.ErrTeamNotFound,
-	)
-
-	// Mock find active subscription
-	suite.mockFindActiveSubscriptionByUserID(
-		user.ID,
-		&subscriptions.Subscription{
-			Plan: &subscriptions.Plan{
-				SlackAlerts: true,
-			},
-		},
-		nil,
-	)
-
-	// Mock Slack message
 	suite.slackFactoryMock.On(
 		"NewIncidentMessage",
 		mock.AnythingOfType("*alarms.Incident"),
@@ -373,25 +360,6 @@ func (suite *AlarmsTestSuite) mockNewIncidentSlackMessage(user *accounts.User) {
 
 // Mock incidents resolved notification Slack message
 func (suite *AlarmsTestSuite) mockIncidentsResolvedSlackMessage(user *accounts.User) {
-	// Mock find team
-	suite.mockFindTeamByMemberID(
-		user.ID,
-		nil,
-		teams.ErrTeamNotFound,
-	)
-
-	// Mock find active subscription
-	suite.mockFindActiveSubscriptionByUserID(
-		user.ID,
-		&subscriptions.Subscription{
-			Plan: &subscriptions.Plan{
-				SlackAlerts: true,
-			},
-		},
-		nil,
-	)
-
-	// Mock Slack message
 	suite.slackFactoryMock.On(
 		"NewIncidentsResolvedMessage",
 		mock.AnythingOfType("*alarms.Alarm"),

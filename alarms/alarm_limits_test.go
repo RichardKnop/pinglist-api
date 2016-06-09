@@ -13,6 +13,13 @@ func (suite *AlarmsTestSuite) TestGetAlarmLimitsFreeTier() {
 	user := new(accounts.User)
 	*user = *suite.users[1]
 
+	// User is not a member of a team
+	suite.mockFindTeamByMemberID(
+		suite.users[1].ID,
+		nil,
+		teams.ErrTeamNotFound,
+	)
+
 	// User does not have an active subscription
 	suite.mockFindActiveSubscriptionByUserID(
 		suite.users[1].ID,
@@ -20,10 +27,8 @@ func (suite *AlarmsTestSuite) TestGetAlarmLimitsFreeTier() {
 		subscriptions.ErrUserHasNoActiveSubscription,
 	)
 
-	alarmLimits := suite.service.getAlarmLimits(
-		nil, // team
-		user,
-	)
+	alarmLimits := suite.service.getAlarmLimits(user)
+
 	// Max alarms should default to the free tier value
 	assert.Equal(suite.T(), FreeTierMaxAlarms, alarmLimits.maxAlarms)
 	// Min alarm interval should default to the free tier value
@@ -43,6 +48,13 @@ func (suite *AlarmsTestSuite) TestGetAlarmLimitsTeamWithSubscriptionUserWithoutS
 	user := new(accounts.User)
 	*user = *suite.users[1]
 
+	// User is a member of a team
+	suite.mockFindTeamByMemberID(
+		suite.users[1].ID,
+		&teams.Team{Owner: &accounts.User{Model: gorm.Model{ID: 123}}},
+		nil,
+	)
+
 	// The team has an active subscription
 	suite.mockFindActiveSubscriptionByUserID(
 		123,
@@ -58,10 +70,8 @@ func (suite *AlarmsTestSuite) TestGetAlarmLimitsTeamWithSubscriptionUserWithoutS
 		nil,
 	)
 
-	alarmLimits := suite.service.getAlarmLimits(
-		&teams.Team{Owner: &accounts.User{Model: gorm.Model{ID: 123}}},
-		user,
-	)
+	alarmLimits := suite.service.getAlarmLimits(user)
+
 	// Max alarms should be taken from the team plan
 	assert.Equal(suite.T(), uint(100), alarmLimits.maxAlarms)
 	// Min alarm interval should be taken from the team plan
@@ -80,6 +90,13 @@ func (suite *AlarmsTestSuite) TestGetAlarmLimitsTeamWithSubscriptionUserWithoutS
 func (suite *AlarmsTestSuite) TestgetAlarmLimitsTeamWithoutSubscriptionUserWithSubscription() {
 	user := new(accounts.User)
 	*user = *suite.users[1]
+
+	// User is a member of a team
+	suite.mockFindTeamByMemberID(
+		suite.users[1].ID,
+		&teams.Team{Owner: &accounts.User{Model: gorm.Model{ID: 123}}},
+		nil,
+	)
 
 	// The team has no active subscription
 	suite.mockFindActiveSubscriptionByUserID(
@@ -103,10 +120,8 @@ func (suite *AlarmsTestSuite) TestgetAlarmLimitsTeamWithoutSubscriptionUserWithS
 		nil,
 	)
 
-	alarmLimits := suite.service.getAlarmLimits(
-		&teams.Team{Owner: &accounts.User{Model: gorm.Model{ID: 123}}},
-		user,
-	)
+	alarmLimits := suite.service.getAlarmLimits(user)
+
 	// Max alarms should be taken from the user plan
 	assert.Equal(suite.T(), uint(10), alarmLimits.maxAlarms)
 	// Min alarm interval should be taken from the user plan
@@ -126,6 +141,13 @@ func (suite *AlarmsTestSuite) TestGetAlarmLimitsUserWithSubscription() {
 	user := new(accounts.User)
 	*user = *suite.users[1]
 
+	// User is not a member of a team
+	suite.mockFindTeamByMemberID(
+		suite.users[1].ID,
+		nil,
+		teams.ErrTeamNotFound,
+	)
+
 	// User has an active subscription
 	suite.mockFindActiveSubscriptionByUserID(
 		suite.users[1].ID,
@@ -141,10 +163,8 @@ func (suite *AlarmsTestSuite) TestGetAlarmLimitsUserWithSubscription() {
 		nil,
 	)
 
-	alarmLimits := suite.service.getAlarmLimits(
-		nil, // team
-		user,
-	)
+	alarmLimits := suite.service.getAlarmLimits(user)
+
 	// Max alarms should be taken from the user plan
 	assert.Equal(suite.T(), uint(20), alarmLimits.maxAlarms)
 	// Min alarm interval should be taken from the user plan
