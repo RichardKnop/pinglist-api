@@ -12,8 +12,6 @@ import (
 func TestNewConfirmationEmail(t *testing.T) {
 	emailFactory := NewEmailFactory(&config.Config{
 		Web: config.WebConfig{
-			Scheme:    "https",
-			Host:      "api.pingli.st",
 			AppScheme: "https",
 			AppHost:   "pingli.st",
 		},
@@ -53,8 +51,6 @@ https://pingli.st Team
 func TestNewInvitationEmail(t *testing.T) {
 	emailFactory := NewEmailFactory(&config.Config{
 		Web: config.WebConfig{
-			Scheme:    "https",
-			Host:      "api.pingli.st",
 			AppScheme: "https",
 			AppHost:   "pingli.st",
 		},
@@ -101,8 +97,6 @@ https://pingli.st Team
 func TestNewPasswordResetEmail(t *testing.T) {
 	emailFactory := NewEmailFactory(&config.Config{
 		Web: config.WebConfig{
-			Scheme:    "https",
-			Host:      "api.pingli.st",
 			AppScheme: "https",
 			AppHost:   "pingli.st",
 		},

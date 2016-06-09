@@ -16,8 +16,6 @@ import (
 func TestNewIncidentEmailSlow(t *testing.T) {
 	emailFactory := NewEmailFactory(&config.Config{
 		Web: config.WebConfig{
-			Scheme:    "https",
-			Host:      "api.pingli.st",
 			AppScheme: "https",
 			AppHost:   "pingli.st",
 		},
@@ -76,8 +74,6 @@ pingli.st Team
 func TestNewIncidentEmailTimeout(t *testing.T) {
 	emailFactory := NewEmailFactory(&config.Config{
 		Web: config.WebConfig{
-			Scheme:    "https",
-			Host:      "api.pingli.st",
 			AppScheme: "https",
 			AppHost:   "pingli.st",
 		},
@@ -136,8 +132,6 @@ pingli.st Team
 func TestNewIncidentEmailBadCode(t *testing.T) {
 	emailFactory := NewEmailFactory(&config.Config{
 		Web: config.WebConfig{
-			Scheme:    "https",
-			Host:      "api.pingli.st",
 			AppScheme: "https",
 			AppHost:   "pingli.st",
 		},
@@ -196,8 +190,6 @@ pingli.st Team
 func TestNewIncidentEmailOther(t *testing.T) {
 	emailFactory := NewEmailFactory(&config.Config{
 		Web: config.WebConfig{
-			Scheme:    "https",
-			Host:      "api.pingli.st",
 			AppScheme: "https",
 			AppHost:   "pingli.st",
 		},
@@ -256,8 +248,6 @@ pingli.st Team
 func TestIncidentsResolved(t *testing.T) {
 	emailFactory := NewEmailFactory(&config.Config{
 		Web: config.WebConfig{
-			Scheme:    "https",
-			Host:      "api.pingli.st",
 			AppScheme: "https",
 			AppHost:   "pingli.st",
 		},
