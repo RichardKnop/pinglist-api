@@ -46,8 +46,7 @@ function main() {
   local -r tarball="/tmp/${tag}.tar.gz"
   local -r s3_path="s3://${s3_bucket}/${container_name}/${new_version}.tar.gz"
 
-  git-clone "${github}" "${temp_dir}"
-  git-checkout "${new_version}" "${temp_dir}"
+  git-clone "${github}" "${temp_dir}" "${new_version}"
   docker-build "${tag}" "${temp_dir}"
   docker-save "${tag}" "${tarball}"
   s3-copy "${tarball}" "${s3_path}"
@@ -73,22 +72,12 @@ function check-prereqs() {
 function git-clone() {
   local -r github="${1}"
   local -r dest="${2}"
-  echo "Cloning from '${github}' to '${dest}'..."
+  local -r tag="${3}"
+  echo "Cloning from '${github}' [${tag}] to '${dest}'..."
   if $DRY_RUN; then
-    echo "Dry run: would have done git clone ${github} ${dest}"
+    echo "Dry run: would have done git clone --depth 1 --branch ${tag} ${github} ${dest}"
   else
-    git clone "${github}" "${dest}"
-  fi
-}
-
-function git-checkout() {
-  local -r tag="${1}"
-  local -r dir="${2}"
-  echo "Checking out tag '${tag}'..."
-  if $DRY_RUN; then
-    echo "Dry run: would have done cd ${dir} ; git checkout -b ${tag} ${tag}"
-  else
-    (cd ${dir} ; git checkout -b "${tag}" "${tag}")
+    git clone --depth 1 --branch "${tag}" "${github}" "${dest}"
   fi
 }
 
