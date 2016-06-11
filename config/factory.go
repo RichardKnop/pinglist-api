@@ -34,12 +34,6 @@ var cnf = &Config{
 		RefreshTokenLifetime: 1209600, // 14 days
 		AuthCodeLifetime:     3600,    // 1 hour
 	},
-	Session: SessionConfig{
-		Secret:   "test_secret",
-		Path:     "/",
-		MaxAge:   86400 * 7, // 7 days
-		HTTPOnly: true,
-	},
 	AWS: AWSConfig{
 		Region:                     "us-west-2",
 		AssetsBucket:               "prod.pinglist.assets",
@@ -66,9 +60,8 @@ var cnf = &Config{
 	},
 	Pinglist: PinglistConfig{
 		PasswordResetLifetime: 604800, // 7 days
+		ContactEmail:          "contact@pingli.st",
 	},
-	IOSLink:       "#",
-	ContactEmail:  "contact@pingli.st",
 	IsDevelopment: true,
 }
 

@@ -67,12 +67,6 @@ curl -L http://localhost:2379/v2/keys/config/pinglist.json -XPUT -d value='{
         "RefreshTokenLifetime": 1209600,
         "AuthCodeLifetime": 3600
     },
-    "Session": {
-        "Secret": "test_secret",
-        "Path": "/",
-        "MaxAge": 604800,
-        "HTTPOnly": true
-    },
     "AWS": {
         "Region": "us-west-2",
         "AssetsBucket": "prod.pinglist.assets",
@@ -98,10 +92,9 @@ curl -L http://localhost:2379/v2/keys/config/pinglist.json -XPUT -d value='{
         "AppHost": "localhost:8000"
     },
     "Pinglist": {
-        "PasswordResetLifetime": 604800
+        "PasswordResetLifetime": 604800,
+        "ContactEmail": "contact@pingli.st"
     },
-    "IOSLink": "#",
-    "ContactEmail": "contact@pingli.st",
     "IsDevelopment": true
 }'
 ```

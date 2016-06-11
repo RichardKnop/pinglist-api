@@ -45,7 +45,7 @@ func (s *Service) contactHandler(w http.ResponseWriter, r *http.Request) {
 		contactEmail := &email.Email{
 			Subject: contactRequest.Subject,
 			Recipients: []*email.Recipient{&email.Recipient{
-				Email: s.cnf.ContactEmail,
+				Email: s.cnf.Pinglist.ContactEmail,
 				Name:  "Pinglist Admin",
 			}},
 			From: fmt.Sprintf("%s <%s>", contactRequest.Name, contactRequest.Email),
