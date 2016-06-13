@@ -187,21 +187,6 @@ func TestAlarmsTestSuite(t *testing.T) {
 	suite.Run(t, new(AlarmsTestSuite))
 }
 
-// Checks that the mock object expectations were met
-func (suite *AlarmsTestSuite) assertMockExpectations() {
-	suite.oauthServiceMock.AssertExpectations(suite.T())
-	suite.accountsServiceMock.AssertExpectations(suite.T())
-	suite.subscriptionsServiceMock.AssertExpectations(suite.T())
-	suite.teamsServiceMock.AssertExpectations(suite.T())
-	suite.metricsServiceMock.AssertExpectations(suite.T())
-	suite.notificationsServiceMock.AssertExpectations(suite.T())
-	suite.emailServiceMock.AssertExpectations(suite.T())
-	suite.emailFactoryMock.AssertExpectations(suite.T())
-	suite.slackAdapterMock.AssertExpectations(suite.T())
-	suite.slackFactoryMock.AssertExpectations(suite.T())
-	suite.resetMocks()
-}
-
 // Reset mocks
 func (suite *AlarmsTestSuite) resetMocks() {
 	suite.oauthServiceMock.ExpectedCalls = suite.oauthServiceMock.ExpectedCalls[:0]
@@ -224,6 +209,21 @@ func (suite *AlarmsTestSuite) resetMocks() {
 	suite.slackAdapterMock.Calls = suite.slackAdapterMock.Calls[:0]
 	suite.slackFactoryMock.ExpectedCalls = suite.slackFactoryMock.ExpectedCalls[:0]
 	suite.slackFactoryMock.Calls = suite.slackFactoryMock.Calls[:0]
+}
+
+// Checks that the mock object expectations were met
+func (suite *AlarmsTestSuite) assertMockExpectations() {
+	suite.oauthServiceMock.AssertExpectations(suite.T())
+	suite.accountsServiceMock.AssertExpectations(suite.T())
+	suite.subscriptionsServiceMock.AssertExpectations(suite.T())
+	suite.teamsServiceMock.AssertExpectations(suite.T())
+	suite.metricsServiceMock.AssertExpectations(suite.T())
+	suite.notificationsServiceMock.AssertExpectations(suite.T())
+	suite.emailServiceMock.AssertExpectations(suite.T())
+	suite.emailFactoryMock.AssertExpectations(suite.T())
+	suite.slackAdapterMock.AssertExpectations(suite.T())
+	suite.slackFactoryMock.AssertExpectations(suite.T())
+	suite.resetMocks()
 }
 
 // Mock authentication

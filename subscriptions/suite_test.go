@@ -156,10 +156,7 @@ func (suite *SubscriptionsTestSuite) SetupTest() {
 	suite.db.Unscoped().Not("id", []int64{1, 2, 3, 4, 5}).Delete(new(Plan))
 
 	// Reset mocks
-	suite.oauthServiceMock.ExpectedCalls = suite.oauthServiceMock.ExpectedCalls[:0]
-	suite.oauthServiceMock.Calls = suite.oauthServiceMock.Calls[:0]
-	suite.accountsServiceMock.ExpectedCalls = suite.accountsServiceMock.ExpectedCalls[:0]
-	suite.accountsServiceMock.Calls = suite.accountsServiceMock.Calls[:0]
+	suite.resetMocks()
 }
 
 // The TearDownTest method will be run after every test in the suite.
@@ -174,10 +171,19 @@ func TestSubscriptionsTestSuite(t *testing.T) {
 	suite.Run(t, new(SubscriptionsTestSuite))
 }
 
+// Reset mocks
+func (suite *SubscriptionsTestSuite) resetMocks() {
+	suite.oauthServiceMock.ExpectedCalls = suite.oauthServiceMock.ExpectedCalls[:0]
+	suite.oauthServiceMock.Calls = suite.oauthServiceMock.Calls[:0]
+	suite.accountsServiceMock.ExpectedCalls = suite.accountsServiceMock.ExpectedCalls[:0]
+	suite.accountsServiceMock.Calls = suite.accountsServiceMock.Calls[:0]
+}
+
 // Checks that the mock object expectations were met
 func (suite *SubscriptionsTestSuite) assertMockExpectations() {
 	suite.oauthServiceMock.AssertExpectations(suite.T())
 	suite.accountsServiceMock.AssertExpectations(suite.T())
+	suite.resetMocks()
 }
 
 // Mock resource owner credentials grant auth
