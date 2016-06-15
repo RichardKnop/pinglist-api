@@ -82,7 +82,6 @@ func initApp(cnf *config.Config, db *gorm.DB) (*negroni.Negroni, error) {
 		notificationsService,
 		nil, // email.Service
 		nil, // alarms.EmailFactory
-		nil, // alarms.SlackAdapter
 		nil, // alarms.SlackFactory
 		nil, // HTTP client
 	)

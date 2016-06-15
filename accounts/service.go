@@ -1,6 +1,7 @@
 package accounts
 
 import (
+	slack "github.com/RichardKnop/go-slack"
 	"github.com/RichardKnop/pinglist-api/config"
 	"github.com/RichardKnop/pinglist-api/email"
 	"github.com/RichardKnop/pinglist-api/oauth"
@@ -41,4 +42,12 @@ func (s *Service) GetConfig() *config.Config {
 // GetOauthService returns oauth.Service instance
 func (s *Service) GetOauthService() oauth.ServiceInterface {
 	return s.oauthService
+}
+
+// GetSlackAdapter returns slack.Adapter instance
+func (s *Service) GetSlackAdapter(user *User) slack.AdapterInterface {
+	cnf := &slack.Config{
+		IncomingWebhook: user.SlackIncomingWebhook.String,
+	}
+	return slack.NewAdapter(cnf)
 }

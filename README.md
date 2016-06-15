@@ -80,9 +80,6 @@ curl -L http://localhost:2379/v2/keys/config/pinglist.json -XPUT -d value='{
     "Sendgrid": {
         "APIKey": "sendgrid_api_key"
     },
-    "Slack": {
-        "IncomingWebhook": "slack_incoming_webhook"
-  	},
     "Stripe": {
         "SecretKey": "stripe_secret_key",
         "PublishableKey": "stripe_publishable_key"

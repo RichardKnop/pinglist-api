@@ -98,8 +98,7 @@ func (s *Service) sendNewIncidentSlackMessage(alarm *Alarm, incident *Incident) 
 	newIncidentMessage := s.slackFactory.NewIncidentMessage(incident)
 
 	// Send slack message
-	if err := s.slackAdapter.SendMessage(
-		alarm.User.SlackIncomingWebhook.String,
+	if err := s.GetAccountsService().GetSlackAdapter(alarm.User).SendMessage(
 		alarm.User.SlackChannel.String,
 		slackNotificationsUsername,
 		slackNotificationsEmoji,
@@ -209,8 +208,7 @@ func (s *Service) sendIncidentsResolvedSlackMessage(alarm *Alarm) {
 	newIncidentMessage := s.slackFactory.NewIncidentsResolvedMessage(alarm)
 
 	// Send slack message
-	if err := s.slackAdapter.SendMessage(
-		alarm.User.SlackIncomingWebhook.String,
+	if err := s.GetAccountsService().GetSlackAdapter(alarm.User).SendMessage(
 		alarm.User.SlackChannel.String,
 		slackNotificationsUsername,
 		slackNotificationsEmoji,

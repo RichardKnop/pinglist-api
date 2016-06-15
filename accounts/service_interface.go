@@ -3,6 +3,7 @@ package accounts
 import (
 	"net/http"
 
+	slack "github.com/RichardKnop/go-slack"
 	"github.com/RichardKnop/pinglist-api/config"
 	"github.com/RichardKnop/pinglist-api/oauth"
 	"github.com/jinzhu/gorm"
@@ -13,6 +14,7 @@ type ServiceInterface interface {
 	// Exported methods
 	GetConfig() *config.Config
 	GetOauthService() oauth.ServiceInterface
+	GetSlackAdapter(user *User) slack.AdapterInterface
 	FindAccountByOauthClientID(oauthClientID uint) (*Account, error)
 	FindAccountByID(accountID uint) (*Account, error)
 	FindAccountByName(name string) (*Account, error)

@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	slack "github.com/RichardKnop/go-slack"
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/RichardKnop/pinglist-api/config"
 	"github.com/RichardKnop/pinglist-api/database"
@@ -58,7 +59,6 @@ type AlarmsTestSuite struct {
 	notificationsServiceMock *notifications.ServiceMock
 	emailServiceMock         *email.ServiceMock
 	emailFactoryMock         *EmailFactoryMock
-	slackAdapterMock         *SlackAdapterMock
 	slackFactoryMock         *SlackFactoryMock
 	service                  *Service
 	accounts                 []*accounts.Account
@@ -136,7 +136,6 @@ func (suite *AlarmsTestSuite) SetupSuite() {
 	suite.notificationsServiceMock = new(notifications.ServiceMock)
 	suite.emailServiceMock = new(email.ServiceMock)
 	suite.emailFactoryMock = new(EmailFactoryMock)
-	suite.slackAdapterMock = new(SlackAdapterMock)
 	suite.slackFactoryMock = new(SlackFactoryMock)
 
 	// Initialise the service
@@ -150,7 +149,6 @@ func (suite *AlarmsTestSuite) SetupSuite() {
 		suite.notificationsServiceMock,
 		suite.emailServiceMock,
 		suite.emailFactoryMock,
-		suite.slackAdapterMock,
 		suite.slackFactoryMock,
 		nil, // HTTP client
 	)
@@ -205,8 +203,6 @@ func (suite *AlarmsTestSuite) resetMocks() {
 	suite.emailServiceMock.Calls = suite.emailServiceMock.Calls[:0]
 	suite.emailFactoryMock.ExpectedCalls = suite.emailFactoryMock.ExpectedCalls[:0]
 	suite.emailFactoryMock.Calls = suite.emailFactoryMock.Calls[:0]
-	suite.slackAdapterMock.ExpectedCalls = suite.slackAdapterMock.ExpectedCalls[:0]
-	suite.slackAdapterMock.Calls = suite.slackAdapterMock.Calls[:0]
 	suite.slackFactoryMock.ExpectedCalls = suite.slackFactoryMock.ExpectedCalls[:0]
 	suite.slackFactoryMock.Calls = suite.slackFactoryMock.Calls[:0]
 }
@@ -221,7 +217,6 @@ func (suite *AlarmsTestSuite) assertMockExpectations() {
 	suite.notificationsServiceMock.AssertExpectations(suite.T())
 	suite.emailServiceMock.AssertExpectations(suite.T())
 	suite.emailFactoryMock.AssertExpectations(suite.T())
-	suite.slackAdapterMock.AssertExpectations(suite.T())
 	suite.slackFactoryMock.AssertExpectations(suite.T())
 	suite.resetMocks()
 }
@@ -344,32 +339,42 @@ func (suite *AlarmsTestSuite) mockFindPaginatedResponseTimes(offset, limit int, 
 
 // Mock new incident notification Slack message
 func (suite *AlarmsTestSuite) mockNewIncidentSlackMessage(user *accounts.User) {
+	msg := "Some mock message..."
 	suite.slackFactoryMock.On(
 		"NewIncidentMessage",
 		mock.AnythingOfType("*alarms.Incident"),
-	).Return("Some mock message...")
-	suite.slackAdapterMock.On(
+	).Return(msg)
+	slackAdapterMock := new(slack.AdapterMock)
+	slackAdapterMock.On(
 		"SendMessage",
-		user.SlackIncomingWebhook.String,
 		user.SlackChannel.String,
 		slackNotificationsUsername,
 		slackNotificationsEmoji,
-		"Some mock message...",
+		msg,
 	).Return(nil)
+	suite.accountsServiceMock.On(
+		"GetSlackAdapter",
+		mock.AnythingOfType("*accounts.User"),
+	).Return(slackAdapterMock)
 }
 
 // Mock incidents resolved notification Slack message
 func (suite *AlarmsTestSuite) mockIncidentsResolvedSlackMessage(user *accounts.User) {
+	msg := "Some mock message..."
 	suite.slackFactoryMock.On(
 		"NewIncidentsResolvedMessage",
 		mock.AnythingOfType("*alarms.Alarm"),
-	).Return("Some mock message...")
-	suite.slackAdapterMock.On(
+	).Return(msg)
+	slackAdapterMock := new(slack.AdapterMock)
+	slackAdapterMock.On(
 		"SendMessage",
-		user.SlackIncomingWebhook.String,
 		user.SlackChannel.String,
 		slackNotificationsUsername,
 		slackNotificationsEmoji,
-		"Some mock message...",
+		msg,
 	).Return(nil)
+	suite.accountsServiceMock.On(
+		"GetSlackAdapter",
+		mock.AnythingOfType("*accounts.User"),
+	).Return(slackAdapterMock)
 }

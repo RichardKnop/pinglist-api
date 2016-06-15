@@ -11,6 +11,10 @@
 			"Rev": "9384cea840d98fd1d079f6f3335a4e6b40251771"
 		},
 		{
+			"ImportPath": "github.com/RichardKnop/go-slack",
+			"Rev": "32c6c5d59b2d0f4add99ea285d9e6bce414396af"
+		},
+		{
 			"ImportPath": "github.com/RichardKnop/jsonhal",
 			"Rev": "6e175ad2af7280916664edadded65e00dd47515c"
 		},

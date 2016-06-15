@@ -24,21 +24,17 @@ type Service struct {
 	notificationsService notifications.ServiceInterface
 	emailService         email.ServiceInterface
 	emailFactory         EmailFactoryInterface
-	slackAdapter         SlackAdapterInterface
 	slackFactory         SlackFactoryInterface
 	client               *http.Client
 }
 
 // NewService starts a new Service instance
-func NewService(cnf *config.Config, db *gorm.DB, accountsService accounts.ServiceInterface, subscriptionsService subscriptions.ServiceInterface, teamsService teams.ServiceInterface, metricsService metrics.ServiceInterface, notificationsService notifications.ServiceInterface, emailService email.ServiceInterface, emailFactory EmailFactoryInterface, slackAdapter SlackAdapterInterface, slackFactory SlackFactoryInterface, client *http.Client) *Service {
+func NewService(cnf *config.Config, db *gorm.DB, accountsService accounts.ServiceInterface, subscriptionsService subscriptions.ServiceInterface, teamsService teams.ServiceInterface, metricsService metrics.ServiceInterface, notificationsService notifications.ServiceInterface, emailService email.ServiceInterface, emailFactory EmailFactoryInterface, slackFactory SlackFactoryInterface, client *http.Client) *Service {
 	if emailService == nil {
 		emailService = email.NewService(cnf)
 	}
 	if emailFactory == nil {
 		emailFactory = NewEmailFactory(cnf)
-	}
-	if slackAdapter == nil {
-		slackAdapter = NewSlackAdapter()
 	}
 	if slackFactory == nil {
 		slackFactory = NewSlackFactory(cnf)
@@ -58,7 +54,6 @@ func NewService(cnf *config.Config, db *gorm.DB, accountsService accounts.Servic
 		notificationsService: notificationsService,
 		emailService:         emailService,
 		emailFactory:         emailFactory,
-		slackAdapter:         slackAdapter,
 		slackFactory:         slackFactory,
 		client:               client,
 	}

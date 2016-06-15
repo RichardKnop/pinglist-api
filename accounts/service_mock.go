@@ -3,6 +3,7 @@ package accounts
 import (
 	"net/http"
 
+	slack "github.com/RichardKnop/go-slack"
 	"github.com/RichardKnop/pinglist-api/config"
 	"github.com/RichardKnop/pinglist-api/oauth"
 	"github.com/jinzhu/gorm"
@@ -39,6 +40,20 @@ func (_m *ServiceMock) GetOauthService() oauth.ServiceInterface {
 		r0 = rf()
 	} else {
 		r0 = ret.Get(0).(oauth.ServiceInterface)
+	}
+
+	return r0
+}
+
+// GetSlackAdapter ...
+func (_m *ServiceMock) GetSlackAdapter(user *User) slack.AdapterInterface {
+	ret := _m.Called(user)
+
+	var r0 slack.AdapterInterface
+	if rf, ok := ret.Get(0).(func(*User) slack.AdapterInterface); ok {
+		r0 = rf(user)
+	} else {
+		r0 = ret.Get(0).(slack.AdapterInterface)
 	}
 
 	return r0

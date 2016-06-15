@@ -1,4 +1,4 @@
-package alarms
+package slack
 
 import (
 	"encoding/json"
@@ -8,16 +8,20 @@ import (
 	"net/url"
 )
 
-// SlackAdapter ...
-type SlackAdapter struct{}
+// Adapter ...
+type Adapter struct {
+	cnf *Config
+}
 
-// NewSlackAdapter starts a new Adapter instance
-func NewSlackAdapter() *SlackAdapter {
-	return new(SlackAdapter)
+// NewAdapter starts a new Adapter instance
+func NewAdapter(cnf *Config) *Adapter {
+	return &Adapter{
+		cnf: cnf,
+	}
 }
 
 // SendMessage pushes a message to one of Slack's channels
-func (a *SlackAdapter) SendMessage(incomingWebhook, channel, username, emoji, text string) error {
+func (a *Adapter) SendMessage(channel, username, text, emoji string) error {
 	payload := map[string]string{
 		"channel":  channel,
 		"username": username,
@@ -28,7 +32,8 @@ func (a *SlackAdapter) SendMessage(incomingWebhook, channel, username, emoji, te
 	if err != nil {
 		return err
 	}
-	resp, err := http.PostForm(incomingWebhook,
+	resp, err := http.PostForm(
+		a.cnf.IncomingWebhook,
 		url.Values{
 			"payload": {string(payloadJSON)},
 		},
