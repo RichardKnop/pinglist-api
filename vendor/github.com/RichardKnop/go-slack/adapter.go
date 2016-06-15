@@ -41,6 +41,7 @@ func (a *Adapter) SendMessage(channel, username, text, emoji string) error {
 	if err != nil {
 		return err
 	}
+	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {

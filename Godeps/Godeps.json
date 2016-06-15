@@ -12,7 +12,7 @@
 		},
 		{
 			"ImportPath": "github.com/RichardKnop/go-slack",
-			"Rev": "32c6c5d59b2d0f4add99ea285d9e6bce414396af"
+			"Rev": "d77fb01e4c98a9a4d8f28fdf5fd5b96093c28afa"
 		},
 		{
 			"ImportPath": "github.com/RichardKnop/jsonhal",
