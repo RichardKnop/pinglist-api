@@ -53,7 +53,8 @@ func TestNewIncidentEmailSlow(t *testing.T) {
 	assert.Equal(t, 1, len(email.Recipients))
 	assert.Equal(t, "john@reese", email.Recipients[0].Email)
 	assert.Equal(t, "John Reese", email.Recipients[0].Name)
-	assert.Equal(t, "noreply@pingli.st", email.From)
+	assert.Equal(t, "noreply@pingli.st", email.From.Email)
+	assert.Equal(t, "NOREPLY pingli.st", email.From.Name)
 
 	expectedText := `
 Hello John Reese,
@@ -111,7 +112,8 @@ func TestNewIncidentEmailTimeout(t *testing.T) {
 	assert.Equal(t, 1, len(email.Recipients))
 	assert.Equal(t, "john@reese", email.Recipients[0].Email)
 	assert.Equal(t, "John Reese", email.Recipients[0].Name)
-	assert.Equal(t, "noreply@pingli.st", email.From)
+	assert.Equal(t, "noreply@pingli.st", email.From.Email)
+	assert.Equal(t, "NOREPLY pingli.st", email.From.Name)
 
 	expectedText := `
 Hello John Reese,
@@ -169,7 +171,8 @@ func TestNewIncidentEmailBadCode(t *testing.T) {
 	assert.Equal(t, 1, len(email.Recipients))
 	assert.Equal(t, "john@reese", email.Recipients[0].Email)
 	assert.Equal(t, "John Reese", email.Recipients[0].Name)
-	assert.Equal(t, "noreply@pingli.st", email.From)
+	assert.Equal(t, "noreply@pingli.st", email.From.Email)
+	assert.Equal(t, "NOREPLY pingli.st", email.From.Name)
 
 	expectedText := `
 Hello John Reese,
@@ -227,7 +230,8 @@ func TestNewIncidentEmailOther(t *testing.T) {
 	assert.Equal(t, 1, len(email.Recipients))
 	assert.Equal(t, "john@reese", email.Recipients[0].Email)
 	assert.Equal(t, "John Reese", email.Recipients[0].Name)
-	assert.Equal(t, "noreply@pingli.st", email.From)
+	assert.Equal(t, "noreply@pingli.st", email.From.Email)
+	assert.Equal(t, "NOREPLY pingli.st", email.From.Name)
 
 	expectedText := `
 Hello John Reese,
@@ -294,7 +298,8 @@ func TestIncidentsResolved(t *testing.T) {
 	assert.Equal(t, 1, len(email.Recipients))
 	assert.Equal(t, "john@reese", email.Recipients[0].Email)
 	assert.Equal(t, "John Reese", email.Recipients[0].Name)
-	assert.Equal(t, "noreply@pingli.st", email.From)
+	assert.Equal(t, "noreply@pingli.st", email.From.Email)
+	assert.Equal(t, "NOREPLY pingli.st", email.From.Name)
 
 	expectedText := `
 Hello John Reese,

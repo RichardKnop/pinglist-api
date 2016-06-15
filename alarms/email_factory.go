@@ -137,7 +137,10 @@ func (f *EmailFactory) NewIncidentEmail(incident *Incident) *email.Email {
 			Email: incident.Alarm.User.OauthUser.Username,
 			Name:  incident.Alarm.User.GetName(),
 		}},
-		From: fmt.Sprintf("noreply@%s", f.cnf.Web.AppHost),
+		From: &email.Sender{
+			Email: fmt.Sprintf("noreply@%s", f.cnf.Web.AppHost),
+			Name:  fmt.Sprintf("NOREPLY %s", f.cnf.Web.AppHost),
+		},
 		Text: emailText,
 	}
 }
@@ -187,7 +190,10 @@ func (f *EmailFactory) NewIncidentsResolvedEmail(alarm *Alarm) *email.Email {
 			Email: alarm.User.OauthUser.Username,
 			Name:  alarm.User.GetName(),
 		}},
-		From: fmt.Sprintf("noreply@%s", f.cnf.Web.AppHost),
+		From: &email.Sender{
+			Email: fmt.Sprintf("noreply@%s", f.cnf.Web.AppHost),
+			Name:  fmt.Sprintf("NOREPLY %s", f.cnf.Web.AppHost),
+		},
 		Text: emailText,
 	}
 }

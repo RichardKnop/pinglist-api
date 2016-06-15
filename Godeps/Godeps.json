@@ -1,7 +1,7 @@
 {
 	"ImportPath": "github.com/RichardKnop/pinglist-api",
 	"GoVersion": "go1.6",
-	"GodepVersion": "v73",
+	"GodepVersion": "v74",
 	"Packages": [
 		"./..."
 	],
@@ -210,6 +210,11 @@
 		},
 		{
 			"ImportPath": "github.com/sendgrid/sendgrid-go",
+			"Comment": "v3.0.0",
+			"Rev": "21f08698ba61551befffd8755f508631a4d1e8ae"
+		},
+		{
+			"ImportPath": "github.com/sendgrid/sendgrid-go/helpers/mail",
 			"Comment": "v3.0.0",
 			"Rev": "21f08698ba61551befffd8755f508631a4d1e8ae"
 		},

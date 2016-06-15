@@ -32,7 +32,8 @@ func TestNewConfirmationEmail(t *testing.T) {
 	assert.Equal(t, 1, len(email.Recipients))
 	assert.Equal(t, "john@reese", email.Recipients[0].Email)
 	assert.Equal(t, "John Reese", email.Recipients[0].Name)
-	assert.Equal(t, "noreply@pingli.st", email.From)
+	assert.Equal(t, "noreply@pingli.st", email.From.Email)
+	assert.Equal(t, "NOREPLY pingli.st", email.From.Name)
 
 	expectedText := `
 Hello John Reese,
@@ -78,7 +79,8 @@ func TestNewInvitationEmail(t *testing.T) {
 	assert.Equal(t, 1, len(email.Recipients))
 	assert.Equal(t, "john@reese", email.Recipients[0].Email)
 	assert.Equal(t, "John Reese", email.Recipients[0].Name)
-	assert.Equal(t, "harold@finch", email.From)
+	assert.Equal(t, "harold@finch", email.From.Email)
+	assert.Equal(t, "Harold Finch", email.From.Name)
 
 	expectedText := `
 Hello John Reese,
@@ -117,7 +119,8 @@ func TestNewPasswordResetEmail(t *testing.T) {
 	assert.Equal(t, 1, len(email.Recipients))
 	assert.Equal(t, "john@reese", email.Recipients[0].Email)
 	assert.Equal(t, "John Reese", email.Recipients[0].Name)
-	assert.Equal(t, "noreply@pingli.st", email.From)
+	assert.Equal(t, "noreply@pingli.st", email.From.Email)
+	assert.Equal(t, "NOREPLY pingli.st", email.From.Name)
 
 	expectedText := `
 Hello John Reese,

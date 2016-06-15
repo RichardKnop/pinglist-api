@@ -2,7 +2,6 @@ package accounts
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 
@@ -48,7 +47,10 @@ func (s *Service) contactHandler(w http.ResponseWriter, r *http.Request) {
 				Email: s.cnf.Pinglist.ContactEmail,
 				Name:  "Pinglist Admin",
 			}},
-			From: fmt.Sprintf("%s <%s>", contactRequest.Name, contactRequest.Email),
+			From: &email.Sender{
+				Email: contactRequest.Email,
+				Name:  contactRequest.Name,
+			},
 			Text: contactRequest.Message,
 		}
 
