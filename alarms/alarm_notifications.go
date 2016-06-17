@@ -100,9 +100,9 @@ func (s *Service) sendNewIncidentSlackMessage(alarm *Alarm, incident *Incident) 
 	// Send slack message
 	if err := s.GetAccountsService().GetSlackAdapter(alarm.User).SendMessage(
 		alarm.User.SlackChannel.String,
-		slackNotificationsUsername,
-		slackNotificationsEmoji,
+		s.cnf.Slack.Username,
 		newIncidentMessage,
+		s.cnf.Slack.Emoji,
 	); err != nil {
 		logger.Errorf("Send slack message error: %s", err)
 		return
@@ -210,9 +210,9 @@ func (s *Service) sendIncidentsResolvedSlackMessage(alarm *Alarm) {
 	// Send slack message
 	if err := s.GetAccountsService().GetSlackAdapter(alarm.User).SendMessage(
 		alarm.User.SlackChannel.String,
-		slackNotificationsUsername,
-		slackNotificationsEmoji,
+		s.cnf.Slack.Username,
 		newIncidentMessage,
+		s.cnf.Slack.Emoji,
 	); err != nil {
 		logger.Errorf("Send slack message error: %s", err)
 		return

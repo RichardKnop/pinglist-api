@@ -51,6 +51,10 @@ var cnf = &Config{
 		SecretKey:      "stripe_secret_key",
 		PublishableKey: "stripe_publishable_key",
 	},
+	Slack: SlackConfig{
+		Username: "webhookbot",
+		Emoji:    "",
+	},
 	Web: WebConfig{
 		AppScheme: "http",
 		AppHost:   "localhost:8000",

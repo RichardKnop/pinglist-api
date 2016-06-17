@@ -348,9 +348,9 @@ func (suite *AlarmsTestSuite) mockNewIncidentSlackMessage(user *accounts.User) {
 	slackAdapterMock.On(
 		"SendMessage",
 		user.SlackChannel.String,
-		slackNotificationsUsername,
-		slackNotificationsEmoji,
+		suite.cnf.Slack.Username,
 		msg,
+		suite.cnf.Slack.Emoji,
 	).Return(nil)
 	suite.accountsServiceMock.On(
 		"GetSlackAdapter",
@@ -369,9 +369,9 @@ func (suite *AlarmsTestSuite) mockIncidentsResolvedSlackMessage(user *accounts.U
 	slackAdapterMock.On(
 		"SendMessage",
 		user.SlackChannel.String,
-		slackNotificationsUsername,
-		slackNotificationsEmoji,
+		suite.cnf.Slack.Username,
 		msg,
+		suite.cnf.Slack.Emoji,
 	).Return(nil)
 	suite.accountsServiceMock.On(
 		"GetSlackAdapter",

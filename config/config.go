@@ -44,6 +44,12 @@ type StripeConfig struct {
 	PublishableKey string
 }
 
+// SlackConfig stores Slack configuration options
+type SlackConfig struct {
+	Username string
+	Emoji    string
+}
+
 // WebConfig stores web related config like scheme and host
 type WebConfig struct {
 	AppScheme string
@@ -64,6 +70,7 @@ type Config struct {
 	Facebook      FacebookConfig
 	Sendgrid      SendgridConfig
 	Stripe        StripeConfig
+	Slack         SlackConfig
 	Web           WebConfig
 	Pinglist      PinglistConfig
 	IsDevelopment bool

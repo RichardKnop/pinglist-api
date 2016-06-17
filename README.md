@@ -84,6 +84,10 @@ curl -L http://localhost:2379/v2/keys/config/pinglist.json -XPUT -d value='{
         "SecretKey": "stripe_secret_key",
         "PublishableKey": "stripe_publishable_key"
     },
+    "Slack": {
+  		"Username": "webhookbot",
+  		"Emoji": ""
+  	},
     "Web": {
         "AppScheme": "http",
         "AppHost": "localhost:8000"

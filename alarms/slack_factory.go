@@ -7,11 +7,6 @@ import (
 	"github.com/RichardKnop/pinglist-api/config"
 )
 
-var (
-	slackNotificationsUsername = "webhookbot"
-	slackNotificationsEmoji    = ""
-)
-
 // SlackTimeFormat specifies how the time will be parsed in Slack messages
 const SlackTimeFormat = "Mon Jan 2 15:04:05 2006"
 
