@@ -6,12 +6,12 @@ import (
 )
 
 // RegisterRoutes registers route handlers for the health service
-func RegisterRoutes(router *mux.Router, service *Service) {
+func RegisterRoutes(router *mux.Router, service ServiceInterface) {
 	routes.AddRoutes(newRoutes(service), router)
 }
 
 // newRoutes returns []routes.Route slice for the health service
-func newRoutes(service *Service) []routes.Route {
+func newRoutes(service ServiceInterface) []routes.Route {
 	return []routes.Route{
 		routes.Route{
 			Name:        "health_check",

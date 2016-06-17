@@ -2,22 +2,23 @@ package commands
 
 import (
 	"time"
+
+	"github.com/RichardKnop/pinglist-api/scheduler"
 )
 
 // RunAll runs the both the scheduler and the app
 func RunAll() error {
-	// Init config and database
 	cnf, db, err := initConfigDB(true, true)
 	if err != nil {
 		return err
 	}
 	defer db.Close()
-
-	// Init the scheduler
-	theScheduler, err := initScheduler(cnf, db)
-	if err != nil {
+	if err := initServices(cnf, db); err != nil {
 		return err
 	}
+
+	// Init the scheduler
+	theScheduler := scheduler.New(metricsService, alarmsService)
 
 	// Init the app
 	app, err := initApp(cnf, db)

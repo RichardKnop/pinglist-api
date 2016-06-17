@@ -21,12 +21,14 @@ import (
 
 // RunServer runs the app
 func RunServer() error {
-	// Init config and database
 	cnf, db, err := initConfigDB(true, true)
 	if err != nil {
 		return err
 	}
 	defer db.Close()
+	if err := initServices(cnf, db); err != nil {
+		return err
+	}
 
 	// Init the app
 	app, err := initApp(cnf, db)
@@ -42,50 +44,6 @@ func RunServer() error {
 
 // initApp starts all services, creates a negroni app, registers all routes
 func initApp(cnf *config.Config, db *gorm.DB) (*negroni.Negroni, error) {
-	// Initialise services
-	healthService := health.NewService(db)
-	oauthService := oauth.NewService(cnf, db)
-	accountsService := accounts.NewService(
-		cnf,
-		db,
-		oauthService,
-		nil, // email.Service
-		nil, // accounts.EmailFactory
-	)
-	facebookService := facebook.NewService(
-		cnf,
-		db,
-		accountsService,
-		nil, // facebook.Adapter
-	)
-	subscriptionsService := subscriptions.NewService(
-		cnf,
-		db,
-		accountsService,
-		nil, // subscriptions.StripeAdapter
-	)
-	teamsService := teams.NewService(cnf, db, accountsService, subscriptionsService)
-	metricsService := metrics.NewService(cnf, db, accountsService)
-	notificationsService := notifications.NewService(
-		cnf,
-		db,
-		accountsService,
-		nil, // notifications.SNSAdapter
-	)
-	alarmsService := alarms.NewService(
-		cnf,
-		db,
-		accountsService,
-		subscriptionsService,
-		teamsService,
-		metricsService,
-		notificationsService,
-		nil, // email.Service
-		nil, // alarms.EmailFactory
-		nil, // alarms.SlackFactory
-		nil, // HTTP client
-	)
-
 	// Start a negroni app
 	app := negroni.New()
 	app.Use(negroni.NewRecovery())
