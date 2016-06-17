@@ -31,15 +31,9 @@ func RunScheduler() error {
 	}
 
 	// Run the scheduling goroutines
-	quitChan := theScheduler.Run(
-		time.Duration(10),  // alarms check interval = 10s
-		time.Duration(600), // partition / rotate interval = 10m
-	)
-
-	select {
-	case <-quitChan:
-		break
-	}
+	alarmsInterval := time.Duration(10)     // alarms check interval = 10s
+	partitionInterval := time.Duration(600) // partition / rotate interval = 10m
+	<-theScheduler.Start(alarmsInterval, partitionInterval)
 
 	return nil
 }

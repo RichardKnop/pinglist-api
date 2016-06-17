@@ -26,17 +26,15 @@ func RunAll() error {
 	}
 
 	// Run the scheduling goroutines
-	quitChan := theScheduler.Run(
-		time.Duration(10),  // alarms check interval = 10s
-		time.Duration(600), // partition / rotate interval = 10m
-	)
+	alarmsInterval := time.Duration(10)     // alarms check interval = 10s
+	partitionInterval := time.Duration(600) // partition / rotate interval = 10m
+	stoppedChan := theScheduler.Start(alarmsInterval, partitionInterval)
 
 	// Run the server on port 8080
 	app.Run(":8080")
 
-	// Before we exit, stop scheduler goroutines
-	quitChan <- 1
-	quitChan <- 1
+	// Stop the scheduler
+	stoppedChan <- true
 
 	return nil
 }
