@@ -12,7 +12,7 @@ type ServiceInterface interface {
 	// Exported methods
 	GetAccountsService() accounts.ServiceInterface
 	FindAlarmByID(alarmID uint) (*Alarm, error)
-	GetAlarmsToCheck(now time.Time) ([]*Alarm, error)
+	GetAlarmsToCheck(now time.Time) ([]uint, error)
 	CheckAlarm(alarmID uint, watermark time.Time) error
 
 	// Needed for the newRoutes to be able to register handlers

@@ -43,6 +43,8 @@ var testFixtures = []string{
 var testMigrations = []func(*gorm.DB) error{
 	oauth.MigrateAll,
 	accounts.MigrateAll,
+	teams.MigrateAll,
+	subscriptions.MigrateAll,
 	MigrateAll,
 }
 
@@ -166,7 +168,12 @@ func (suite *AlarmsTestSuite) TearDownSuite() {
 
 // The SetupTest method will be run before every test in the suite.
 func (suite *AlarmsTestSuite) SetupTest() {
+	suite.db.Unscoped().Delete(new(subscriptions.Subscription))
+	suite.db.Unscoped().Delete(new(subscriptions.Customer))
+	suite.db.Unscoped().Delete(new(subscriptions.Plan))
 	suite.db.Unscoped().Delete(new(NotificationCounter))
+	suite.db.Exec("DELETE FROM team_team_members;")
+	suite.db.Unscoped().Delete(new(teams.Team))
 	suite.db.Unscoped().Not("id", []int64{1, 2, 3, 4}).Delete(new(Incident))
 	suite.db.Unscoped().Not("id", []int64{1, 2, 3, 4}).Delete(new(Alarm))
 

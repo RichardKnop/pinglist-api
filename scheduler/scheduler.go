@@ -53,14 +53,14 @@ func (s *Scheduler) Start(alarmsInterval, partitionInterval time.Duration) chan 
 
 func (s *Scheduler) runAlarmCheckJob() {
 	// Get alarms to check
-	alarms, err := s.alarmsService.GetAlarmsToCheck(time.Now())
+	alarmIDs, err := s.alarmsService.GetAlarmsToCheck(time.Now())
 	if err != nil {
 		logger.Error(err)
 		return
 	}
 
 	// Any alarms to check
-	if len(alarms) < 1 {
+	if len(alarmIDs) < 1 {
 		logger.Info("No alarms to check")
 		return
 	}
@@ -69,13 +69,13 @@ func (s *Scheduler) runAlarmCheckJob() {
 	now := time.Now()
 
 	// Iterate over alarms and fire check goroutines
-	logger.Infof("Triggerring %d alarm checks", len(alarms))
-	for _, alarm := range alarms {
-		go func(alarmID uint, watermark time.Time) {
-			if err := s.alarmsService.CheckAlarm(alarmID, watermark); err != nil {
+	logger.Infof("Triggerring %d alarm checks", len(alarmIDs))
+	for _, alarmID := range alarmIDs {
+		go func(aID uint, watermark time.Time) {
+			if err := s.alarmsService.CheckAlarm(aID, watermark); err != nil {
 				logger.Error(err)
 			}
-		}(alarm.ID, now)
+		}(alarmID, now)
 	}
 }
 

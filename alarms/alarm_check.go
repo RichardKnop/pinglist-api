@@ -23,18 +23,46 @@ var (
 	AlarmCheckTimeout = 10 * time.Second
 )
 
-// GetAlarmsToCheck returns alarms that should be checked
-func (s *Service) GetAlarmsToCheck(now time.Time) ([]*Alarm, error) {
-	var alarms []*Alarm
-
-	watermarkCondition := "watermark IS NULL OR watermark + interval '1 second' * interval < ?"
-	err := s.db.Where("active = ?", true).Where(watermarkCondition, now).
-		Order("id").Find(&alarms).Error
+// GetAlarmsToCheck returns IDs of alarms that should be checked
+func (s *Service) GetAlarmsToCheck(now time.Time) ([]uint, error) {
+	var alarmIDs []uint
+	query := `SELECT * FROM (
+		SELECT
+		a.id,
+		COALESCE(GREATEST(p.max_alarms, p2.max_alarms), 1) max_alarms,
+		DENSE_RANK() OVER (PARTITION BY COALESCE(CAST(s.id AS TEXT), ou.username) ORDER BY a.id ASC) AS rank
+		FROM alarm_alarms a
+		INNER JOIN account_users u ON u.id = a.user_id
+		INNER JOIN oauth_users ou ON ou.id = u.oauth_user_id
+		LEFT JOIN subscription_customers c ON c.user_id = a.user_id
+		LEFT JOIN subscription_subscriptions s ON s.customer_id = c.id AND s.period_end > ?
+		LEFT JOIN subscription_plans p ON p.id = s.plan_id
+		LEFT JOIN team_team_members tm ON tm.user_id = u.id
+		LEFT JOIN team_teams t ON t.id = tm.team_id
+		LEFT JOIN subscription_customers c2 ON c2.user_id = t.owner_id
+		LEFT JOIN subscription_subscriptions s2 ON s2.customer_id = c2.id AND s2.period_end > ?
+		LEFT JOIN subscription_plans p2 ON p2.id = s2.plan_id
+		WHERE
+		(watermark IS NULL OR watermark + interval '1 second' * a.interval < ?) AND active=true
+		ORDER BY s.id, a.user_id, rank
+	) t WHERE rank <= max_alarms;`
+	rows, err := s.db.Raw(query, now, now, now).Rows() // (*sql.Rows, error)
 	if err != nil {
-		return alarms, err
+		return alarmIDs, err
 	}
-
-	return alarms, nil
+	defer rows.Close()
+	for rows.Next() {
+		var (
+			alarmID   uint
+			maxAlarms uint
+			rank      uint
+		)
+		if err := rows.Scan(&alarmID, &maxAlarms, &rank); err != nil {
+			return alarmIDs, err
+		}
+		alarmIDs = append(alarmIDs, alarmID)
+	}
+	return alarmIDs, nil
 }
 
 // CheckAlarm performs an alarm check
