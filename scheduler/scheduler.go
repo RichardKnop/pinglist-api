@@ -77,8 +77,10 @@ func (s *Scheduler) runAlarmCheckJob() {
 
 func (s *Scheduler) checkAlarm(alarmID uint, watermark time.Time) {
 	if err := s.alarmsService.CheckAlarm(alarmID, watermark); err != nil {
-		logger.Errorf("Check alarm with ID %d error: %s", alarmID, err.Error())
+		logger.Errorf("Alarm #%d check error: %s", alarmID, err.Error())
+		return
 	}
+	logger.Infof("Alarm #%d checked successfully", alarmID)
 }
 
 func (s *Scheduler) runPartitioningJob() {
