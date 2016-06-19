@@ -25,8 +25,6 @@ var (
 
 // GetAlarmsToCheck returns IDs of alarms that should be checked
 func (s *Service) GetAlarmsToCheck(now time.Time) ([]uint, error) {
-	s.db.LogMode(true)
-	defer s.db.LogMode(false)
 	var alarmIDs []uint
 	query := `SELECT * FROM (
 		SELECT
