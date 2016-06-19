@@ -17,9 +17,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func (suite *AlarmsTestSuite) TestGetAlarmsToCheck() {
+func (suite *AlarmsTestSuite) TestGetAlarmsToCheckSimpleUseCase() {
 	var (
-		alarms    []*Alarm
+		alarmIDs  []uint
+		testAlarm *Alarm
 		err       error
 		watermark time.Time
 		interval  = uint(60)
@@ -30,17 +31,17 @@ func (suite *AlarmsTestSuite) TestGetAlarmsToCheck() {
 	assert.NoError(suite.T(), err, "Deactivating alarms failed")
 
 	// First, let's try with no active alarms
-	alarms, err = suite.service.GetAlarmsToCheck(time.Now())
+	alarmIDs, err = suite.service.GetAlarmsToCheck(time.Now())
 
 	// Error should be nil
 	assert.Nil(suite.T(), err)
 
-	// 0 alarms
-	assert.Equal(suite.T(), 0, len(alarms))
+	// 0 alarm IDs
+	assert.Equal(suite.T(), 0, len(alarmIDs))
 
 	// Now insert an active test alarm with watermark + interval >= now
-	watermark = time.Now().Add(-time.Duration(interval-1) * time.Second)
-	err = suite.db.Create(&Alarm{
+	watermark = time.Now().Add(-time.Duration(interval-10) * time.Second)
+	testAlarm = &Alarm{
 		User:             suite.users[1],
 		Region:           &Region{ID: regions.USWest2, Name: "US West (Oregon)"},
 		AlarmState:       &AlarmState{ID: alarmstates.InsufficientData},
@@ -50,21 +51,22 @@ func (suite *AlarmsTestSuite) TestGetAlarmsToCheck() {
 		MaxResponseTime:  1000,
 		Interval:         interval,
 		Active:           true,
-	}).Error
+	}
+	err = suite.db.Create(testAlarm).Error
 	assert.NoError(suite.T(), err, "Inserting test data failed")
 
 	// Try again
-	alarms, err = suite.service.GetAlarmsToCheck(time.Now())
+	alarmIDs, err = suite.service.GetAlarmsToCheck(time.Now())
 
 	// Error should be nil
 	assert.Nil(suite.T(), err)
 
-	// 0 alarms
-	assert.Equal(suite.T(), 0, len(alarms))
+	// 0 alarm IDs
+	assert.Equal(suite.T(), 0, len(alarmIDs))
 
 	// Now insert an active test alarm with watermark + interval < now
-	watermark = time.Now().Add(-time.Duration(interval+1) * time.Second)
-	err = suite.db.Create(&Alarm{
+	watermark = time.Now().Add(-time.Duration(interval+10) * time.Second)
+	testAlarm = &Alarm{
 		User:             suite.users[1],
 		Region:           &Region{ID: regions.USWest2, Name: "US West (Oregon)"},
 		AlarmState:       &AlarmState{ID: alarmstates.InsufficientData},
@@ -74,18 +76,19 @@ func (suite *AlarmsTestSuite) TestGetAlarmsToCheck() {
 		MaxResponseTime:  1000,
 		Interval:         interval,
 		Active:           true,
-	}).Error
+	}
+	err = suite.db.Create(testAlarm).Error
 	assert.NoError(suite.T(), err, "Inserting test data failed")
 
 	// Try again
-	alarms, err = suite.service.GetAlarmsToCheck(time.Now())
+	alarmIDs, err = suite.service.GetAlarmsToCheck(time.Now())
 
 	// Error should be nil
 	assert.Nil(suite.T(), err)
 
-	// 1 alarms
-	assert.Equal(suite.T(), 1, len(alarms))
-	assert.Equal(suite.T(), "http://bar", alarms[0].EndpointURL)
+	// 1 alarm ID
+	assert.Equal(suite.T(), 1, len(alarmIDs))
+	assert.Equal(suite.T(), testAlarm.ID, alarmIDs[0])
 }
 
 func (suite *AlarmsTestSuite) TestAlarmCheck() {
