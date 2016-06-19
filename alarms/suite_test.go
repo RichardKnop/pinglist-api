@@ -169,6 +169,9 @@ func (suite *AlarmsTestSuite) TearDownSuite() {
 
 // The SetupTest method will be run before every test in the suite.
 func (suite *AlarmsTestSuite) SetupTest() {
+	suite.db.Unscoped().Delete(new(subscriptions.Subscription))
+	suite.db.Unscoped().Delete(new(subscriptions.Card))
+	suite.db.Unscoped().Delete(new(subscriptions.Customer))
 	suite.db.Unscoped().Delete(new(NotificationCounter))
 	suite.db.Unscoped().Not("id", []int64{1, 2, 3, 4}).Delete(new(Incident))
 	suite.db.Unscoped().Not("id", []int64{1, 2, 3, 4}).Delete(new(Alarm))
