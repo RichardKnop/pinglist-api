@@ -71,11 +71,13 @@ func (s *Scheduler) runAlarmCheckJob() {
 	// Iterate over alarms and fire check goroutines
 	logger.Infof("Triggerring %d alarm checks", len(alarmIDs))
 	for _, alarmID := range alarmIDs {
-		go func(aID uint, watermark time.Time) {
-			if err := s.alarmsService.CheckAlarm(aID, watermark); err != nil {
-				logger.Error(err)
-			}
-		}(alarmID, now)
+		go s.checkAlarm(alarmID, now)
+	}
+}
+
+func (s *Scheduler) checkAlarm(alarmID uint, watermark time.Time) {
+	if err := s.alarmsService.CheckAlarm(alarmID, watermark); err != nil {
+		logger.Errorf("Check alarm with ID %d error: %s", alarmID, err.Error())
 	}
 }
 
@@ -86,13 +88,13 @@ func (s *Scheduler) runPartitioningJob() {
 		time.Now(),
 	)
 	if err != nil {
-		logger.Error(err)
+		logger.Errorf("Partition response time error: %s", err.Error())
 		return
 	}
 
 	// Rotate old sub tables
 	if err := s.metricsService.RotateSubTables(); err != nil {
-		logger.Error(err)
+		logger.Errorf("Rotate sub tables error: %s", err.Error())
 		return
 	}
 }
