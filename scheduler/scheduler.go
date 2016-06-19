@@ -61,7 +61,6 @@ func (s *Scheduler) runAlarmCheckJob() {
 
 	// Any alarms to check
 	if len(alarmIDs) < 1 {
-		logger.Info("No alarms to check")
 		return
 	}
 
@@ -69,8 +68,8 @@ func (s *Scheduler) runAlarmCheckJob() {
 	now := time.Now()
 
 	// Iterate over alarms and fire check goroutines
-	logger.Infof("Triggerring %d alarm checks", len(alarmIDs))
-	for _, alarmID := range alarmIDs {
+	for i := range alarmIDs {
+		alarmID := alarmIDs[i]
 		go s.checkAlarm(alarmID, now)
 	}
 }
