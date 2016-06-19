@@ -23,6 +23,7 @@ func (suite *AlarmsTestSuite) TestGetAlarmsToCheckSimpleUseCase() {
 		alarmIDs  []uint
 		testAlarm *Alarm
 		err       error
+		testUser  = suite.users[1]
 		watermark time.Time
 		interval  = uint(60)
 	)
@@ -43,7 +44,7 @@ func (suite *AlarmsTestSuite) TestGetAlarmsToCheckSimpleUseCase() {
 	// Now insert an active test alarm not yet ready to be checked
 	watermark = time.Now().Add(-time.Duration(interval-1) * time.Second)
 	testAlarm = &Alarm{
-		User:             suite.users[1],
+		User:             testUser,
 		Region:           &Region{ID: regions.USWest2, Name: "US West (Oregon)"},
 		AlarmState:       &AlarmState{ID: alarmstates.InsufficientData},
 		EndpointURL:      "http://foo",
@@ -54,7 +55,7 @@ func (suite *AlarmsTestSuite) TestGetAlarmsToCheckSimpleUseCase() {
 		Active:           true,
 	}
 	err = suite.db.Create(testAlarm).Error
-	assert.NoError(suite.T(), err, "Inserting test alarm")
+	assert.NoError(suite.T(), err, "Inserting test alarm failed")
 
 	// Try again
 	alarmIDs, err = suite.service.GetAlarmsToCheck(time.Now())
@@ -79,7 +80,7 @@ func (suite *AlarmsTestSuite) TestGetAlarmsToCheckSimpleUseCase() {
 		Active:           true,
 	}
 	err = suite.db.Create(testAlarm).Error
-	assert.NoError(suite.T(), err, "Inserting test alarm")
+	assert.NoError(suite.T(), err, "Inserting test alarm failed")
 
 	// Try again
 	alarmIDs, err = suite.service.GetAlarmsToCheck(time.Now())
@@ -97,11 +98,11 @@ func (suite *AlarmsTestSuite) TestGetAlarmsToCheckMultipleAlarms() {
 		alarmIDs  []uint
 		testAlarm *Alarm
 		err       error
-		watermark time.Time
 		testUsers = []*accounts.User{
 			suite.users[1],
 			suite.users[2],
 		}
+		watermark        time.Time
 		interval         = uint(60)
 		expectedAlarmIDs []uint
 	)
@@ -125,7 +126,7 @@ func (suite *AlarmsTestSuite) TestGetAlarmsToCheckMultipleAlarms() {
 			Active:           true,
 		}
 		err = suite.db.Create(testAlarm).Error
-		assert.NoError(suite.T(), err, "Inserting test alarm")
+		assert.NoError(suite.T(), err, "Inserting test alarm failed")
 		expectedAlarmIDs = append(expectedAlarmIDs, testAlarm.ID)
 	}
 
@@ -137,8 +138,9 @@ func (suite *AlarmsTestSuite) TestGetAlarmsToCheckMultipleAlarms() {
 
 	// 2 alarm IDs
 	assert.Equal(suite.T(), 2, len(alarmIDs))
-	assert.Equal(suite.T(), expectedAlarmIDs[0], alarmIDs[0])
-	assert.Equal(suite.T(), expectedAlarmIDs[1], alarmIDs[1])
+	for i, expectedAlarmID := range expectedAlarmIDs {
+		assert.Equal(suite.T(), expectedAlarmID, alarmIDs[i])
+	}
 }
 
 func (suite *AlarmsTestSuite) TestGetAlarmsToCheckFreeTierMaxAlarmsLimit() {
@@ -146,6 +148,7 @@ func (suite *AlarmsTestSuite) TestGetAlarmsToCheckFreeTierMaxAlarmsLimit() {
 		alarmIDs         []uint
 		testAlarm        *Alarm
 		err              error
+		testUser         = suite.users[1]
 		watermark        time.Time
 		interval         = uint(60)
 		expectedAlarmIDs []uint
@@ -159,7 +162,7 @@ func (suite *AlarmsTestSuite) TestGetAlarmsToCheckFreeTierMaxAlarmsLimit() {
 	for i := 0; i < 2; i++ {
 		watermark = time.Now().Add(-time.Duration(interval+10) * time.Second)
 		testAlarm = &Alarm{
-			User:             suite.users[1],
+			User:             testUser,
 			Region:           &Region{ID: regions.USWest2, Name: "US West (Oregon)"},
 			AlarmState:       &AlarmState{ID: alarmstates.InsufficientData},
 			EndpointURL:      "http://bar",
@@ -170,7 +173,7 @@ func (suite *AlarmsTestSuite) TestGetAlarmsToCheckFreeTierMaxAlarmsLimit() {
 			Active:           true,
 		}
 		err = suite.db.Create(testAlarm).Error
-		assert.NoError(suite.T(), err, "Inserting test alarm")
+		assert.NoError(suite.T(), err, "Inserting test alarm failed")
 		if i == 0 {
 			expectedAlarmIDs = append(expectedAlarmIDs, testAlarm.ID)
 		}
@@ -185,6 +188,151 @@ func (suite *AlarmsTestSuite) TestGetAlarmsToCheckFreeTierMaxAlarmsLimit() {
 	// 1 alarm ID
 	assert.Equal(suite.T(), 1, len(alarmIDs))
 	assert.Equal(suite.T(), expectedAlarmIDs[0], alarmIDs[0])
+}
+
+func (suite *AlarmsTestSuite) TestGetAlarmsToCheckExpiredUserSubscription() {
+	var (
+		alarmIDs         []uint
+		testAlarm        *Alarm
+		err              error
+		watermark        time.Time
+		testUser         = suite.users[1]
+		testPlan         *subscriptions.Plan
+		testCustomer     *subscriptions.Customer
+		periodEnd        time.Time
+		testSubscription *subscriptions.Subscription
+		interval         = uint(60)
+		expectedAlarmIDs []uint
+	)
+
+	// Deactivate all alarms
+	err = suite.service.db.Model(new(Alarm)).UpdateColumn("active", false).Error
+	assert.NoError(suite.T(), err, "Deactivating alarms failed")
+
+	// Insert an expired subscription
+	testPlan = &subscriptions.Plan{
+		MaxAlarms: uint(2),
+	}
+	err = suite.db.Create(testPlan).Error
+	assert.NoError(suite.T(), err, "Inserting test plan failed")
+	testCustomer = &subscriptions.Customer{
+		User: testUser,
+	}
+	err = suite.db.Create(testCustomer).Error
+	assert.NoError(suite.T(), err, "Inserting test customer failed")
+	periodEnd = time.Now().Add(-10 * time.Second)
+	testSubscription = &subscriptions.Subscription{
+		Customer:  testCustomer,
+		Plan:      testPlan,
+		PeriodEnd: util.TimeOrNull(&periodEnd),
+	}
+	err = suite.db.Create(testSubscription).Error
+	assert.NoError(suite.T(), err, "Inserting test subscription failed")
+
+	// Insert multiple active test alarms ready for check
+	for i := 0; i < 2; i++ {
+		watermark = time.Now().Add(-time.Duration(interval+10) * time.Second)
+		testAlarm = &Alarm{
+			User:             testUser,
+			Region:           &Region{ID: regions.USWest2, Name: "US West (Oregon)"},
+			AlarmState:       &AlarmState{ID: alarmstates.InsufficientData},
+			EndpointURL:      "http://bar",
+			Watermark:        util.TimeOrNull(&watermark),
+			ExpectedHTTPCode: 200,
+			MaxResponseTime:  1000,
+			Interval:         interval,
+			Active:           true,
+		}
+		err = suite.db.Create(testAlarm).Error
+		assert.NoError(suite.T(), err, "Inserting test alarm failed")
+		if i == 0 {
+			expectedAlarmIDs = append(expectedAlarmIDs, testAlarm.ID)
+		}
+	}
+
+	// Try again
+	alarmIDs, err = suite.service.GetAlarmsToCheck(time.Now())
+
+	// Error should be nil
+	assert.Nil(suite.T(), err)
+
+	// 1 alarm ID
+	assert.Equal(suite.T(), 1, len(alarmIDs))
+	assert.Equal(suite.T(), expectedAlarmIDs[0], alarmIDs[0])
+}
+
+func (suite *AlarmsTestSuite) TestGetAlarmsToCheckActiveUserSubscription() {
+	var (
+		alarmIDs         []uint
+		testAlarm        *Alarm
+		err              error
+		watermark        time.Time
+		testUser         = suite.users[1]
+		testPlan         *subscriptions.Plan
+		testCustomer     *subscriptions.Customer
+		periodEnd        time.Time
+		testSubscription *subscriptions.Subscription
+		interval         = uint(60)
+		expectedAlarmIDs []uint
+	)
+
+	// Deactivate all alarms
+	err = suite.service.db.Model(new(Alarm)).UpdateColumn("active", false).Error
+	assert.NoError(suite.T(), err, "Deactivating alarms failed")
+
+	// Insert an active subscription
+	testPlan = &subscriptions.Plan{
+		PlanID:    "test_plan_id",
+		MaxAlarms: uint(2),
+	}
+	err = suite.db.Create(testPlan).Error
+	assert.NoError(suite.T(), err, "Inserting test plan failed")
+	testCustomer = &subscriptions.Customer{
+		User:       testUser,
+		CustomerID: "test_customer_id",
+	}
+	err = suite.db.Create(testCustomer).Error
+	assert.NoError(suite.T(), err, "Inserting test customer failed")
+	periodEnd = time.Now().Add(10 * time.Second)
+	testSubscription = &subscriptions.Subscription{
+		Customer:       testCustomer,
+		Plan:           testPlan,
+		PeriodEnd:      util.TimeOrNull(&periodEnd),
+		SubscriptionID: "test_subscription_id",
+	}
+	err = suite.db.Create(testSubscription).Error
+	assert.NoError(suite.T(), err, "Inserting test subscription failed")
+
+	// Insert multiple active test alarms ready for check
+	for i := 0; i < 2; i++ {
+		watermark = time.Now().Add(-time.Duration(interval+10) * time.Second)
+		testAlarm = &Alarm{
+			User:             testUser,
+			Region:           &Region{ID: regions.USWest2, Name: "US West (Oregon)"},
+			AlarmState:       &AlarmState{ID: alarmstates.InsufficientData},
+			EndpointURL:      "http://bar",
+			Watermark:        util.TimeOrNull(&watermark),
+			ExpectedHTTPCode: 200,
+			MaxResponseTime:  1000,
+			Interval:         interval,
+			Active:           true,
+		}
+		err = suite.db.Create(testAlarm).Error
+		assert.NoError(suite.T(), err, "Inserting test alarm failed")
+		expectedAlarmIDs = append(expectedAlarmIDs, testAlarm.ID)
+	}
+
+	// Try again
+	alarmIDs, err = suite.service.GetAlarmsToCheck(time.Now())
+
+	// Error should be nil
+	assert.Nil(suite.T(), err)
+
+	// 2 alarm IDs
+	assert.Equal(suite.T(), 2, len(alarmIDs))
+	for i, expectedAlarmID := range expectedAlarmIDs {
+		assert.Equal(suite.T(), expectedAlarmID, alarmIDs[i])
+	}
 }
 
 func (suite *AlarmsTestSuite) TestAlarmCheck() {

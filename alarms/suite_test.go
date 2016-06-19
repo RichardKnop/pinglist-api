@@ -32,7 +32,6 @@ var testFixtures = []string{
 	"../accounts/fixtures/roles.yml",
 	"../accounts/fixtures/test_accounts.yml",
 	"../accounts/fixtures/test_users.yml",
-	"../subscriptions/fixtures/plans.yml",
 	"fixtures/regions.yml",
 	"fixtures/alarm_states.yml",
 	"fixtures/incident_types.yml",
