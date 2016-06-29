@@ -1,3 +1,12 @@
+15.6.0 2016-06-24
+	Allow product and SKU attributes to be updated
+
+15.5.0 2016-06-24
+	Add `TaxPercent` and `TaxPercentZero` to `CustomerParams`
+
+15.4.0 2016-06-20
+	Add `TokenizationMethod` to `Card` struct
+
 15.3.0 2016-06-15
 	Add `BalanceZero` to `CustomerParams` so that balance can be zeroed out
 
