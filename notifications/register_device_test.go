@@ -510,3 +510,84 @@ func (suite *NotificationsTestSuite) TestRegisterIOSDeviceWhenAlreadyRegisteredB
 	// Check the response body
 	assert.Equal(suite.T(), "", strings.TrimRight(w.Body.String(), "\n"))
 }
+
+func (suite *NotificationsTestSuite) TestRegisterIOSDeviceWhenApplicationARNChanged() {
+	// Insert a test endpoint
+	testEndpoint := NewEndpoint(
+		suite.users[0],
+		"some_old_nonexistent_application_arn",
+		"endpoint_arn",
+		"device_token",
+		false, // enabled
+	)
+	err := suite.db.Create(testEndpoint).Error
+	assert.NoError(suite.T(), err, "Failed to insert a test endpoint")
+
+	// Prepare a request
+	payload, err := json.Marshal(&DeviceRequest{
+		Platform: PlatformIOS,
+		Token:    "some_device_token",
+	})
+	assert.NoError(suite.T(), err, "JSON marshalling failed")
+	r, err := http.NewRequest(
+		"POST",
+		"http://1.2.3.4/v1/devices",
+		bytes.NewBuffer(payload),
+	)
+	assert.NoError(suite.T(), err, "Request setup should not get an error")
+	r.Header.Set("Authorization", "Bearer test_token")
+
+	// Check the routing
+	match := new(mux.RouteMatch)
+	suite.router.Match(r, match)
+	if assert.NotNil(suite.T(), match.Route) {
+		assert.Equal(suite.T(), "register_device", match.Route.GetName())
+	}
+
+	// Mock authentication
+	suite.mockUserAuth(suite.users[0])
+
+	// Mock endpoint creation
+	suite.mockCreateEndpoint(
+		suite.service.cnf.AWS.APNSPlatformApplicationARN,
+		"some_device_token",
+		"new_endpoint_arn",
+		nil,
+	)
+
+	// Count before
+	var countBefore int
+	suite.db.Model(new(Endpoint)).Count(&countBefore)
+
+	// And serve the request
+	w := httptest.NewRecorder()
+	suite.router.ServeHTTP(w, r)
+
+	// Check that the mock object expectations were met
+	suite.assertMockExpectations()
+
+	// Check the status code
+	if !assert.Equal(suite.T(), 204, w.Code) {
+		log.Print(w.Body.String())
+	}
+
+	// Count after
+	var countAfter int
+	suite.db.Model(new(Endpoint)).Count(&countAfter)
+	assert.Equal(suite.T(), countBefore, countAfter)
+
+	// Fetch the updated endpoint
+	endpoint := new(Endpoint)
+	notFound := suite.db.Preload("User").Last(endpoint).RecordNotFound()
+	assert.False(suite.T(), notFound)
+
+	// Check that the correct data was saved
+	assert.Equal(suite.T(), suite.users[0].ID, endpoint.User.ID)
+	assert.Equal(suite.T(), suite.service.cnf.AWS.APNSPlatformApplicationARN, endpoint.ApplicationARN)
+	assert.Equal(suite.T(), "new_endpoint_arn", endpoint.ARN)
+	assert.Equal(suite.T(), "some_device_token", endpoint.DeviceToken)
+	assert.True(suite.T(), endpoint.Enabled)
+
+	// Check the response body
+	assert.Equal(suite.T(), "", strings.TrimRight(w.Body.String(), "\n"))
+}

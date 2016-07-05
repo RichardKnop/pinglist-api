@@ -101,7 +101,7 @@ func (s *Service) createEndpoint(user *accounts.User, applicationARN, deviceToke
 	var endpoint = new(Endpoint)
 
 	// Grab the first matching endpoint or create a new one
-	if err := s.db.Where(map[string]interface{}{
+	if err := tx.Where(map[string]interface{}{
 		"user_id":         user.ID,
 		"application_arn": applicationARN,
 	}).FirstOrCreate(&endpoint).Error; err != nil {
@@ -110,12 +110,18 @@ func (s *Service) createEndpoint(user *accounts.User, applicationARN, deviceToke
 	}
 
 	// Update arn, device token and set enabled to true
-	if err := s.db.Model(endpoint).UpdateColumns(map[string]interface{}{
+	if err := tx.Model(endpoint).UpdateColumns(map[string]interface{}{
 		"arn":          endpointARN,
 		"device_token": deviceToken,
 		"enabled":      true,
 		"updated_at":   time.Now(),
 	}).Error; err != nil {
+		tx.Rollback() // rollback the transaction
+		return nil, err
+	}
+
+	// Delete any additional rows that should not be in the database
+	if err := tx.Not("id", endpoint.ID).Delete(new(Endpoint)).Error; err != nil {
 		tx.Rollback() // rollback the transaction
 		return nil, err
 	}
