@@ -7,8 +7,8 @@ import (
 )
 
 var (
-	testDBName = "area_database_test"
-	testDBUser = "area"
+	testDBName = "pinglist_database_test"
+	testDBUser = "pinglist"
 )
 
 func TestCreateTestDatabaseFailsWithBadValues(t *testing.T) {
