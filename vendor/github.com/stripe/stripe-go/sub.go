@@ -21,6 +21,17 @@ type SubParams struct {
 	NoProrate, EndCancel, QuantityZero, TrialEndNow bool
 	BillingCycleAnchor                              int64
 	BillingCycleAnchorNow                           bool
+	Items                                           []*SubItemsParams
+}
+
+// SubItemsParams is the set of parameters that can be used when creating or updating a subscription item on a subscription
+// For more details see https://stripe.com/docs/api#create_subscription and https://stripe.com/docs/api#update_subscription.
+type SubItemsParams struct {
+	Params
+	ID                    string
+	Quantity              uint64
+	Plan                  string
+	Deleted, QuantityZero bool
 }
 
 // SubListParams is the set of parameters that can be used when listing active subscriptions.
@@ -29,6 +40,7 @@ type SubListParams struct {
 	ListParams
 	Customer string
 	Plan     string
+	Status   SubStatus
 }
 
 // Sub is the resource representing a Stripe subscription.
@@ -52,6 +64,7 @@ type Sub struct {
 	TaxPercent  float64           `json:"tax_percent"`
 	TrialEnd    int64             `json:"trial_end"`
 	TrialStart  int64             `json:"trial_start"`
+	Items       *SubItemList      `json:"items"`
 }
 
 // SubList is a list object for subscriptions.

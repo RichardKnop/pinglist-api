@@ -1,3 +1,95 @@
+18.7.0 2016-10-18
+	Add `RiskLevel` to `ChargeOutcome`
+
+18.6.0 2016-10-18
+	Support for 403 status codes (permission denied)
+
+18.5.0 2016-10-18
+	Add `Status` to `SubListParams` to allow filtering subscriptions by status
+
+18.4.0 2016-10-14
+	Add `HasEvidence` and `PastDue` to `EvidenceDetails`
+
+18.3.0 2016-10-10
+	Add `NoDiscountable` to `InvoiceItemParams`
+
+18.2.0 2016-10-10
+	Add `BusinessLogo` to `Account`
+	Add `ReceiptNumber` to `Charge`
+	Add `DestPayment` to `Transfer`
+
+18.1.0 2016-10-04
+	Support for Apple Pay domains
+
+18.0.0 2016-10-03
+	Support for subscription items
+	Correct `SourceTx` on `Transfer` to be a `SourceTransaction`
+	Change `Charge` on `Resource` to be expandable (now a struct instead of string)
+
+17.5.0 2016-09-22
+	Support customer-related operations for bank accounts
+
+17.4.2 2016-09-19
+	Fix but where some parameters were not being included on order update
+
+17.4.1 2016-09-15
+	Fix bug that required a date of birth to be included on account update
+
+17.4.0 2016-09-13
+	Add missing Kana and Kanji address and name fields to account's legal entity
+	Add `ReceiptNumber` and `Status` to `Refund`
+
+17.3.0 2016-09-07
+	Add support for sources endpoint
+
+17.2.0 2016-08-29
+	Add order returns to `API`
+
+17.1.0 2016-08-22
+	Add `DeactiveOn` to `Product`
+
+17.0.0 2016-08-18
+	Allow expansion of destination on transfers
+	Allow expansion of sources on balance transactions
+
+16.8.0 2016-08-17
+	Add `OriginatingTransaction` to `Fee`
+
+16.7.1 2016-08-17
+	Allow params to be nil when retrieving a refund
+
+16.7.0 2016-08-11
+	Add support for 3-D Secure
+
+16.6.0 2016-08-09
+	Add `ReceiptNumber` to `Invoice`
+
+16.5.0 2016-08-08
+	Add `Meta` to `Account`
+
+16.4.0 2016-08-05
+	Allow the migration of recipients to accounts
+	Add `MigratedTo` to `Recipient`
+
+16.3.1 2016-07-25
+	URL-escape the IDs of coupons and plans when making API requests
+
+16.3.0 2016-07-19
+	Add `NoClosed` to `InvoiceParams` to allow an invoice to be reopened
+
+16.2.1 2016-07-11
+	Consider `SubParams.QuantityZero` when updating a subscription
+
+16.2.0 2016-07-07
+	Upgrade API version to 2016-07-06
+
+16.1.0 2016-07-07
+	Add `Returns` field to `Order`
+
+16.0.0 2016-06-30
+	Remove `Name` field on `SKU`; it's not actually supported
+	Support updating `Product` on `SKU`
+
 15.6.0 2016-06-24
 	Allow product and SKU attributes to be updated
 

@@ -75,6 +75,9 @@ func Open(dialect string, args ...interface{}) (*DB, error) {
 
 		if err == nil {
 			err = db.DB().Ping() // Send a ping to make sure the database connection is alive.
+			if err != nil {
+				db.DB().Close()
+			}
 		}
 	}
 
@@ -89,6 +92,11 @@ func (s *DB) Close() error {
 // DB get `*sql.DB` from current connection
 func (s *DB) DB() *sql.DB {
 	return s.db.(*sql.DB)
+}
+
+// Dialect get dialect
+func (s *DB) Dialect() Dialect {
+	return s.parent.dialect
 }
 
 // New clone a new db connection without search conditions
@@ -322,13 +330,13 @@ func (s *DB) FirstOrInit(out interface{}, where ...interface{}) *DB {
 // https://jinzhu.github.io/gorm/curd.html#firstorcreate
 func (s *DB) FirstOrCreate(out interface{}, where ...interface{}) *DB {
 	c := s.clone()
-	if result := c.First(out, where...); result.Error != nil {
+	if result := s.First(out, where...); result.Error != nil {
 		if !result.RecordNotFound() {
 			return result
 		}
-		c.AddError(c.NewScope(out).inlineCondition(where...).initialize().callCallbacks(c.parent.callbacks.creates).db.Error)
+		return c.NewScope(out).inlineCondition(where...).initialize().callCallbacks(c.parent.callbacks.creates).db
 	} else if len(c.search.assignAttrs) > 0 {
-		c.AddError(c.NewScope(out).InstanceSet("gorm:update_interface", c.search.assignAttrs).callCallbacks(c.parent.callbacks.updates).db.Error)
+		return c.NewScope(out).InstanceSet("gorm:update_interface", c.search.assignAttrs).callCallbacks(c.parent.callbacks.updates).db
 	}
 	return c
 }
@@ -363,10 +371,14 @@ func (s *DB) UpdateColumns(values interface{}) *DB {
 // Save update value in database, if the value doesn't have primary key, will insert it
 func (s *DB) Save(value interface{}) *DB {
 	scope := s.clone().NewScope(value)
-	if scope.PrimaryKeyZero() {
-		return scope.callCallbacks(s.parent.callbacks.creates).db
+	if !scope.PrimaryKeyZero() {
+		newDB := scope.callCallbacks(s.parent.callbacks.updates).db
+		if newDB.Error == nil && newDB.RowsAffected == 0 {
+			return s.New().FirstOrCreate(value)
+		}
+		return newDB
 	}
-	return scope.callCallbacks(s.parent.callbacks.updates).db
+	return scope.callCallbacks(s.parent.callbacks.creates).db
 }
 
 // Create insert the value into database

@@ -30,15 +30,6 @@ type ShippingParams struct {
 	Phone   string
 }
 
-type AddressParams struct {
-	Line1      string
-	Line2      string
-	City       string
-	State      string
-	PostalCode string
-	Country    string
-}
-
 type OrderUpdateParams struct {
 	Params
 	Coupon                 string
@@ -86,6 +77,7 @@ type DeliveryEstimate struct {
 type Order struct {
 	ID                     string            `json:"id"`
 	Amount                 int64             `json:"amount"`
+	AmountReturned         int64             `json:"amount_returned"`
 	Application            string            `json:"application"`
 	ApplicationFee         int64             `json:"application_fee"`
 	Charge                 Charge            `json:"charge"`
@@ -94,7 +86,9 @@ type Order struct {
 	Customer               Customer          `json:"customer"`
 	Email                  string            `json:"email"`
 	Items                  []OrderItem       `json:"items"`
+	Live                   bool              `json:"livemode"`
 	Meta                   map[string]string `json:"metadata"`
+	Returns                *OrderReturnList  `json:"returns"`
 	SelectedShippingMethod *string           `json:"selected_shipping_method"`
 	Shipping               Shipping          `json:"shipping"`
 	ShippingMethods        []ShippingMethod  `json:"shipping_methods"`

@@ -20,10 +20,10 @@ const (
 )
 
 // apiversion is the currently supported API version
-const apiversion = "2016-03-07"
+const apiversion = "2016-07-06"
 
 // clientversion is the binding version
-const clientversion = "15.6.0"
+const clientversion = "18.7.0"
 
 // defaultHTTPTimeout is the default timeout on the http.Client used by the library.
 // This is chosen to be consistent with the other Stripe language libraries and
@@ -334,6 +334,9 @@ func (s *BackendConfiguration) ResponseToError(res *http.Response, resBody []byt
 
 	case ErrorTypeInvalidRequest:
 		stripeErr.Err = &InvalidRequestError{stripeErr: stripeErr}
+
+	case ErrorTypePermission:
+		stripeErr.Err = &PermissionError{stripeErr: stripeErr}
 
 	case ErrorTypeRateLimit:
 		stripeErr.Err = &RateLimitError{stripeErr: stripeErr}
