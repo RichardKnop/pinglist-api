@@ -4,7 +4,11 @@
 package jsonhal
 
 import (
+	"errors"
 	"fmt"
+	"reflect"
+
+	"github.com/mitchellh/mapstructure"
 )
 
 // Link represents a link in "_links" object
@@ -15,6 +19,26 @@ type Link struct {
 
 // Embedded represents a resource in "_embedded" object
 type Embedded interface{}
+
+// EmbedSetter is the interface that wraps the basic setEmbedded method.
+//
+// SetEmbedded adds a slice of objects under a named key in the embedded map
+type EmbedSetter interface {
+	SetEmbedded(name string, embedded Embedded)
+}
+
+// EmbedGetter is the interface that wraps the basic getEmbedded method.
+//
+// GetEmbedded returns a slice of embedded resources by name or error
+type EmbedGetter interface {
+	GetEmbedded(name string) (Embedded, error)
+}
+
+// Embedder is the interface that wraps the basic setEmbedded and getEmbedded methods.
+type Embedder interface {
+	EmbedSetter
+	EmbedGetter
+}
 
 // Hal is used for composition, include it as anonymous field in your structs
 type Hal struct {
@@ -28,6 +52,13 @@ func (h *Hal) SetLink(name, href, title string) {
 		h.Links = make(map[string]*Link, 0)
 	}
 	h.Links[name] = &Link{Href: href, Title: title}
+}
+
+// DeleteLink removes a link named name if it is found
+func (h *Hal) DeleteLink(name string) {
+	if h.Links != nil {
+		delete(h.Links, name)
+	}
 }
 
 // GetLink returns a link by name or error
@@ -60,4 +91,32 @@ func (h *Hal) GetEmbedded(name string) (Embedded, error) {
 		return nil, fmt.Errorf("Embedded \"%s\" not found", name)
 	}
 	return embedded, nil
+}
+
+// CountEmbedded counts number of embedded items
+func (h *Hal) CountEmbedded(name string) (int, error) {
+	e, err := h.GetEmbedded(name)
+	if err != nil {
+		return 0, err
+	}
+	if reflect.TypeOf(interface{}(e)).Kind() != reflect.Slice && reflect.TypeOf(interface{}(e)).Kind() != reflect.Map {
+		return 0, errors.New("Embedded object is not a slice or a map")
+	}
+	return reflect.ValueOf(interface{}(e)).Len(), nil
+}
+
+// DecodeEmbedded decodes embedded objects into a struct
+func (h *Hal) DecodeEmbedded(name string, result interface{}) error {
+	e, err := h.GetEmbedded(name)
+	if err != nil {
+		return err
+	}
+	return mapstructure.Decode(interface{}(e), result)
+}
+
+// DeleteEmbedded removes an embedded resource named name if it is found
+func (h *Hal) DeleteEmbedded(name string) {
+	if h.Embedded != nil {
+		delete(h.Embedded, name)
+	}
 }

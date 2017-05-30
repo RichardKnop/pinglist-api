@@ -1,0 +1,10 @@
+---
+language: go
+
+branches:
+  only:
+    - master
+
+script:
+  - make test
+
