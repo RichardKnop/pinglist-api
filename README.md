@@ -9,6 +9,8 @@ API / website uptime & performance monitoring platform.
 See also:
 - [pinglist-app](https://github.com/RichardKnop/pinglist-app)
 - [pinglist-ios-app](https://github.com/RichardKnop/pinglist-ios-app)
+- [pinglist-aws-terraform](https://github.com/RichardKnop/pinglist-aws-terraform)
+- [pinglist-aws-ansible](https://github.com/RichardKnop/pinglist-aws-ansible)
 
 # Index
 
