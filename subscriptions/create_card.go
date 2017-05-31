@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/RichardKnop/pinglist-api/accounts"
+	"github.com/RichardKnop/pinglist-api/logger"
 	"github.com/RichardKnop/pinglist-api/response"
 )
 
@@ -35,7 +36,7 @@ func (s *Service) createCardHandler(w http.ResponseWriter, r *http.Request) {
 	// Unmarshal the request body into the request prototype
 	cardRequest := new(CardRequest)
 	if err := json.Unmarshal(payload, cardRequest); err != nil {
-		logger.Errorf("Failed to unmarshal card request: %s", payload)
+		logger.ERROR.Printf("Failed to unmarshal card request: %s", payload)
 		response.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -43,7 +44,7 @@ func (s *Service) createCardHandler(w http.ResponseWriter, r *http.Request) {
 	// Create a new card
 	card, err := s.createCard(authenticatedUser, cardRequest)
 	if err != nil {
-		logger.Errorf("Create card error: %s", err)
+		logger.ERROR.Printf("Create card error: %s", err)
 		response.Error(w, err.Error(), getErrStatusCode(err))
 		return
 	}

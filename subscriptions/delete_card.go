@@ -7,6 +7,7 @@ import (
 
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/RichardKnop/pinglist-api/accounts/roles"
+	"github.com/RichardKnop/pinglist-api/logger"
 	"github.com/RichardKnop/pinglist-api/response"
 	"github.com/gorilla/mux"
 )
@@ -48,7 +49,7 @@ func (s *Service) deleteCardHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Delete the card
 	if err := s.deleteCard(card); err != nil {
-		logger.Errorf("Delete card error: %s", err)
+		logger.ERROR.Printf("Delete card error: %s", err)
 		response.Error(w, err.Error(), getErrStatusCode(err))
 		return
 	}

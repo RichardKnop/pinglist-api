@@ -1,4 +1,4 @@
-package commands
+package cmd
 
 import (
 	"time"
@@ -6,8 +6,8 @@ import (
 	"github.com/RichardKnop/pinglist-api/scheduler"
 )
 
-// RunScheduler runs the scheduler
-func RunScheduler() error {
+// RunAll runs the both the scheduler and the app
+func RunAll() error {
 	cnf, db, err := initConfigDB(true, true)
 	if err != nil {
 		return err
@@ -20,10 +20,22 @@ func RunScheduler() error {
 	// Init the scheduler
 	theScheduler := scheduler.New(metricsService, alarmsService)
 
+	// Init the app
+	app, err := initApp(cnf, db)
+	if err != nil {
+		return err
+	}
+
 	// Run the scheduling goroutines
 	alarmsInterval := time.Duration(10)     // alarms check interval = 10s
 	partitionInterval := time.Duration(600) // partition / rotate interval = 10m
-	<-theScheduler.Start(alarmsInterval, partitionInterval)
+	stoppedChan := theScheduler.Start(alarmsInterval, partitionInterval)
+
+	// Run the server on port 8080
+	app.Run(":8080")
+
+	// Stop the scheduler
+	stoppedChan <- true
 
 	return nil
 }

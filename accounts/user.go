@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/RichardKnop/pinglist-api/accounts/roles"
+	"github.com/RichardKnop/pinglist-api/logger"
 	"github.com/RichardKnop/pinglist-api/oauth"
 	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/jinzhu/gorm"
@@ -134,7 +135,7 @@ func (s *Service) CreateUser(account *Account, userRequest *UserRequest) (*User,
 
 		// Try to send the confirmation email
 		if err := s.emailService.Send(confirmationEmail); err != nil {
-			logger.Errorf("Send email error: %s", err)
+			logger.ERROR.Printf("Send email error: %s", err)
 			return
 		}
 

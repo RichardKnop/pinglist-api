@@ -9,6 +9,7 @@ import (
 
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/RichardKnop/pinglist-api/accounts/roles"
+	"github.com/RichardKnop/pinglist-api/logger"
 	"github.com/RichardKnop/pinglist-api/response"
 	"github.com/gorilla/mux"
 )
@@ -64,14 +65,14 @@ func (s *Service) updateTeamHandler(w http.ResponseWriter, r *http.Request) {
 	// Unmarshal the request body into the request prototype
 	teamRequest := new(TeamRequest)
 	if err := json.Unmarshal(payload, teamRequest); err != nil {
-		logger.Errorf("Failed to unmarshal team request: %s", payload)
+		logger.ERROR.Printf("Failed to unmarshal team request: %s", payload)
 		response.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	// Update the team
 	if err := s.updateTeam(team, teamRequest); err != nil {
-		logger.Errorf("Update team error: %s", err)
+		logger.ERROR.Printf("Update team error: %s", err)
 		response.Error(w, err.Error(), getErrStatusCode(err))
 		return
 	}

@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/RichardKnop/pinglist-api/accounts"
+	"github.com/RichardKnop/pinglist-api/logger"
 	"github.com/jinzhu/gorm"
 	stripe "github.com/stripe/stripe-go"
 )
@@ -68,7 +69,7 @@ func (s *Service) createCard(user *accounts.User, cardRequest *CardRequest) (*Ca
 			return nil, err
 		}
 
-		logger.Infof("Created customer: %s", stripeCustomer.ID)
+		logger.INFO.Printf("Created customer: %s", stripeCustomer.ID)
 
 		// Create a new customer object
 		customer = NewCustomer(user, stripeCustomer.ID)
@@ -94,7 +95,7 @@ func (s *Service) createCard(user *accounts.User, cardRequest *CardRequest) (*Ca
 		}
 
 		if created {
-			logger.Infof("Created customer: %s", stripeCustomer.ID)
+			logger.INFO.Printf("Created customer: %s", stripeCustomer.ID)
 
 			// Our customer record is not valid so delete it
 			if err := tx.Delete(customer).Error; err != nil {
@@ -125,7 +126,7 @@ func (s *Service) createCard(user *accounts.User, cardRequest *CardRequest) (*Ca
 		return nil, err
 	}
 
-	logger.Infof("Created card: %s", stripeCard.ID)
+	logger.INFO.Printf("Created card: %s", stripeCard.ID)
 
 	var lastFour string
 	if stripeCard.DynLastFour != "" {
@@ -178,7 +179,7 @@ func (s *Service) deleteCard(card *Card) error {
 		return err
 	}
 
-	logger.Infof("Deleted card: %s", stripeCard.ID)
+	logger.INFO.Printf("Deleted card: %s", stripeCard.ID)
 
 	// Delete the record from our database
 	if err := tx.Delete(card).Error; err != nil {

@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/RichardKnop/pinglist-api/accounts"
+	"github.com/RichardKnop/pinglist-api/logger"
 	"github.com/RichardKnop/pinglist-api/response"
 )
 
@@ -47,7 +48,7 @@ func (s *Service) registerDeviceHandler(w http.ResponseWriter, r *http.Request) 
 	// Unmarshal the request body into the request prototype
 	deviceRequest := new(DeviceRequest)
 	if err := json.Unmarshal(payload, deviceRequest); err != nil {
-		logger.Errorf("Failed to unmarshal device request: %s", payload)
+		logger.ERROR.Printf("Failed to unmarshal device request: %s", payload)
 		response.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}

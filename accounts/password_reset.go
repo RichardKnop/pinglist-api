@@ -4,6 +4,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/RichardKnop/pinglist-api/logger"
 	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/jinzhu/gorm"
 )
@@ -109,7 +110,7 @@ func (s *Service) createPasswordReset(user *User) (*PasswordReset, error) {
 
 		// Try to send the password reset email
 		if err := s.emailService.Send(passwordResetEmail); err != nil {
-			logger.Errorf("Send email error: %s", err)
+			logger.ERROR.Printf("Send email error: %s", err)
 			return
 		}
 

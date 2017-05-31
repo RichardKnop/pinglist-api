@@ -7,6 +7,11 @@
 	],
 	"Deps": [
 		{
+			"ImportPath": "github.com/RichardKnop/example-api/logger",
+			"Comment": "v0.0.0-34-g9fb1565",
+			"Rev": "9fb1565ca5c2dc0e432662e4ccc6d696d5c5837f"
+		},
+		{
 			"ImportPath": "github.com/RichardKnop/go-fixtures",
 			"Rev": "ec5cef5c7a0887f4e33cf2eb00b0efdb2362ecda"
 		},

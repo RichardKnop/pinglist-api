@@ -6,6 +6,7 @@ import (
 
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/RichardKnop/pinglist-api/accounts/roles"
+	"github.com/RichardKnop/pinglist-api/logger"
 	"github.com/RichardKnop/pinglist-api/pagination"
 	"github.com/RichardKnop/pinglist-api/response"
 	"github.com/RichardKnop/pinglist-api/util"
@@ -76,7 +77,7 @@ func (s *Service) listCardsHandler(w http.ResponseWriter, r *http.Request) {
 		user,
 	)
 	if err != nil {
-		logger.Errorf("Find paginated cards error: %s", err)
+		logger.ERROR.Printf("Find paginated cards error: %s", err)
 		response.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

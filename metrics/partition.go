@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/RichardKnop/pinglist-api/logger"
 	"github.com/RichardKnop/pinglist-api/util"
 )
 
@@ -33,7 +34,7 @@ func (s *Service) PartitionResponseTime(parentTableName string, now time.Time) e
 		if err != nil {
 			return err
 		}
-		logger.Infof("Created a new sub table: %s", subTable.Name)
+		logger.INFO.Printf("Created a new sub table: %s", subTable.Name)
 	}
 
 	// If a sub table for tomorrow doesn't exist, create it
@@ -48,7 +49,7 @@ func (s *Service) PartitionResponseTime(parentTableName string, now time.Time) e
 		if err != nil {
 			return err
 		}
-		logger.Infof("Created a new sub table: %s", subTable.Name)
+		logger.INFO.Printf("Created a new sub table: %s", subTable.Name)
 	}
 
 	return nil

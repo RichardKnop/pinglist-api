@@ -2,6 +2,8 @@ package metrics
 
 import (
 	"time"
+
+	"github.com/RichardKnop/pinglist-api/logger"
 )
 
 // RotateAfterHours defines how long to wait before sub tables are rotated away
@@ -33,7 +35,7 @@ func (s *Service) RotateSubTables() error {
 			tx.Rollback() // rollback the transaction
 			return err
 		}
-		logger.Infof("Deleted sub table: %s", subTable.Name)
+		logger.INFO.Printf("Deleted sub table: %s", subTable.Name)
 	}
 
 	// Delete old sub table records

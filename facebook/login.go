@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/RichardKnop/pinglist-api/accounts"
+	"github.com/RichardKnop/pinglist-api/logger"
 	"github.com/RichardKnop/pinglist-api/oauth"
 	"github.com/RichardKnop/pinglist-api/response"
 )
@@ -53,8 +54,8 @@ func (s *Service) loginHandler(w http.ResponseWriter, r *http.Request) {
 		user       *accounts.User
 	)
 
-	logger.Info("Fetched Facebook user's data")
-	logger.Infof("%v", resp)
+	logger.INFO.Print("Fetched Facebook user's data")
+	logger.INFO.Printf("%v", resp)
 
 	// There is an edge case where Facebook does not return a valid email
 	// User could have registered with a phone number or have an unconfirmed

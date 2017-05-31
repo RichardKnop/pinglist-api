@@ -7,6 +7,7 @@ import (
 
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/RichardKnop/pinglist-api/accounts/roles"
+	"github.com/RichardKnop/pinglist-api/logger"
 	"github.com/RichardKnop/pinglist-api/response"
 	"github.com/gorilla/mux"
 )
@@ -48,7 +49,7 @@ func (s *Service) cancelSubscriptionHandler(w http.ResponseWriter, r *http.Reque
 
 	// Cancel the subscription
 	if err := s.cancelSubscription(subscription); err != nil {
-		logger.Errorf("Cancel subscription error: %s", err)
+		logger.ERROR.Printf("Cancel subscription error: %s", err)
 		response.Error(w, err.Error(), getErrStatusCode(err))
 		return
 	}

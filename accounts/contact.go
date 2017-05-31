@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/RichardKnop/pinglist-api/email"
+	"github.com/RichardKnop/pinglist-api/logger"
 	"github.com/RichardKnop/pinglist-api/response"
 )
 
@@ -34,7 +35,7 @@ func (s *Service) contactHandler(w http.ResponseWriter, r *http.Request) {
 	// Unmarshal the request body into the request prototype
 	contactRequest := new(ContactRequest)
 	if err := json.Unmarshal(payload, contactRequest); err != nil {
-		logger.Errorf("Failed to unmarshal contact request: %s", payload)
+		logger.ERROR.Printf("Failed to unmarshal contact request: %s", payload)
 		response.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -56,7 +57,7 @@ func (s *Service) contactHandler(w http.ResponseWriter, r *http.Request) {
 
 		// Try to send the contact email
 		if err := s.emailService.Send(contactEmail); err != nil {
-			logger.Errorf("Send email error: %s", err)
+			logger.ERROR.Printf("Send email error: %s", err)
 			return
 		}
 	}()

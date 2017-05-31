@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/RichardKnop/pinglist-api/accounts"
+	"github.com/RichardKnop/pinglist-api/logger"
 	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/jinzhu/gorm"
 	stripe "github.com/stripe/stripe-go"
@@ -106,7 +107,7 @@ func (s *Service) createSubscription(user *accounts.User, subscriptionRequest *S
 		return nil, err
 	}
 
-	logger.Infof("Created subscription: %s", stripeSubscription.ID)
+	logger.INFO.Printf("Created subscription: %s", stripeSubscription.ID)
 
 	// Parse subscription times
 	startedAt, cancelledAt, endedAt, periodStart, periodEnd, trialStart, trialEnd := getStripeSubscriptionTimes(stripeSubscription)
@@ -188,7 +189,7 @@ func (s *Service) cancelSubscription(subscription *Subscription) error {
 	// Begin a transaction
 	tx := s.db.Begin()
 
-	logger.Info(subscription.SubscriptionID)
+	logger.INFO.Print(subscription.SubscriptionID)
 
 	// Cancel the subscription
 	stripeSubscription, err := s.stripeAdapter.CancelSubscription(
@@ -200,7 +201,7 @@ func (s *Service) cancelSubscription(subscription *Subscription) error {
 		return err
 	}
 
-	logger.Infof("Cancelled subscription: %s", subscription.SubscriptionID)
+	logger.INFO.Printf("Cancelled subscription: %s", subscription.SubscriptionID)
 
 	// Update the subscription
 	err = s.updateSusbcriptionCommon(tx, subscription, subscription.Plan, stripeSubscription)

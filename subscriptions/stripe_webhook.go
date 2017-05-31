@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/RichardKnop/pinglist-api/logger"
 	"github.com/RichardKnop/pinglist-api/response"
 	stripe "github.com/stripe/stripe-go"
 )
@@ -28,7 +29,7 @@ func (s *Service) stripeWebhookHandler(w http.ResponseWriter, r *http.Request) {
 	// Unmarshal the request body into the request prototype
 	stripeEventRequest := new(stripe.Event)
 	if err := json.Unmarshal(payload, stripeEventRequest); err != nil {
-		logger.Errorf("Failed to unmarshal stripe event: %s", payload)
+		logger.ERROR.Printf("Failed to unmarshal stripe event: %s", payload)
 		response.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -51,8 +52,8 @@ func (s *Service) stripeWebhookHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Something went wrong logging the event
 	if err != nil && err != ErrStripeEventAlreadyRecevied {
-		logger.Error("Failed to log the stripe event")
-		logger.Error(err)
+		logger.ERROR.Print("Failed to log the stripe event")
+		logger.ERROR.Print(err)
 		response.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -75,8 +76,8 @@ func (s *Service) stripeWebhookHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Try to process the event
 	if err := stripeEventHandler(stripeEvent); err != nil {
-		logger.Errorf("Failed to process stripe event: %v", stripeEvent)
-		logger.Error(err)
+		logger.ERROR.Printf("Failed to process stripe event: %v", stripeEvent)
+		logger.ERROR.Print(err)
 		response.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

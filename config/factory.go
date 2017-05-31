@@ -6,6 +6,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/RichardKnop/pinglist-api/logger"
 	"github.com/coreos/etcd/client"
 	"golang.org/x/net/context"
 )
@@ -75,7 +76,7 @@ func NewConfig(mustLoadOnce bool, keepReloading bool) *Config {
 
 	// Construct the ETCD endpoint
 	etcdEndpoint := getEtcdEndpoint()
-	logger.Infof("ETCD Endpoint: %s", etcdEndpoint)
+	logger.INFO.Printf("ETCD Endpoint: %s", etcdEndpoint)
 
 	// ETCD config
 	etcdClientConfig := client.Config{
@@ -88,7 +89,7 @@ func NewConfig(mustLoadOnce bool, keepReloading bool) *Config {
 	// ETCD client
 	etcdClient, err := client.New(etcdClientConfig)
 	if err != nil {
-		logger.Fatal(err)
+		logger.FATAL.Fatal(err)
 		os.Exit(1)
 	}
 
@@ -100,7 +101,7 @@ func NewConfig(mustLoadOnce bool, keepReloading bool) *Config {
 		// Read from remote config the first time
 		newCnf, err := loadConfig(kapi)
 		if err != nil {
-			logger.Fatal(err)
+			logger.FATAL.Fatal(err)
 			os.Exit(1)
 		}
 
@@ -109,7 +110,7 @@ func NewConfig(mustLoadOnce bool, keepReloading bool) *Config {
 
 		// Set configLoaded to true
 		configLoaded = true
-		logger.Info("Successfully loaded config for the first time")
+		logger.INFO.Print("Successfully loaded config for the first time")
 	}
 
 	if keepReloading {
@@ -122,7 +123,7 @@ func NewConfig(mustLoadOnce bool, keepReloading bool) *Config {
 				// Attempt to reload the config
 				newCnf, err := loadConfig(kapi)
 				if err != nil {
-					logger.Error(err)
+					logger.ERROR.Print(err)
 					continue
 				}
 
@@ -131,7 +132,7 @@ func NewConfig(mustLoadOnce bool, keepReloading bool) *Config {
 
 				// Set configLoaded to true
 				configLoaded = true
-				logger.Info("Successfully reloaded config")
+				logger.INFO.Print("Successfully reloaded config")
 			}
 		}()
 	}

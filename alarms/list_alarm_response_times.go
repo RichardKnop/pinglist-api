@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"sync"
 
+	"github.com/RichardKnop/example-api/logger"
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/RichardKnop/pinglist-api/accounts/roles"
 	"github.com/RichardKnop/pinglist-api/metrics"
@@ -150,7 +151,7 @@ func (s *Service) listAlarmResponseTimesHandler(w http.ResponseWriter, r *http.R
 	// If one of the goroutines failed
 	if len(errs) > 0 {
 		for _, err := range errs {
-			logger.Error(err)
+			logger.ERROR.Print(err)
 		}
 		response.Error(
 			w,

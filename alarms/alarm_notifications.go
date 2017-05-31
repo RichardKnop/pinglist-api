@@ -3,6 +3,8 @@ package alarms
 import (
 	"fmt"
 	"time"
+
+	"github.com/RichardKnop/pinglist-api/logger"
 )
 
 func (s *Service) sendNewIncidentPushNotification(alarm *Alarm, incident *Incident) {
@@ -14,7 +16,7 @@ func (s *Service) sendNewIncidentPushNotification(alarm *Alarm, incident *Incide
 		s.cnf.AWS.APNSPlatformApplicationARN,
 	)
 	if err != nil {
-		logger.Errorf("Find endpoint by user ID and application ARN error: %s", err.Error())
+		logger.ERROR.Printf("Find endpoint by user ID and application ARN error: %s", err.Error())
 		return
 	}
 
@@ -28,7 +30,7 @@ func (s *Service) sendNewIncidentPushNotification(alarm *Alarm, incident *Incide
 		map[string]interface{}{},
 	)
 	if err != nil {
-		logger.Errorf("Publish message error: %s", err.Error())
+		logger.ERROR.Printf("Publish message error: %s", err.Error())
 		return
 	}
 
@@ -38,7 +40,7 @@ func (s *Service) sendNewIncidentPushNotification(alarm *Alarm, incident *Incide
 		uint(now.Year()),
 		uint(now.Month()),
 	); err != nil {
-		logger.Errorf("Increment push notifications counter error: %s", err)
+		logger.ERROR.Printf("Increment push notifications counter error: %s", err)
 	}
 }
 
@@ -55,11 +57,11 @@ func (s *Service) sendNewIncidentEmail(incident *Incident) {
 		uint(now.Month()),
 	)
 	if err != nil {
-		logger.Errorf("Find notification counter error: %s", err.Error())
+		logger.ERROR.Printf("Find notification counter error: %s", err.Error())
 		return
 	}
 	if !alarmLimits.unlimitedEmails && notificationCounter.Email > alarmLimits.maxEmailsPerInterval {
-		logger.Errorf(
+		logger.ERROR.Printf(
 			"User has already reached maximum emails per month limit: %d/%d",
 			notificationCounter.Email,
 			alarmLimits.maxEmailsPerInterval,
@@ -71,7 +73,7 @@ func (s *Service) sendNewIncidentEmail(incident *Incident) {
 
 	// Send the email
 	if err := s.emailService.Send(newIncidentEmail); err != nil {
-		logger.Errorf("Send email error: %s", err)
+		logger.ERROR.Printf("Send email error: %s", err)
 		return
 	}
 
@@ -81,7 +83,7 @@ func (s *Service) sendNewIncidentEmail(incident *Incident) {
 		uint(now.Year()),
 		uint(now.Month()),
 	); err != nil {
-		logger.Errorf("Increment email notifications counter error: %s", err)
+		logger.ERROR.Printf("Increment email notifications counter error: %s", err)
 	}
 }
 
@@ -104,7 +106,7 @@ func (s *Service) sendNewIncidentSlackMessage(alarm *Alarm, incident *Incident) 
 		newIncidentMessage,
 		s.cnf.Slack.Emoji,
 	); err != nil {
-		logger.Errorf("Send slack message error: %s", err)
+		logger.ERROR.Printf("Send slack message error: %s", err)
 		return
 	}
 
@@ -114,7 +116,7 @@ func (s *Service) sendNewIncidentSlackMessage(alarm *Alarm, incident *Incident) 
 		uint(now.Year()),
 		uint(now.Month()),
 	); err != nil {
-		logger.Errorf("Increment slack notifications counter error: %s", err)
+		logger.ERROR.Printf("Increment slack notifications counter error: %s", err)
 	}
 }
 
@@ -127,7 +129,7 @@ func (s *Service) sendIncidentsResolvedPushNotification(alarm *Alarm) {
 		s.cnf.AWS.APNSPlatformApplicationARN,
 	)
 	if err != nil {
-		logger.Errorf("Find endpoint by user ID and application ARN error: %s", err.Error())
+		logger.ERROR.Printf("Find endpoint by user ID and application ARN error: %s", err.Error())
 		return
 	}
 
@@ -138,7 +140,7 @@ func (s *Service) sendIncidentsResolvedPushNotification(alarm *Alarm) {
 		map[string]interface{}{},
 	)
 	if err != nil {
-		logger.Errorf("Publish message error: %s", err.Error())
+		logger.ERROR.Printf("Publish message error: %s", err.Error())
 		return
 	}
 
@@ -148,7 +150,7 @@ func (s *Service) sendIncidentsResolvedPushNotification(alarm *Alarm) {
 		uint(now.Year()),
 		uint(now.Month()),
 	); err != nil {
-		logger.Errorf("Increment push notifications counter error: %s", err)
+		logger.ERROR.Printf("Increment push notifications counter error: %s", err)
 	}
 }
 
@@ -165,11 +167,11 @@ func (s *Service) sendIncidentsResolvedEmail(alarm *Alarm) {
 		uint(now.Month()),
 	)
 	if err != nil {
-		logger.Errorf("Find notification counter error: %s", err.Error())
+		logger.ERROR.Printf("Find notification counter error: %s", err.Error())
 		return
 	}
 	if !alarmLimits.unlimitedEmails && notificationCounter.Email > alarmLimits.maxEmailsPerInterval {
-		logger.Errorf(
+		logger.ERROR.Printf(
 			"User has already reached maximum emails per month limit: %d/%d",
 			notificationCounter.Email,
 			alarmLimits.maxEmailsPerInterval,
@@ -181,7 +183,7 @@ func (s *Service) sendIncidentsResolvedEmail(alarm *Alarm) {
 
 	// Send the email
 	if err := s.emailService.Send(alarmUpEmail); err != nil {
-		logger.Errorf("Send email error: %s", err)
+		logger.ERROR.Printf("Send email error: %s", err)
 		return
 	}
 
@@ -191,7 +193,7 @@ func (s *Service) sendIncidentsResolvedEmail(alarm *Alarm) {
 		uint(now.Year()),
 		uint(now.Month()),
 	); err != nil {
-		logger.Errorf("Increment email notifications counter error: %s", err)
+		logger.ERROR.Printf("Increment email notifications counter error: %s", err)
 	}
 }
 
@@ -214,7 +216,7 @@ func (s *Service) sendIncidentsResolvedSlackMessage(alarm *Alarm) {
 		newIncidentMessage,
 		s.cnf.Slack.Emoji,
 	); err != nil {
-		logger.Errorf("Send slack message error: %s", err)
+		logger.ERROR.Printf("Send slack message error: %s", err)
 		return
 	}
 
@@ -224,6 +226,6 @@ func (s *Service) sendIncidentsResolvedSlackMessage(alarm *Alarm) {
 		uint(now.Year()),
 		uint(now.Month()),
 	); err != nil {
-		logger.Errorf("Increment slack notifications counter error: %s", err)
+		logger.ERROR.Printf("Increment slack notifications counter error: %s", err)
 	}
 }

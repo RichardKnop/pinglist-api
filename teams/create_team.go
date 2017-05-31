@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/RichardKnop/pinglist-api/accounts"
+	"github.com/RichardKnop/pinglist-api/logger"
 	"github.com/RichardKnop/pinglist-api/response"
 )
 
@@ -35,7 +36,7 @@ func (s *Service) createTeamHandler(w http.ResponseWriter, r *http.Request) {
 	// Unmarshal the request body into the request prototype
 	teamRequest := new(TeamRequest)
 	if err := json.Unmarshal(payload, teamRequest); err != nil {
-		logger.Errorf("Failed to unmarshal team request: %s", payload)
+		logger.ERROR.Printf("Failed to unmarshal team request: %s", payload)
 		response.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -43,7 +44,7 @@ func (s *Service) createTeamHandler(w http.ResponseWriter, r *http.Request) {
 	// Create a new team
 	team, err := s.createTeam(authenticatedUser, teamRequest)
 	if err != nil {
-		logger.Errorf("Create team error: %s", err)
+		logger.ERROR.Printf("Create team error: %s", err)
 		response.Error(w, err.Error(), getErrStatusCode(err))
 		return
 	}

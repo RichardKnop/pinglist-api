@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/RichardKnop/pinglist-api/alarms"
+	"github.com/RichardKnop/pinglist-api/logger"
 	"github.com/RichardKnop/pinglist-api/metrics"
 )
 
@@ -55,7 +56,7 @@ func (s *Scheduler) runAlarmCheckJob() {
 	// Get alarms to check
 	alarmIDs, err := s.alarmsService.GetAlarmsToCheck(time.Now())
 	if err != nil {
-		logger.Error(err)
+		logger.ERROR.Print(err)
 		return
 	}
 
@@ -76,10 +77,10 @@ func (s *Scheduler) runAlarmCheckJob() {
 
 func (s *Scheduler) checkAlarm(alarmID uint, watermark time.Time) {
 	if err := s.alarmsService.CheckAlarm(alarmID, watermark); err != nil {
-		logger.Errorf("Alarm #%d check error: %s", alarmID, err.Error())
+		logger.ERROR.Printf("Alarm #%d check error: %s", alarmID, err.Error())
 		return
 	}
-	logger.Infof("Alarm #%d checked successfully", alarmID)
+	logger.INFO.Printf("Alarm #%d checked successfully", alarmID)
 }
 
 func (s *Scheduler) runPartitioningJob() {
@@ -89,13 +90,13 @@ func (s *Scheduler) runPartitioningJob() {
 		time.Now(),
 	)
 	if err != nil {
-		logger.Errorf("Partition response time error: %s", err.Error())
+		logger.ERROR.Printf("Partition response time error: %s", err.Error())
 		return
 	}
 
 	// Rotate old sub tables
 	if err := s.metricsService.RotateSubTables(); err != nil {
-		logger.Errorf("Rotate sub tables error: %s", err.Error())
+		logger.ERROR.Printf("Rotate sub tables error: %s", err.Error())
 		return
 	}
 }

@@ -3,6 +3,7 @@ package alarms
 import (
 	"fmt"
 
+	"github.com/RichardKnop/pinglist-api/logger"
 	"github.com/RichardKnop/pinglist-api/migrations"
 	"github.com/jinzhu/gorm"
 )
@@ -28,11 +29,11 @@ func migrate0001(db *gorm.DB) error {
 	found := !db.Where("name = ?", migrationName).First(migration).RecordNotFound()
 
 	if found {
-		logger.Infof("Skipping %s migration", migrationName)
+		logger.INFO.Printf("Skipping %s migration", migrationName)
 		return nil
 	}
 
-	logger.Infof("Running %s migration", migrationName)
+	logger.INFO.Printf("Running %s migration", migrationName)
 
 	var err error
 
@@ -139,11 +140,11 @@ func migrate0002(db *gorm.DB) error {
 	found := !db.Where("name = ?", migrationName).First(migration).RecordNotFound()
 
 	if found {
-		logger.Infof("Skipping %s migration", migrationName)
+		logger.INFO.Printf("Skipping %s migration", migrationName)
 		return nil
 	}
 
-	logger.Infof("Running %s migration", migrationName)
+	logger.INFO.Printf("Running %s migration", migrationName)
 
 	var err error
 

@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/RichardKnop/pinglist-api/accounts/roles"
+	"github.com/RichardKnop/pinglist-api/logger"
 	"github.com/RichardKnop/pinglist-api/oauth"
 	"github.com/RichardKnop/pinglist-api/util"
 	"github.com/jinzhu/gorm"
@@ -166,7 +167,7 @@ func (s *Service) inviteUserCommon(db *gorm.DB, invitedByUser *User, invitationR
 
 		// Try to send the invitation email
 		if err := s.emailService.Send(invitationEmail); err != nil {
-			logger.Errorf("Send email error: %s", err)
+			logger.ERROR.Printf("Send email error: %s", err)
 			return
 		}
 

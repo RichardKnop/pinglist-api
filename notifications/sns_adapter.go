@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/RichardKnop/pinglist-api/logger"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/sns"
@@ -66,21 +67,21 @@ func (a *SNSAdapter) GetEndpointAttributes(endpointARN string) (*EndpointAttribu
 	// Token
 	token, ok = resp.Attributes["Token"]
 	if !ok {
-		logger.Info(resp.Attributes)
+		logger.INFO.Print(resp.Attributes)
 		return nil, errors.New("Token key not found in attributes")
 	}
 
 	// Enabled
 	enabledStr, ok = resp.Attributes["Enabled"]
 	if !ok {
-		logger.Info(resp.Attributes)
+		logger.INFO.Print(resp.Attributes)
 		return nil, errors.New("Enabled key not found in attributes")
 	}
 
 	// Parse the enabled key from string to a boolean
 	enabled, err := strconv.ParseBool(*enabledStr)
 	if err != nil {
-		logger.Info(resp.Attributes)
+		logger.INFO.Print(resp.Attributes)
 		return nil, errors.New("Enabled key could not be parsed into a boolean")
 	}
 
