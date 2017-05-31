@@ -1,6 +1,8 @@
 [![Codeship Status for RichardKnop/pinglist-api](https://codeship.com/projects/fb4fa9f0-c2bb-0133-461d-4e6bd7c806c7/status?branch=master)](https://codeship.com/projects/137882)
 
-# Pinglist API
+[![Donate Bitcoin](https://img.shields.io/badge/donate-bitcoin-orange.svg)](https://richardknop.github.io/donate/)
+
+# pinglist-api
 
 API / website uptime & performance monitoring platform.
 
@@ -85,9 +87,9 @@ curl -L http://localhost:2379/v2/keys/config/pinglist.json -XPUT -d value='{
         "PublishableKey": "stripe_publishable_key"
     },
     "Slack": {
-  		"Username": "webhookbot",
-  		"Emoji": ""
-  	},
+        "Username": "webhookbot",
+        "Emoji": ""
+    },
     "Web": {
         "AppScheme": "http",
         "AppHost": "localhost:8000"
