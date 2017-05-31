@@ -7,6 +7,7 @@ import (
 	"github.com/RichardKnop/pinglist-api/accounts"
 	"github.com/RichardKnop/pinglist-api/config"
 	"github.com/RichardKnop/pinglist-api/database"
+	"github.com/RichardKnop/pinglist-api/logger"
 	"github.com/RichardKnop/pinglist-api/oauth"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
@@ -146,7 +147,7 @@ func (suite *SubscriptionsTestSuite) SetupTest() {
 	}
 	for _, customer := range customersToDelete {
 		_, err := stripeCustomer.Del(customer.CustomerID)
-		logger.Error(err)
+		logger.ERROR.Print(err)
 	}
 
 	// Delete data inserted by tests
